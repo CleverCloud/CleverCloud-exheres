@@ -36,7 +36,7 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
-        sys-devel/gcc[java]
+        sys-devel/gcc[>=4.3][java]
 "
 
 BUGS_TO="markus@unixforces.net"
