@@ -1,0 +1,41 @@
+# Copyright (c) 2009 Markus Rothe <markus@unixforces.net>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY=""
+DESCRIPTION="
+"
+HOMEPAGE="http://www.accesspdf.com/pdftk/"
+DOWNLOADS="http://www.accesspdf.com/pdftk/${PNV}.tar.bz2"
+
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64 ~ppc64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        sys-devel/gcc[>=4.4][java]
+"
+
+BUGS_TO="markus@unixforces.net"
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/${PNV}-gcc-4.3.patch
+    "${FILES}"/${PNV}-gcc-4.4.patch
+    "${FILES}"/${PNV}-honor-ldflags.patch
+)
+
+src_configure() {
+    :
+}
+
+src_compile() {
+    cd "${WORK}"/pdftk || die "couldn't chdir"
+    # the Makefile is br0ken and should be rewritten, do not try to build in
+    # parallel as it will fail
+    make -j1 -f Makefile.Generic || die "make failed"
+}
+
+src_install() {
+    dobin "${WORK}"/pdftk/pdftk
+}
