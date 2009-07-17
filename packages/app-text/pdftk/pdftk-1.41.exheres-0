@@ -1,11 +1,33 @@
 # Copyright (c) 2009 Markus Rothe <markus@unixforces.net>
 # Distributed under the terms of the GNU General Public License v2
 
-SUMMARY=""
+SUMMARY="Simple tool for doing everyday things with PDF documents"
 DESCRIPTION="
+If PDF is electronic paper, then pdftk is an electronic staple-remover,
+hole-punch, binder, secret-decoder-ring, and X-Ray-glasses. Pdftk is a simple
+tool for doing everyday things with PDF documents. Keep one in the top drawer
+of your desktop and use it to:
+
+ * Merge PDF Documents
+ * Split PDF Pages into a New Document
+ * Rotate PDF Pages or Documents
+ * Decrypt Input as Necessary (Password Required)
+ * Encrypt Output as Desired
+ * Fill PDF Forms with FDF Data or XFDF Data and/or Flatten Forms
+ * Apply a Background Watermark or a Foreground Stamp
+ * Report on PDF Metrics such as Metadata, Bookmarks, and Page Labels
+ * Update PDF Metadata
+ * Attach Files to PDF Pages or the PDF Document
+ * Unpack PDF Attachments
+ * Burst a PDF Document into Single Pages
+ * Uncompress and Re-Compress Page Streams
+ * Repair Corrupted PDF (Where Possible)
+
+Pdftk allows you to manipulate PDF easily and freely. It does not require
+Acrobat, and it runs on Windows, Linux, Mac OS X, FreeBSD and Solaris.
 "
 HOMEPAGE="http://www.accesspdf.com/pdftk/"
-DOWNLOADS="http://www.accesspdf.com/pdftk/${PNV}.tar.bz2"
+DOWNLOADS="http://www.pdfhacks.com/pdftk/${PNV}.tar.bz2"
 
 LICENCES="GPL-2"
 SLOT="0"
@@ -14,7 +36,7 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
-        sys-devel/gcc[>=4.4][java]
+        sys-devel/gcc[java]
 "
 
 BUGS_TO="markus@unixforces.net"
@@ -24,10 +46,6 @@ DEFAULT_SRC_PREPARE_PATCHES=(
     "${FILES}"/${PNV}-gcc-4.4.patch
     "${FILES}"/${PNV}-honor-ldflags.patch
 )
-
-src_configure() {
-    :
-}
 
 src_compile() {
     cd "${WORK}"/pdftk || die "couldn't chdir"
