@@ -1,0 +1,32 @@
+# Copyright (c) 2009-2010 Markus Rothe
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Simple tool for doing everyday things with PDF documents"
+HOMEPAGE="http://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/"
+DOWNLOADS="http://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/${PNV}-src.zip"
+
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64 ~ppc64 ~x86"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        sys-devel/gcc[java(-)]
+"
+
+BUGS_TO="markus@unixforces.net"
+
+src_compile() {
+    edo cd "${WORK}"/pdftk
+    edo sed -e "s/-4.4//" -i Makefile.Debian
+    edo sed -e "/export LIBGCJ=/d" -i Makefile.Debian
+    # the Makefile is br0ken and should be rewritten, do not try to build in
+    # parallel as it will fail
+    edo make -j1 -f Makefile.Debian
+}
+
+src_install() {
+    dobin "${WORK}"/pdftk/pdftk
+    doman "${WORK}"/pdftk.1
+}
