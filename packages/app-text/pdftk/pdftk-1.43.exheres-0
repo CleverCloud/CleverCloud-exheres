@@ -21,6 +21,8 @@ src_compile() {
     edo cd "${WORK}"/pdftk
     edo sed -e "s/-4.4//" -i Makefile.Debian
     edo sed -e "/export LIBGCJ=/d" -i Makefile.Debian
+    # gcj 4.4 does not support -Wextra
+    edo sed -e "s/-Wextra//" -i Makefile.Debian
     # the Makefile is br0ken and should be rewritten, do not try to build in
     # parallel as it will fail
     edo make -j1 -f Makefile.Debian
@@ -30,3 +32,4 @@ src_install() {
     dobin "${WORK}"/pdftk/pdftk
     doman "${WORK}"/pdftk.1
 }
+
