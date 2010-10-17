@@ -26,7 +26,8 @@ src_compile() {
     edo sed -e "s/-Wextra//" -i Makefile.Debian
     # the Makefile is br0ken and should be rewritten, do not try to build in
     # parallel as it will fail
-    edo make -j1 -f Makefile.Debian
+    edo make -j1 -f Makefile.Debian \
+        LDLIBS='-lgcj -ldl -lrt -lz -pthread' # From libgcj.la
 }
 
 src_install() {
