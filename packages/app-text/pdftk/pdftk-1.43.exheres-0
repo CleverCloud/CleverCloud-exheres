@@ -4,6 +4,7 @@
 SUMMARY="Simple tool for doing everyday things with PDF documents"
 HOMEPAGE="http://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/"
 DOWNLOADS="http://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/${PNV}-src.zip"
+UPSTREAM_CHANGELOG="http://www.pdflabs.com/docs/pdftk-version-history/"
 
 LICENCES="GPL-2"
 SLOT="0"
