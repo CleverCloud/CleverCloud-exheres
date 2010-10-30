@@ -18,6 +18,8 @@ DEPENDENCIES="
 
 BUGS_TO="markus@unixforces.net"
 
+WORK=${WORKBASE}/${PNV}-dist
+
 src_compile() {
     edo cd "${WORK}"/pdftk
     edo sed -e "s/-4.4//" -i Makefile.Debian
