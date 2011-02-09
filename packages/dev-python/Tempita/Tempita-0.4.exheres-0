@@ -1,0 +1,21 @@
+# Copyright 2011 Dan Callaghan <djc@djc.id.au>
+# Distributed under the terms of the GNU General Public License v2
+
+require pypi distutils [ python_dep=2.2 ]
+
+SUMMARY="A very small text templating language for Python"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64 ~x86"
+
+DEPENDENCIES="
+    test:
+        dev-python/nose
+"
+
+BUGS_TO="djc@djc.id.au"
+
+src_test() {
+    edo python setup.py nosetests
+}
