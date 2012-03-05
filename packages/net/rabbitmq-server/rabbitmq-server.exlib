@@ -40,5 +40,6 @@ src_install() {
     esandbox disable_net
     default
     esandbox enable_net
+    install_systemd_files
 }
 
