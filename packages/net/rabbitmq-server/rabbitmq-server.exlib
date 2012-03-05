@@ -1,0 +1,44 @@
+# Copyright 2012 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+SUMMARY="AMQP-compliant message broker"
+
+HOMEPAGE="http://www.rabbitmq.com/"
+DOWNLOADS="http://www.rabbitmq.com/releases/${PN}/v${PV}/${PNV}.tar.gz"
+
+LICENCES="MPL-1.1"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        app-text/xmlto
+        dev-lang/python:*
+        dev-libs/libxslt
+        dev-python/simplejson
+    build+run:
+        dev-lang/erlang
+"
+
+DEFAULT_SRC_COMPILE_PARAMS=( "-j1" )
+
+DEFAULT_SRC_INSTALL_PARAMS=(
+    "MAN_DIR=${IMAGE}/usr/share/man"
+    "SBIN_DIR=${IMAGE}/usr/sbin"
+    "TARGET_DIR=${IMAGE}/usr/${LIBDIR}/erlang/lib/rabbitmq_server-${PV}"
+)
+
+src_compile() {
+    esandbox disable_net
+    default
+    esandbox enable_net
+}
+
+src_install() {
+    esandbox disable_net
+    default
+    esandbox enable_net
+}
+
