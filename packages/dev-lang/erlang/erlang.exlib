@@ -1,0 +1,58 @@
+# Copyright 2012 Quentin "Sardem FF7" Glidic <sardemff7+exherbo@sardemff7.net>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+export_exlib_phases src_prepare src_install
+
+myexparam pv=$(ever replace 1 B $(ever replace 2 - ${PV}))
+
+MY_PNV=otp_src_R$(exparam pv)
+
+SUMMARY="A language to build massively scalable soft real-time systems with requirements on high availability"
+HOMEPAGE="http://www.erlang.org/"
+DOWNLOADS="http://www.erlang.org/download/${MY_PNV}.tar.gz"
+
+LICENCES="EPL-1.1"
+SLOT="0"
+
+MYOPTIONS="odbc"
+
+DEPENDENCIES="
+    build+run:
+        dev-lang/perl
+        dev-libs/openssl
+        sys-libs/ncurses
+        sys-libs/zlib
+        odbc? ( dev-db/unixODBC )
+"
+
+WORK="${WORKBASE}"/${MY_PNV}
+
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --hates=docdir
+    --enable-dynamic-ssl-lib
+    --enable-kernel-poll
+    --enable-shared-zlib
+    --enable-smp-support
+    --enable-threads
+    --with-ssl
+    --with-termcap
+    --without-javac
+)
+
+erlang_src_prepare() {
+    default
+
+    # Avoid automagics
+    option odbc || edo mv lib/odbc{,.disable}
+    edo mv lib/wx{,.disable}
+}
+
+erlang_src_install() {
+    default
+
+    edo find "${IMAGE}" -type d -empty -exec rmdir '{}' +
+
+    install_systemd_files
+}
