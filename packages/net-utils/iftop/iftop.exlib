@@ -1,0 +1,16 @@
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com> 
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="display bandwidth usage on an interface"
+HOMEPAGE="http://www.ex-parrot.com/pdw/${PN}"
+DOWNLOADS="http://www.ex-parrot.com/pdw/${PN}/download/${PNV}.tar.gz"
+
+LICENCES="GPL-2"
+SLOT="0"
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/libpcap
+        sys-libs/ncurses
+"
+
