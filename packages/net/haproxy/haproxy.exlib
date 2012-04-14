@@ -3,12 +3,12 @@
 
 SUMMARY="The Reliable, High Performance TCP/HTTP Load Balancer"
 HOMEPAGE="http://haproxy.1wt.eu"
-DOWNLOADS="http://haproxy.1wt.eu/download/`ever range 1-2 ${PV}`/src/${PNV}.tar.gz"
+DOWNLOADS="http://haproxy.1wt.eu/download/$(ever range 1-2)/src/${PNV}.tar.gz"
 
 LICENCES="GPL-2"
 SLOT="0"
 MYOPTIONS=""
 
 DEPENDENCIES="
-    build+run:
 "
+
