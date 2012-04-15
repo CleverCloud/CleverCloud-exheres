@@ -1,0 +1,7 @@
+[Unit]
+Description=Pure-FTPd Per-Connection
+After=syslog.target
+
+[Service]
+EnvironmentFile=/etc/conf.d/pure-ftpd.conf
+ExecStart=/usr/sbin/pure-ftpd $LISTEN $AUTH $OPTS

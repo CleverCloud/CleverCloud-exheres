@@ -1,0 +1,53 @@
+# Copyright 2012 Quentin "Sardem FF7" Glidic <sardemff7+exherbo@sardemff7.net>
+# Distributed under the terms of the GNU General Public License v2
+
+require pam systemd-service
+
+export_exlib_phases src_install
+
+SUMMARY="A fast, production-quality, standard-conformant FTP server"
+HOMEPAGE="http://www.pureftpd.org/project/${PN}"
+
+LICENCES="
+    MIT
+    BSD-2 [[ note = [ bsd-getopt_long.c ] ]]
+    BSD-3 [[ note = [ bsd-glob.* bsd-realpath.* ] ]]
+    BSD-4 [[ note = [ bsd-getopt_long.h ] ]]
+"
+SLOT="0"
+
+MYOPTIONS="ldap"
+
+DEPENDENCIES="
+    build+run:
+        user/${PN}
+        group/${PN}
+        dev-libs/openssl
+        sys-libs/libcap
+        ldap? ( net-directory/openldap )
+    suggestion:
+        user/ftp [[ description = [ Anonymous FTP ] ]]
+"
+
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --with-pam
+    --with-puredb
+    --with-tls
+)
+
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
+    ldap
+)
+
+pure-ftpd_src_install() {
+    default
+
+    pamd_mimic_system ${PN} auth account session
+
+    install_systemd_files
+    if option systemd; then
+        insinto /etc/conf.d
+        newins "${FILES}"/${PN}-confd ${PN}.conf
+    fi
+}
+

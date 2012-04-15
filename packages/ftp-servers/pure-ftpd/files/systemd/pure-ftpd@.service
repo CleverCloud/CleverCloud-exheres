@@ -1,0 +1,8 @@
+[Unit]
+Description=Pure-FTPd Service
+After=syslog.target
+
+[Service]
+EnvironmentFile=/etc/conf.d/pure-ftpd.conf
+ExecStart=/usr/sbin/pure-ftpd $AUTH $OPTS
+StandardInput=socket

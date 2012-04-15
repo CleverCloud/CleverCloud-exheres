@@ -1,0 +1,11 @@
+# conf.d file for Pure-FTPd
+
+# Listen interface(s)
+LISTEN="-S 21"
+
+# You may add any backend you want
+# PAM is used if not specified
+#AUTH="-l puredb:/etc/pure-ftpd/users.pdb -l pam"
+
+# Add options you want here
+OPTS="-s -u 1000"
