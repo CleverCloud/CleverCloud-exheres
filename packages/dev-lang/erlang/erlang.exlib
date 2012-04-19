@@ -19,8 +19,9 @@ SLOT="0"
 MYOPTIONS="odbc"
 
 DEPENDENCIES="
+    build:
+        dev-lang/perl:*
     build+run:
-        dev-lang/perl
         dev-libs/openssl
         sys-libs/ncurses
         sys-libs/zlib
