@@ -10,5 +10,8 @@ SLOT="0"
 MYOPTIONS=""
 
 DEPENDENCIES="
+    build+run:
+        user/haproxy
+        group/haproxy
 "
 
