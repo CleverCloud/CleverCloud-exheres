@@ -1,0 +1,27 @@
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="GlusterFS is a cluster file-system capable of scaling to several peta-bytes"
+HOMEPAGE="http://www.gluster.org/"
+DOWNLOADS="http://download.gluster.org/pub/gluster/glusterfs/$(ever range 1-2)/${PV}/${PNV}.tar.gz"
+
+LICENCES="GPL-3"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+        dev-libs/libxml2[>=2.6.19]
+        sys-fs/fuse
+"
+
+src_configure() {
+    econf --hates=docdir
+}
+
+src_install() {
+    default
+
+    keepdir /var/lib/run /var/lib/log/"${PN}"
+}
