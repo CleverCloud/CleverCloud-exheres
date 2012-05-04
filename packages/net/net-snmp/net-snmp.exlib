@@ -12,5 +12,5 @@ MYOPTIONS=""
 DEPENDENCIES="
 "
 
-DEFAULT_SRC_CONFIGURE_PARAMS=( '--with-defaults' '--without-nl' )
+DEFAULT_SRC_CONFIGURE_PARAMS=( '--with-defaults' )
 
