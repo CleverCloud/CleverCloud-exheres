@@ -1,0 +1,113 @@
+# Copyright 2012 Michael Thomas <aelmalinka@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+# Based in part upon 'mongodb-1.6.5.exheres-0', which is:
+#    Copyright 2010 Jonathan Dahan <jedahan@gmail.com>
+
+require scons
+
+SUMMARY="A scalable, high-performance, schema-free, document-oriented database"
+DESCRIPTION="Written in C++, MongoDB bridges the gap between key-value stores
+(which are fast and highly scalable) and traditional RDBMS systems (which
+provide structured schemas and powerful queries)."
+HOMEPAGE="http://www.mongodb.org"
+DOWNLOADS="http://downloads.mongodb.org/src/${PN}-src-r${PV}.tar.gz -> ${PNV}.tar.gz"
+
+LICENCES="AGPL-3"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS="
+    (
+        v8 [[ description = [ Use Google's Javascript engine v8 ] ]]
+        spidermonkey [[ description = [ Use Mozilla's Javascript engine spidermonkey ] ]]
+    ) [[ number-selected = exactly-one ]]
+"
+
+DEPENDENCIES="
+    build:
+        dev-libs/boost
+    build+run:
+        v8? ( dev-libs/v8 )
+"
+
+WORK="${WORKBASE}/${PN}-src-r${PV}"
+
+SCONS_SRC_COMPILE_PARAMS=(
+    --extralib=pcre
+    --use-system-pcre
+    --full
+    all
+)
+
+SCONS_SRC_INSTALL_PARAMS=(
+    --nostrip
+    --prefix="${IMAGE}"/usr
+    install
+)
+
+params=()
+
+tests=(
+    background_job
+    balancer_policy
+    basic
+    btree
+    btree1
+    client
+    commands
+    cursor
+    directclient
+    histogram
+    js
+    jsobj
+    json
+    matcher
+    mmap
+    namespace
+    pdfile
+    perf
+    query
+    queryoptimizer
+    queryutil
+    repl
+    shard_chunk_manager
+    sharding
+    sock
+    spinlock
+    update
+)
+
+expensive_tests=(
+    threading
+)
+
+src_configure() {
+    if option v8 ; then
+        params+=(
+            --usev8
+        )
+    elif option spidermonkey ; then
+        params+=(
+            --usesm
+        )
+    fi
+}
+
+src_compile() {
+    scons_src_compile "${params[@]}"
+}
+
+src_install() {
+    scons_src_install "${params[@]}"
+    emagicdocs
+}
+
+src_test() {
+    edo scons --jobs "${EXJOBS:-1}" "${SCONS_SRC_COMPILE_PARAMS[@]}" "${params[@]}" test
+
+    edo ./test "${tests[@]}"
+}
+
+src_test_expensive() {
+    edo ./test "${expensive_tests[@]}"
+}
