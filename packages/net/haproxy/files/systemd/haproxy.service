@@ -1,0 +1,12 @@
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the termes of the GNU Geneal Public License v2
+
+[Unit]
+Description=HAproxy reverse proxy
+After=network.target
+
+[Service]
+PIDFile=/run/haproxy.pid
+ExecStartPre=/usr/bin/rm -f /run/haproxy.pid
+ExecStart=/usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -p /run/haproxy.pid
+ExecReload=/usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -p /run/haproxy.pid -sf $MAINPID
