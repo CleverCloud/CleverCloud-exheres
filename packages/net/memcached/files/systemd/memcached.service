@@ -1,0 +1,9 @@
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the termes of the GNU Geneal Public License v2
+
+[Unit]
+Description=Memcached
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/memcached -umemcached
