@@ -42,7 +42,7 @@ DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
 pure-ftpd_src_install() {
     default
 
-    pamd_mimic_system ${PN} auth account session
+    pamd_mimic_system ${PN} auth auth account session
 
     install_systemd_files
     if option systemd; then
