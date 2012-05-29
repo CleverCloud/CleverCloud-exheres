@@ -33,20 +33,14 @@ DEPENDENCIES="
 
 WORK="${WORKBASE}/${PN}-src-r${PV}"
 
-SCONS_SRC_COMPILE_PARAMS=(
+MONGO_PARAMS=(
+    CFLAGS="${CFLAGS}"
+    CXXFLAGS="${CXXFLAGS}"
+    LDFLAGS="${LDFLAGS}"
     --extralib=pcre
     --use-system-pcre
     --full
-    all
 )
-
-SCONS_SRC_INSTALL_PARAMS=(
-    --nostrip
-    --prefix="${IMAGE}"/usr
-    install
-)
-
-params=()
 
 tests=(
     background_job
@@ -83,28 +77,34 @@ expensive_tests=(
 )
 
 src_configure() {
-    if option v8 ; then
-        params+=(
-            --usev8
-        )
-    elif option spidermonkey ; then
-        params+=(
-            --usesm
-        )
-    fi
+    # mongodb dislikes calling scons with different flags, so store flags and re-use them
+    if option v8 ; then MONGO_PARAMS+=( --usev8 ) ; fi
+    if option spidermonkey ; then MONGO_PARAMS+=( --usesm ) ; fi
 }
 
 src_compile() {
-    scons_src_compile "${params[@]}"
+    escons \
+        --jobs ${EXJOBS:-1} \
+        "${MONGO_PARAMS[@]}" \
+        all
 }
 
 src_install() {
-    scons_src_install "${params[@]}"
+    escons \
+        --jobs ${EXJOBS:-1} \
+        --nostrip \
+        --prefix="${IMAGE}"/usr \
+        "${MONGO_PARAMS[@]}" \
+        install
+
     emagicdocs
 }
 
 src_test() {
-    edo scons --jobs "${EXJOBS:-1}" "${SCONS_SRC_COMPILE_PARAMS[@]}" "${params[@]}" test
+    escons \
+        --jobs ${EXJOBS:-1} \
+        "${MONGO_PARAMS[@]}" \
+        test
 
     edo ./test "${tests[@]}"
 }
