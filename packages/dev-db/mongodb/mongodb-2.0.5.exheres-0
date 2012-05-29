@@ -27,6 +27,7 @@ DEPENDENCIES="
     build:
         dev-libs/boost
     build+run:
+        dev-libs/pcre
         v8? ( dev-libs/v8 )
 "
 
