@@ -1,0 +1,49 @@
+# Copyright 2012 Marc-Antoine Perennou<Marc-Antoine@Perennou.com
+# Distributed under the terms of the GNU General Public License v2
+
+require distutils pypi
+
+DOWNLOADS="http://launchpad.net/${PN}/essex/${PV}/+download/${PNV}.tar.gz"
+SUMMARY="OpenStack Compute"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+    build:
+        dev-python/setuptools
+    build+run:
+        dev-python/carrot
+        dev-python/Cheetah
+        dev-python/eventlet
+        dev-python/feedparser
+        dev-python/lockfile
+        dev-python/lxml
+        dev-python/mox
+        dev-python/netaddr
+        dev-python/nosexcover
+        dev-python/paramiko
+        dev-python/pep8
+        dev-python/python-daemon
+        dev-python/python-gflags
+        dev-python/Sphinx
+        dev-python/sqlalchemy-migrate
+        dev-python/suds
+        dev-python/wsgiref
+    run:
+        app-admin/sudo
+        dev-python/boto
+        dev-python/iso8601
+        dev-python/M2Crypto
+        dev-python/nova-adminclient
+        dev-python/PrettyTable
+        dev-python/psycopg2
+        dev-python/python-novaclient
+        net/rabbitmq-server
+        net-firewall/iptables
+        sys-auth/keystone
+        sys-cluster/glance
+        sys-fs/libguestfs
+        virtualization-lib/libvirt[kvm]
+"
