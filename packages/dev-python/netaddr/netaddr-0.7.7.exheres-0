@@ -1,0 +1,12 @@
+# Copyright 2012 Marc-Antoine Perennou<Marc-Antoine@Perennou.com
+# Distributed under the terms of the GNU General Public License v2
+
+require distutils pypi [ suffix=zip ]
+
+SUMMARY="Pythonic manipulation of IPv4, IPv6, CIDR, EUI and MAC network addresses"
+DOWNLOADS="https://github.com/downloads/drkjam/${PN}/${PNV}.tar.gz"
+
+LICENCES="as-is"
+SLOT="0"
+PLATFORMS="~amd64"
+
