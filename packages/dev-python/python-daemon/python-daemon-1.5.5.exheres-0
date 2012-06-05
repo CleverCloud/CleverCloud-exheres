@@ -1,0 +1,18 @@
+# Copyright 2012 Marc-Antoine Perennou<Marc-Antoine@Perennou.com
+# Distributed under the terms of the GNU General Public License v2
+
+require distutils pypi
+
+SUMMARY="Library to implement a well-behaved Unix daemon process."
+
+LICENCES="PSF-2.2"
+SLOT="0"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+    build:
+        dev-python/setuptools
+    run:
+        dev-python/lockfile
+"
+
