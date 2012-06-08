@@ -1,0 +1,20 @@
+# Copyright 2012 Marc-Antoine Perennou<Marc-Antoine@Perennou.com
+# Distributed under the terms of the GNU General Public License v2
+
+require distutils pypi
+
+SUMMARY="Pure python memcached client"
+DOWNLOADS="http://ftp.tummy.com/pub/${PN}/old-releases/${PNV}.tar.gz"
+
+LICENCES="as-is"
+SLOT="0"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+    run:
+        net/memcached
+"
+
+#Requires memcached to be laucnhed
+RESTRICT="test"
+
