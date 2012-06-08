@@ -44,6 +44,7 @@ DEPENDENCIES="
         net/memcached
         net/rabbitmq-server
         net-firewall/iptables
+        sys-apps/iproute2
         sys-auth/keystone
         sys-cluster/glance
         sys-fs/libguestfs
