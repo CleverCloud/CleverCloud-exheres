@@ -23,6 +23,7 @@ DEPENDENCIES="
         dev-python/PasteDeploy
         dev-python/PrettyTable[~0.5]
         dev-python/psycopg2
+        dev-python/python-keystoneclient
         dev-python/python-novaclient
         dev-python/repoze-lru
         dev-python/Routes
