@@ -1,0 +1,19 @@
+# Copyright 2012 Marc-Antoine Perennou<Marc-Antoine@Perennou.com
+# Distributed under the terms of the GNU General Public License v2
+
+require distutils pypi
+
+SUMMARY="Client library for OpenStack Keystone API"
+DOWNLOADS="https://launchpad.net/keystone/essex/${PV}/+download/${PNV}.tar.gz"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+    build+run:
+        dev-python/argparse
+        dev-python/httplib2
+        dev-python/PrettyTable
+"
+
