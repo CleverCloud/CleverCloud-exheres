@@ -48,5 +48,5 @@ DEPENDENCIES="
         sys-cluster/glance
         sys-fs/libguestfs
         sys-fs/lvm2
-        virtualization-lib/libvirt[kvm,python]
+        virtualization-lib/libvirt[kvm][python]
 "
