@@ -13,6 +13,6 @@ DEPENDENCIES="
     build+run:
         dev-python/argparse
         dev-python/httplib2
-        dev-python/PrettyTable
+        dev-python/PrettyTable[~0.5]
 "
 

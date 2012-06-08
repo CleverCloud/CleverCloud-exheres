@@ -21,9 +21,10 @@ DEPENDENCIES="
         dev-python/eventlet
         dev-python/passlib
         dev-python/PasteDeploy
-        dev-python/PrettyTable
+        dev-python/PrettyTable[~0.5]
         dev-python/psycopg2
         dev-python/python-novaclient
+        dev-python/repoze-lru
         dev-python/Routes
         dev-python/SQLAlchemy
         dev-python/sqlalchemy-migrate

@@ -37,7 +37,7 @@ DEPENDENCIES="
         dev-python/iso8601
         dev-python/M2Crypto
         dev-python/nova-adminclient
-        dev-python/PrettyTable
+        dev-python/PrettyTable[~0.5]
         dev-python/psycopg2
         dev-python/python-memcached
         dev-python/python-novaclient
@@ -47,5 +47,5 @@ DEPENDENCIES="
         sys-auth/keystone
         sys-cluster/glance
         sys-fs/libguestfs
-        virtualization-lib/libvirt[kvm]
+        virtualization-lib/libvirt[kvm,python]
 "
