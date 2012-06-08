@@ -1,0 +1,17 @@
+# Copyright 2012 Marc-Antoine Perennou<Marc-Antoine@Perennou.com
+# Distributed under the terms of the GNU General Public License v2
+
+MY_PN=${PN/-/.}
+MY_PNV=${MY_PN}-${PV}
+#TODO my_pn exparam in pypi
+require distutils pypi
+
+DOWNLOADS="http://pypi.python.org/packages/source/${PN:0:1}/${MY_PN}/${MY_PNV}.tar.gz"
+SUMMARY="A tiny LRU cache implementation and decorator"
+
+LICENCES="as-is"
+SLOT="0"
+PLATFORMS="~amd64"
+
+WORK="${WORKBASE}"/${MY_PNV}
+
