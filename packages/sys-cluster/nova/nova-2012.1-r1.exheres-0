@@ -39,7 +39,9 @@ DEPENDENCIES="
         dev-python/nova-adminclient
         dev-python/PrettyTable
         dev-python/psycopg2
+        dev-python/python-memcached
         dev-python/python-novaclient
+        net/memcached
         net/rabbitmq-server
         net-firewall/iptables
         sys-auth/keystone
