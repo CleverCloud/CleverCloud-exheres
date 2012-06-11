@@ -39,7 +39,8 @@ export_exlib_phases src_install
 rabbitmq-server_src_install() {
     default
     install_systemd_files
-    keepdir /var/log/rabbitmq /var/lib/rabbitmq -o rabbitmq -g rabbitmq
+    diropts -m 0755 -o rabbitmq -g rabbitmq
+    keepdir /var/log/rabbitmq /var/lib/rabbitmq
     edo chown -R rabbitmq:rabbitmq "${IMAGE}"/var/log/rabbitmq
 }
 
