@@ -3,9 +3,8 @@ Description=RabbitMQ messaging service
 After=network.target
 
 [Service]
-Type=simple
+User=rabbitmq
 ExecStart=/usr/sbin/rabbitmq-server
-ExecStop=/usr/sbin/rabbitmqctl stop
 
 [Install]
 WantedBy=multi-user.target
