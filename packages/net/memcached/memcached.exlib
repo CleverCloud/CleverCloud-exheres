@@ -12,8 +12,9 @@ MYOPTIONS="platform: amd64"
 
 DEPENDENCIES="
     build+run:
-        user/memcached
+        dev-libs/libevent
         group/memcached
+        user/memcached
 "
 
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'platform:amd64 64bit' )
