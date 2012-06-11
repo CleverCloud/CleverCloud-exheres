@@ -51,3 +51,11 @@ DEPENDENCIES="
         sys-fs/lvm2
         virtualization-lib/libvirt[kvm][python]
 "
+
+src_install() {
+    distutils_src_install
+
+    insinto /usr/${LIBDIR}/tmpfiles.d
+    doins "${FILES}"/tmpfiles.d/nova.conf
+}
+
