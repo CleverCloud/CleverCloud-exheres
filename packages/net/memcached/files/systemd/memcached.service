@@ -6,7 +6,8 @@ Description=Memcached
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/memcached -umemcached
+ExecStart=/usr/bin/memcached
+User=memcached
 
 [Install]
 WantedBy=multi-user.target
