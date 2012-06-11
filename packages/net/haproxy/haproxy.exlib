@@ -13,8 +13,9 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
-        user/haproxy
+        dev-libs/pcre
         group/haproxy
+        user/haproxy
 "
 
 src_install() {
