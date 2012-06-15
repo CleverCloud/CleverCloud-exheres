@@ -21,8 +21,6 @@ DEPENDENCIES="
         dev-db/postgresql[>=7.4]
 "
 
-BUGS_TO="djc@djc.id.au"
-
 src_test() {
     edo python setup.py test
 }

@@ -9,8 +9,6 @@ LICENCES="BSD-2"
 SLOT="0"
 PLATFORMS="~amd64 ~x86"
 
-BUGS_TO="djc@djc.id.au"
-
 src_test() {
     edo env PYTHONPATH=build/lib python documentation.py -v
 }

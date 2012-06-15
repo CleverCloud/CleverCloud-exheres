@@ -14,8 +14,6 @@ DEPENDENCIES="
         dev-python/nose
 "
 
-BUGS_TO="djc@djc.id.au"
-
 src_test() {
     edo python setup.py nosetests
 }
