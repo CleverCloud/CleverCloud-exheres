@@ -1,7 +1,7 @@
 # Copyright 2011 Dan Callaghan <djc@djc.id.au>
 # Distributed under the terms of the GNU General Public License v2
 
-require sourceforge [ project=sqlalchemy ] pypi distutils [ python_dep=2.4 ]
+require sourceforge [ project=sqlalchemy ] pypi setuptools [ python_dep=2.4 ]
 
 SUMMARY="Database abstraction library for Python"
 DESCRIPTION="
@@ -21,6 +21,3 @@ DEPENDENCIES="
         dev-python/nose
 "
 
-src_test() {
-    edo python setup.py test
-}
