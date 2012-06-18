@@ -1,0 +1,21 @@
+# Copyright 2012 Marc-Antoine Perennou<Marc-Antoine@Perennou.com
+# Distributed under the terms of the GNU General Public License v2
+
+require setuptools pypi
+
+SUMMARY="Messaging Framework for Python"
+
+LICENCES="as-is"
+SLOT="0"
+
+DEPENDENCIES="
+    run:
+        dev-python/amqplib
+        dev-python/anyjson
+    test:
+        dev-python/mock
+        dev-python/nose
+        dev-python/nose-cover3
+        dev-python/simplejson
+"
+
