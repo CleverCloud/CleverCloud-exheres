@@ -1,7 +1,7 @@
 # Copyright 2010 Dan Callaghan <djc@djc.id.au>
 # Distributed under the terms of the GNU General Public License v2
 
-require distutils [ python_dep=2.6 has_bin=true ]
+require setuptools [ python_dep=2.6 has_bin=true ]
 
 SUMMARY="A collection of tools for internationalizing Python applications"
 DESCRIPTION="
@@ -22,8 +22,3 @@ DEPENDENCIES="
         dev-python/pytz
 "
 
-BUGS_TO="djc@djc.id.au"
-
-src_test() {
-    edo python setup.py test
-}
