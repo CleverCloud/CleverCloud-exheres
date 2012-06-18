@@ -10,5 +10,3 @@ LICENCES="MIT"
 SLOT="0"
 PLATFORMS="~amd64 ~x86"
 
-BUGS_TO="djc@djc.id.au"
-
