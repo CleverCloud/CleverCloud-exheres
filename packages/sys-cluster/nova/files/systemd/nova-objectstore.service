@@ -1,0 +1,11 @@
+[Unit]
+Description=Start nova-objectstore node
+Requires=network.target keystone.service postgresql.servive glance.target rabbitmq-server.servive
+After=network.target keystone.service postgresql.service glance.target rabbitmq-server.servive
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/nova-objectstore
+
+[Install]
+WantedBy=nova.target

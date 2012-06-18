@@ -1,0 +1,8 @@
+[Unit]
+Description=Nova System
+Requires=network.target keystone.service postgresql.servive glance.target rabbitmq-server.servive
+After=network.target keystone.service postgresql.service glance.target rabbitmq-server.servive
+RefuseManualStart=no
+
+[Install]
+WantedBy=multi-user.target
