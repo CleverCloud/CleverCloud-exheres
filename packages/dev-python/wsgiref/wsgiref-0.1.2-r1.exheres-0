@@ -1,7 +1,7 @@
 # Copyright 2012 Marc-Antoine Perennou<Marc-Antoine@Perennou.com
 # Distributed under the terms of the GNU General Public License v2
 
-require distutils pypi [ suffix=zip ]
+require setuptools pypi [ suffix=zip ]
 
 SUMMARY="WSGI (PEP 333) Reference Library"
 
@@ -10,7 +10,7 @@ SLOT="0"
 PLATFORMS="~amd64"
 
 DEPENDENCIES="
-    run:
+    build+run:
         app-arch/unzip
 "
 
