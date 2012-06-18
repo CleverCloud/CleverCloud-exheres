@@ -4,7 +4,7 @@
 MY_PN=${PN/-/.}
 MY_PNV=${MY_PN}-${PV}
 #TODO my_pn exparam in pypi
-require distutils pypi
+require setuptools pypi
 
 DOWNLOADS="http://pypi.python.org/packages/source/${PN:0:1}/${MY_PN}/${MY_PNV}.tar.gz"
 SUMMARY="A tiny LRU cache implementation and decorator"
