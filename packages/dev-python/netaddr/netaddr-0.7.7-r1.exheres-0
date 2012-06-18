@@ -10,3 +10,9 @@ LICENCES="as-is"
 SLOT="0"
 PLATFORMS="~amd64"
 
+DEPENDENCIES="
+    run:
+        dev-python/ipython
+        dev-python/Sphinx
+"
+
