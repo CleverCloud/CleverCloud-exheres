@@ -1,0 +1,10 @@
+[Unit]
+Description=Glance registry service
+Requires=keystone.service postgresql.servive
+After=network.target keystone.service postgresql.service
+
+[Service]
+ExecStart=/usr/bin/glance-registry
+
+[Install]
+WantedBy=glance.target

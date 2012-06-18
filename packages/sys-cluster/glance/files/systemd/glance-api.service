@@ -1,0 +1,10 @@
+[Unit]
+Description=Glance API service
+Requires=keystone.service
+After=network.target keystone.service
+
+[Service]
+ExecStart=/usr/bin/glance-api
+
+[Install]
+WantedBy=glance.target

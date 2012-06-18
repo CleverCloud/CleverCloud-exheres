@@ -1,7 +1,7 @@
 # Copyright 2012 Marc-Antoine Perennou<Marc-Antoine@Perennou.com
 # Distributed under the terms of the GNU General Public License v2
 
-require setuptools pypi
+require systemd-service setuptools pypi
 
 DOWNLOADS="http://launchpad.net/${PN}/essex/${PV}/+download/${PNV}.tar.gz"
 SUMMARY="Services for discovering, registering, and retrieving virtual machine images"
@@ -39,4 +39,9 @@ DEPENDENCIES="
 
 #FIXME
 RESTRICT="test"
+
+src_install() {
+    distutils_src_install
+    install_systemd_files
+}
 
