@@ -1,7 +1,7 @@
 # Copyright 2011 Dan Callaghan <djc@djc.id.au>
 # Distributed under the terms of the GNU General Public License v2
 
-require pypi distutils [ python_dep=2.2 ]
+require pypi setuptools [ python_dep=2.2 ]
 
 SUMMARY="A very small text templating language for Python"
 
