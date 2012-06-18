@@ -8,5 +8,4 @@ DOWNLOADS="https://pylockfile.googlecode.com/files/${PNV}.tar.gz"
 
 LICENCES="MIT"
 SLOT="0"
-PLATFORMS="~amd64"
 
