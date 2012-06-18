@@ -1,7 +1,7 @@
 # Copyright 2012 Marc-Antoine Perennou<Marc-Antoine@Perennou.com
 # Distributed under the terms of the GNU General Public License v2
 
-require distutils pypi
+require setuptools pypi
 
 DOWNLOADS="http://launchpad.net/${PN}/essex/${PV}/+download/${PNV}.tar.gz"
 SUMMARY="OpenStack Compute"
@@ -14,43 +14,56 @@ DEPENDENCIES="
     build:
         dev-python/setuptools
     build+run:
-        dev-python/carrot
-        dev-python/Cheetah
+        dev-python/amqplib[~0.6.1]
+        dev-python/anyjson[~0.2.4]
+        dev-python/boto[~2.1.1]
+        dev-python/carrot[~0.10.5]
+        dev-python/Cheetah[~2.4.4]
         dev-python/eventlet
         dev-python/feedparser
-        dev-python/lockfile
-        dev-python/lxml
+        dev-python/greenlet[>=0.3.1]
+        dev-python/kombu[~1.0.4]
+        dev-python/lockfile[~0.8]
+        dev-python/lxml[=2.3*]
         dev-python/mox
         dev-python/netaddr
         dev-python/nosexcover
         dev-python/paramiko
         dev-python/pep8
-        dev-python/python-daemon
+        dev-python/python-daemon[~1.5.5]
         dev-python/python-gflags
         dev-python/Sphinx
-        dev-python/sqlalchemy-migrate
-        dev-python/suds
-        dev-python/wsgiref
+        dev-python/sqlalchemy-migrate[>=0.7.2]
+        dev-python/suds[~0.4]
+        dev-python/wsgiref[~0.1.2]
     run:
         app-admin/sudo
-        dev-python/boto
-        dev-python/iso8601
+        dev-python/Babel[>=0.9.6]
+        dev-python/iso8601[>=0.1.4]
         dev-python/M2Crypto
-        dev-python/nova-adminclient
+        dev-python/Paste
+        dev-python/PasteDeploy[~1.5.0]
         dev-python/PrettyTable[~0.5]
         dev-python/psycopg2
+        dev-python/pycrypto
         dev-python/python-memcached
         dev-python/python-novaclient
+        dev-python/Routes[~1.12.3]
+        dev-python/SQLAlchemy[>=0.7.3]
+        dev-python/WebOb[~1.0.8]
         net/memcached
         net/rabbitmq-server
         net-firewall/iptables
         sys-apps/iproute2
         sys-auth/keystone
-        sys-cluster/glance
+        sys-cluster/glance[>=2011.3.1]
         sys-fs/libguestfs
         sys-fs/lvm2
         virtualization-lib/libvirt[kvm][python]
 "
+
+#FIXME
+RESTRICT="test"
 
 src_install() {
     distutils_src_install
