@@ -1,7 +1,7 @@
 # Copyright 2012 Marc-Antoine Perennou<Marc-Antoine@Perennou.com
 # Distributed under the terms of the GNU General Public License v2
 
-require distutils pypi
+require setuptools pypi
 
 DOWNLOADS="http://launchpad.net/${PN}/essex/${PV}/+download/${PNV}.tar.gz"
 SUMMARY="Services for discovering, registering, and retrieving virtual machine images"
@@ -10,21 +10,33 @@ LICENCES="Apache-2.0"
 SLOT="0"
 PLATFORMS="~amd64"
 
+#TODO: swift
 DEPENDENCIES="
-    build:
-        dev-python/setuptools
     build+run:
+        dev-python/argparse
+        dev-python/anyjson
+        dev-python/boto[~2.1.1]
         dev-python/eventlet
+        dev-python/greenlet
         dev-python/httplib2
         dev-python/iso8601
+        dev-python/lxml
         dev-python/kombu
+        dev-python/passlib
         dev-python/Paste
         dev-python/PasteDeploy
+        dev-python/pycrypto
+        dev-python/pysendfile
         dev-python/pyxattr
         dev-python/Routes
-        dev-python/sqlalchemy-migrate
-        dev-python/WebOb
+        dev-python/SQLAlchemy[>=0.7]
+        dev-python/sqlalchemy-migrate[>=0.7]
+        dev-python/WebOb[~1.0.8]
+        dev-python/wsgiref
     run:
         dev-python/psycopg2
 "
+
+#FIXME
+RESTRICT="test"
 
