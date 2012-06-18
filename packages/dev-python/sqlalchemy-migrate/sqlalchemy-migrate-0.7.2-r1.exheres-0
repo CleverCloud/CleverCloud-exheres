@@ -1,7 +1,7 @@
 # Copyright 2011 Dan Callaghan <djc@djc.id.au>
 # Distributed under the terms of the GNU General Public License v2
 
-require pypi googlecode [ suffix=tar.gz ] distutils [ has_bin=true python_dep=2.4 ]
+require pypi googlecode [ suffix=tar.gz ] setuptools [ has_bin=true python_dep=2.4 ]
 
 SUMMARY="Database schema migration for SQLAlchemy"
 DESCRIPTION="
@@ -26,6 +26,3 @@ DEPENDENCIES="
         dev-python/nose
 "
 
-src_test() {
-    edo python setup.py nosetests
-}
