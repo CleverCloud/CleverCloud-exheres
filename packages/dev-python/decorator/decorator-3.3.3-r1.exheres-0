@@ -1,7 +1,7 @@
 # Copyright 2011 Dan Callaghan <djc@djc.id.au>
 # Distributed under the terms of the GNU General Public License v2
 
-require pypi distutils [ python_dep=2.4 ]
+require pypi setuptools
 
 SUMMARY="Python library for decorators"
 
@@ -9,6 +9,3 @@ LICENCES="BSD-2"
 SLOT="0"
 PLATFORMS="~amd64 ~x86"
 
-src_test() {
-    edo env PYTHONPATH=build/lib python documentation.py -v
-}
