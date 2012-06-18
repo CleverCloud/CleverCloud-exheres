@@ -1,0 +1,17 @@
+# Copyright 2012 Marc-Antoine Perennou<Marc-Antoine@Perennou.com
+# Distributed under the terms of the GNU General Public License v2
+
+require setuptools pypi
+
+SUMMARY="Coverage 3.x support for Nose"
+
+LICENCES="LGPL-2"
+SLOT="0"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+    build+run:
+        dev-python/nose
+        dev-python/coverage
+"
+
