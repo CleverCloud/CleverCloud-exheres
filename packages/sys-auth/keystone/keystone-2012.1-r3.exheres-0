@@ -1,7 +1,7 @@
 # Copyright 2012 Marc-Antoine Perennou<Marc-Antoine@Perennou.com
 # Distributed under the terms of the GNU General Public License v2
 
-require distutils pypi
+require setuptools pypi
 
 DOWNLOADS="http://launchpad.net/${PN}/essex/${PV}/+download/${PNV}.tar.gz"
 SUMMARY="Identity Service for OpenStack"
@@ -11,15 +11,16 @@ SLOT="0"
 PLATFORMS="~amd64"
 
 DEPENDENCIES="
-    build:
-        dev-python/setuptools
     build+run:
         dev-python/lxml
         dev-python/pep8
         dev-python/python-daemon
     run:
         dev-python/eventlet
+        dev-python/greenlet
+        dev-python/pam[~0.1.4]
         dev-python/passlib
+        dev-python/Paste
         dev-python/PasteDeploy
         dev-python/PrettyTable[~0.5]
         dev-python/psycopg2
@@ -29,6 +30,9 @@ DEPENDENCIES="
         dev-python/Routes
         dev-python/SQLAlchemy
         dev-python/sqlalchemy-migrate
-        dev-python/WebOb
+        dev-python/WebOb[~1.0.8]
 "
+
+#FIXME
+RESTRICT="test"
 
