@@ -1,0 +1,12 @@
+# Copyright 2012 Marc-Antoine Perennou<Marc-Antoine@Perennou.com
+# Distributed under the terms of the GNU General Public License v2
+
+require setuptools pypi
+
+SUMMARY="Python style guide checker"
+DOWNLOADS="https://${PN}.googlecode.com/files/${PNV}.tar.gz"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+
