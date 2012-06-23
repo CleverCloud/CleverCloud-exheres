@@ -10,7 +10,7 @@ DESCRIPTION="Written in C++, MongoDB bridges the gap between key-value stores
 (which are fast and highly scalable) and traditional RDBMS systems (which
 provide structured schemas and powerful queries)."
 HOMEPAGE="http://www.mongodb.org"
-DOWNLOADS="http://downloads.mongodb.org/src/${PN}-src-r${PV}.tar.gz -> ${PNV}.tar.gz"
+DOWNLOADS="http://downloads.mongodb.org/src/${PN}-src-r${PV}.tar.gz"
 
 LICENCES="AGPL-3"
 SLOT="0"
