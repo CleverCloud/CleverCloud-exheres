@@ -62,6 +62,8 @@ DEPENDENCIES="
         virtualization-lib/libvirt[kvm][python]
 "
 
+DEFAULT_SRC_PREPARE_PATCHES=( "0001-Fix-null-bug-in-order_by.patch" )
+
 #FIXME
 RESTRICT="test"
 

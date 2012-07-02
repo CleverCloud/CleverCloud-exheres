@@ -1,0 +1,29 @@
+Upstream: No, in progress
+From cab4ce1e46aa1c36200d3659dc346c0120862a04 Mon Sep 17 00:00:00 2001
+From: Julien Durillon <julien.durillon@gmail.com>
+Date: Fri, 29 Jun 2012 14:15:16 +0200
+Subject: [PATCH] Fix null bug in order_by.
+
+When ordering the results, nulls are by default (in postgres) sorted at the end.
+We don't want that. We want nulls to be first since it means that unused Hosts
+will appear first.
+---
+ nova/db/sqlalchemy/api.py |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/nova/db/sqlalchemy/api.py b/nova/db/sqlalchemy/api.py
+index 55effd6..8a63e66 100644
+--- a/nova/db/sqlalchemy/api.py
++++ b/nova/db/sqlalchemy/api.py
+@@ -392,7 +392,7 @@ def _service_get_all_topic_subquery(context, session, topic, subq, label):
+                 filter_by(topic=topic).\
+                 filter_by(disabled=False).\
+                 outerjoin((subq, models.Service.host == subq.c.host)).\
+-                order_by(sort_value).\
++                order_by(sort_value).nullsfirst().\
+                 all()
+ 
+ 
+-- 
+1.7.10.2
+
