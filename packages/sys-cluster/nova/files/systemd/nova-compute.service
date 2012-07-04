@@ -1,7 +1,7 @@
 [Unit]
 Description=Start nova-compute node
-Requires=network.target keystone.service postgresql.servive glance.target rabbitmq-server.servive
-After=network.target keystone.service postgresql.service glance.target rabbitmq-server.servive
+Requires=network.target keystone.service glance.target rabbitmq-server.servive libvirtd.service
+After=network.target keystone.service mysql.service postgresql.service glance.target rabbitmq-server.servive libvirtd.service
 
 [Service]
 Type=simple
