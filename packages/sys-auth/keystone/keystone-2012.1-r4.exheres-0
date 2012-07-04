@@ -41,3 +41,8 @@ src_install() {
     install_systemd_files
 }
 
+pkg_postinst() {
+    einfo "To enable keystone service, run 'systemctl enable keystone.service'"
+    einfo "You must also enable mysql or postgresl."
+}
+
