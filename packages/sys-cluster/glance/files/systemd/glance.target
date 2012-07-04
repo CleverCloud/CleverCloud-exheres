@@ -1,7 +1,7 @@
 [Unit]
 Description=Glance System
-Requires=network.target keystone.service postgresql.servive
-After=network.target keystone.service postgresql.service
+Requires=network.target keystone.service
+After=network.target keystone.service mysql.service postgresql.service
 RefuseManualStart=no
 
 [Install]
