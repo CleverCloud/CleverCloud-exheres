@@ -75,3 +75,16 @@ src_install() {
     doins "${FILES}"/tmpfiles.d/nova.conf
 }
 
+pkg_postinst() {
+    einfo "To enable nova service, run:"
+    einfo "    'systemctl enable nova.target' (Mandatory)"
+    einfo "    'systemctl enable nova-compute.service' (Mandatory)"
+    einfo "    'systemctl enable nova-api.service' (Must be enabled on at least 1 server)"
+    einfo "    'systemctl enable nova-cert.service' (Must be enabled on at least 1 server)"
+    einfo "    'systemctl enable nova-network.service' (Must be enabled on at least 1 server)"
+    einfo "    'systemctl enable nova-objectstore.service' (Must be enabled on at least 1 server)"
+    einfo "    'systemctl enable nova-scheduler.service' (Must be enabled on at least 1 server)"
+    einfo "    'systemctl enable nova-volume.service' (Optional)"
+    einfo "You must also enable mysql or postgresl."
+}
+
