@@ -45,3 +45,11 @@ src_install() {
     install_systemd_files
 }
 
+pkg_postinst() {
+    einfo "To enable glance service, run:"
+    einfo "    'systemctl enable glance-api.service'"
+    einfo "    'systemctl enable glance-registry.service'"
+    einfo "    'systemctl enable glance.target'"
+    einfo "You must also enable mysql or postgresl."
+}
+
