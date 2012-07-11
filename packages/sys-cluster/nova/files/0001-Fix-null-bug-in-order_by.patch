@@ -20,7 +20,7 @@ index 55effd6..8a63e66 100644
                  filter_by(disabled=False).\
                  outerjoin((subq, models.Service.host == subq.c.host)).\
 -                order_by(sort_value).\
-+                order_by(sort_value).nullsfirst().\
++                order_by(sort_value.nullsfirst()).\
                  all()
  
  
