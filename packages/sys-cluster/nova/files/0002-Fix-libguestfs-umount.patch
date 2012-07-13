@@ -1,0 +1,58 @@
+Upstream: no, https://review.openstack.org/#/c/9685/
+From 5eea8879b6f3268dcaba326193bef0ed75470bb7 Mon Sep 17 00:00:00 2001
+From: =?utf8?q?P=C3=A1draig=20Brady?= <pbrady@redhat.com>
+Date: Wed, 11 Jul 2012 23:45:28 +0100
+Subject: [PATCH] ensure libguestfs mounts are cleaned up
+
+Make a few attempts to umount the libguestfs
+mounts, in case other processes are accessing
+the mounts (like udev etc.)
+
+If we still can't umount after 5 attempts
+(with average delay of about 1s between each),
+then initiate a lazy umount so that the mounts
+might be automatically cleaned up at some stage.
+We wait a further 10s after initiating the lazy
+umount, before raising an exception.
+
+Addresses the original issue in bug 1013689
+
+Change-Id: Ib5ede9f705c833825a19308c140f99c5bf3a776f
+---
+ nova/virt/disk/guestfs.py |   16 +++++++++++++---
+ 1 files changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/nova/virt/disk/guestfs.py b/nova/virt/disk/guestfs.py
+index f2ff3c3..c44158d 100644
+--- a/nova/virt/disk/guestfs.py
++++ b/nova/virt/disk/guestfs.py
+@@ -17,6 +17,7 @@
+ 
+ import os
+ 
++from nova import exception
+ from nova import utils
+ from nova.virt.disk import mount
+ 
+@@ -88,7 +89,16 @@ class Mount(mount.Mount):
+     def unmnt_dev(self):
+         if not self.mounted:
+             return
+-        # root users don't need a specific unmnt_dev()
+-        # but ordinary users do
+-        utils.execute('fusermount', '-u', self.mount_dir, run_as_root=True)
++        umount_cmd = ['fusermount', '-u', self.mount_dir]
++        try:
++            # We make a few attempts to work around other
++            # processes temporarily scanning the mount_dir etc.
++            utils.execute(*umount_cmd, attempts=5, run_as_root=True)
++        except exception.ProcessExecutionError:
++            # If we still can't umount, then do a lazy umount
++            # (in the background), so that mounts might eventually
++            # be cleaned up. Note we'll wait 10s below for the umount to
++            # complete, after which we'll raise an exception.
++            umount_cmd.insert(1, '-z')
++            utils.execute(*umount_cmd, run_as_root=True)
+         self.mounted = False
+-- 
+1.7.10.4
