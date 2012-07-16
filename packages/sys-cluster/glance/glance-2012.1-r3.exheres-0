@@ -43,6 +43,10 @@ RESTRICT="test"
 src_install() {
     distutils_src_install
     install_systemd_files
+
+    insinto /etc/glance
+    doins "${FILES}"/{glance-api.conf,glance-api-paste.ini,glance-cache.conf,glance-cache-paste.ini,glance-registry.conf,glance-registry-paste.ini} \
+        "${FILES}"/{glance-scrubber.conf,glance-scrubber-paste.ini,logging.cnf,policy.json,schema-access.json,schema-image.json}
 }
 
 pkg_postinst() {
