@@ -75,6 +75,9 @@ src_install() {
 
     insinto /usr/${LIBDIR}/tmpfiles.d
     doins "${FILES}"/tmpfiles.d/nova.conf
+
+    insinto /etc/nova
+    doins "${FILES}"/{api-paste.ini,nova.conf,policy.json}
 }
 
 pkg_postinst() {
