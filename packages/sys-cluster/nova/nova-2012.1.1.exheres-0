@@ -64,7 +64,7 @@ DEPENDENCIES="
 
 DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/0001-Fix-null-bug-in-order_by.patch
                               "${FILES}"/0002-Fix-libguestfs-umount.patch
-                              "${FILES}"/0624b7aab0c0fe4869111ad8e302151548d6ba20.patch )
+                              "${FILES}"/0003-inject-uuid-into-instance_uuid.patch )
 
 #FIXME
 RESTRICT="test"
