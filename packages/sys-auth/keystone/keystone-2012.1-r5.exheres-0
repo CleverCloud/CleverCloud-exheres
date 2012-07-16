@@ -39,6 +39,9 @@ RESTRICT="test"
 src_install() {
     distutils_src_install
     install_systemd_files
+
+    insinto /etc/keystone
+    doins "${FILES}"/{default_catalog.templates,keystone.conf,logging.conf,policy.json}
 }
 
 pkg_postinst() {
