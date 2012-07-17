@@ -35,6 +35,8 @@ DEPENDENCIES="
         dev-python/wsgiref
     run:
         dev-python/psycopg2
+    suggestion:
+        sys-auth/keystone
 "
 
 #FIXME
