@@ -52,13 +52,13 @@ DEPENDENCIES="
         dev-python/SQLAlchemy[>=0.7.3]
         dev-python/WebOb[~1.0.8]
         net/memcached
-        net/rabbitmq-server
         net-firewall/iptables
         sys-apps/iproute2
         sys-fs/libguestfs
         sys-fs/lvm2
         virtualization-lib/libvirt[kvm][python]
     suggestion:
+        net/rabbitmq-server
         sys-cluster/glance[>=2011.3.1]
         sys-auth/keystone
 "
