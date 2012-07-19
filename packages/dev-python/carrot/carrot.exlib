@@ -12,6 +12,7 @@ DEPENDENCIES="
     run:
         dev-python/amqplib
         dev-python/anyjson
+    suggestion:
         net/rabbitmq-server
 "
 
