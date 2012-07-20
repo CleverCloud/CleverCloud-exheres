@@ -17,7 +17,7 @@ PLATFORMS="~amd64 ~x86"
 RESTRICT="test" # tests require a running postgres with test database
 
 DEPENDENCIES="
-    build+run:
+    suggestion:
         dev-db/postgresql[>=7.4]
 "
 
