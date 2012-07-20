@@ -19,3 +19,6 @@ DEPENDENCIES="
         dev-python/nose
 "
 
+# Fixme
+RESTRICT="test"
+
