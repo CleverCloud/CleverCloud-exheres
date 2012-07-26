@@ -4,7 +4,6 @@
 require setuptools pypi
 
 SUMMARY="Client library for OpenStack Keystone API"
-DOWNLOADS="https://launchpad.net/keystone/essex/${PV}/+download/${PNV}.tar.gz"
 
 LICENCES="Apache-2.0"
 SLOT="0"
@@ -14,10 +13,16 @@ DEPENDENCIES="
     build+run:
         dev-python/argparse
         dev-python/httplib2
-        dev-python/PrettyTable
+        dev-python/PrettyTable[~0.6]
     test:
+        dev-python/coverage
         dev-python/mock
         dev-python/mox
         dev-python/nose
+        dev-python/nose-exclude
+        dev-python/openstack-nose
+        dev-python/pep8[~1.2]
+        dev-python/Sphinx[>=1.1.2]
+        dev-python/unittest2[>=0.5.1]
 "
 
