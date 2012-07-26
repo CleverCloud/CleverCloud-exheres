@@ -43,7 +43,6 @@ DEPENDENCIES="
         dev-python/M2Crypto
         dev-python/Paste
         dev-python/PasteDeploy[~1.5.0]
-        dev-python/PrettyTable[~0.5]
         dev-python/psycopg2
         dev-python/pycrypto
         dev-python/python-memcached
@@ -79,6 +78,8 @@ src_install() {
 
     insinto /etc/nova
     doins "${FILES}"/{api-paste.ini,nova.conf,policy.json}
+
+    keepdir /var/log/nova
 }
 
 pkg_postinst() {
