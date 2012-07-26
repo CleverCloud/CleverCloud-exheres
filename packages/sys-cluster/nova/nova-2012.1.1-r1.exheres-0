@@ -79,7 +79,7 @@ src_install() {
     insinto /etc/nova
     doins "${FILES}"/{api-paste.ini,nova.conf,policy.json}
 
-    keepdir /var/lo{g,ck}/nova
+    keepdir /var/lo{g,ck}/nova /var/lib/nova/instances
 }
 
 pkg_postinst() {
