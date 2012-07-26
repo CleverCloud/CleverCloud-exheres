@@ -53,12 +53,12 @@ DEPENDENCIES="
         net/memcached
         net-firewall/iptables
         sys-apps/iproute2
+        sys-cluster/glance[>=2011.3.1]
         sys-fs/libguestfs
         sys-fs/lvm2
         virtualization-lib/libvirt[kvm][python]
     suggestion:
         net/rabbitmq-server
-        sys-cluster/glance[>=2011.3.1]
         sys-auth/keystone
 "
 
