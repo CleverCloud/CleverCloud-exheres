@@ -1,6 +1,5 @@
 [Unit]
 Description=Glance registry service
-Requires=keystone.service
 After=network.target keystone.service mysql.service postgresql.service
 
 [Service]

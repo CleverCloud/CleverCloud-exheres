@@ -1,6 +1,5 @@
 [Unit]
 Description=Glance API service
-Requires=keystone.service
 After=network.target keystone.service
 
 [Service]
