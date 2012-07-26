@@ -22,7 +22,6 @@ DEPENDENCIES="
         dev-python/passlib
         dev-python/Paste
         dev-python/PasteDeploy
-        dev-python/PrettyTable[~0.5]
         dev-python/psycopg2
         dev-python/python-keystoneclient
         dev-python/python-novaclient
