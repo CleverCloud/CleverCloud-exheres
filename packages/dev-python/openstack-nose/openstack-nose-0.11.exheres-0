@@ -1,0 +1,25 @@
+# Copyright 2012 Marc-Antoine Perennou<Marc-Antoine@Perennou.com
+# Distributed under the terms of the GNU General Public License v2
+
+require setuptools
+
+MY_PN="${PN/-/.}_plugin"
+MY_PNV="${MY_PN}-${PV}"
+
+HOMEPAGE="https://github.com/openstack-dev/openstack-nose"
+SUMMARY="Openstack style output for nosetests"
+DOWNLOADS="http://pypi.python.org/packages/source/${PN:0:1}/${MY_PN}/${MY_PNV}.tar.gz"
+
+LICENCES="as-is"
+SLOT="0"
+PLATFORMS="~amd64"
+
+WORK="${WORKBASE}/${MY_PNV}"
+
+DEPENDENCIES="
+    build+run:
+        dev-python/nose
+        dev-python/colorama
+        dev-python/termcolor
+"
+
