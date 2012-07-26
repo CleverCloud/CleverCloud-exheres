@@ -1,6 +1,6 @@
 [Unit]
 Description=Start nova-compute node
-Requires=network.target keystone.service glance.target rabbitmq-server.servive libvirtd.service
+Requires=network.target
 After=network.target keystone.service mysql.service postgresql.service glance.target rabbitmq-server.servive libvirtd.service
 
 [Service]

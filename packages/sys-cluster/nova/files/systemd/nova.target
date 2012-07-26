@@ -1,6 +1,6 @@
 [Unit]
 Description=Nova System
-Requires=network.target keystone.service glance.target rabbitmq-server.servive
+Requires=network.target
 After=network.target keystone.service mysql.service postgresql.service glance.target rabbitmq-server.servive
 RefuseManualStart=no
 
