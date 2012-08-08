@@ -56,6 +56,7 @@ DEPENDENCIES="
         sys-cluster/glance[>=2011.3.1]
         sys-fs/libguestfs
         sys-fs/lvm2
+        sys-fs/multipath-tools
         virtualization-lib/libvirt[kvm][python]
     suggestion:
         net/rabbitmq-server
@@ -93,5 +94,7 @@ pkg_postinst() {
     einfo "    'systemctl enable nova-scheduler.service' (Must be enabled on at least 1 server)"
     einfo "    'systemctl enable nova-volume.service' (Optional)"
     einfo "You must also enable mysql or postgresl."
+    einfo ""
+    einfo "Note that you will need Network Block Device support in your kernel"
 }
 
