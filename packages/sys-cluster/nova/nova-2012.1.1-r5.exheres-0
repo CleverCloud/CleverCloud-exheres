@@ -51,6 +51,7 @@ DEPENDENCIES="
         dev-python/SQLAlchemy[>=0.7.3]
         dev-python/WebOb[~1.0.8]
         net/memcached
+        net-firewall/ebtables
         net-firewall/iptables
         sys-apps/iproute2
         sys-cluster/glance[>=2011.3.1]
