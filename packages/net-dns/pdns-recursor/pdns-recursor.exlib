@@ -1,0 +1,35 @@
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+SUMMARY="PowerDNS Recursive Server"
+HOMEPAGE="http://www.powerdns.com"
+DOWNLOADS="http://downloads.powerdns.com/releases/${PNV}.tar.bz2"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS="systemd"
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/boost
+        group/pdns
+        user/pdns
+"
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/makefile.patch" )
+
+src_install() {
+    default
+
+    edo mv "${IMAGE}"/etc/powerdns/recursor.conf{-dist,}
+    # We update recursor.conf with pdns uid, gid
+    edo sed -i \
+        -e '/set[ug]id=/s:^# ::' \
+        -e '/set[ug]id=/s:$:pdns:' \
+        "${IMAGE}"/etc/powerdns/recursor.conf
+
+    install_systemd_files
+}
+
