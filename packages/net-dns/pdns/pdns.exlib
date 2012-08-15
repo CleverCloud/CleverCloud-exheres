@@ -14,7 +14,7 @@ MYOPTIONS="
         mysql
         postgres
     ) [[
-        number-selected = at-most-one
+        number-selected = exactly-one
     ]]
     systemd
     ipv6"
@@ -24,6 +24,7 @@ DEPENDENCIES="
         postgres? ( dev-db/postgresql )
         mysql? ( dev-db/mysql )
         dev-libs/boost
+        dev-lang/lua[>=5.1]
         group/pdns
         user/pdns
 "
@@ -37,8 +38,11 @@ src_configure() {
     local confdir="/etc/powerdns"
 
     econf \
+        --with-modules= \
+        $(option_with mysql) \
+        $(option_with postgres pgsql) \
         --with-dynmodules="${mymodules[@]}" \
-        --sysconfdir=${confdir} \
+        --sysconfdir=${confdir}
 
 }
 
