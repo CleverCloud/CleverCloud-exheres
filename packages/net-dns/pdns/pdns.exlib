@@ -1,0 +1,69 @@
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+SUMMARY="The PowerDNS Authoritative Server enables authoritative DNS service from all major databases."
+HOMEPAGE="http://www.powerdns.com"
+DOWNLOADS="http://downloads.powerdns.com/releases/${PNV}.tar.gz"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS="
+    (
+        mysql
+        postgres
+    ) [[
+        number-selected = at-most-one
+    ]]
+    systemd
+    ipv6"
+
+DEPENDENCIES="
+    build+run:
+        postgres? ( dev-db/postgresql )
+        mysql? ( dev-db/mysql )
+        dev-libs/boost
+        group/pdns
+        user/pdns
+"
+
+src_configure() {
+    local mymodules=(
+            $(option postgres && echo gpgsql)
+            $(option mysql && echo gmysql)
+    )
+
+    local confdir="/etc/powerdns"
+
+    econf \
+        --with-dynmodules="${mymodules[@]}" \
+        --sysconfdir=${confdir} \
+
+}
+
+src_install() {
+    default
+
+    edo mv "${IMAGE}"/etc/powerdns/pdns.conf{-dist,}
+    # We update pdns.conf with pdns uid, gid and defaul module-dir
+    # Enable modules and backends at launch
+    local backend=$(option postgres && echo gpgsql || option mysql && echo gmysql)
+    edo sed -i \
+        -e '/set[ug]id=/s:^# ::' \
+        -e '/set[ug]id=/s:$:pdns:' \
+        -e '/module-dir=/s:^# ::' \
+        -e "/module-dir=/s:=.*\$:=/usr/${LIBDIR}:" \
+        -e '/launch=/s:^# ::' \
+        -e '/load-modules=/s:^# ::' \
+        -e "/launch=/s:\$:${backend}:" \
+        -e "/load-modules=/s:\$:${backend}:" \
+        "${IMAGE}"/etc/powerdns/pdns.conf
+
+    option ipv6 || sed -i -e '/query-local-address6=/s:^# ::' -e '/query-local-address6=/s/:://' "${IMAGE}"/etc/powerdns/pdns.conf
+    option postgres && cat "${FILES}"/pdns.d/pgsql.conf >> "${IMAGE}"/etc/powerdns/pdns.conf
+    option mysql && cat "${FILES}"/pdns.d/mysql.conf >> "${IMAGE}"/etc/powerdns/pdns.conf
+
+    install_systemd_files
+}
+
