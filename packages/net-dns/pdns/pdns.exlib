@@ -39,8 +39,10 @@ src_configure() {
 
     econf \
         --with-modules= \
-        $(option_with mysql) \
-        $(option_with postgres pgsql) \
+        $(option_with mysql mysql /usr) \
+        $(option_with postgres pgsql /usr) \
+        $(option postgres && echo "--with-pgsql-includes=/usr/include") \
+        $(option postgres && echo "--with-pgsql-libs=/usr/${LIBDIR}") \
         --with-dynmodules="${mymodules[@]}" \
         --sysconfdir=${confdir}
 
@@ -52,7 +54,7 @@ src_install() {
     edo mv "${IMAGE}"/etc/powerdns/pdns.conf{-dist,}
     # We update pdns.conf with pdns uid, gid and defaul module-dir
     # Enable modules and backends at launch
-    local backend=$(option postgres && echo gpgsql || option mysql && echo gmysql)
+    local backend=$((option postgres && echo gpgsql) || (option mysql && echo gmysql))
     edo sed -i \
         -e '/set[ug]id=/s:^# ::' \
         -e '/set[ug]id=/s:$:pdns:' \
