@@ -1,0 +1,12 @@
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the termes of the GNU Geneal Public License v2
+
+[Unit]
+Description=Net-SNMP Trap Daemon
+After=network.target
+
+[Service]
+ExecStart=/usr/sbin/snmptrapd -Lsd -p /var/run/snmptrapd.pid -f
+
+[Install]
+WantedBy=multi-user.target

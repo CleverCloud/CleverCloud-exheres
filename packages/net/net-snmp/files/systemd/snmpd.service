@@ -1,0 +1,12 @@
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the termes of the GNU Geneal Public License v2
+
+[Unit]
+Description=Net-SNMP Daemon
+After=network.target
+
+[Service]
+ExecStart=/usr/sbin/snmpd -Lsd -Lf /dev/null -p /var/run/snmpd.pid -a -f
+
+[Install]
+WantedBy=multi-user.target
