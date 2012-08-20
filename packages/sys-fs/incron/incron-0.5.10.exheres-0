@@ -5,5 +5,8 @@ require incron
 
 PLATFORMS="~amd64"
 
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/gcc-4.7-fix.patch" )
+DEFAULT_SRC_PREPARE_PATCHES=(
+        "${FILES}/gcc-4.7-fix.patch"
+        "${FILES}/prefix-makefile.patch"
+)
 

@@ -1,0 +1,12 @@
+Source: Local
+Upstream: No
+Reason: No configure, changing PREFIX in Makefile
+--- a/Makefile
++++ b/Makefile
+@@ -1,5 +1,5 @@
+ 
+-PREFIX = /usr/local
++PREFIX = /usr
+ USERDATADIR = /var/spool/incron
+ SYSDATADIR = /etc/incron.d
+ CFGDIR = /etc
