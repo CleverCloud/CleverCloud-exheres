@@ -1,0 +1,13 @@
+Source: Upstream
+Upstream: Bug 713 - http://bts.aiken.cz/view.php?id=713
+Reason: Compile with gcc-4.7
+--- a/icd-main.cpp
++++ b/icd-main.cpp
+@@ -24,6 +24,7 @@
+ #include <dirent.h>
+ #include <syslog.h>
+ #include <errno.h>
++#include <unistd.h>
+ #include <sys/poll.h>
+ #include <sys/stat.h>
+ #include <cstdio>
