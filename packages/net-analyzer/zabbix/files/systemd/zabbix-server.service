@@ -1,0 +1,12 @@
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the termes of the GNU Geneal Public License v2
+
+[Unit]
+Description=Zabbix Server
+After=network.target
+
+[Service]
+ExecStart=/usr/sbin/zabbix_server
+
+[Install]
+WantedBy=multi-user.target

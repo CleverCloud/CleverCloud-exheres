@@ -1,0 +1,93 @@
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+SUMMARY="Enterprise-class Monitoring Tool"
+HOMEPAGE="http://www.zabbix.com"
+DOWNLOADS="mirror://sourceforge/${PN}/${PNV}.tar.gz"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS="
+    ipv6
+    postgres
+    snmp
+    (
+        agent [[ description = [ Installs the Zabbix Agent which sends data to server ] ]]
+        frontend [[ description = [ Installs files for the frontend ] ]]
+        server [[ description = [ Installs the Zabbix Server which collects data ] ]]
+    ) [[ number-selected = at-least-one ]]
+"
+
+DEPENDENCIES="
+    build+run:
+        agent? (
+                group/zabbix
+                user/zabbix
+                snmp? ( net/net-snmp )
+        )
+        server? (
+                group/zabbix
+                user/zabbix
+                postgres? ( dev-db/postgresql )
+                snmp? ( net/net-snmp )
+        )
+    run:
+        frontend? (
+                postgres? ( dev-lang/php[php_extensions:pgsql] )
+        )
+"
+
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'agent' 'server' 'ipv6')
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( 'postgres postgresql' 'snmp net-snmp' )
+DEFAULT_SRC_CONFIGURE_PARAMS=( "--sysconfdir=/etc/${PN}" )
+
+src_configure() {
+    if option server || option agent; then
+        default
+    fi
+}
+
+src_install() {
+    default
+
+    # We can't call install_systemd_files because we need to install services
+    # based on enabled options
+    if option systemd; then
+        (option server || option agent) && insinto ${SYSTEMDSYSTEMUNITDIR}
+        option server && doins "${FILES}"/systemd/zabbix-server.service
+        option agent && doins "${FILES}"/systemd/zabbix-agentd.service
+    fi
+
+    # We have some empty folders here
+    (option server && ! option agent) && edo rmdir "${IMAGE}"/usr/share/man/man1
+
+    local KEEPDIRS=()
+    option agent && KEEPDIRS+=(
+            /etc/${PN}/zabbix_agent.conf.d
+            /etc/${PN}/zabbix_agentd.conf.d
+    )
+    option server && KEEPDIRS+=(
+            /etc/${PN}/zabbix_server.conf.d
+            /usr/share/${PN}/externalscripts
+            /usr/share/${PN}/alertscripts
+    )
+    for dir in ${KEEPDIRS[@]}; do
+        keepdir ${dir}
+    done
+
+    if option frontend; then
+        einfo "The frontend is available in /usr/share/${PN}/frontends/php"
+        insinto /usr/share/${PN}/frontends
+        doins -r "${WORK}"/frontends/php
+    fi
+
+    einfo "The database is not configured, schemes are available in /usr/share/${PN}/database"
+    insinto /usr/share/${PN}
+    doins -r "${WORK}"/database
+
+    # Makefile clean after copy
+    find "${IMAGE}"/usr/share/${PN} -type f -name "Makefile*" -delete
+}
+
