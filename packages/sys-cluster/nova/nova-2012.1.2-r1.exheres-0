@@ -45,6 +45,7 @@ DEPENDENCIES="
         dev-python/PasteDeploy[~1.5.0]
         dev-python/psycopg2
         dev-python/python-memcached
+        dev-python/python-novaclient
         dev-python/Routes[~1.12.3]
         dev-python/SQLAlchemy[>=0.7.3]
         dev-python/WebOb[~1.0.8]
