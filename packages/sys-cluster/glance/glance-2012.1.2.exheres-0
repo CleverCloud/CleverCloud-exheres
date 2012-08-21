@@ -26,8 +26,6 @@ DEPENDENCIES="
         dev-python/Paste
         dev-python/PasteDeploy
         dev-python/pycrypto
-        dev-python/pysendfile
-        dev-python/pyxattr
         dev-python/Routes
         dev-python/SQLAlchemy[>=0.7]
         dev-python/sqlalchemy-migrate[>=0.7]
