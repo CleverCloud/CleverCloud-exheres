@@ -18,6 +18,7 @@ DEPENDENCIES="
     run:
         dev-python/eventlet
         dev-python/greenlet
+        dev-python/iso8601[>=0.1.4]
         dev-python/pam[~0.1.4]
         dev-python/passlib
         dev-python/Paste
