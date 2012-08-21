@@ -33,6 +33,8 @@ DEPENDENCIES="
         dev-python/wsgiref
     run:
         dev-python/psycopg2
+        dev-python/pyxattr
+        dev-python/pysendfile
     suggestion:
         sys-auth/keystone
 "

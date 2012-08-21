@@ -37,6 +37,7 @@ DEPENDENCIES="
     run:
         app-admin/sudo
         dev-python/Babel[>=0.9.6]
+        dev-python/carrot
         dev-python/httplib2
         dev-python/iso8601[>=0.1.4]
         dev-python/M2Crypto
