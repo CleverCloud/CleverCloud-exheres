@@ -51,6 +51,7 @@ DEPENDENCIES="
         net-firewall/ebtables
         net-firewall/iptables
         sys-apps/iproute2
+        sys-cluster/glance
         sys-fs/libguestfs
         sys-fs/lvm2
         sys-fs/multipath-tools
