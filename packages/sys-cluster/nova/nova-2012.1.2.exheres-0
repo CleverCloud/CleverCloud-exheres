@@ -17,13 +17,11 @@ DEPENDENCIES="
         dev-python/amqplib[~0.6.1]
         dev-python/anyjson[~0.2.4]
         dev-python/boto[~2.1.1]
-        dev-python/carrot[~0.10.5]
         dev-python/Cheetah[~2.4.4]
         dev-python/eventlet
         dev-python/feedparser
         dev-python/greenlet[>=0.3.1]
         dev-python/kombu[~1.0.4]
-        dev-python/lockfile[~0.8]
         dev-python/lxml[=2.3*]
         dev-python/mox
         dev-python/netaddr
@@ -31,7 +29,7 @@ DEPENDENCIES="
         dev-python/paramiko
         dev-python/pep8
         dev-python/python-daemon[~1.5.5]
-        dev-python/python-gflags
+        dev-python/python-glanceclient[<2]
         dev-python/Sphinx
         dev-python/sqlalchemy-migrate[>=0.7.2]
         dev-python/suds[~0.4]
@@ -39,14 +37,13 @@ DEPENDENCIES="
     run:
         app-admin/sudo
         dev-python/Babel[>=0.9.6]
+        dev-python/httplib2
         dev-python/iso8601[>=0.1.4]
         dev-python/M2Crypto
         dev-python/Paste
         dev-python/PasteDeploy[~1.5.0]
         dev-python/psycopg2
-        dev-python/pycrypto
         dev-python/python-memcached
-        dev-python/python-novaclient
         dev-python/Routes[~1.12.3]
         dev-python/SQLAlchemy[>=0.7.3]
         dev-python/WebOb[~1.0.8]
@@ -54,7 +51,6 @@ DEPENDENCIES="
         net-firewall/ebtables
         net-firewall/iptables
         sys-apps/iproute2
-        sys-cluster/glance[>=2011.3.1]
         sys-fs/libguestfs
         sys-fs/lvm2
         sys-fs/multipath-tools
@@ -64,10 +60,8 @@ DEPENDENCIES="
         sys-auth/keystone
 "
 
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/0001-Fix-null-bug-in-order_by.patch
-                              "${FILES}"/0002-Fix-libguestfs-umount.patch
-                              "${FILES}"/0003-inject-uuid-into-instance_uuid.patch 
-                              "${FILES}"/cc05a8defbb0d36ae6531acd2c5a9677c2f7ce97.patch )
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/0001-inject-uuid-into-instance_uuid.patch
+                              "${FILES}"/0002-Fix-null-bug-in-order_by.patch )
 
 #FIXME
 RESTRICT="test"
