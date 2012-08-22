@@ -49,6 +49,7 @@ DEPENDENCIES="
         dev-python/Routes[~1.12.3]
         dev-python/SQLAlchemy[>=0.7.3]
         dev-python/WebOb[~1.0.8]
+        net-dns/dnsmasq
         net/memcached
         net-firewall/ebtables
         net-firewall/iptables
