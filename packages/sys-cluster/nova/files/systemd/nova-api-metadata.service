@@ -1,0 +1,11 @@
+[Unit]
+Description=Start nova-api-metadata node
+Requires=network.target
+After=network.target keystone.service mysql.service postgresql.service glance.target rabbitmq-server.servive
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/nova-api-metadata
+
+[Install]
+WantedBy=nova.target
