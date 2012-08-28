@@ -1,0 +1,25 @@
+Source: http://repository.timesys.com/buildsources/s/ssmtp/ssmtp-2.64/ssmtp-2.64-destdir.patch
+Upstream: unknown
+Reason: support of DESTDIR and deleting strip call
+--- ssmtp-2.64/Makefile.in	2012-03-15 16:41:27.000000000 -0400
++++ ssmtp-2.64/Makefile.in	2012-03-15 16:42:03.000000000 -0400
+@@ -46,13 +46,12 @@
+ 
+ .PHONY: install
+ install: ssmtp $(GEN_CONFIG)
+-	$(INSTALL) -d -m 755 $(bindir)
+-	$(INSTALL) -s -m 755 ssmtp $(bindir)/ssmtp
+-	$(INSTALL) -d -m 755 $(mandir)
+-	$(INSTALL) -m 644 $(srcdir)/ssmtp.8 $(mandir)/ssmtp.8
+-	$(INSTALL) -d -m 755 $(SSMTPCONFDIR)
+-	$(INSTALL) -m 644 $(srcdir)/revaliases $(INSTALLED_REVALIASES_FILE)
+-	$(GEN_CONFIG) $(INSTALLED_CONFIGURATION_FILE)
++	$(INSTALL) -d -m 755 $(DESTDIR)$(bindir)
++	$(INSTALL) -m 755 ssmtp $(DESTDIR)$(bindir)/ssmtp
++	$(INSTALL) -d -m 755 $(DESTDIR)$(mandir)
++	$(INSTALL) -m 644 $(srcdir)/ssmtp.8 $(DESTDIR)$(mandir)/ssmtp.8
++	$(INSTALL) -d -m 755 $(DESTDIR)$(SSMTPCONFDIR)
++	$(INSTALL) -m 644 $(srcdir)/revaliases $(DESTDIR)$(INSTALLED_REVALIASES_FILE)
+ 
+ 
+ .PHONY: install-sendmail

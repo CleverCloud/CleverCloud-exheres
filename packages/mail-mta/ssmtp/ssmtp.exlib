@@ -1,0 +1,30 @@
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require alternatives
+
+SUMMARY="ssmtp is a send-only sendmail emulator for machines which normally pick their mail up from a centralized mailhub"
+HOMEPAGE="ftp://ftp.debian.org/debian/pool/main/s/ssmtp/"
+DOWNLOADS="mirror://debian/pool/main/s/ssmtp/${PNV/-/_}.orig.tar.bz2"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS="ipv6"
+
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'ipv6 inet6' )
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( --hates=docdir )
+
+src_install() {
+    default
+
+    insinto /etc/${PN}
+    doins "${FILES}"/ssmtp.conf
+
+    dosym /usr/sbin/${PN}{,.sendmail}
+
+    alternatives_for mta ${PN} 10 /usr/sbin/sendmail ${PN}.sendmail
+    alternatives_for mta ${PN} 10 /usr/${LIBDIR}/sendmail ../sbin/sendmail
+    alternatives_for mta ${PN} 10 /usr/bin/mailq ../sbin/sendmail
+    alternatives_for mta ${PN} 10 /usr/bin/newaliases ../sbin/sendmail
+}

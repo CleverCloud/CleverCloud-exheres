@@ -1,0 +1,9 @@
+# Copyright 2012 Kevin Decherf
+# Distributed under the terms of the GNU General Public License v2
+
+require ssmtp
+
+PLATFORMS="~amd64"
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/destdir-makefile.patch" )
+
