@@ -1,0 +1,12 @@
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require haproxy
+
+PLATFORMS="~amd64"
+DOWNLOADS="http://haproxy.1wt.eu/download/$(ever range 1-2)/src/devel/${PNV/pre/dev}.tar.gz"
+WORK="${WORKBASE}"/${PNV/pre/dev}
+
+DEFAULT_SRC_COMPILE_PARAMS=( 'TARGET=linux26' 'USE_PCRE=1' )
+DEFAULT_SRC_INSTALL_PARAMS=( 'PREFIX=/usr' "DOCDIR=/usr/share/doc/${PNVR/pre/dev}" )
+
