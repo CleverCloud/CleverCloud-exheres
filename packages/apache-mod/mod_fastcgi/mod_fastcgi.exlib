@@ -1,0 +1,37 @@
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+# Based in part upon 'mod_gnutls.exlib', which is:
+#       Copyright 2011 Quentin "Sardem FF7" Glidic <sardemff7+exherbo@sardemff7.net>
+
+SUMMARY="FastCGI is a language independent, scalable, open extension to CGI that provides high performance and persistence without the limitations of server specific APIs"
+HOMEPAGE="http://www.fastcgi.com"
+DOWNLOADS="http://www.fastcgi.com/dist/${PNV}.tar.gz"
+
+LICENCES="mod_fastcgi"
+SLOT="0"
+
+DEPENDENCIES="
+    build+run:
+        www-servers/apache
+"
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+        "${FILES}"/byte-compile-against-apache24.patch
+)
+
+src_compile() {
+    edo apxs -o mod_fastcgi.so -c *.c
+}
+
+src_install() {
+    exeinto /usr/libexec/apache2/modules/
+    doexe .libs/${PN}.so
+
+    insinto /etc/apache2/modules.d
+    hereins 50_${PN}.conf <<EOF
+LoadModule fastcgi_module libexec/apache2/modules/${PN}.so
+EOF
+
+    emagicdocs
+    dodoc "${WORK}"/docs/mod_fastcgi.html
+}
