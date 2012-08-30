@@ -19,7 +19,9 @@ src_install() {
     default
 
     insinto /etc/${PN}
-    doins "${FILES}"/ssmtp.conf
+    doins "${WORK}"/ssmtp.conf
+
+    doman "${WORK}"/ssmtp.conf.5
 
     dosym /usr/sbin/${PN}{,.sendmail}
 
