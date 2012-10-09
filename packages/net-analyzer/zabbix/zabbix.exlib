@@ -58,6 +58,7 @@ src_install() {
         (option server || option agent) && insinto ${SYSTEMDSYSTEMUNITDIR}
         option server && doins "${FILES}"/systemd/zabbix-server.service
         option agent && doins "${FILES}"/systemd/zabbix-agentd.service
+        (option server || option agent) && insinto /usr/${LIBDIR}/tmpfiles.d && doins "${FILES}"/tmpfiles.d/zabbix.conf
     fi
 
     # We have some empty folders here
@@ -76,6 +77,10 @@ src_install() {
     for dir in ${KEEPDIRS[@]}; do
         keepdir ${dir}
     done
+
+    # These two lines are mandatory for systemd and can be useful for other init systems
+    option server && sed -i -e 's@^\(# PidFile.*\)@\1\nPidFile=/run/zabbix/zabbix-server.pid@' ${IMAGE}/etc/${PN}/zabbix_server.conf
+    option agent && sed -i -e 's@^\(# PidFile.*\)@\1\nPidFile=/run/zabbix/zabbix-agentd.pid@' ${IMAGE}/etc/${PN}/zabbix_agentd.conf
 
     if option frontend; then
         einfo "The frontend is available in /usr/share/${PN}/frontends/php"

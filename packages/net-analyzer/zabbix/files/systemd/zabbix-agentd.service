@@ -8,6 +8,7 @@ After=network.target
 [Service]
 ExecStart=/usr/sbin/zabbix_agentd
 Type=forking
+PIDFile=/run/zabbix/zabbix-agentd.pid
 
 [Install]
 WantedBy=multi-user.target

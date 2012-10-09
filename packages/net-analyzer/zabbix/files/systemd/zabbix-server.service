@@ -8,7 +8,7 @@ After=network.target
 [Service]
 ExecStart=/usr/sbin/zabbix_server
 Type=forking
-PIDFile=/run/zabbix-server.pid
+PIDFile=/run/zabbix/zabbix-server.pid
 
 [Install]
 WantedBy=multi-user.target
