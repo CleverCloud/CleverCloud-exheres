@@ -25,3 +25,10 @@ src_install() {
     install_systemd_files
 }
 
+src_test() {
+    esandbox allow_net --connect "unix:/tmp/snmp-test-T115agentxperl_simple-*/agentx_socket"
+    esandbox allow_net "unix:/tmp/snmp-test-T115agentxperl_simple-*/agentx_socket"
+    default
+    esandbox disallow_net "unix:/tmp/snmp-test-T115agentxperl_simple-*/agentx_socket"
+    esandbox disallow_net --connect "unix:/tmp/snmp-test-T115agentxperl_simple-*/agentx_socket"
+}
