@@ -1,7 +1,8 @@
-From 841174de36fe5f691785510d7193957ee9f3b62b Mon Sep 17 00:00:00 2001
+Upstream: no
+From e228378cc7740ebfa26146be22300c1ea4d39423 Mon Sep 17 00:00:00 2001
 From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 Date: Mon, 16 Jul 2012 15:17:10 +0200
-Subject: [PATCH 1/2] inject uuid into /instance_uuid
+Subject: [PATCH 2/3] inject uuid into /instance_uuid
 
 Signed-off-by: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 ---
@@ -79,5 +80,5 @@ index ed94f15..e34bcbb 100644
              except Exception as e:
                  # This could be a windows image, or a vmdk format disk
 -- 
-1.7.11.4
+1.7.12.4
 

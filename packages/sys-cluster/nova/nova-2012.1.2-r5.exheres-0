@@ -64,8 +64,9 @@ DEPENDENCIES="
         sys-auth/keystone
 "
 
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/0001-inject-uuid-into-instance_uuid.patch
-                              "${FILES}"/0002-Fix-null-bug-in-order_by.patch )
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/0001-Fix-null-bug-in-order_by.patch
+                              "${FILES}"/0002-inject-uuid-into-instance_uuid.patch
+                              "${FILES}"/0003-inject-flavor-into-instance_flavor.patch )
 
 #FIXME
 RESTRICT="test"

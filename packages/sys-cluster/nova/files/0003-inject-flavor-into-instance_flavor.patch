@@ -1,0 +1,84 @@
+Upstream: no
+From 25f5784db277e927e4634dbd614e6371ff22cd74 Mon Sep 17 00:00:00 2001
+From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+Date: Fri, 26 Oct 2012 13:48:43 +0200
+Subject: [PATCH 3/3] inject flavor into /instance_flavor
+
+Signed-off-by: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+---
+ nova/virt/baremetal/proxy.py    | 3 ++-
+ nova/virt/disk/api.py           | 8 +++++---
+ nova/virt/libvirt/connection.py | 3 ++-
+ 3 files changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/nova/virt/baremetal/proxy.py b/nova/virt/baremetal/proxy.py
+index e8cb13b..d3eaa05 100644
+--- a/nova/virt/baremetal/proxy.py
++++ b/nova/virt/baremetal/proxy.py
+@@ -478,7 +478,8 @@ class ProxyConnection(driver.ComputeDriver):
+                                  partition=target_partition,
+                                  use_cow=False,  # FLAGS.use_cow_images,
+                                  disable_auto_fsck=disable_auto_fsck,
+-                                 uuid=inst['uuid'])
++                                 uuid=inst['uuid'],
++                                 flavor=inst['instance_type']['flavorid'])
+ 
+             except Exception as e:
+                 # This could be a windows image, or a vmdk format disk
+diff --git a/nova/virt/disk/api.py b/nova/virt/disk/api.py
+index c051e88..4b4d293 100644
+--- a/nova/virt/disk/api.py
++++ b/nova/virt/disk/api.py
+@@ -224,7 +224,7 @@ class _DiskImage(object):
+ 
+ def inject_data(image,
+                 key=None, net=None, metadata=None, admin_password=None,
+-                partition=None, use_cow=False, uuid=None):
++                partition=None, use_cow=False, uuid=None, flavor=None):
+     """Injects a ssh key and optionally net data into a disk image.
+ 
+     it will mount the image as a fully partitioned disk and attempt to inject
+@@ -238,7 +238,7 @@ def inject_data(image,
+         try:
+             inject_data_into_fs(img.mount_dir,
+                                 key, net, metadata, admin_password,
+-                                utils.execute, uuid)
++                                utils.execute, uuid, flavor)
+         finally:
+             img.umount()
+     else:
+@@ -291,7 +291,7 @@ def destroy_container(img):
+         LOG.exception(_('Failed to remove container: %s'), exn)
+ 
+ 
+-def inject_data_into_fs(fs, key, net, metadata, admin_password, execute, uuid):
++def inject_data_into_fs(fs, key, net, metadata, admin_password, execute, uuid, flavor):
+     """Injects data into a filesystem already mounted by the caller.
+     Virt connections can call this directly if they mount their fs
+     in a different way to inject_data
+@@ -306,6 +306,8 @@ def inject_data_into_fs(fs, key, net, metadata, admin_password, execute, uuid):
+         _inject_admin_password_into_fs(admin_password, fs, execute=execute)
+     if uuid:
+         _inject_file_into_fs(fs, 'instance_uuid', uuid)
++    if flavor:
++        _inject_file_into_fs(fs, 'instance_flavor', flavor)
+ 
+ 
+ def _join_and_check_path_within_fs(fs, *args):
+diff --git a/nova/virt/libvirt/connection.py b/nova/virt/libvirt/connection.py
+index e34bcbb..b767593 100644
+--- a/nova/virt/libvirt/connection.py
++++ b/nova/virt/libvirt/connection.py
+@@ -1381,7 +1381,8 @@ class LibvirtConnection(driver.ComputeDriver):
+                                  key, net, metadata, admin_password,
+                                  partition=target_partition,
+                                  use_cow=FLAGS.use_cow_images,
+-                                 uuid=instance['uuid'])
++                                 uuid=instance['uuid'],
++                                 flavor=instance['instance_type']['flavorid'])
+ 
+             except Exception as e:
+                 # This could be a windows image, or a vmdk format disk
+-- 
+1.7.12.4
+
