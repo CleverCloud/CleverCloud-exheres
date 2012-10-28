@@ -10,15 +10,12 @@ SLOT="0"
 MYOPTIONS=""
 
 DEPENDENCIES="
-    build:
     build+run:
         dev-libs/libxml2[>=2.6.19]
         sys-fs/fuse
 "
 
-src_configure() {
-    econf --hates=docdir
-}
+DEFAULT_SRC_CONFIGURE_PARAMS=( --hates=docdir )
 
 src_install() {
     default
