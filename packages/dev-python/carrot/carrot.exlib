@@ -13,7 +13,7 @@ DEPENDENCIES="
         dev-python/amqplib
         dev-python/anyjson
     suggestion:
-        net/rabbitmq-server
+        net/rabbitmq-server [[ description = [ carrot needs a rabbitmq-server running ] ]]
 "
 
 # Needs rabbitmq-server running
