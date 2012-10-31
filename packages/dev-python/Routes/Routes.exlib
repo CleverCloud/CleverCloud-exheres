@@ -5,7 +5,7 @@ require setuptools pypi
 
 SUMMARY="Routing Recognition and Generation Tools"
 
-LICENCES="as-is"
+LICENCES="BSD-3"
 SLOT="0"
 
 DEPENDENCIES="
