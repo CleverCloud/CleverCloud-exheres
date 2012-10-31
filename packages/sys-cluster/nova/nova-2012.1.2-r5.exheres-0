@@ -60,8 +60,8 @@ DEPENDENCIES="
         sys-fs/multipath-tools
         virtualization-lib/libvirt[kvm][python]
     suggestion:
-        net/rabbitmq-server
-        sys-auth/keystone
+        net/rabbitmq-server [[ description = [ needed for communication between nodes ] ]]
+        sys-auth/keystone [[ description = [ the authentication solution of Openstack ] ]]
 "
 
 DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/0001-Fix-null-bug-in-order_by.patch
