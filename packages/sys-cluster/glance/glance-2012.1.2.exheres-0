@@ -36,7 +36,7 @@ DEPENDENCIES="
         dev-python/pyxattr
         dev-python/pysendfile
     suggestion:
-        sys-auth/keystone
+        sys-auth/keystone [[ description = [ the authentication solution of Openstack ] ]]
 "
 
 #FIXME
