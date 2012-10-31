@@ -3,7 +3,11 @@
 # Based in part upon 'mod_gnutls.exlib', which is:
 #       Copyright 2011 Quentin "Sardem FF7" Glidic <sardemff7+exherbo@sardemff7.net>
 
-SUMMARY="FastCGI is a language independent, scalable, open extension to CGI that provides high performance and persistence without the limitations of server specific APIs"
+SUMMARY="Apache module to run php using CGI"
+DESCRIPTION="
+    FastCGI is a language independent, scalable, open extension to CGI that provides high performance
+    and persistence without the limitations of server specific APIs
+"
 HOMEPAGE="http://www.fastcgi.com"
 DOWNLOADS="http://www.fastcgi.com/dist/${PNV}.tar.gz"
 
