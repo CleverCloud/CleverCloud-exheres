@@ -79,8 +79,8 @@ src_install() {
     done
 
     # These two lines are mandatory for systemd and can be useful for other init systems
-    option server && sed -i -e 's@^\(# PidFile.*\)@\1\nPidFile=/run/zabbix/zabbix-server.pid@' ${IMAGE}/etc/${PN}/zabbix_server.conf
-    option agent && sed -i -e 's@^\(# PidFile.*\)@\1\nPidFile=/run/zabbix/zabbix-agentd.pid@' ${IMAGE}/etc/${PN}/zabbix_agentd.conf
+    option server && sed -i -e 's@^\(# PidFile.*\)@\1\nPidFile=/run/zabbix/zabbix-server.pid@' "${IMAGE}"/etc/${PN}/zabbix_server.conf
+    option agent && sed -i -e 's@^\(# PidFile.*\)@\1\nPidFile=/run/zabbix/zabbix-agentd.pid@' "${IMAGE}"/etc/${PN}/zabbix_agentd.conf
 
     if option frontend; then
         einfo "The frontend is available in /usr/share/${PN}/frontends/php"
