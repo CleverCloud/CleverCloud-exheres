@@ -9,7 +9,7 @@ DOWNLOADS="mirror://sourceforge/${PN}/${PNV}.tar.gz"
 
 REMOTE_IDS="freshmeat:${PN}"
 
-LICENCES="as-is BSD"
+LICENCES="BSD-3"
 SLOT="0"
 MYOPTIONS="systemd"
 
