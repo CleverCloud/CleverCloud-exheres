@@ -6,7 +6,7 @@ require distutils pypi [ suffix=zip ]
 SUMMARY="Pythonic manipulation of IPv4, IPv6, CIDR, EUI and MAC network addresses"
 DOWNLOADS="https://github.com/downloads/drkjam/${PN}/${PNV}.tar.gz"
 
-LICENCES="as-is"
+LICENCES="BSD-3"
 SLOT="0"
 PLATFORMS="~amd64"
 
