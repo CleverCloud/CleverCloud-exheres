@@ -5,6 +5,6 @@ require setuptools pypi
 
 SUMMARY="Google Commandline Flags Module"
 
-LICENCES="as-is"
+LICENCES="BSD-3"
 SLOT="0"
 
