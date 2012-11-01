@@ -5,7 +5,7 @@ require setuptools pypi
 
 SUMMARY="AMQP Messaging Framework for Python"
 
-LICENCES="as-is"
+LICENCES="BSD-2"
 SLOT="0"
 
 DEPENDENCIES="
