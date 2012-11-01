@@ -10,7 +10,7 @@ HOMEPAGE="https://github.com/openstack-dev/openstack-nose"
 SUMMARY="Openstack style output for nosetests"
 DOWNLOADS="http://pypi.python.org/packages/source/${PN:0:1}/${MY_PN}/${MY_PNV}.tar.gz"
 
-LICENCES="as-is"
+LICENCES="Apache-2.0"
 SLOT="0"
 PLATFORMS="~amd64"
 
