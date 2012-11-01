@@ -5,7 +5,7 @@ require setuptools pypi
 
 SUMMARY="The new features in unittest for Python 2.7 backported to Python 2.3+."
 
-LICENCES="as-is"
+LICENCES="BSD-2"
 SLOT="0"
 PLATFORMS="~amd64"
 
