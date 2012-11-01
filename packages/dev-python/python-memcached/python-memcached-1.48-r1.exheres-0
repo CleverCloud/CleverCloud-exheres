@@ -6,7 +6,7 @@ require setuptools pypi
 SUMMARY="Pure python memcached client"
 DOWNLOADS="http://ftp.tummy.com/pub/${PN}/old-releases/${PNV}.tar.gz"
 
-LICENCES="as-is"
+LICENCES="PYTHON"
 SLOT="0"
 PLATFORMS="~amd64"
 
