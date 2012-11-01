@@ -5,7 +5,7 @@ require setuptools pypi
 
 SUMMARY="comprehensive password hashing framework supporting over 30 schemes"
 
-LICENCES="as-is"
+LICENCES="BSD-3"
 SLOT="0"
 PLATFORMS="~amd64"
 
