@@ -6,7 +6,7 @@ require setuptools pypi
 SUMMARY="A Python library for displaying tabular data in ASCII table format"
 DOWNLOADS="http://pypi.python.org/packages/source/${PN:0:1}/${PN}/${PNV,,}.zip"
 
-LICENCES="as-is"
+LICENCES="BSD-3"
 SLOT="0"
 PLATFORMS="~amd64"
 
