@@ -5,7 +5,7 @@ require setuptools pypi
 
 SUMMARY="A Python Mocking and Patching Library for Testing"
 
-LICENCES="as-is"
+LICENCES="BSD-2"
 SLOT="0"
 PLATFORMS="~amd64"
 
