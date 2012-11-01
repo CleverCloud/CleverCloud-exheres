@@ -5,7 +5,7 @@ require setuptools pypi
 
 SUMMARY="Highly concurrent networking library"
 
-LICENCES="as-is"
+LICENCES="MIT"
 SLOT="0"
 PLATFORMS="~amd64"
 
