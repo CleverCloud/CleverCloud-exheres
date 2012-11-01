@@ -9,7 +9,7 @@ require setuptools pypi
 DOWNLOADS="http://pypi.python.org/packages/source/${PN:0:1}/${MY_PN}/${MY_PNV}.tar.gz"
 SUMMARY="A tiny LRU cache implementation and decorator"
 
-LICENCES="as-is"
+LICENCES="BSD-4"
 SLOT="0"
 PLATFORMS="~amd64"
 
