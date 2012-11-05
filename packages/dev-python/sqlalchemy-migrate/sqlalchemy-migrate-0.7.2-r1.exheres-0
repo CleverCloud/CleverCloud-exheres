@@ -15,7 +15,7 @@ LICENCES="MIT"
 SLOT="0"
 PLATFORMS="~amd64 ~x86"
 
-RESTRICT="test" # way too many unpackaged deps
+RESTRICT="test" # Way too many unpackaged deps
 
 DEPENDENCIES="
     run:

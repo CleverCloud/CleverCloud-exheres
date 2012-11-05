@@ -16,6 +16,5 @@ DEPENDENCIES="
         net/rabbitmq-server [[ description = [ carrot needs a rabbitmq-server running ] ]]
 "
 
-# Needs rabbitmq-server running
-RESTRICT="test"
+RESTRICT="test" # Needs rabbitmq-server running
 

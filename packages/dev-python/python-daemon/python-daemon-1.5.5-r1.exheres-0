@@ -16,6 +16,5 @@ DEPENDENCIES="
         dev-python/MiniMock
 "
 
-#Missing files
-RESTRICT="test"
+RESTRICT="test" # Missing files
 

@@ -14,7 +14,7 @@ LICENCES="LGPL-3"
 SLOT="0"
 PLATFORMS="~amd64 ~x86"
 
-RESTRICT="test" # tests require a running postgres with test database
+RESTRICT="test" # Requires a running postgres with test database
 
 DEPENDENCIES="
     build+run:

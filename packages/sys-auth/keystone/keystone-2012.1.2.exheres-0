@@ -31,10 +31,11 @@ DEPENDENCIES="
         dev-python/SQLAlchemy
         dev-python/sqlalchemy-migrate
         dev-python/WebOb[~1.0.8]
+    test:
+        dev-python/python-ldap
 "
 
-#FIXME
-RESTRICT="test"
+RESTRICT="test" # Tries to download stuff
 
 src_install() {
     distutils_src_install

@@ -17,6 +17,5 @@ DEPENDENCIES="
         dev-python/nose
 "
 
-#FIXME
-RESTRICT="test"
+RESTRICT="test" # Random network calls
 

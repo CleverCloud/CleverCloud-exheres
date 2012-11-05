@@ -39,8 +39,7 @@ DEPENDENCIES="
         sys-auth/keystone [[ description = [ the authentication solution of Openstack ] ]]
 "
 
-#FIXME
-RESTRICT="test"
+RESTRICT="test" # Tries to download stuff
 
 src_install() {
     distutils_src_install

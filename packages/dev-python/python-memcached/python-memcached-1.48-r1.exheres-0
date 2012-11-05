@@ -15,6 +15,5 @@ DEPENDENCIES="
         net/memcached
 "
 
-#Requires memcached to be laucnhed
-RESTRICT="test"
+RESTRICT="test" # Requires memcached to be laucnhed
 
