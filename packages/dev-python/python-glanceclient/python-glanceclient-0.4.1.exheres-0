@@ -18,6 +18,3 @@ DEPENDENCIES="
         dev-python/warlock[~0.1.0]
 "
 
-# Fixme
-RESTRICT="test"
-
