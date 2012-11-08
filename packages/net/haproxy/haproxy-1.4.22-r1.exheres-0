@@ -7,4 +7,5 @@ PLATFORMS="~amd64"
 
 DEFAULT_SRC_COMPILE_PARAMS=( 'TARGET=linux26' 'USE_PCRE=1' )
 DEFAULT_SRC_INSTALL_PARAMS=( 'PREFIX=/usr' "DOCDIR=/usr/share/doc/${PNVR}" )
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/0001-MEDIUM-New-cli-option-Ds-for-systemd-compatibility.patch )
 

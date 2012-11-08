@@ -1,0 +1,169 @@
+Upstream; no, sumbitted to the mailing list
+From e2aa4ba7269c39ee4c51d9719024a6f311e3db2a Mon Sep 17 00:00:00 2001
+From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+Date: Wed, 7 Nov 2012 10:54:17 +0100
+Subject: [PATCH] MEDIUM: New cli option -Ds for systemd compatibility
+
+Signed-off-by: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+
+Conflicts:
+	src/haproxy.c
+---
+ doc/haproxy-en.txt     |  1 +
+ doc/haproxy-fr.txt     |  1 +
+ doc/haproxy.1          |  4 ++++
+ include/types/global.h |  1 +
+ src/haproxy.c          | 38 ++++++++++++++++++++++++++------------
+ 5 files changed, 33 insertions(+), 12 deletions(-)
+
+diff --git a/doc/haproxy-en.txt b/doc/haproxy-en.txt
+index 32f52be..3589460 100644
+--- a/doc/haproxy-en.txt
++++ b/doc/haproxy-en.txt
+@@ -51,6 +51,7 @@ There are only a few command line options :
+        = 'maxconn' in 'listen' or 'default' sections
+     -d starts in foregreound with debugging mode enabled
+     -D starts in daemon mode
++    -Ds starts in systemd daemon mode
+     -q disable messages on output
+     -V displays messages on output even when -q or 'quiet' are specified.
+     -c only checks config file and exits with code 0 if no error was found, or
+diff --git a/doc/haproxy-fr.txt b/doc/haproxy-fr.txt
+index 89df8cb..85f4168 100644
+--- a/doc/haproxy-fr.txt
++++ b/doc/haproxy-fr.txt
+@@ -53,6 +53,7 @@ Les options de lancement sont peu nombreuses :
+        = 'maxconn' dans les sections 'listen' ou 'default'
+     -d active le mode debug
+     -D passe en daemon
++    -Ds passe en daemon systemd
+     -q désactive l'affichage de messages sur la sortie standard.
+     -V affiche les messages sur la sortie standard, même si -q ou 'quiet' sont
+        spécifiés.
+diff --git a/doc/haproxy.1 b/doc/haproxy.1
+index 001de15..48717ad 100644
+--- a/doc/haproxy.1
++++ b/doc/haproxy.1
+@@ -57,6 +57,10 @@ starting up.
+ Start in daemon mode.
+ 
+ .TP
++\fB\-Ds\fP
++Start in systemd daemon mode, keeping a process in foreground.
++
++.TP
+ \fB\-q\fP
+ Disable messages on output.
+ 
+diff --git a/include/types/global.h b/include/types/global.h
+index 7c5346b..d871939 100644
+--- a/include/types/global.h
++++ b/include/types/global.h
+@@ -38,6 +38,7 @@
+ #define	MODE_VERBOSE	0x10
+ #define	MODE_STARTING	0x20
+ #define	MODE_FOREGROUND	0x40
++#define	MODE_SYSTEMD	0x80
+ 
+ /* list of last checks to perform, depending on config options */
+ #define LSTCHK_CAP_BIND	0x00000001	/* check that we can bind to any port */
+diff --git a/src/haproxy.c b/src/haproxy.c
+index 6141a5b..acb323c 100644
+--- a/src/haproxy.c
++++ b/src/haproxy.c
+@@ -42,6 +42,7 @@
+ #include <signal.h>
+ #include <stdarg.h>
+ #include <sys/resource.h>
++#include <sys/wait.h>
+ #include <time.h>
+ #include <syslog.h>
+ 
+@@ -487,8 +488,11 @@ void init(int argc, char **argv)
+ 				arg_mode |= MODE_DEBUG;
+ 			else if (*flag == 'c')
+ 				arg_mode |= MODE_CHECK;
+-			else if (*flag == 'D')
++			else if (*flag == 'D') {
+ 				arg_mode |= MODE_DAEMON;
++				if (flag[1] == 's')  /* -Ds */
++					arg_mode |= MODE_SYSTEMD;
++			}
+ 			else if (*flag == 'q')
+ 				arg_mode |= MODE_QUIET;
+ 			else if (*flag == 's' && (flag[1] == 'f' || flag[1] == 't')) {
+@@ -540,7 +544,7 @@ void init(int argc, char **argv)
+ 	}
+ 
+ 	global.mode = MODE_STARTING | /* during startup, we want most of the alerts */
+-		(arg_mode & (MODE_DAEMON | MODE_FOREGROUND | MODE_VERBOSE
++		(arg_mode & (MODE_DAEMON | MODE_SYSTEMD | MODE_FOREGROUND | MODE_VERBOSE
+ 			     | MODE_QUIET | MODE_CHECK | MODE_DEBUG));
+ 
+ 	if (LIST_ISEMPTY(&cfg_cfgfiles))
+@@ -648,17 +652,24 @@ void init(int argc, char **argv)
+ 
+ 	if (arg_mode & (MODE_DEBUG | MODE_FOREGROUND)) {
+ 		/* command line debug mode inhibits configuration mode */
+-		global.mode &= ~(MODE_DAEMON | MODE_QUIET);
++		global.mode &= ~(MODE_DAEMON | MODE_SYSTEMD | MODE_QUIET);
++		global.mode |= (arg_mode & (MODE_DEBUG | MODE_FOREGROUND));
+ 	}
+-	global.mode |= (arg_mode & (MODE_DAEMON | MODE_FOREGROUND | MODE_QUIET |
+-				    MODE_VERBOSE | MODE_DEBUG ));
+ 
+-	if ((global.mode & MODE_DEBUG) && (global.mode & (MODE_DAEMON | MODE_QUIET))) {
+-		Warning("<debug> mode incompatible with <quiet> and <daemon>. Keeping <debug> only.\n");
+-		global.mode &= ~(MODE_DAEMON | MODE_QUIET);
++	if (arg_mode & (MODE_DAEMON | MODE_SYSTEMD)) {
++		/* command line daemon mode inhibits foreground and debug modes mode */
++		global.mode &= ~(MODE_DEBUG | MODE_FOREGROUND);
++		global.mode |= (arg_mode & (MODE_DAEMON | MODE_SYSTEMD));
+ 	}
+ 
+-	if ((global.nbproc > 1) && !(global.mode & MODE_DAEMON)) {
++	global.mode |= (arg_mode & (MODE_QUIET | MODE_VERBOSE));
++
++	if ((global.mode & MODE_DEBUG) && (global.mode & (MODE_DAEMON | MODE_SYSTEMD | MODE_QUIET))) {
++		Warning("<debug> mode incompatible with <quiet>, <daemon> and <systemd>. Keeping <debug> only.\n");
++		global.mode &= ~(MODE_DAEMON | MODE_SYSTEMD | MODE_QUIET);
++	}
++
++	if ((global.nbproc > 1) && !(global.mode & (MODE_DAEMON | MODE_SYSTEMD))) {
+ 		if (!(global.mode & (MODE_FOREGROUND | MODE_DEBUG)))
+ 			Warning("<nbproc> is only meaningful in daemon mode. Setting limit to 1 process.\n");
+ 		global.nbproc = 1;
+@@ -1114,7 +1125,7 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	/* open log & pid files before the chroot */
+-	if (global.mode & MODE_DAEMON && global.pidfile != NULL) {
++	if (global.mode & (MODE_DAEMON | MODE_SYSTEMD) && global.pidfile != NULL) {
+ 		int pidfd;
+ 		unlink(global.pidfile);
+ 		pidfd = open(global.pidfile, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+@@ -1198,7 +1209,7 @@ int main(int argc, char **argv)
+ 			argv[0], (int)limit.rlim_cur, global.maxconn, global.maxsock, global.maxsock);
+ 	}
+ 
+-	if (global.mode & MODE_DAEMON) {
++	if (global.mode & (MODE_DAEMON | MODE_SYSTEMD)) {
+ 		struct proxy *px;
+ 		int ret = 0;
+ 		int proc;
+@@ -1238,8 +1249,11 @@ int main(int argc, char **argv)
+ 			px = px->next;
+ 		}
+ 
+-		if (proc == global.nbproc)
++		if (proc == global.nbproc) {
++			if (global.mode & MODE_SYSTEMD)
++				waitpid(ret, NULL, 0);
+ 			exit(0); /* parent must leave */
++		}
+ 
+ 		/* if we're NOT in QUIET mode, we should now close the 3 first FDs to ensure
+ 		 * that we can detach from the TTY. We MUST NOT do it in other cases since
+-- 
+1.8.0
+
