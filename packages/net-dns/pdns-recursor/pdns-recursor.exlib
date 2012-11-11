@@ -9,7 +9,7 @@ DOWNLOADS="http://downloads.powerdns.com/releases/${PNV}.tar.bz2"
 
 LICENCES="GPL-2"
 SLOT="0"
-MYOPTIONS="systemd"
+MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
