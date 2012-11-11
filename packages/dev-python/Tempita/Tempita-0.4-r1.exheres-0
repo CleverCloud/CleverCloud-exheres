@@ -15,5 +15,5 @@ DEPENDENCIES="
 "
 
 src_test() {
-    edo python setup.py nosetests
+    edo python -B setup.py nosetests
 }
