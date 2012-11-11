@@ -32,9 +32,7 @@ DEPENDENCIES="
             user/zabbix
             postgres? ( dev-db/postgresql )
         )
-        !frontend? (
-            snmp? ( net/net-snmp )
-        )
+        snmp? ( net/net-snmp )
     run:
         frontend? (
             postgres? ( dev-lang/php[php_extensions:pgsql] )
