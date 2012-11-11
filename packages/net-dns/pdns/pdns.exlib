@@ -16,7 +16,6 @@ MYOPTIONS="
     ) [[
         number-selected = exactly-one
     ]]
-    systemd
     ipv6"
 
 DEPENDENCIES="
@@ -31,21 +30,18 @@ DEPENDENCIES="
 
 src_configure() {
     local mymodules=(
-            $(option postgres && echo gpgsql)
-            $(option mysql && echo gmysql)
+            $(option postgres gpgsql)
+            $(option mysql gmysql)
     )
-
-    local confdir="/etc/powerdns"
 
     econf \
         --with-modules= \
         $(option_with mysql mysql /usr) \
         $(option_with postgres pgsql /usr) \
-        $(option postgres && echo "--with-pgsql-includes=/usr/include") \
-        $(option postgres && echo "--with-pgsql-libs=/usr/${LIBDIR}") \
+        $(option postgres "--with-pgsql-includes=/usr/include") \
+        $(option postgres "--with-pgsql-libs=/usr/${LIBDIR}") \
         --with-dynmodules="${mymodules[@]}" \
-        --sysconfdir=${confdir}
-
+        --sysconfdir=/etc/powerdns
 }
 
 src_install() {
