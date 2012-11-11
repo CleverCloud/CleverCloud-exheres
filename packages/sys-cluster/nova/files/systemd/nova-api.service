@@ -1,3 +1,6 @@
+# Copyright 2012 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+# Distributed under the termes of the GNU Geneal Public License v2
+
 [Unit]
 Description=Start nova-api node
 Requires=network.target
