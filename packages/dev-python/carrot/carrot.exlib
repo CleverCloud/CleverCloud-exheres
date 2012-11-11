@@ -13,7 +13,9 @@ DEPENDENCIES="
         dev-python/amqplib
         dev-python/anyjson
     suggestion:
-        net/rabbitmq-server [[ description = [ carrot needs a rabbitmq-server running ] ]]
+        net/rabbitmq-server [[
+            description = [ carrot needs a rabbitmq-server accessible  over the network ]
+        ]]
 "
 
 RESTRICT="test" # Needs rabbitmq-server running
