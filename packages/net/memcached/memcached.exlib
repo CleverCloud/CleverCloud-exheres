@@ -4,7 +4,6 @@
 require googlecode [ suffix=tar.gz ] systemd-service [ systemd_files=[ memcached.service ] ]
 
 SUMMARY="memcached is a high-performance, distributed memory object caching system"
-HOMEPAGE="http://code.google.com/p/memcached"
 
 LICENCES="BSD-2"
 SLOT="0"
