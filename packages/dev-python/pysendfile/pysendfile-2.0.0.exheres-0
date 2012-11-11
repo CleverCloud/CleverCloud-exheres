@@ -1,7 +1,7 @@
 # Copyright 2012 Marc-Antoine Perennou<Marc-Antoine@Perennou.com
 # Distributed under the terms of the GNU General Public License v2
 
-require setuptools googlecode
+require setuptools googlecode [ suffix='tar.gz' ]
 
 SUMMARY="Python style guide checker"
 
