@@ -1,4 +1,4 @@
-Upstream: no
+Upstream: no, upstream ignores patch submissions
 From e228378cc7740ebfa26146be22300c1ea4d39423 Mon Sep 17 00:00:00 2001
 From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 Date: Mon, 16 Jul 2012 15:17:10 +0200

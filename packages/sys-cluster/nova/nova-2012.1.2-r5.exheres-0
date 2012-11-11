@@ -11,8 +11,6 @@ SLOT="0"
 PLATFORMS="~amd64"
 
 DEPENDENCIES="
-    build:
-        dev-python/setuptools
     build+run:
         dev-python/amqplib[~0.6.1]
         dev-python/anyjson[~0.2.4]
