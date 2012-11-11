@@ -45,8 +45,3 @@ src_install() {
     doins "${FILES}"/{default_catalog.templates,keystone.conf,logging.conf,policy.json}
 }
 
-pkg_postinst() {
-    einfo "To enable keystone service, run 'systemctl enable keystone.service'"
-    einfo "You must also enable mysql or postgresl."
-}
-
