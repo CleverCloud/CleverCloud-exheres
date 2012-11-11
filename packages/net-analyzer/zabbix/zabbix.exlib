@@ -23,19 +23,21 @@ MYOPTIONS="
 DEPENDENCIES="
     build+run:
         agent? (
-                group/zabbix
-                user/zabbix
-                snmp? ( net/net-snmp )
+            group/zabbix
+            user/zabbix
+            snmp? ( net/net-snmp )
         )
         server? (
-                group/zabbix
-                user/zabbix
-                postgres? ( dev-db/postgresql )
-                snmp? ( net/net-snmp )
+            group/zabbix
+            user/zabbix
+            postgres? ( dev-db/postgresql )
+        )
+        !frontend? (
+            snmp? ( net/net-snmp )
         )
     run:
         frontend? (
-                postgres? ( dev-lang/php[php_extensions:pgsql] )
+            postgres? ( dev-lang/php[php_extensions:pgsql] )
         )
 "
 
@@ -66,17 +68,15 @@ src_install() {
 
     local KEEPDIRS=()
     option agent && KEEPDIRS+=(
-            /etc/${PN}/zabbix_agent.conf.d
-            /etc/${PN}/zabbix_agentd.conf.d
+        /etc/${PN}/zabbix_agent.conf.d
+        /etc/${PN}/zabbix_agentd.conf.d
     )
     option server && KEEPDIRS+=(
-            /etc/${PN}/zabbix_server.conf.d
-            /usr/share/${PN}/externalscripts
-            /usr/share/${PN}/alertscripts
+        /etc/${PN}/zabbix_server.conf.d
+        /usr/share/${PN}/externalscripts
+        /usr/share/${PN}/alertscripts
     )
-    for dir in ${KEEPDIRS[@]}; do
-        keepdir ${dir}
-    done
+    keepdir ${KEEPDIRS[@]}
 
     # These two lines are mandatory for systemd and can be useful for other init systems
     option server && sed -i -e 's@^\(# PidFile.*\)@\1\nPidFile=/run/zabbix/zabbix-server.pid@' "${IMAGE}"/etc/${PN}/zabbix_server.conf
@@ -93,6 +93,6 @@ src_install() {
     doins -r "${WORK}"/database
 
     # Makefile clean after copy
-    find "${IMAGE}"/usr/share/${PN} -type f -name "Makefile*" -delete
+    edo find "${IMAGE}"/usr/share/${PN} -type f -name "Makefile*" -delete
 }
 
