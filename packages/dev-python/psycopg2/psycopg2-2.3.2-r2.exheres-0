@@ -22,5 +22,5 @@ DEPENDENCIES="
 "
 
 src_test() {
-    edo python setup.py test
+    edo python -B setup.py test
 }
