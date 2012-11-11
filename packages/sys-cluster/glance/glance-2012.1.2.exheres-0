@@ -51,11 +51,3 @@ src_install() {
         "${FILES}"/{glance-scrubber.conf,glance-scrubber-paste.ini,logging.cnf,policy.json,schema-access.json,schema-image.json}
 }
 
-pkg_postinst() {
-    einfo "To enable glance service, run:"
-    einfo "    'systemctl enable glance-api.service'"
-    einfo "    'systemctl enable glance-registry.service'"
-    einfo "    'systemctl enable glance.target'"
-    einfo "You must also enable mysql or postgresl."
-}
-
