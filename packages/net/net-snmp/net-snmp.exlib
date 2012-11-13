@@ -19,7 +19,7 @@ src_install() {
     default
 
     keepdir /etc/snmp
-    einfo "To make your first configuration file, use 'snmpconf -g basic_setup' and copy snmpd.conf
+    elog "To make your first configuration file, use 'snmpconf -g basic_setup' and copy snmpd.conf
         where you want"
 
     install_systemd_files

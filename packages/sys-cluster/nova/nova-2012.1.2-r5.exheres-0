@@ -82,17 +82,17 @@ src_install() {
 }
 
 pkg_postinst() {
-    einfo "To enable nova service, run:"
-    einfo "    'systemctl enable nova.target' (Mandatory)"
-    einfo "    'systemctl enable nova-compute.service' (Mandatory)"
-    einfo "    'systemctl enable nova-api.service' (Must be enabled on at least 1 server)"
-    einfo "    'systemctl enable nova-cert.service' (Must be enabled on at least 1 server)"
-    einfo "    'systemctl enable nova-network.service' (Must be enabled on at least 1 server)"
-    einfo "    'systemctl enable nova-objectstore.service' (Must be enabled on at least 1 server)"
-    einfo "    'systemctl enable nova-scheduler.service' (Must be enabled on at least 1 server)"
-    einfo "    'systemctl enable nova-volume.service' (Optional)"
-    einfo "You must also enable mysql or postgresl."
-    einfo ""
-    einfo "Note that you will need Network Block Device support in your kernel"
+    elog "To enable nova service, run:"
+    elog "    'systemctl enable nova.target' (Mandatory)"
+    elog "    'systemctl enable nova-compute.service' (Mandatory)"
+    elog "    'systemctl enable nova-api.service' (Must be enabled on at least 1 server)"
+    elog "    'systemctl enable nova-cert.service' (Must be enabled on at least 1 server)"
+    elog "    'systemctl enable nova-network.service' (Must be enabled on at least 1 server)"
+    elog "    'systemctl enable nova-objectstore.service' (Must be enabled on at least 1 server)"
+    elog "    'systemctl enable nova-scheduler.service' (Must be enabled on at least 1 server)"
+    elog "    'systemctl enable nova-volume.service' (Optional)"
+    elog "You must also enable mysql or postgresl."
+    elog ""
+    elog "Note that you will need Network Block Device support in your kernel"
 }
 
