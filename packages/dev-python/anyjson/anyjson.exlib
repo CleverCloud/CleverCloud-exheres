@@ -3,7 +3,7 @@
 
 require setuptools pypi
 
-SUMMARY="Wraps the best available JSON implementation available in a common interface"
+SUMMARY="Wraps the best available JSON implementation in a common interface"
 
 LICENCES="BSD-2"
 SLOT="0"
