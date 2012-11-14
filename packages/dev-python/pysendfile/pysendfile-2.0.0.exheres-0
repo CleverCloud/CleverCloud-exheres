@@ -3,7 +3,7 @@
 
 require setuptools googlecode [ suffix='tar.gz' ]
 
-SUMMARY="Python style guide checker"
+SUMMARY="A Python interface to sendfile(2)"
 
 LICENCES="MIT"
 SLOT="0"
