@@ -1,0 +1,26 @@
+# Copyright 2012 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+# Distributed under the terms of the GNU General Public License v2
+# Copyright 2012 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require googlecode [ project=git-repo ] python [ python_dep=2.7 has_bin=true ]
+
+SUMMARY="The multiple repository tool"
+DOWNLOADS="http://git-repo.googlecode.com/files/${PNV}"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+src_unpack() {
+    mkdir -p "${WORK}"
+    edo cp "${FETCHEDDIR}"/${PNV} "${WORK}"/${PN}
+}
+
+src_install() {
+    dobin ${PN}
+}
+
