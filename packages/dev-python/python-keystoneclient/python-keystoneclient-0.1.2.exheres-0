@@ -21,8 +21,15 @@ DEPENDENCIES="
         dev-python/nose
         dev-python/nose-exclude
         dev-python/openstack-nose
-        dev-python/pep8[~1.2]
+        dev-python/pep8[>=1.2]
         dev-python/Sphinx[>=1.1.2]
         dev-python/unittest2[>=0.5.1]
 "
+
+src_prepare() {
+    default
+
+    # Don't fix the dependency on pep8
+    edo sed -i -e "s/pep8==1.2/pep8>=1.2/" tools/test-requires
+}
 
