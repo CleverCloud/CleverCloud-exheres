@@ -3,7 +3,7 @@
 
 SUMMARY="GlusterFS is a cluster file-system capable of scaling to several peta-bytes"
 HOMEPAGE="http://www.gluster.org/"
-DOWNLOADS="http://download.gluster.org/pub/gluster/glusterfs/$(ever range 1-2)/${PV}/${PNV}.tar.gz"
+DOWNLOADS="http://bits.gluster.com/pub/gluster/${PN}/src/${PNV}.tar.gz"
 
 LICENCES="GPL-3"
 SLOT="0"
