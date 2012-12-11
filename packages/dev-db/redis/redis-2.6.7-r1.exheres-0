@@ -1,9 +1,7 @@
 # Copyright 2012 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 # Distributed under the terms of the GNU General Public License v2
-# Copyright 2012 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
-# Distributed under the terms of the GNU General Public License v2
 
-require googlecode [ suffix=tar.gz ]
+require googlecode [ suffix=tar.gz ] systemd-service
 
 SUMMARY="Open source in-memory key-value store"
 DESCRIPTION="
@@ -21,9 +19,7 @@ test:
     dev-lang/tcl
 "
 
-#DEFAULT_SRC_CONFIGURE_PARAMS=( )
-#DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( )
-#DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( )
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/9e21f82cdce4732ceb7d5ec1ad6202fe95684816.patch )
 
 src_test() {
     esandbox allow_net --connect inet:127.0.0.1@11111
@@ -40,5 +36,8 @@ src_test() {
 }
 
 src_install() {
-    emake PREFIX=${IMAGE} install
+    emake DESTDIR="${IMAGE}" PREFIX="/" install
+    install_systemd_files
+    insinto /etc
+    doins redis.conf
 }
