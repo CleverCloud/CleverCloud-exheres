@@ -1,0 +1,41 @@
+Upstream: no, https://github.com/antirez/redis/pull/819
+From b224882707d6eb514996929339702a88f7999dd4 Mon Sep 17 00:00:00 2001
+From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+Date: Mon, 10 Dec 2012 18:21:10 +0100
+Subject: [PATCH] test-server: only listen to 127.0.0.1
+
+Signed-off-by: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+---
+ tests/assets/default.conf |    2 +-
+ tests/test_helper.tcl     |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tests/assets/default.conf b/tests/assets/default.conf
+index 1b23450..48c0740 100644
+--- a/tests/assets/default.conf
++++ b/tests/assets/default.conf
+@@ -26,7 +26,7 @@ port 6379
+ # If you want you can bind a single interface, if the bind option is not
+ # specified all the interfaces will listen for incoming connections.
+ #
+-# bind 127.0.0.1
++bind 127.0.0.1
+ 
+ # Specify the path for the unix socket that will be used to listen for
+ # incoming connections. There is no default, so Redis will not listen
+diff --git a/tests/test_helper.tcl b/tests/test_helper.tcl
+index b2e58b4..616f670 100644
+--- a/tests/test_helper.tcl
++++ b/tests/test_helper.tcl
+@@ -182,7 +182,7 @@ proc test_server_main {} {
+     if {!$::quiet} {
+         puts "Starting test server at port $port"
+     }
+-    socket -server accept_test_clients $port
++    socket -server accept_test_clients -myaddr 127.0.0.1 $port
+ 
+     # Start the client instances
+     set ::clients_pids {}
+-- 
+1.7.10
+
