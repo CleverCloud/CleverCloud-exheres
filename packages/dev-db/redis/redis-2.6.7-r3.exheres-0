@@ -44,4 +44,6 @@ src_install() {
     install_systemd_files
     insinto /etc
     doins redis.conf
+    diropts -m 0755 -o redis -g redis
+    keepdir /var/db/redis/{,.rdb}
 }
