@@ -7,6 +7,7 @@ After=network.target
 Requires=network.target
 
 [Service]
+User=redis
 ExecStart=/usr/bin/redis-server /etc/redis.conf
 Restart=always
 

@@ -15,6 +15,9 @@ PLATFORMS="~amd64"
 MYOPTIONS=""
 
 DEPENDENCIES="
+run:
+    group/redis
+    user/redis
 test:
     dev-lang/tcl
 "
