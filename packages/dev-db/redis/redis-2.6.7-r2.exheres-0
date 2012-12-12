@@ -37,7 +37,7 @@ src_test() {
 }
 
 src_install() {
-    emake DESTDIR="${IMAGE}" PREFIX="/" install
+    emake DESTDIR="${IMAGE}" PREFIX="/usr" install
     install_systemd_files
     insinto /etc
     doins redis.conf
