@@ -97,6 +97,8 @@ src_install() {
         "${MONGO_PARAMS[@]}" \
         install
 
+    [[ "${LIBDIR}" != "lib" ]] && edo rm -r "${IMAGE}"/usr/lib
+
     emagicdocs
 }
 
