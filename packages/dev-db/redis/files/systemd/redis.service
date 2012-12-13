@@ -8,6 +8,7 @@ Requires=network.target
 
 [Service]
 User=redis
+WorkingDirectory=/var/db/redis
 ExecStart=/usr/bin/redis-server /etc/redis.conf
 Restart=always
 
