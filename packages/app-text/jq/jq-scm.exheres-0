@@ -24,7 +24,7 @@ src_prepare() {
 }
 
 src_install() {
-    emake prefix="${IMAGE}" install
+    dobin jq
 }
 
 src_test() {
