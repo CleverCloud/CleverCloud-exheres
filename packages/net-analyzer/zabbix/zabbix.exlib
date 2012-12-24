@@ -13,84 +13,44 @@ MYOPTIONS="
     ipv6
     postgres
     snmp
-    (
-        agent [[ description = [ Installs the Zabbix Agent which sends data to server ] ]]
-        frontend [[ description = [ Installs files for the frontend ] ]]
-        server [[ description = [ Installs the Zabbix Server which collects data ] ]]
-    ) [[ number-selected = at-least-one ]]
 "
 
 DEPENDENCIES="
     build+run:
-        agent? (
-            group/zabbix
-            user/zabbix
-            snmp? ( net/net-snmp )
-        )
-        server? (
-            group/zabbix
-            user/zabbix
-            postgres? ( dev-db/postgresql )
-        )
+        group/zabbix
+        user/zabbix
+        postgres? ( dev-db/postgresql )
         snmp? ( net/net-snmp )
-    run:
-        frontend? (
-            postgres? ( dev-lang/php[php_extensions:pgsql] )
-        )
 "
 
-DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'agent' 'server' 'ipv6')
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'ipv6')
 DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( 'postgres postgresql' 'snmp net-snmp' )
-DEFAULT_SRC_CONFIGURE_PARAMS=( "--sysconfdir=/etc/${PN}" )
-
-src_configure() {
-    if option server || option agent; then
-        default
-    fi
-}
+DEFAULT_SRC_CONFIGURE_PARAMS=( "--sysconfdir=/etc/${PN}" '--enable-server' '--disable-agent' )
 
 src_install() {
     default
 
-    # We can't call install_systemd_files because we need to install services
-    # based on enabled options
     if option systemd; then
-        (option server || option agent) && insinto ${SYSTEMDSYSTEMUNITDIR}
-        option server && doins "${FILES}"/systemd/zabbix-server.service
-        option agent && doins "${FILES}"/systemd/zabbix-agentd.service
-        (option server || option agent) && insinto /usr/${LIBDIR}/tmpfiles.d && doins "${FILES}"/tmpfiles.d/zabbix.conf
+        install_systemd_files
+        insinto /usr/${LIBDIR}/tmpfiles.d
+        doins "${FILES}"/tmpfiles.d/zabbix.conf
     fi
 
     # We have some empty folders here
-    (option server && ! option agent) && edo rmdir "${IMAGE}"/usr/share/man/man1
+    edo rmdir "${IMAGE}"/usr/share/man/man1
 
-    local KEEPDIRS=()
-    option agent && KEEPDIRS+=(
-        /etc/${PN}/zabbix_agent.conf.d
-        /etc/${PN}/zabbix_agentd.conf.d
-    )
-    option server && KEEPDIRS+=(
+    KEEPDIRS=(
         /etc/${PN}/zabbix_server.conf.d
         /usr/share/${PN}/externalscripts
         /usr/share/${PN}/alertscripts
     )
     keepdir ${KEEPDIRS[@]}
 
-    # These two lines are mandatory for systemd and can be useful for other init systems
-    option server && sed -i -e 's@^\(# PidFile.*\)@\1\nPidFile=/run/zabbix/zabbix-server.pid@' "${IMAGE}"/etc/${PN}/zabbix_server.conf
-    option agent && sed -i -e 's@^\(# PidFile.*\)@\1\nPidFile=/run/zabbix/zabbix-agentd.pid@' "${IMAGE}"/etc/${PN}/zabbix_agentd.conf
-
-    if option frontend; then
-        elog "The frontend is available in /usr/share/${PN}/frontends/php"
-        insinto /usr/share/${PN}/frontends
-        doins -r "${WORK}"/frontends/php
-    fi
+    # This line is mandatory for systemd and can be useful for other init systems
+    sed -i -e 's@^\(# PidFile.*\)@\1\nPidFile=/run/zabbix/zabbix-server.pid@' "${IMAGE}"/etc/${PN}/zabbix_server.conf
 
     elog "The database is not configured, schemes are available in /usr/share/${PN}/database"
     insinto /usr/share/${PN}
     doins -r "${WORK}"/database
-
-    # Makefile clean after copy
-    edo find "${IMAGE}"/usr/share/${PN} -type f -name "Makefile*" -delete
 }
 
