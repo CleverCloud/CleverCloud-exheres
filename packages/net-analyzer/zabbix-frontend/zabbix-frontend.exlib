@@ -1,0 +1,38 @@
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
+# Copyright 2012 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+SUMMARY="Enterprise-class Monitoring Tool"
+HOMEPAGE="http://www.zabbix.com"
+DOWNLOADS="mirror://sourceforge/zabbix/zabbix-${PV}.tar.gz"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS="
+    postgres
+"
+
+DEPENDENCIES="
+    run:
+        frontend? (
+            postgres? ( dev-lang/php[php_extensions:pgsql] )
+        )
+"
+
+src_configure() {
+    :
+}
+
+WORK="${WORKBASE}"/zabbix-${PV}
+
+src_install() {
+    elog "The frontend is available in /usr/share/${PN}/frontends/php"
+    insinto /usr/share/zabbix/frontends
+    doins -r "${WORK}"/frontends/php
+
+    # Makefile clean after copy
+    edo find "${IMAGE}"/usr/share/zabbix -type f -name "Makefile*" -delete
+}
+
