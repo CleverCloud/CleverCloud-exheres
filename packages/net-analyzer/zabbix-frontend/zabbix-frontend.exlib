@@ -16,9 +16,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     run:
-        frontend? (
-            postgres? ( dev-lang/php[php_extensions:pgsql] )
-        )
+        postgres? ( dev-lang/php[php_extensions:pgsql] )
 "
 
 src_configure() {
