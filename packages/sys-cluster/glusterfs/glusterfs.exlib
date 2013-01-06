@@ -15,10 +15,12 @@ DEPENDENCIES="
         sys-fs/fuse
 "
 
-DEFAULT_SRC_CONFIGURE_PARAMS=( --hates=docdir )
+DEFAULT_SRC_CONFIGURE_PARAMS=( --hates=docdir --localstatedir=/var )
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/remove-run-from-makefile.patch" )
 
 src_install() {
     default
 
-    keepdir /var/lib/run /var/lib/log/"${PN}"
+    keepdir /var/log/"${PN}"
 }
