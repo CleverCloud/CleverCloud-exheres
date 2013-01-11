@@ -9,6 +9,7 @@ After=network.target
 ExecStart=/usr/sbin/zabbix_server
 Type=forking
 PIDFile=/run/zabbix/zabbix-server.pid
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
