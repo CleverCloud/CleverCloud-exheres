@@ -9,18 +9,29 @@ DOWNLOADS="http://ceph.com/download/${PNV}.tar.gz"
 
 LICENCES="LGPL-2.1"
 SLOT="0"
-MYOPTIONS="fuse"
+MYOPTIONS="debug fuse"
 
 # tcmalloc: need packaging of google-perftools
 # libatomic-ops: need packaging of libatomic-ops
-DEFAULT_SRC_CONFIGURE_PARAMS=( --localstatedir=/var --without-tcmalloc --without-libatomic-ops )
-DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( fuse )
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --localstatedir=/var
+    --without-cryptopp
+    --without-hadoop
+    --without-libatomic-ops
+    --with-nss
+    --without-profiler
+    --without-radosgw
+    --without-tcmalloc
+)
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( debug fuse )
 
 DEPENDENCIES="
     build+run:
         dev-libs/boost
         dev-libs/libaio
+        dev-libs/nss
         sys-apps/keyutils
+        sys-apps/util-linux
         fuse? ( sys-fs/fuse )
 "
 
