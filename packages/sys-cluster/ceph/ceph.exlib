@@ -9,17 +9,19 @@ DOWNLOADS="http://ceph.com/download/${PNV}.tar.gz"
 
 LICENCES="LGPL-2.1"
 SLOT="0"
-MYOPTIONS=""
+MYOPTIONS="fuse"
 
 # tcmalloc: need packaging of google-perftools
 # libatomic-ops: need packaging of libatomic-ops
 DEFAULT_SRC_CONFIGURE_PARAMS=( --localstatedir=/var --without-tcmalloc --without-libatomic-ops )
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( fuse )
 
 DEPENDENCIES="
     build+run:
         dev-libs/boost
         dev-libs/libaio
         sys-apps/keyutils
+        fuse? ( sys-fs/fuse )
 "
 
 src_install() {
