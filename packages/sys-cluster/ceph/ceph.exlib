@@ -1,0 +1,30 @@
+# Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+# Based in part upon 'ceph-0.56.1.ebuild' from Gentoo, which is:
+#     Copyright 1999-2013 Gentoo Foundation
+
+SUMMARY="Ceph is a distributed object store and file system"
+HOMEPAGE="http://ceph.com"
+DOWNLOADS="http://ceph.com/download/${PNV}.tar.gz"
+
+LICENCES="LGPL-2.1"
+SLOT="0"
+MYOPTIONS=""
+
+# tcmalloc: need packaging of google-perftools
+# libatomic-ops: need packaging of libatomic-ops
+DEFAULT_SRC_CONFIGURE_PARAMS=( --localstatedir=/var --without-tcmalloc --without-libatomic-ops )
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/boost
+        dev-libs/libaio
+        sys-apps/keyutils
+"
+
+src_install() {
+    default
+
+    keepdir /etc/${PN} /var/log/${PN} /var/lib/${PN}/tmp
+}
+

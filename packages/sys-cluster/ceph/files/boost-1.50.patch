@@ -1,0 +1,11 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -356,7 +356,7 @@
+
+-AC_CHECK_HEADER([boost/spirit/include/classic_core.hpp], [],
++AC_CHECK_HEADER([boost/spirit/include/classic_core.hpp], [LIBS="${LIBS} -lboost_system"],
+   [AC_CHECK_HEADER([boost/spirit.hpp], [use_bspirit_old_hdr=yes],
+     AC_MSG_FAILURE(["Can't find boost spirit headers"]))])
+ AM_CONDITIONAL(USE_BOOST_SPIRIT_OLD_HDR, [test "$use_bspirit_old_hdr" = "yes"])
+
+ AC_CHECK_HEADER([boost/random/discrete_distribution.hpp],
