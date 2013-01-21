@@ -29,6 +29,7 @@ DEPENDENCIES="
     build+run:
         dev-libs/boost
         dev-libs/libaio
+        dev-libs/libedit
         dev-libs/nss
         sys-apps/keyutils
         sys-apps/util-linux
