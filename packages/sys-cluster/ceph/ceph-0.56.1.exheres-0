@@ -5,9 +5,7 @@ require ceph
 
 PLATFORMS="~amd64"
 
-DOWNLOADS="http://ceph.com/download/${PNV}argonaut.tar.gz"
-
-WORK="${WORKBASE}/${PNV}argonaut"
-
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/boost-1.50.patch" )
+src_configure() {
+    LDFLAGS="${LDFLAGS} -pthread" default
+}
 
