@@ -5,6 +5,8 @@ require ceph
 
 PLATFORMS="~amd64"
 
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/hostname-fix.patch )
+
 src_configure() {
     LDFLAGS="${LDFLAGS} -pthread" default
 }
