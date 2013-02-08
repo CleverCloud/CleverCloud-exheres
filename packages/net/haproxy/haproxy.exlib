@@ -18,7 +18,7 @@ DEPENDENCIES="
         user/haproxy
 "
 
-DEFAULT_SRC_COMPILE_PARAMS=( 'TARGET=linux26' 'USE_PCRE=1' )
+DEFAULT_SRC_COMPILE_PARAMS=( 'PREFIX=/usr' 'TARGET=linux26' 'USE_PCRE=1' )
 DEFAULT_SRC_INSTALL_PARAMS=( 'PREFIX=/usr' "DOCDIR=/usr/share/doc/${PNVR}" )
 
 src_install() {
