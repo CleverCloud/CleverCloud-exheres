@@ -7,3 +7,7 @@ PLATFORMS="~amd64"
 DOWNLOADS="http://haproxy.1wt.eu/download/$(ever range 1-2)/src/devel/${PNV/pre/dev}.tar.gz"
 WORK="${WORKBASE}"/${PNV/pre/dev}
 
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/0001-MEDIUM-New-cli-option-Ds-for-systemd-compatibility.patch
+                              "${FILES}"/0002-MEDIUM-add-haproxy-systemd-wrapper.patch
+                              "${FILES}"/0003-MEDIUM-add-systemd-service.patch )
+

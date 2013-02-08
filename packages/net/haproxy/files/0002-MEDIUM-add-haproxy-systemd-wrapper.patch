@@ -1,0 +1,220 @@
+Upstream: no, submitted to mailing list
+From 384740e86a887354e7f65432b12c423a9d5282e2 Mon Sep 17 00:00:00 2001
+From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+Date: Tue, 5 Feb 2013 16:26:55 +0100
+Subject: [PATCH 2/3] MEDIUM: add haproxy-systemd-wrapper
+
+Signed-off-by: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+---
+ .gitignore                    |   1 +
+ Makefile                      |  16 +++++-
+ src/haproxy-systemd-wrapper.c | 122 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 137 insertions(+), 2 deletions(-)
+ create mode 100644 src/haproxy-systemd-wrapper.c
+
+diff --git a/.gitignore b/.gitignore
+index 5d9576a..5e6f556 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -12,6 +12,7 @@ src/*.o
+ *.log*
+ *.trace*
+ haproxy-*
++!src/*.c
+ make-*
+ dlmalloc.c
+ 00*.patch
+diff --git a/Makefile b/Makefile
+index f1eed55..ca9e1b2 100644
+--- a/Makefile
++++ b/Makefile
+@@ -593,7 +593,7 @@ all:
+ 	@echo
+ 	@exit 1
+ else
+-all: haproxy
++all: haproxy haproxy-systemd-wrapper
+ endif
+ 
+ OBJS = src/haproxy.o src/sessionhash.o src/base64.o src/protocol.o \
+@@ -618,12 +618,17 @@ ifneq ($(TRACE),)
+ OBJS += src/trace.o
+ endif
+ 
++WRAPPER_OBJS = src/haproxy-systemd-wrapper.o
++
+ # Not used right now
+ LIB_EBTREE = $(EBTREE_DIR)/libebtree.a
+ 
+ haproxy: $(OBJS) $(OPTIONS_OBJS) $(EBTREE_OBJS)
+ 	$(LD) $(LDFLAGS) -o $@ $^ $(LDOPTS)
+ 
++haproxy-systemd-wrapper: $(WRAPPER_OBJS)
++	$(LD) $(LDFLAGS) -o $@ $^ $(LDOPTS)
++
+ $(LIB_EBTREE): $(EBTREE_OBJS)
+ 	$(AR) rv $@ $^
+ 
+@@ -646,6 +651,11 @@ src/haproxy.o:	src/haproxy.c
+ 	      -DBUILD_OPTIONS='"$(strip $(BUILD_OPTIONS))"' \
+ 	       -c -o $@ $<
+ 
++src/haproxy-systemd-wrapper.o:	src/haproxy-systemd-wrapper.c
++	$(CC) $(COPTS) \
++	      -DSBINDIR='"$(strip $(SBINDIR))"' \
++	       -c -o $@ $<
++
+ src/dlmalloc.o: $(DLMALLOC_SRC)
+ 	$(CC) $(COPTS) -DDEFAULT_MMAP_THRESHOLD=$(DLMALLOC_THRES) -c -o $@ $<
+ 
+@@ -659,9 +669,10 @@ install-doc:
+ 		install -m 644 doc/$$x.txt $(DESTDIR)$(DOCDIR) ; \
+ 	done
+ 
+-install-bin: haproxy
++install-bin: haproxy haproxy-systemd-wrapper
+ 	install -d $(DESTDIR)$(SBINDIR)
+ 	install haproxy $(DESTDIR)$(SBINDIR)
++	install haproxy-systemd-wrapper $(DESTDIR)$(SBINDIR)
+ 
+ install: install-bin install-man install-doc
+ 
+@@ -670,6 +681,7 @@ clean:
+ 	for dir in . src include/* doc ebtree; do rm -f $$dir/*~ $$dir/*.rej $$dir/core; done
+ 	rm -f haproxy-$(VERSION).tar.gz haproxy-$(VERSION)$(SUBVERS).tar.gz
+ 	rm -f haproxy-$(VERSION) nohup.out gmon.out
++	rm -f haproxy-systemd-wrapper
+ 
+ tags:
+ 	find src include \( -name '*.c' -o -name '*.h' \) -print0 | \
+diff --git a/src/haproxy-systemd-wrapper.c b/src/haproxy-systemd-wrapper.c
+new file mode 100644
+index 0000000..aa509f6
+--- /dev/null
++++ b/src/haproxy-systemd-wrapper.c
+@@ -0,0 +1,122 @@
++/*
++ * Wrapper to make haproxy systemd-compliant.
++ *
++ * Copyright 2013 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version
++ * 2 of the License, or (at your option) any later version.
++ *
++ */
++
++#include <limits.h>
++#include <signal.h>
++#include <stdarg.h>
++#include <stdbool.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <sys/wait.h>
++
++#define MAX_ARGS 10
++
++static pid_t pid = 0;
++static const char *conf_file = "/etc/haproxy/haproxy.cfg";
++static const char *pid_file = "/run/haproxy.pid";
++
++static pid_t exec_bg(char **pid_strv, int nb_pid, char *arg, ...)
++{
++	pid_t pid = fork();
++	if (!pid) {
++		char **argv = calloc(MAX_ARGS + nb_pid + 1, sizeof(char *));
++		int i;
++		int argno = 0;
++		va_list al;
++		va_start(al, arg);
++		while (arg && argno < MAX_ARGS + 1) {
++			argv[argno++] = arg;
++			arg = va_arg(al, char *);
++		}
++		va_end (al);
++		for (i = 0; i < nb_pid; ++i)
++			argv[argno++] = pid_strv[i];
++		argv[argno] = NULL;
++		execv(argv[0], argv);
++		exit(0);
++	} else return pid;
++}
++
++static int read_pids(char ***pid_strv)
++{
++	FILE *f = fopen(pid_file, "r");
++	int read = 0, allocated = 8;
++	char pid_str[10];
++
++	if (!f)
++		return 0;
++
++	*pid_strv = malloc(allocated * sizeof(char *));
++	while (1 == fscanf(f, "%s\n", pid_str)) {
++		if (read == allocated) {
++			allocated *= 2;
++			*pid_strv = realloc(*pid_strv, allocated * sizeof(char *));
++		}
++		(*pid_strv)[read++] = strdup(pid_str);
++	}
++
++	fclose(f);
++
++	return read;
++}
++
++static void signal_handler(int signum __attribute__((unused)))
++{
++	int i;
++	char **pid_strv = NULL;
++	int nb_pid = read_pids(&pid_strv);
++
++	pid = exec_bg(pid_strv, nb_pid, SBINDIR"/haproxy", "-Ds", "-f", conf_file, "-p", pid_file, "-sf", NULL);
++
++	for (i = 0; i < nb_pid; ++i)
++		free(pid_strv[i]);
++	free(pid_strv);
++}
++
++static void usage(const char *progname)
++{
++	fprintf(stderr, "Usage: %s [-f cfgfile] [-p pidfile]\n", progname);
++	exit(1);
++}
++
++static void init(int argc, char **argv)
++{
++	const char *progname = *argv;
++	--argc; ++argv;
++	while (argc > 0) {
++		const char *flag;
++		if (**argv != '-' || argc == 1)
++			usage(progname);
++		flag = *argv + 1;
++		--argc; ++argv;
++		switch (*flag) {
++		case 'f': conf_file = *argv; break;
++		case 'p': pid_file = *argv; break;
++		default: usage(progname);
++		}
++		--argc; ++argv;
++	}
++}
++
++int main(int argc, char **argv)
++{
++	init(argc, argv);
++
++	signal(SIGUSR2, &signal_handler);
++
++	pid = exec_bg(NULL, 0, SBINDIR"/haproxy", "-Ds", "-f", conf_file, "-p", pid_file, NULL);
++	while (-1 != waitpid(pid, NULL, 0));
++
++	return EXIT_SUCCESS;
++}
+-- 
+1.8.1.2
+

@@ -1,0 +1,76 @@
+Upstream: no, submitted to mailing list
+From 9128248bf057b201a9df266c4f08fc193a24b218 Mon Sep 17 00:00:00 2001
+From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+Date: Fri, 8 Feb 2013 14:35:34 +0100
+Subject: [PATCH 3/3] MEDIUM: add systemd service
+
+Signed-off-by: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+---
+ .gitignore                         |  1 +
+ Makefile                           |  8 ++++++--
+ contrib/systemd/haproxy.service.in | 11 +++++++++++
+ 3 files changed, 18 insertions(+), 2 deletions(-)
+ create mode 100644 contrib/systemd/haproxy.service.in
+
+diff --git a/.gitignore b/.gitignore
+index 5e6f556..ec1545a 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -16,3 +16,4 @@ haproxy-*
+ make-*
+ dlmalloc.c
+ 00*.patch
++*.service
+diff --git a/Makefile b/Makefile
+index ca9e1b2..1b81fc7 100644
+--- a/Makefile
++++ b/Makefile
+@@ -593,7 +593,7 @@ all:
+ 	@echo
+ 	@exit 1
+ else
+-all: haproxy haproxy-systemd-wrapper
++all: haproxy haproxy-systemd-wrapper systemd/haproxy.service
+ endif
+ 
+ OBJS = src/haproxy.o src/sessionhash.o src/base64.o src/protocol.o \
+@@ -659,6 +659,10 @@ src/haproxy-systemd-wrapper.o:	src/haproxy-systemd-wrapper.c
+ src/dlmalloc.o: $(DLMALLOC_SRC)
+ 	$(CC) $(COPTS) -DDEFAULT_MMAP_THRESHOLD=$(DLMALLOC_THRES) -c -o $@ $<
+ 
++systemd/haproxy.service: contrib/systemd/haproxy.service.in
++	mkdir -p systemd
++	sed -e 's:@SBINDIR@:'$(strip $(SBINDIR))':' $< > $@
++
+ install-man:
+ 	install -d $(DESTDIR)$(MANDIR)/man1
+ 	install -m 644 doc/haproxy.1 $(DESTDIR)$(MANDIR)/man1
+@@ -681,7 +685,7 @@ clean:
+ 	for dir in . src include/* doc ebtree; do rm -f $$dir/*~ $$dir/*.rej $$dir/core; done
+ 	rm -f haproxy-$(VERSION).tar.gz haproxy-$(VERSION)$(SUBVERS).tar.gz
+ 	rm -f haproxy-$(VERSION) nohup.out gmon.out
+-	rm -f haproxy-systemd-wrapper
++	rm -f haproxy-systemd-wrapper systemd/haproxy.service
+ 
+ tags:
+ 	find src include \( -name '*.c' -o -name '*.h' \) -print0 | \
+diff --git a/contrib/systemd/haproxy.service.in b/contrib/systemd/haproxy.service.in
+new file mode 100644
+index 0000000..f925651
+--- /dev/null
++++ b/contrib/systemd/haproxy.service.in
+@@ -0,0 +1,11 @@
++[Unit]
++Description=HAProxy Load Balancer
++After=network.target
++
++[Service]
++ExecStart=@SBINDIR@/haproxy-systemd-wrapper -f /etc/haproxy/haproxy.cfg -p /run/haproxy.pid
++ExecReload=/usr/bin/kill -USR2 $MAINPID
++Restart=always
++
++[Install]
++WantedBy=multi-user.target
+-- 
+1.8.1.2
+
