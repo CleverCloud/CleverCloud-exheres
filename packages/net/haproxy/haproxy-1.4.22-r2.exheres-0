@@ -5,5 +5,3 @@ require haproxy
 
 PLATFORMS="~amd64"
 
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/0001-MEDIUM-New-cli-option-Ds-for-systemd-compatibility.patch )
-
