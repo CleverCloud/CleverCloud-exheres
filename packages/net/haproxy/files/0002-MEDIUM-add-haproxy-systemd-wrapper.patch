@@ -1,15 +1,31 @@
-Upstream: no, submitted to mailing list
-From 384740e86a887354e7f65432b12c423a9d5282e2 Mon Sep 17 00:00:00 2001
+Upstream: no, submitted on the mailing list
+From 63ac67c59ffbd6a1536e97bc63423f91a65d688b Mon Sep 17 00:00:00 2001
 From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 Date: Tue, 5 Feb 2013 16:26:55 +0100
 Subject: [PATCH 2/3] MEDIUM: add haproxy-systemd-wrapper
+
+Currently, to reload haproxy configuration, you have to use "-sf".
+
+There is a problem with this way of doing things. First of all, in the systemd world,
+reload commands should be "oneshot" ones, which means they should not be the new main
+process but rather a tool which makes a call to it and then exits. With the current approach,
+the reload command is the new main command and moreover, it makes the previous one exit.
+Systemd only tracks the main program, seeing it ending, it assumes it either finished or failed,
+and kills everything remaining as a grabage collector. We then end up with no haproxy running
+at all.
+
+This patch adds wrapper around haproxy, no changes at all have been made into it,
+so it's not intrusive and doesn't change anything for other hosts. What this wrapper does
+is basically launching haproxy as a child, listen to the SIGUSR2 (not to conflict with
+haproxy itself) signal, and spawing a new haproxy with "-sf" as a child to relay the
+first one.
 
 Signed-off-by: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 ---
  .gitignore                    |   1 +
  Makefile                      |  16 +++++-
- src/haproxy-systemd-wrapper.c | 122 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 137 insertions(+), 2 deletions(-)
+ src/haproxy-systemd-wrapper.c | 113 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 128 insertions(+), 2 deletions(-)
  create mode 100644 src/haproxy-systemd-wrapper.c
 
 diff --git a/.gitignore b/.gitignore
@@ -89,10 +105,10 @@ index f1eed55..ca9e1b2 100644
  	find src include \( -name '*.c' -o -name '*.h' \) -print0 | \
 diff --git a/src/haproxy-systemd-wrapper.c b/src/haproxy-systemd-wrapper.c
 new file mode 100644
-index 0000000..aa509f6
+index 0000000..57e8d7d
 --- /dev/null
 +++ b/src/haproxy-systemd-wrapper.c
-@@ -0,0 +1,122 @@
+@@ -0,0 +1,113 @@
 +/*
 + * Wrapper to make haproxy systemd-compliant.
 + *
@@ -105,9 +121,8 @@ index 0000000..aa509f6
 + *
 + */
 +
-+#include <limits.h>
++#include <errno.h>
 +#include <signal.h>
-+#include <stdarg.h>
 +#include <stdbool.h>
 +#include <stdio.h>
 +#include <stdlib.h>
@@ -115,28 +130,28 @@ index 0000000..aa509f6
 +#include <unistd.h>
 +#include <sys/wait.h>
 +
-+#define MAX_ARGS 10
-+
 +static pid_t pid = 0;
-+static const char *conf_file = "/etc/haproxy/haproxy.cfg";
-+static const char *pid_file = "/run/haproxy.pid";
++static char *pid_file = "/run/haproxy.pid";
++static int main_argc;
++static char **main_argv;
 +
-+static pid_t exec_bg(char **pid_strv, int nb_pid, char *arg, ...)
++static pid_t spawn_haproxy(char **pid_strv, int nb_pid)
 +{
 +	pid_t pid = fork();
 +	if (!pid) {
-+		char **argv = calloc(MAX_ARGS + nb_pid + 1, sizeof(char *));
++		/* 3 for "haproxy -Ds -sf" */
++		char **argv = calloc(4 + main_argc + nb_pid + 1, sizeof(char *));
 +		int i;
 +		int argno = 0;
-+		va_list al;
-+		va_start(al, arg);
-+		while (arg && argno < MAX_ARGS + 1) {
-+			argv[argno++] = arg;
-+			arg = va_arg(al, char *);
++		argv[argno++] = SBINDIR"/haproxy";
++		for (i = 0; i < main_argc; ++i)
++			argv[argno++] = main_argv[i];
++		argv[argno++] = "-Ds";
++		if (nb_pid > 0) {
++			argv[argno++] = "-sf";
++			for (i = 0; i < nb_pid; ++i)
++				argv[argno++] = pid_strv[i];
 +		}
-+		va_end (al);
-+		for (i = 0; i < nb_pid; ++i)
-+			argv[argno++] = pid_strv[i];
 +		argv[argno] = NULL;
 +		execv(argv[0], argv);
 +		exit(0);
@@ -172,33 +187,21 @@ index 0000000..aa509f6
 +	char **pid_strv = NULL;
 +	int nb_pid = read_pids(&pid_strv);
 +
-+	pid = exec_bg(pid_strv, nb_pid, SBINDIR"/haproxy", "-Ds", "-f", conf_file, "-p", pid_file, "-sf", NULL);
++	pid = spawn_haproxy(pid_strv, nb_pid);
 +
 +	for (i = 0; i < nb_pid; ++i)
 +		free(pid_strv[i]);
 +	free(pid_strv);
 +}
 +
-+static void usage(const char *progname)
-+{
-+	fprintf(stderr, "Usage: %s [-f cfgfile] [-p pidfile]\n", progname);
-+	exit(1);
-+}
-+
 +static void init(int argc, char **argv)
 +{
-+	const char *progname = *argv;
-+	--argc; ++argv;
-+	while (argc > 0) {
-+		const char *flag;
-+		if (**argv != '-' || argc == 1)
-+			usage(progname);
-+		flag = *argv + 1;
-+		--argc; ++argv;
-+		switch (*flag) {
-+		case 'f': conf_file = *argv; break;
-+		case 'p': pid_file = *argv; break;
-+		default: usage(progname);
++	while (argc > 1) {
++		if (**argv == '-') {
++			char *flag = *argv + 1;
++			--argc; ++argv;
++			if (*flag == 'p')
++				pid_file = *argv;
 +		}
 +		--argc; ++argv;
 +	}
@@ -206,12 +209,16 @@ index 0000000..aa509f6
 +
 +int main(int argc, char **argv)
 +{
++	--argc; ++argv;
++        main_argc = argc;
++        main_argv = argv;
++
 +	init(argc, argv);
 +
 +	signal(SIGUSR2, &signal_handler);
 +
-+	pid = exec_bg(NULL, 0, SBINDIR"/haproxy", "-Ds", "-f", conf_file, "-p", pid_file, NULL);
-+	while (-1 != waitpid(pid, NULL, 0));
++	pid = spawn_haproxy(NULL, 0);
++	while (-1 != waitpid(pid, NULL, 0) || errno == EINTR);
 +
 +	return EXIT_SUCCESS;
 +}

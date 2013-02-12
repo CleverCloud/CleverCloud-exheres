@@ -1,5 +1,5 @@
-Upstream: no, submitted to mailing list
-From 9128248bf057b201a9df266c4f08fc193a24b218 Mon Sep 17 00:00:00 2001
+Upstream: no, submitted on the mailing list
+From 84b4b289364e04d187619df2759e41312799be3f Mon Sep 17 00:00:00 2001
 From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 Date: Fri, 8 Feb 2013 14:35:34 +0100
 Subject: [PATCH 3/3] MEDIUM: add systemd service
