@@ -28,7 +28,7 @@ DEPENDENCIES="
         odbc? ( dev-db/unixODBC )
 "
 
-WORK="${WORKBASE}"/${MY_PNV}
+WORK="${WORKBASE}"/${MY_PNV:0:14}
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     --hates=docdir
