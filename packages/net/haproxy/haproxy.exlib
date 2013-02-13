@@ -2,7 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 if ever at_least "1.5-pre1"; then
-    require systemd-service [ systemd_files=[ systemd ] ]
+    # TODO: file instead of dir
+    require systemd-service [ systemd_files=[ contrib/systemd ] ]
 else
     require systemd-service
 fi
@@ -24,6 +25,12 @@ DEPENDENCIES="
 
 DEFAULT_SRC_COMPILE_PARAMS=( 'PREFIX=/usr' 'TARGET=linux26' 'USE_PCRE=1' )
 DEFAULT_SRC_INSTALL_PARAMS=( 'PREFIX=/usr' "DOCDIR=/usr/share/doc/${PNVR}" )
+
+src_compile() {
+    default
+
+    emake -C contrib/systemd PREFIX=/usr
+}
 
 src_install() {
     default
