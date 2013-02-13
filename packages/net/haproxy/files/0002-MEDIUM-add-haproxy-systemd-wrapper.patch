@@ -1,4 +1,4 @@
-Upstream: no, submitted on the mailing list
+Upstream: yes, http://git.1wt.eu/web?p=haproxy.git;a=commit;h=ed9803e606f25d906115f7e3e130b92197f8608e
 From 63ac67c59ffbd6a1536e97bc63423f91a65d688b Mon Sep 17 00:00:00 2001
 From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 Date: Tue, 5 Feb 2013 16:26:55 +0100

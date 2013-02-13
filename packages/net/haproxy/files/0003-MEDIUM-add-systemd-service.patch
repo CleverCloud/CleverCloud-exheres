@@ -1,3 +1,4 @@
+Upstream: yes, http://git.1wt.eu/web?p=haproxy.git;a=commit;h=f825580da885b912aba9d0c5417be95d5282d9ef
 From 58a130aa81824183c22896e9c63a010693f96a76 Mon Sep 17 00:00:00 2001
 From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 Date: Fri, 8 Feb 2013 14:35:34 +0100
