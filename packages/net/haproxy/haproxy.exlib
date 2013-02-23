@@ -2,7 +2,6 @@
 # Distributed under the terms of the GNU General Public License v2
 
 if ever at_least "1.5-pre1"; then
-    # TODO: file instead of dir
     require systemd-service [ systemd_files=[ contrib/systemd/${PN}.service ] ]
 else
     require systemd-service
