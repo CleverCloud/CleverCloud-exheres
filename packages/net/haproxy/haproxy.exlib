@@ -1,7 +1,11 @@
 # Copyright 2012 Kevin Decherf <kevin@kdecherf.com> 
 # Distributed under the terms of the GNU General Public License v2
 
-require systemd-service [ systemd_files=[ haproxy.service ] ]
+if ever at_least "1.5-pre1"; then
+    require systemd-service [ systemd_files=[ contrib/systemd/${PN}.service ] ]
+else
+    require systemd-service
+fi
 
 SUMMARY="The Reliable, High Performance TCP/HTTP Load Balancer"
 HOMEPAGE="http://haproxy.1wt.eu"
@@ -18,8 +22,14 @@ DEPENDENCIES="
         user/haproxy
 "
 
-DEFAULT_SRC_COMPILE_PARAMS=( 'TARGET=linux26' 'USE_PCRE=1' )
+DEFAULT_SRC_COMPILE_PARAMS=( 'PREFIX=/usr' 'TARGET=linux26' 'USE_PCRE=1' )
 DEFAULT_SRC_INSTALL_PARAMS=( 'PREFIX=/usr' "DOCDIR=/usr/share/doc/${PNVR}" )
+
+src_compile() {
+    default
+
+    emake -C contrib/systemd PREFIX=/usr
+}
 
 src_install() {
     default
