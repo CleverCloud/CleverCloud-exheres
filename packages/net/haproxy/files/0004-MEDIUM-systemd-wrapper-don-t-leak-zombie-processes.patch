@@ -1,0 +1,89 @@
+From 58944b3cdf7099ac57697fd6e9eef20eeeeb2b4a Mon Sep 17 00:00:00 2001
+From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+Date: Mon, 25 Feb 2013 22:47:25 +0100
+Subject: [PATCH] MEDIUM: systemd-wrapper: don't leak zombie processes
+
+Formerly, if A was replaced by B, and then B by C before
+A finished exiting, we didn't wait for B to finish so it
+ended up as a zombie process.
+Fix this by queuing all process we spawn for waitpid.
+
+Signed-off-by: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+---
+ src/haproxy-systemd-wrapper.c | 45 +++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 43 insertions(+), 2 deletions(-)
+
+diff --git a/src/haproxy-systemd-wrapper.c b/src/haproxy-systemd-wrapper.c
+index 57e8d7d..3c70271 100644
+--- a/src/haproxy-systemd-wrapper.c
++++ b/src/haproxy-systemd-wrapper.c
+@@ -24,6 +24,44 @@ static char *pid_file = "/run/haproxy.pid";
+ static int main_argc;
+ static char **main_argv;
+ 
++static struct {
++	pid_t *queue;
++	int count;
++	int size;
++	int index;
++	int rindex;
++} pids = {
++	.queue = NULL,
++	.count = 0,
++	.size = 8,
++	.index = 0,
++	.rindex = 0
++};
++
++static void pids_push(pid_t pid)
++{
++	if (pids.size == pids.count) {
++		// Double the capacity, write in the new half, rewind reading head
++		pids.index = pids.size;
++		pids.rindex = 0;
++		pids.size *= 2;
++		pids.queue = realloc(pids.queue, pids.size * sizeof(int));
++	}
++	pids.queue[pids.index++ % pids.size] = pid;
++	pids.count++;
++}
++
++static bool pids_pop(void)
++{
++	if (pids.count == 0)
++		pid = 0;
++	else {
++		pids.count--;
++		pid = pids.queue[pids.rindex++ % pids.size];
++	}
++	return pid != 0;
++}
++
+ static pid_t spawn_haproxy(char **pid_strv, int nb_pid)
+ {
+ 	pid_t pid = fork();
+@@ -76,7 +114,7 @@ static void signal_handler(int signum __attribute__((unused)))
+ 	char **pid_strv = NULL;
+ 	int nb_pid = read_pids(&pid_strv);
+ 
+-	pid = spawn_haproxy(pid_strv, nb_pid);
++	pids_push(spawn_haproxy(pid_strv, nb_pid));
+ 
+ 	for (i = 0; i < nb_pid; ++i)
+ 		free(pid_strv[i]);
+@@ -106,8 +144,11 @@ int main(int argc, char **argv)
+ 
+ 	signal(SIGUSR2, &signal_handler);
+ 
++	pids.queue = malloc(pids.size * sizeof(int));
+ 	pid = spawn_haproxy(NULL, 0);
+-	while (-1 != waitpid(pid, NULL, 0) || errno == EINTR);
++	while ((-1 != waitpid(pid, NULL, 0) || errno == EINTR) && pids_pop());
++
++	free(pids.queue);
+ 
+ 	return EXIT_SUCCESS;
+ }
+-- 
+1.8.1.3
+

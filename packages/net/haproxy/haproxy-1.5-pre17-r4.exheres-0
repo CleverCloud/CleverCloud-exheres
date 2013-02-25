@@ -9,5 +9,6 @@ WORK="${WORKBASE}"/${PNV/pre/dev}
 
 DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/0001-MEDIUM-New-cli-option-Ds-for-systemd-compatibility.patch
                               "${FILES}"/0002-MEDIUM-add-haproxy-systemd-wrapper.patch
-                              "${FILES}"/0003-MEDIUM-add-systemd-service.patch )
+                              "${FILES}"/0003-MEDIUM-add-systemd-service.patch
+                              "${FILES}"/0004-MEDIUM-systemd-wrapper-don-t-leak-zombie-processes.patch )
 
