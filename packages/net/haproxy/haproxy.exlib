@@ -28,7 +28,9 @@ DEFAULT_SRC_INSTALL_PARAMS=( 'PREFIX=/usr' "DOCDIR=/usr/share/doc/${PNVR}" )
 src_compile() {
     default
 
-    emake -C contrib/systemd PREFIX=/usr
+    if ever at_least "1.5-pre1"; then
+        emake -C contrib/systemd PREFIX=/usr
+    fi
 }
 
 src_install() {
