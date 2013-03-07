@@ -1,0 +1,28 @@
+# Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+SUMMARY="Lightweight connection pooler for PostgreSQL"
+HOMEPAGE="http://pgfoundry.org/projects/${PN}/"
+
+LICENCES="BSD"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+        dev-db/postgresql
+        dev-libs/libevent
+"
+
+src_install() {
+    install_systemd_files
+
+    insinto /etc/${PN}
+    doins ${FILES}/${PN}.ini
+
+    default
+}
+

@@ -1,0 +1,9 @@
+# Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require pgbouncer
+
+DOWNLOADS="http://pgfoundry.org/frs/download.php/3393/${PNV}.tar.gz"
+
+PLATFORMS="~amd64"
+
