@@ -1,0 +1,12 @@
+# Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require setuptools pypi
+
+SUMMARY="Full stack for building (and hosting) network applications"
+HOMEPAGE="http://projects.unbit.it/uwsgi/"
+DOWNLOADS="http://projects.unbit.it/downloads/${PNV}.tar.gz"
+
+LICENCES="GPL-2"
+SLOT="0"
+
