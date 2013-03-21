@@ -29,6 +29,7 @@ DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( debug fuse )
 
 DEPENDENCIES="
     build+run:
+        app-arch/snappy
         dev-libs/boost
         dev-libs/libaio
         dev-libs/libedit
