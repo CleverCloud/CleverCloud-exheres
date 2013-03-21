@@ -19,6 +19,8 @@ src_install() {
     insinto /usr/include
     doins -r "${WORK}"/include/leveldb/
     insinto /usr/${LIBDIR}
-    doins "${WORK}"/lib*
+    doins "${WORK}"/lib{memenv.a,leveldb.{a,so,so.$(ever major 1)}}
+    exeinto /usr/${LIBDIR}
+    doexe "${WORK}"/libleveldb.so.$(ever range 0-2)
 }
 
