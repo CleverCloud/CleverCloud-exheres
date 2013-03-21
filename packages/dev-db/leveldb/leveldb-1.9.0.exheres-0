@@ -15,3 +15,10 @@ DEPENDENCIES="
         app-arch/snappy
 "
 
+src_install() {
+    insinto /usr/include
+    doins -r "${WORK}"/include/leveldb/
+    insinto /usr/${LIBDIR}
+    doins "${WORK}"/lib*
+}
+
