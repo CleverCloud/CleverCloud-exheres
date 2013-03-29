@@ -1,0 +1,19 @@
+# Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module ]
+
+SUMMARY="PHP extension for interfacing with memcached via libmemcached library"
+
+LICENCES="PHP"
+SLOT="0"
+
+MYOPTIONS="sasl"
+
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'sasl memcached-sasl' )
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/libmemcached[sasl?]
+"
+
