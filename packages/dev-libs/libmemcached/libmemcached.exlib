@@ -1,0 +1,24 @@
+# Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require launchpad
+
+SUMMARY="libMemcached is an open source client library for the memcached server"
+HOMEPAGE="http://libmemcached.org/libMemcached.html"
+
+LICENCES="BSD"
+SLOT="0"
+MYOPTIONS="sasl"
+
+DEPENDENCIES="
+    build+run:
+        sasl? ( net-libs/cyrus-sasl )
+"
+
+# Since tests are failing when net/memcached, they are skipped
+RESTRICT="test"
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/run-tests-on-localhost.patch" )
+
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'sasl' )
+
