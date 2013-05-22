@@ -1,0 +1,23 @@
+# Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require ceph
+
+PLATFORMS="~amd64"
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/hostname-fix.patch
+    "${FILES}"/70a4a971f4b46e80d288abe413adb6e2876d8f71.patch
+    "${FILES}"/c87788b69b82abaa9202e624d255033a0c5766b4.patch
+    "${FILES}"/fb222a0a1c98a4141b6d0e79eac7a41c208f7147.patch
+    "${FILES}"/d69290219d008ece749e8c43d9a358dc4304c417.patch
+    "${FILES}"/ce84a226d321458d4afca6f4defd742c7f209f11.patch
+    "${FILES}"/eb808cff392f69de8daf256534962674810f4ef1.patch
+    "${FILES}"/64871e093159ad06d84fb2a84c7808a81800dfc4.patch
+    "${FILES}"/d2a42538b1e349027e31bc2cb065e50af6294533.patch
+)
+
+src_configure() {
+    LDFLAGS="${LDFLAGS} -pthread" default
+}
+

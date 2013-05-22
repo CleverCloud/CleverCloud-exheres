@@ -1,0 +1,39 @@
+From d69290219d008ece749e8c43d9a358dc4304c417 Mon Sep 17 00:00:00 2001
+From: Danny Al-Gaaf <danny.al-gaaf@bisect.de>
+Date: Tue, 14 May 2013 19:15:23 +0200
+Subject: [PATCH] mds/Server.cc: fix possible NULL pointer dereference
+
+Assert if straydn is NULL.
+
+CID 1019554 (#2 of 2): Dereference after null check (FORWARD_NULL)
+  var_deref_model: Passing null pointer "straydn" to function
+  "MDSCacheObject::is_auth() const", which dereferences it.
+
+Signed-off-by: Danny Al-Gaaf <danny.al-gaaf@bisect.de>
+---
+ src/mds/Server.cc |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/src/mds/Server.cc b/src/mds/Server.cc
+index 46adf22..4afe10d 100644
+--- a/src/mds/Server.cc
++++ b/src/mds/Server.cc
+@@ -6210,9 +6210,12 @@ void Server::_rename_prepare(MDRequest *mdr,
+   
+   // guarantee stray dir is processed first during journal replay. unlink the old inode,
+   // then link the source inode to destdn
+-  if (destdnl->is_primary() && straydn->is_auth()) {
+-    metablob->add_dir_context(straydn->get_dir());
+-    metablob->add_dir(straydn->get_dir(), true);
++  if (destdnl->is_primary()) {
++    assert(straydn);
++    if (straydn->is_auth()) {
++      metablob->add_dir_context(straydn->get_dir());
++      metablob->add_dir(straydn->get_dir(), true);
++    }
+   }
+ 
+   // sub off target
+-- 
+1.7.2.5
+

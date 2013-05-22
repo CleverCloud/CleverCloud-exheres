@@ -1,0 +1,30 @@
+From ce84a226d321458d4afca6f4defd742c7f209f11 Mon Sep 17 00:00:00 2001
+From: Danny Al-Gaaf <danny.al-gaaf@bisect.de>
+Date: Tue, 14 May 2013 20:02:06 +0200
+Subject: [PATCH] mds/Locker.cc: reduce scope of forced_change_max
+
+Signed-off-by: Danny Al-Gaaf <danny.al-gaaf@bisect.de>
+---
+ src/mds/Locker.cc |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/mds/Locker.cc b/src/mds/Locker.cc
+index c5ddb92..4a23e0b 100644
+--- a/src/mds/Locker.cc
++++ b/src/mds/Locker.cc
+@@ -2736,11 +2736,11 @@ bool Locker::_do_cap_update(CInode *in, Capability *cap,
+   // increase or zero max_size?
+   uint64_t size = m->get_size();
+   bool change_max = false;
+-  bool forced_change_max = false;
+   uint64_t old_max = latest->client_ranges.count(client) ? latest->client_ranges[client].range.last : 0;
+   uint64_t new_max = old_max;
+   
+   if (in->is_file()) {
++    bool forced_change_max = false;
+     dout(20) << "inode is file" << dendl;
+     if (cap && ((cap->issued() | cap->wanted()) & CEPH_CAP_ANY_FILE_WR)) {
+       dout(20) << "client has write caps; m->get_max_size="
+-- 
+1.7.2.5
+
