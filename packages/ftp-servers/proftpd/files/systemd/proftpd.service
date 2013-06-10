@@ -1,0 +1,10 @@
+[Unit]
+Description=ProFTPd FTP Server
+After=syslog.target network.target
+
+[Service]
+EnvironmentFile=/etc/conf.d/proftpd
+ExecStart=/usr/sbin/proftpd -n $PROFTPD_OPTIONS
+
+[Install]
+WantedBy=multi-user.target

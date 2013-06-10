@@ -1,0 +1,37 @@
+# Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+SUMMARY="Highly configurable GPL-licensed FTP server software"
+HOMEPAGE="http://www.proftpd.org/"
+DOWNLOADS="ftp://ftp.proftpd.org/distrib/source/${PNV}.tar.gz"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS="
+    openssl
+    sftp [[ requires = openssl ]]
+"
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( '--disable-strip' )
+
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'openssl' )
+DEFAULT_SRC_CONFIGURE_OPTIONS=('sftp --with-modules=mod_sftp')
+
+DEPENDENCIES="
+    build+run:
+        openssl? ( dev-libs/openssl )
+    run:
+        user/ftp
+        group/ftp
+"
+
+src_install() {
+    default
+
+    rmdir ${IMAGE}/usr/{libexec,share/locale,lib64/proftpd} ${IMAGE}/var/{lib,}
+
+    install_systemd_files
+}
+
