@@ -42,40 +42,6 @@ MONGO_PARAMS=(
     --full
 )
 
-tests=(
-    background_job
-    balancer_policy
-    basic
-    btree
-    btree1
-    client
-    commands
-    cursor
-    directclient
-    histogram
-    js
-    jsobj
-    json
-    matcher
-    mmap
-    namespace
-    pdfile
-    perf
-    query
-    queryoptimizer
-    queryutil
-    repl
-    shard_chunk_manager
-    sharding
-    sock
-    spinlock
-    update
-)
-
-expensive_tests=(
-    threading
-)
-
 src_configure() {
     # mongodb dislikes calling scons with different flags, so store flags and re-use them
     if option v8 ; then MONGO_PARAMS+=( --usev8 ) ; fi
@@ -108,9 +74,6 @@ src_test() {
         "${MONGO_PARAMS[@]}" \
         test
 
-    edo ./test "${tests[@]}"
+    edo ./test
 }
 
-src_test_expensive() {
-    edo ./test "${expensive_tests[@]}"
-}
