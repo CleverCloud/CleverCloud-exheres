@@ -23,7 +23,7 @@ test:
 "
 
 DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/9e21f82cdce4732ceb7d5ec1ad6202fe95684816.patch
-                              "${FILES}"/b224882707d6eb514996929339702a88f7999dd4.patch )
+                              "${FILES}"/edd7eb9b7d4d8c8a7dbdf7b847c3e0025796e2d7.patch )
 
 src_test() {
     esandbox allow_net --connect inet:127.0.0.1@11111
