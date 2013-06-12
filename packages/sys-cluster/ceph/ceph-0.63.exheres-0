@@ -1,0 +1,15 @@
+# Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require ceph
+
+PLATFORMS="~amd64"
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/hostname-fix.patch
+)
+
+src_configure() {
+    LDFLAGS="${LDFLAGS} -pthread" default
+}
+
