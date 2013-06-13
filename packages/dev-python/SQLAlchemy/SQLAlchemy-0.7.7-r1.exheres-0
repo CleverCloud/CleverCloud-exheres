@@ -1,7 +1,0 @@
-# Copyright 2011 Dan Callaghan <djc@djc.id.au>
-# Distributed under the terms of the GNU General Public License v2
-
-require SQLAlchemy
-
-PLATFORMS="~amd64 ~x86"
-
