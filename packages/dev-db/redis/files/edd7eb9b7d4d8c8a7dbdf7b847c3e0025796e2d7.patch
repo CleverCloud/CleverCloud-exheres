@@ -1,4 +1,4 @@
-Upstream: no, https://github.com/antirez/redis/pull/819
+Upstream: yes, https://github.com/antirez/redis/pull/819
 From edd7eb9b7d4d8c8a7dbdf7b847c3e0025796e2d7 Mon Sep 17 00:00:00 2001
 From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 Date: Mon, 10 Dec 2012 18:21:10 +0100
