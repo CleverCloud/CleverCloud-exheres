@@ -1,9 +1,0 @@
-# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
-# Distributed under the terms of the GNU General Public License v2
-
-require net-snmp
-
-PLATFORMS="~amd64"
-
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/net-snmp-libnl.patch" )
-
