@@ -18,7 +18,5 @@ DEPENDENCIES="
 # Since tests are failing when net/memcached, they are skipped
 RESTRICT="test"
 
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/run-tests-on-localhost.patch" )
-
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'sasl' )
 
