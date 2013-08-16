@@ -1,0 +1,18 @@
+# Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="File system benchmark suite"
+HOMEPAGE="http://www.coker.com.au/bonnie++/"
+DOWNLOADS="http://www.coker.com.au/${PN}/${PNV}.tgz"
+
+RESTRICT=strip
+
+DEFAULT_SRC_CONFIGURE_PARAMS=('--disable-stripping')
+
+LICENCES="GPL-2"
+SLOT="0"
+
+src_install() {
+    emake eprefix="${IMAGE}" install
+}
+

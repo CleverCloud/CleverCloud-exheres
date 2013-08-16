@@ -1,0 +1,15 @@
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -58,9 +58,9 @@
+ 	@INSTALL_SCRIPT@ $(SCRIPTS) $(eprefix)/bin
+ 
+ install: install-bin
+-	mkdir -p @mandir@/man1 @mandir@/man8
+-	@INSTALL_DATA@ $(MAN1) @mandir@/man1
+-	@INSTALL_DATA@ $(MAN8) @mandir@/man8
++	mkdir -p $(eprefix)@mandir@/man1 $(eprefix)@mandir@/man8
++	@INSTALL_DATA@ $(MAN1) $(eprefix)@mandir@/man1
++	@INSTALL_DATA@ $(MAN8) $(eprefix)@mandir@/man8
+ 
+ %.o: %.cpp
+ 	$(CXX) -c $<

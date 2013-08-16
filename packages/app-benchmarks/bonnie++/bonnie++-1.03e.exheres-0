@@ -1,0 +1,9 @@
+# Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require bonnie++
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/makefile-1.03e.patch" )
+
+PLATFORMS="~amd64"
+

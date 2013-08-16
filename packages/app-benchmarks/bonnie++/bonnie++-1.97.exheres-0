@@ -1,0 +1,12 @@
+# Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require bonnie++
+
+DOWNLOADS="http://www.coker.com.au/${PN}/experimental/${PNV}.tgz"
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/makefile-1.97.patch" )
+
+WORK=${WORKBASE}/${PNV}.1
+
+PLATFORMS="~amd64"
+
