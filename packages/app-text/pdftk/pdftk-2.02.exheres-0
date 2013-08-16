@@ -21,12 +21,12 @@ BUGS_TO="markus@unixforces.net"
 WORK=${WORKBASE}/${PNV}-dist
 
 src_compile() {
-    edo cd "${WORK}"/pdftk
+    edo cd "${WORK}"/${PN}
     edo sed -e "s/-4.6//" -i Makefile.Debian
     edo sed -e "/export LIBGCJ=/d" -i Makefile.Debian
 
     # the Makefile is br0ken and should be rewritten, do not try to build in
-    # parallel as it will fail
+    # parallel as it will fail - last checked for 2.02
     edo make -j1 -f Makefile.Debian \
         LDLIBS='-lgcj -ldl -lrt -lz -pthread' # From libgcj.la
 }
