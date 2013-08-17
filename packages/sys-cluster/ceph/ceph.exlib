@@ -17,6 +17,7 @@ MYOPTIONS="debug fuse"
 # libatomic-ops: need packaging of libatomic-ops
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     --localstatedir=/var
+    --sbindir=/sbin
     --without-cryptopp
     --without-hadoop
     --without-libatomic-ops
