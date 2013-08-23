@@ -1,0 +1,21 @@
+# Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module ]
+
+SUMMARY="APC is a framework for caching and optimizing PHP intermediate code"
+
+LICENCES="PHP"
+SLOT="0"
+
+WORK=${WORKBASE}/${PNV^^}
+
+DEPENDENCIES="
+    build+run:
+        dev-lang/php[<5.5]
+"
+
+src_test() {
+    NO_INTERACTION=1 default
+}
+
