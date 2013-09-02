@@ -7,6 +7,31 @@ SUMMARY="Full stack for building (and hosting) network applications"
 HOMEPAGE="http://projects.unbit.it/uwsgi/"
 DOWNLOADS="http://projects.unbit.it/downloads/${PNV}.tar.gz"
 
+MYOPTIONS="
+    (
+        python [[ description = [ Will build the default target ] ]]
+        ruby
+    ) [[ number-selected = exactly-one ]]
+"
+
+DEPENDENCIES="
+    build+run:
+        ruby? ( dev-lang/ruby:2.0 )
+"
+
 LICENCES="GPL-2"
 SLOT="0"
 
+src_compile() {
+    if option python; then
+        edo python uwsgiconfig.py --build
+    elif option ruby; then
+        edo python uwsgiconfig.py --build ruby2
+    else
+        edo python uwsgiconfig.py --build core
+    fi
+}
+
+src_install() {
+    dobin uwsgi
+}
