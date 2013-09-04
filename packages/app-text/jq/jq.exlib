@@ -1,0 +1,23 @@
+# Copyright 2013 Ankur Kothari
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=stedolan rev=${PNV} ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.12 ] ]
+require python # gen_utf8_table.py
+
+SUMMARY="Command-line JSON processor"
+HOMEPAGE="http://stedolan.github.io/jq/"
+
+LICENCES="jq"
+SLOT="0"
+MYOPTIONS=""
+
+# TODO: build: doc? ( ruby + bundler, bonsai )
+DEPENDENCIES="
+    build:
+        sys-devel/bison
+        sys-devel/flex
+    test:
+        dev-util/valgrind
+"
+
