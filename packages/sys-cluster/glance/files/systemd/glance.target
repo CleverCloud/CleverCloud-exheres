@@ -1,8 +1,0 @@
-[Unit]
-Description=Glance System
-Requires=network.target
-After=network.target keystone.service mysql.service postgresql.service
-RefuseManualStart=no
-
-[Install]
-WantedBy=multi-user.target
