@@ -1,32 +1,8 @@
+# Copyright 2013 Ankur Kothari
 # Copyright 2012 Julien Durillon <julien.durillon@gmail.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=stedolan ]
+require jq
 
-SUMMARY="Command-line JSON processor"
-
-LICENCES="jq"
-SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS=""
 
-DEPENDENCIES="
-    build:
-        dev-lang/python:*
-        sys-devel/bison
-        sys-devel/flex
-    test:
-        dev-util/valgrind
-"
-
-src_prepare() {
-    rm lexer.gen.c
-}
-
-src_install() {
-    dobin jq
-}
-
-src_test() {
-    emake test
-}
