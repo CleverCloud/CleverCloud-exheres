@@ -1,0 +1,20 @@
+# Copyright 2013 Julien Durillon <julien.durillon@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require qmake4
+
+SUMMARY="Simple shell utility to convert html to pdf using the webkit rendering engine, and qt."
+HOMEPAGE="https://code.google.com/p/wkhtmltopdf/"
+DOWNLOADS="http://wkhtmltopdf.googlecode.com/files/${PNV}.tar.bz2"
+
+LICENCES="LGPL"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        x11-libs/qt[>=4.8.4]
+"
+
+BUGS_TO="julien.durillon@clever-cloud.com"
+
