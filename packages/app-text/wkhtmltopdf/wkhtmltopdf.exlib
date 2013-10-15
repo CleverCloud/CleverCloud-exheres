@@ -4,7 +4,6 @@
 require qmake4 googlecode
 
 SUMMARY="Simple shell utility to convert html to pdf using the webkit rendering engine, and qt."
-HOMEPAGE="https://code.google.com/p/wkhtmltopdf/"
 
 LICENCES="LGPL-3"
 SLOT="0"
@@ -12,7 +11,7 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
-        x11-libs/qt:4
+        x11-libs/qt:4[>=4.8.4]
 "
 
 BUGS_TO="julien.durillon@clever-cloud.com"
