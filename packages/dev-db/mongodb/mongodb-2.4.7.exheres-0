@@ -42,6 +42,11 @@ MONGO_PARAMS=(
     --full
 )
 
+src_prepare() {
+    default
+    edo sed -e 's/"-Werror", //' -i SConstruct
+}
+
 src_configure() {
     # mongodb dislikes calling scons with different flags, so store flags and re-use them
     if option v8 ; then MONGO_PARAMS+=( --usev8 ) ; fi
