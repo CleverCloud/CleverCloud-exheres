@@ -1,0 +1,65 @@
+# Copyright 2013 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+# Distributed under the terms of the GNU General Public License v2
+
+# We don't use the github exlib as docker needs to be built in a git clone
+# even for non scm versions.
+SCM_REPOSITORY="git://github.com/dotcloud/${PN}.git"
+SCM_TAG="v${PV}"
+require scm-git systemd-service [ systemd_files=[ contrib/init/systemd ] ]
+require bash-completion zsh-completion
+
+SUMMARY="ship and run any application as a lightweight container"
+DESCRIPTION="
+Docker is an open-source project to easily create lightweight, portable, self-sufficient containers
+from any application. The same container that a developer builds and tests on a laptop can run at
+scale, in production, on VMs, bare metal, OpenStack clusters, public clouds and more.
+"
+HOMEPAGE="http://www.docker.io/"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        dev-lang/go
+    build+run:
+        dev-db/sqlite:3
+        sys-apps/systemd [[ note = [ udev ] ]]
+        sys-fs/lvm2
+    run:
+        app-virtualization/lxc
+        net-firewall/iptables
+        net-misc/bridge-utils
+        sys-apps/iproute2
+"
+
+BUGS_TO="keruspe@exherbo.org"
+
+# Testsuite requires to rebuild too and needs a running docker daemon
+RESTRICT="test"
+
+src_prepare() {
+    default
+    edo mkdir -p src/github.com/dotcloud/
+    edo ln -s ../../.. src/github.com/dotcloud/docker
+}
+
+src_compile() {
+    GOPATH="$(pwd):$(pwd)/vendor" edo ./hack/make.sh dynbinary
+}
+
+src_test() {
+    edo ./hack/make.sh dyntest
+}
+
+src_install() {
+    newbin bundles/${PV}/dynbinary/${PNV} ${PN}
+    exeinto /usr/libexec/${PN}
+    newexe bundles/${PV}/dynbinary/${PN}init-${PV} ${PN}init
+    install_systemd_files
+    dobashcompletion contrib/completion/bash/docker
+    dozshcompletion contrib/completion/zsh/_docker
+}
+
