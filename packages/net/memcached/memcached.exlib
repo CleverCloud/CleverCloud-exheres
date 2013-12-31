@@ -1,7 +1,7 @@
 # Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require googlecode [ suffix=tar.gz ] systemd-service [ systemd_files=[ memcached.service ] ]
+require github [ user=memcached rev=${PV} ] systemd-service [ systemd_files=[ memcached.service ] ]
 
 SUMMARY="memcached is a high-performance, distributed memory object caching system"
 
