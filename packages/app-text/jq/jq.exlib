@@ -1,7 +1,7 @@
 # Copyright 2013 Ankur Kothari
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=stedolan rev=${PNV} ]
+require github [ user=stedolan tag=${PNV} ]
 require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.12 ] ]
 require python # gen_utf8_table.py
 
