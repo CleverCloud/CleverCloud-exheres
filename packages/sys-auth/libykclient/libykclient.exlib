@@ -1,0 +1,12 @@
+# Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=Yubico pn=yubico-c-client rev="ykclient-${PV}" ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.13 ] ]
+
+SUMMARY="Yubico C client library"
+HOMEPAGE="http://opensource.yubico.com/yubico-c-client/"
+
+LICENCES="BSD"
+SLOT="0"
+
