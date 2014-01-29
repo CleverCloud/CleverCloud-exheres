@@ -1,0 +1,23 @@
+# Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=Yubico rev=${PNV} ] qmake4
+
+SUMMARY="YubiKey Personalization GUI"
+HOMEPAGE="http://opensource.yubico.com/yubikey-personalization-gui/"
+
+LICENCES="BSD"
+SLOT="0"
+
+EQMAKE4_SOURCES=( "YKPersonalization.pro" )
+
+DEPENDENCIES="
+    build+run:
+        sys-auth/yubikey-personalization
+"
+
+src_install() {
+    default
+    dobin ${WORK}/build/release/yubikey-personalization-gui
+}
+
