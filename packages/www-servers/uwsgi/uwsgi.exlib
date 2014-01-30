@@ -1,7 +1,7 @@
 # Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require setuptools pypi
+require setup-py [ import=setuptools blacklist=none ] pypi
 
 SUMMARY="Full stack for building (and hosting) network applications"
 HOMEPAGE="http://projects.unbit.it/uwsgi/"
@@ -9,8 +9,8 @@ DOWNLOADS="http://projects.unbit.it/downloads/${PNV}.tar.gz"
 
 MYOPTIONS="
     (
-        python [[ description = [ Will build the default target ] ]]
-        ruby
+        python [[ description = [ Build the python plugin ] ]]
+        ruby   [[ description = [ Build the ruby plugin ] ]]
     ) [[ number-selected = exactly-one ]]
 "
 
@@ -22,16 +22,29 @@ DEPENDENCIES="
 LICENCES="GPL-2"
 SLOT="0"
 
+WORK="${WORKBASE}"/${PNV}
+
+src_unpack() {
+    default
+    easy-multibuild_src_unpack
+}
+
+prepare_one_multibuild() {
+    setup-py_prepare_one_multibuild
+    # Handle this by hand or it gets compiled during install
+    edo sed -e '/uwsgi_compiled/s/False/True/' -i setup.py
+}
+
 src_compile() {
     if option python; then
-        edo python uwsgiconfig.py --build
-    elif option ruby; then
-        edo python uwsgiconfig.py --build ruby2
+        emake
     else
-        edo python uwsgiconfig.py --build core
+        emake PROFILE=ruby2
     fi
+    setup-py_src_compile
 }
 
 src_install() {
     dobin uwsgi
+    setup-py_src_install
 }
