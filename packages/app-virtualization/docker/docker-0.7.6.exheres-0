@@ -38,6 +38,7 @@ DEPENDENCIES="
 BUGS_TO="keruspe@exherbo.org"
 
 # Testsuite requires to rebuild too and needs a running docker daemon
+# We cannot strip because of a runtime check on the docker-init binary
 RESTRICT="test strip"
 
 src_prepare() {
