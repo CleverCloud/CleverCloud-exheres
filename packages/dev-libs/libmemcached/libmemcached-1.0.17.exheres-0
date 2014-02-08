@@ -8,3 +8,10 @@ PLATFORMS="~amd64"
 DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/run-tests-on-localhost.patch"
                               -p0 "${FILES}"/1156_1155.patch )
 
+
+src_prepare() {
+    default
+    edo sed -e 's:HAVE_MEMCACHED_BINARY:0:' \
+            -e 's:MEMCACHED_BINARY:"/bin/true":' \
+            -i libtest/{memcached,server_container}.cc
+}

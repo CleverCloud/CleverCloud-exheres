@@ -38,16 +38,17 @@ DEPENDENCIES="
 BUGS_TO="keruspe@exherbo.org"
 
 # Testsuite requires to rebuild too and needs a running docker daemon
-RESTRICT="test"
+# We cannot strip because of a runtime check on the docker-init binary
+RESTRICT="test strip"
 
 src_prepare() {
     default
-    edo mkdir -p src/github.com/dotcloud/
-    edo ln -s ../../.. src/github.com/dotcloud/docker
+    edo mkdir -p gohome/src/github.com/dotcloud/
+    edo ln -s ../../../.. gohome/src/github.com/dotcloud/docker
 }
 
 src_compile() {
-    GOPATH="$(pwd):$(pwd)/vendor" edo ./hack/make.sh dynbinary
+    GOPATH="$(pwd)/gohome:$(pwd)/vendor" edo ./hack/make.sh dynbinary
 }
 
 src_test() {
