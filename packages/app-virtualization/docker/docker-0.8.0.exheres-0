@@ -5,7 +5,7 @@
 # even for non scm versions.
 SCM_REPOSITORY="git://github.com/dotcloud/${PN}.git"
 SCM_TAG="v${PV}"
-require scm-git systemd-service [ systemd_files=[ contrib/init/systemd ] ]
+require scm-git systemd-service [ systemd_files=[ contrib/init/systemd/socket-activation ] ]
 require bash-completion zsh-completion
 
 SUMMARY="ship and run any application as a lightweight container"
@@ -27,6 +27,7 @@ DEPENDENCIES="
     build+run:
         dev-db/sqlite:3
         sys-apps/systemd [[ note = [ udev ] ]]
+        sys-fs/btrfs-progs
         sys-fs/lvm2
     run:
         app-virtualization/lxc
