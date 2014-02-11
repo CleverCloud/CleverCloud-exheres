@@ -1,0 +1,32 @@
+# Copyright 2014 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Toolkit to manage Percona-Server"
+DESCRIPTION="
+Percona Toolkit for MySQL is a collection of advanced command-line tools used by Percona MySQL
+Support staff to perform a variety of MySQL server and system tasks that are too difficult or
+complex to perform manually, including
+"
+HOMEPAGE="http://www.percona.com/software/percona-toolkit"
+DOWNLOADS="http://dev.exherbo.org/~keruspe/${PNV}.tar.xz"
+
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    run:
+        dev-lang/perl:*
+"
+
+BUGS_TO="keruspe@exherbo.org"
+
+WORK="${WORKBASE}"
+
+src_install() {
+    dodoc usr/share/doc/${PNV}/*
+    doman usr/share/man/man1/*
+    dobin usr/bin/*
+}
+
