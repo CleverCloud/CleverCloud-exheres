@@ -18,6 +18,8 @@ MYOPTIONS=""
 DEPENDENCIES="
     run:
         dev-lang/perl:*
+        dev-perl/DBI
+        dev-perl/DBD-mysql
 "
 
 BUGS_TO="keruspe@exherbo.org"
