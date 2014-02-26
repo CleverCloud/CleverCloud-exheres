@@ -48,6 +48,8 @@ DEPENDENCIES="
         ]]
     suggestion:
         app-admin/logrotate [[ description = [ Use logrotate for rotating logs ] ]]
+    recommendation:
+        dev-db/percona-toolkit [[ description = [ The percona toolkit to manage Percona-Server ] ]]
 "
 
 DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/bison3.patch )
