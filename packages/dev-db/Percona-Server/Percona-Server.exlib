@@ -16,7 +16,7 @@ PERCONA_MAJOR_VERSION=$(ever range 1-2)
 SUMMARY="A relational database management system (RDBMS)"
 HOMEPAGE="http://www.percona.com/"
 DOWNLOADS="
-${HOMEPAGE}/redir/downloads/${PN}-${PERCONA_MAJOR_VERSION}/LATEST/source/${PNV}-rel$(exparam release).tar.gz
+${HOMEPAGE}redir/downloads/${PN}-${PERCONA_MAJOR_VERSION}/LATEST/source/${PNV}-rel$(exparam release).tar.gz
 "
 
 LICENCES="GPL-2" # with-exceptions
