@@ -14,9 +14,9 @@ export_exlib_phases pkg_pretend src_install
 PERCONA_MAJOR_VERSION=$(ever range 1-2)
 
 SUMMARY="A relational database management system (RDBMS)"
-HOMEPAGE="http://www.mysql.com/"
+HOMEPAGE="http://www.percona.com/"
 DOWNLOADS="
-http://www.percona.com/redir/downloads/${PN}-${PERCONA_MAJOR_VERSION}/LATEST/source/${PNV}-rel$(exparam release).tar.gz
+${HOMEPAGE}/redir/downloads/${PN}-${PERCONA_MAJOR_VERSION}/LATEST/source/${PNV}-rel$(exparam release).tar.gz
 "
 
 LICENCES="GPL-2" # with-exceptions
@@ -25,7 +25,7 @@ MYOPTIONS="
     debug
     embedded-server [[ description = [ The embedded MySQL server library, a full-featured MySQL server that can be run inside a client application ] ]]
     tcpd
-    multibuild_c: 32 64
+    ( multibuild_c: 32 64 )
 "
 
 DEPENDENCIES="
@@ -63,8 +63,7 @@ Percona-Server_pkg_pretend() {
         ewarn "To install a different major version of MySQL, you have to dump/reload your database."
         ewarn "When you've done this, please set 'PERCONA_MAJOR_UPGRADE=YesPlease', to continue the upgrade."
         ewarn "For more information visit:"
-        ewarn "http://dev.mysql.com/doc/refman/${PERCONA_MAJOR_VERSION}/en/upgrading.html"
-        ewarn "http://dev.mysql.com/doc/refman/${PERCONA_MAJOR_VERSION}/en/downgrading.html"
+        ewarn "${HOMEPAGE}/doc/${PN,,}/${PV}/upgrading_guide_55_56.html"
         die "Dump your databases before doing a major version upgrade of MySQL."
     fi
 
@@ -162,11 +161,7 @@ Percona-Server_src_install() {
 
     keepdir /etc/mysql
 
-    if ever at_least 5.6.10 ; then
-        edo cp "${IMAGE}"/usr/share/doc/${PNVR}/support-files/my-default.cnf "${IMAGE}"/etc/mysql/my.cnf
-    else
-        edo cp "${IMAGE}"/usr/share/doc/${PNVR}/support-files/my-small.cnf "${IMAGE}"/etc/mysql/my.cnf
-    fi
+    edo cp "${IMAGE}"/usr/share/doc/${PNVR}/support-files/my-default.cnf "${IMAGE}"/etc/mysql/my.cnf
     edo mv "${IMAGE}"/usr/bin/mysqlaccess.conf "${IMAGE}"/etc/mysql/mysqlaccess.conf
     edo chmod 644 "${IMAGE}"/etc/mysql/mysqlaccess.conf
 
