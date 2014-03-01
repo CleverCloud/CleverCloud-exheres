@@ -1,7 +1,7 @@
 # Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require setup-py [ import=setuptools blacklist=none ] pypi
+require alternatives setup-py [ import=setuptools blacklist=none ] pypi
 
 SUMMARY="Full stack for building (and hosting) network applications"
 HOMEPAGE="http://projects.unbit.it/uwsgi/"
@@ -11,12 +11,12 @@ MYOPTIONS="
     (
         python [[ description = [ Build the python plugin ] ]]
         ruby   [[ description = [ Build the ruby plugin ] ]]
-    ) [[ number-selected = exactly-one ]]
+    ) [[ number-selected = at-least-one ]]
 "
 
 DEPENDENCIES="
     build+run:
-        ruby? ( dev-lang/ruby:2.0 )
+        ruby? ( dev-lang/ruby:= )
 "
 
 LICENCES="GPL-2"
@@ -24,9 +24,28 @@ SLOT="0"
 
 WORK="${WORKBASE}"/${PNV}
 
+# From buildconf/default.ini
+PYTHON_PLUGINS=( python gevent )
+# From buildconf/ruby2.ini
+RUBY_PLUGINS=( rack rbthreads fiber )
+
 src_unpack() {
     default
     easy-multibuild_src_unpack
+}
+
+euwsgi() {
+    edo ${PYTHON} uwsgiconfig.py "${@}"
+}
+
+euwsgibuild() {
+    euwsgi --build "${@}"
+}
+
+euwsgiplugins() {
+    for p in "${@}"; do
+        euwsgi --plugin plugins/"${p}" core
+    done
 }
 
 prepare_one_multibuild() {
@@ -35,16 +54,32 @@ prepare_one_multibuild() {
     edo sed -e '/uwsgi_compiled/s/False/True/' -i setup.py
 }
 
+compile_one_multibuild () {
+    option python && euwsgiplugins "${PYTHON_PLUGINS[@]}"
+}
+
 src_compile() {
-    if option python; then
-        emake
-    else
-        emake PROFILE=ruby2
-    fi
+    euwsgibuild core
+    euwsgiplugins corerouter
+    option ruby && euwsgiplugins "${RUBY_PLUGINS[@]}"
     setup-py_src_compile
+}
+
+install_one_multibuild() {
+    alternatives=( "${PN}_python" "${MULTIBUILD_TARGET}" "${MULTIBUILD_TARGET}" )
+    for p in "${PYTHON_PLUGINS[@]}"; do
+        doins "${p}"_plugin.so
+        alternatives+=( /usr/${LIBDIR}/uwsgi/"${p}"_plugin.so "${p}"${MULTIBUILD_TARGET}_plugin.so )
+    done
+    alternatives_for "${alternatives[@]}"
 }
 
 src_install() {
     dobin uwsgi
+    insinto /usr/${LIBDIR}/uwsgi
+    doins corerouter_plugin.so
+    option ruby && for p in "${RUBY_PLUGINS[@]}"; do
+        doins "${p}"_plugin.so
+    done
     setup-py_src_install
 }
