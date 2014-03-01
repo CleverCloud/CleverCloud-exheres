@@ -55,6 +55,7 @@ prepare_one_multibuild() {
 }
 
 compile_one_multibuild () {
+    setup-py_compile_one_multibuild
     option python && euwsgiplugins "${PYTHON_PLUGINS[@]}"
 }
 
@@ -66,6 +67,7 @@ src_compile() {
 }
 
 install_one_multibuild() {
+    setup-py_install_one_multibuild
     alternatives=( "${PN}_python" "${MULTIBUILD_TARGET}" "${MULTIBUILD_TARGET}" )
     for p in "${PYTHON_PLUGINS[@]}"; do
         doins "${p}"_plugin.so
