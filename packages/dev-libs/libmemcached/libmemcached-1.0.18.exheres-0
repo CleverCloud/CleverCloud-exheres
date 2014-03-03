@@ -5,8 +5,7 @@ require libmemcached
 
 PLATFORMS="~amd64"
 
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/run-tests-on-localhost.patch"
-                              -p0 "${FILES}"/1156_1155.patch )
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/run-tests-on-localhost.patch" )
 
 
 src_prepare() {
