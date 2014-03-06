@@ -18,6 +18,8 @@ DEPENDENCIES="
 src_install() {
     insinto /usr/include
     doins -r "${WORK}"/include/leveldb/
+    insinto /usr/include/helpers/memenv
+    doins "${WORK}"/helpers/memenv/memenv.h
     insinto /usr/${LIBDIR}
     doins "${WORK}"/lib{memenv.a,leveldb.{a,so,so.$(ever major 1)}}
     exeinto /usr/${LIBDIR}
