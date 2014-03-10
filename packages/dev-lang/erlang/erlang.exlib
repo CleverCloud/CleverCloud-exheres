@@ -46,8 +46,8 @@ erlang_src_prepare() {
     default
 
     # Avoid automagics
-    option odbc || edo mv lib/odbc{,.disable}
-    edo mv lib/wx{,.disable}
+    option odbc || edo rm -r lib/odbc
+    edo rm -r lib/wx
 }
 
 erlang_src_install() {

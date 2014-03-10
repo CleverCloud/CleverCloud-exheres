@@ -5,3 +5,5 @@ require erlang
 
 PLATFORMS="~amd64"
 
+WORK="${WORK}"-1
+
