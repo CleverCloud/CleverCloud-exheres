@@ -7,8 +7,7 @@ require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.11 ] ] sys
 
 SUMMARY="SSL encryption wrapper between remote client and local or remote server"
 HOMEPAGE="http://www.${PN}.org/"
-DOWNLOADS="ftp://ftp.${PN}.org/${PN}/${PNV}.tar.gz
-           ftp://ftp.${PN}.org/${PN}/obsolete/$(ever major).x/${PNV}.tar.gz"
+DOWNLOADS="https://www.${PN}.org/downloads/${PNV}.tar.gz"
 
 LICENCES="stunnel"
 SLOT="0"
