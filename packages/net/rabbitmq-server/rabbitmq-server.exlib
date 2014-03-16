@@ -1,7 +1,7 @@
-# Copyright 2012 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+# Copyright 2012, 2013 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require systemd-service
+require systemd-service python [ multibuild=false blacklist=none ]
 
 SUMMARY="AMQP-compliant message broker"
 
@@ -16,11 +16,10 @@ DEPENDENCIES="
     build:
         app-arch/zip
         app-text/xmlto
-        dev-lang/python:*
         dev-libs/libxslt
-        dev-python/simplejson
+        dev-python/simplejson[python_abis:*(-)?]
     build+run:
-        dev-lang/erlang
+        dev-lang/erlang[>=13.03]
     run:
         group/rabbitmq
         user/rabbitmq
@@ -32,6 +31,7 @@ DEFAULT_SRC_INSTALL_PARAMS=(
     "MAN_DIR=${IMAGE}/usr/share/man"
     "SBIN_DIR=${IMAGE}/usr/sbin"
     "TARGET_DIR=${IMAGE}/usr/${LIBDIR}/erlang/lib/rabbitmq_server-${PV}"
+    "DOC_INSTALL_DIR=${IMAGE}/usr/share/doc/${PNVR}"
 )
 
 export_exlib_phases src_install
