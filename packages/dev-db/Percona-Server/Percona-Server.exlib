@@ -16,7 +16,7 @@ PERCONA_MAJOR_VERSION=$(ever range 1-2)
 SUMMARY="A relational database management system (RDBMS)"
 HOMEPAGE="http://www.percona.com/"
 DOWNLOADS="
-${HOMEPAGE}redir/downloads/${PN}-${PERCONA_MAJOR_VERSION}/LATEST/source/${PNV}-rel$(exparam release).tar.gz
+${HOMEPAGE}redir/downloads/${PN}-${PERCONA_MAJOR_VERSION}/${PNV}-$(exparam release)/source/tarball/${PNV,,}-$(exparam release).tar.gz
 "
 
 LICENCES="GPL-2" # with-exceptions
@@ -54,7 +54,8 @@ DEPENDENCIES="
 
 DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/bison3.patch )
 
-CMAKE_SOURCE="${WORKBASE}/${PNV}-rel$(exparam release)"
+WORK="${WORKBASE}/${PNV,,}-$(exparam release)"
+CMAKE_SOURCE="${WORK}"
 
 Percona-Server_pkg_pretend() {
     # Sanity check when upgrading to a different x.y version of Percona-Server
