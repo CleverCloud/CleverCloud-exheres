@@ -148,7 +148,7 @@ install_one_multibuild() {
     ! option debug && edo rmdir "${IMAGE}"/usr/${LIBDIR}/mysql/plugin/debug
 
     # construct ldpath for all targets
-    ldpath="/usr/${LIBDIR}/${PN}${ldpath:+:${ldpath}}"
+    ldpath="/usr/${LIBDIR}/mysql${ldpath:+:${ldpath}}"
 }
 
 Percona-Server_src_install() {
