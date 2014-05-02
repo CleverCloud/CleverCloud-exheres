@@ -30,7 +30,7 @@ DEPENDENCIES="
         sys-fs/btrfs-progs
         sys-fs/lvm2
     run:
-        app-virtualization/lxc
+        app-virtualization/lxc[>=1.0.0]
         net-firewall/iptables
         net-misc/bridge-utils
         sys-apps/iproute2
