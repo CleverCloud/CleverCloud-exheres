@@ -1,0 +1,9 @@
+# Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require proj
+
+PLATFORMS="~amd64"
+
+DOWNLOADS="$DOWNLOADS http://trac.osgeo.org/proj/export/2418/tags/${PV}/${PN}/src/org_proj4_PJ.h -> ${PN}-org_proj4_PJ.h"
+
