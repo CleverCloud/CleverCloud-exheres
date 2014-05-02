@@ -1,0 +1,13 @@
+Upstream: no
+--
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -253,7 +253,7 @@
+ 	-@if [ ".$(WITH_CXX)" = .yes ]; then \
+ 	    $(LIBTOOL) --mode=install $(SHTOOL) install -c -m 644 $(CXX_NAME) $(DESTDIR)$(libdir)/; \
+ 	fi
+-	@$(LIBTOOL) --mode=install $(SHTOOL) install -c -s -m 755 uuid $(DESTDIR)$(bindir)/
++	@$(LIBTOOL) --mode=install $(SHTOOL) install -c -m 755 uuid $(DESTDIR)$(bindir)/
+ 	$(SHTOOL) install -c -m 644 $(S)/uuid.1 $(DESTDIR)$(mandir)/man1/
+ 	-@if [ ".$(WITH_PERL)" = .yes ]; then \
+ 	    (cd $(S)/perl && $(MAKE) $(MFLAGS) install DESTDIR=$(DESTDIR)); \
