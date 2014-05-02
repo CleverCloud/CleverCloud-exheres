@@ -1,0 +1,18 @@
+# Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="A TIFF based interchange format for georeferenced raster imagery"
+HOMEPAGE="http://trac.osgeo.org/${PN}/"
+DOWNLOADS="http://download.osgeo.org/geotiff/${PN}/${PNV}.tar.gz"
+
+LICENCES="GPL-2"
+SLOT="0"
+
+DEPENDENCIES="
+    build+run:
+        media-libs/jpeg
+        media-libs/tiff
+        sci-libs/proj
+        sys-libs/zlib
+"
+
