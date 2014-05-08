@@ -1,4 +1,4 @@
-# Copyright 2013 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+# Copyright 2013-2014 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 # Distributed under the terms of the GNU General Public License v2
 
 # We don't use the github exlib as docker needs to be built in a git clone
@@ -23,14 +23,16 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build:
-        dev-lang/go
+        dev-lang/go[>=1.2.1]
     build+run:
         dev-db/sqlite:3
         sys-apps/systemd [[ note = [ udev ] ]]
         sys-fs/btrfs-progs
-        sys-fs/lvm2
+        sys-fs/lvm2[>=2.02.103]
+        sys-libs/libcap
     run:
         app-virtualization/lxc[>=1.0.0]
+        net-apps/s3cmd
         net-firewall/iptables
         net-misc/bridge-utils
         sys-apps/iproute2
