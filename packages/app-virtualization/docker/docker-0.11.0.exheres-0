@@ -6,7 +6,7 @@
 SCM_REPOSITORY="git://github.com/dotcloud/${PN}.git"
 SCM_TAG="v${PV}"
 require scm-git systemd-service [ systemd_files=[ contrib/init/systemd/socket-activation ] ]
-require bash-completion zsh-completion
+require bash-completion zsh-completion udev-rules [ udev_files=[ contrib/udev ] ]
 
 SUMMARY="ship and run any application as a lightweight container"
 DESCRIPTION="
@@ -19,11 +19,12 @@ HOMEPAGE="http://www.docker.io/"
 LICENCES="Apache-2.0"
 SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS=""
+MYOPTIONS="man-pages"
 
 DEPENDENCIES="
     build:
         dev-lang/go[>=1.2.1]
+        man-pages? ( app-text/pandoc )
     build+run:
         dev-db/sqlite:3
         sys-apps/systemd [[ note = [ udev ] ]]
@@ -44,6 +45,12 @@ BUGS_TO="keruspe@exherbo.org"
 # We cannot strip because of a runtime check on the docker-init binary
 RESTRICT="test strip"
 
+docker_make() {
+    DOCKER_CROSSPLATFORMS="linux/386 linux/arm darwin/amd64 darwin/386 freebsd/amd64 freebsd/386freebsd/arm" \
+    GOPATH="$(pwd)/gohome:$(pwd)/vendor" \
+    edo ./hack/make.sh "$@"
+}
+
 src_prepare() {
     default
     edo mkdir -p gohome/src/github.com/dotcloud/
@@ -51,11 +58,12 @@ src_prepare() {
 }
 
 src_compile() {
-    GOPATH="$(pwd)/gohome:$(pwd)/vendor" edo ./hack/make.sh dynbinary
+    docker_make dynbinary
+    option man-pages && contrib/man/md/md2man-all.sh
 }
 
 src_test() {
-    edo ./hack/make.sh dyntest
+    docker_make dyntest
 }
 
 src_install() {
@@ -63,7 +71,10 @@ src_install() {
     exeinto /usr/libexec/${PN}
     newexe bundles/${PV}/dynbinary/${PN}init-${PV} ${PN}init
     install_systemd_files
+    install_udev_files
     dobashcompletion contrib/completion/bash/docker
     dozshcompletion contrib/completion/zsh/_docker
+
+    option man-pages && doman contrib/man/man1/*
 }
 
