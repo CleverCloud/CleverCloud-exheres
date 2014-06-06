@@ -30,6 +30,8 @@ WORK="${WORKBASE}"/${PNV}
 PYTHON_PLUGINS=( python gevent )
 # From buildconf/ruby2.ini
 RUBY_PLUGINS=( rack rbthreads fiber )
+# Plugins that require neither Python nor Ruby
+OTHER_PLUGINS=( cgi )
 
 uwsgi_src_unpack() {
     default
@@ -57,6 +59,7 @@ uwsgi_src_compile() {
     emake PROFILE=nolang
     option ruby && euwsgiplugins "${RUBY_PLUGINS[@]}"
     setup-py_src_compile
+    euwsgiplugins "${OTHER_PLUGINS[@]}"
 }
 
 install_one_multibuild() {
@@ -73,6 +76,9 @@ uwsgi_src_install() {
     dobin uwsgi
     insinto /usr/$(exhost --target)/lib/uwsgi
     option ruby && for p in "${RUBY_PLUGINS[@]}"; do
+        doins "${p}"_plugin.so
+    done
+    for p in "${OTHER_PLUGINS[@]}" ; do
         doins "${p}"_plugin.so
     done
     setup-py_src_install
