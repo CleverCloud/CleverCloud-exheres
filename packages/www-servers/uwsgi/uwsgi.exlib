@@ -10,6 +10,7 @@ HOMEPAGE="http://projects.unbit.it/uwsgi/"
 DOWNLOADS="http://projects.unbit.it/downloads/${PNV}.tar.gz"
 
 MYOPTIONS="
+    apache
     (
         python [[ description = [ Build the python plugin ] ]]
         ruby   [[ description = [ Build the ruby plugin ] ]]
@@ -18,6 +19,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build+run:
+        apache? ( www-servers/apache )
         ruby? ( dev-lang/ruby:= )
 "
 
@@ -32,6 +34,8 @@ PYTHON_PLUGINS=( python gevent )
 RUBY_PLUGINS=( rack rbthreads fiber )
 # Plugins that require neither Python nor Ruby
 OTHER_PLUGINS=( cgi )
+# Apache modules
+APACHE_MODS=( mod_uwsgi mod_Ruwsgi mod_proxy_uwsgi )
 
 uwsgi_src_unpack() {
     default
@@ -60,6 +64,13 @@ uwsgi_src_compile() {
     option ruby && euwsgiplugins "${RUBY_PLUGINS[@]}"
     setup-py_src_compile
     euwsgiplugins "${OTHER_PLUGINS[@]}"
+    if option apache; then
+        pushd apache2
+        for apachemod in "${APACHE_MODS[@]}"; do
+            apxs -c "-Wc,${CFLAGS}" -o ${apachemod}.so ${apachemod}.c
+        done
+        popd
+    fi
 }
 
 install_one_multibuild() {
@@ -82,4 +93,9 @@ uwsgi_src_install() {
         doins "${p}"_plugin.so
     done
     setup-py_src_install
+
+    insinto /usr/$(exhost --target)/libexec/apache2/modules
+    option apache && for m in "${APACHE_MODS[@]}"; do
+        doins apache2/.libs/${m}.so
+    done
 }
