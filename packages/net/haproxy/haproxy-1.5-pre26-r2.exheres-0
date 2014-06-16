@@ -4,7 +4,7 @@
 require haproxy
 
 PLATFORMS="~amd64"
-DOWNLOADS="http://haproxy.1wt.eu/download/$(ever range 1-2)/src/devel/${PNV/pre/dev}.tar.gz"
+DOWNLOADS="http://www.haproxy.org/download/$(ever range 1-2)/src/devel/${PNV/pre/dev}.tar.gz"
 WORK="${WORKBASE}"/${PNV/pre/dev}
 
 DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/0001-BUG-MEDIUM-Fix-unhandled-connections-problem-with-sy.patch )
