@@ -59,7 +59,7 @@ src_prepare() {
 
 src_compile() {
     docker_make dynbinary
-    option man-pages && contrib/man/md/md2man-all.sh
+    option man-pages && edo docs/man/md2man-all.sh
 }
 
 src_test() {
@@ -75,6 +75,6 @@ src_install() {
     dobashcompletion contrib/completion/bash/docker
     dozshcompletion contrib/completion/zsh/_docker
 
-    option man-pages && doman contrib/man/man1/*
+    option man-pages && doman docs/man/man1/*
 }
 
