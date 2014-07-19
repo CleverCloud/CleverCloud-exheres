@@ -4,8 +4,17 @@
 require github [ user=jedisct1 rev=${PV} ] \
     autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.13 ] ]
 
+SUMMARY="Packageable port of NaCl, a fast & secure crypto lib"
+
+LICENCES="ISC"
 SLOT="0"
 PLATFORMS="~amd64"
+MYOPTIONS="minimal"
 
-SUMMARY="Packageable port of NaCl, a fast & secure crypto lib"
+DEPENDENCIES="
+    build:
+        virtual/pkg-config
+"
+
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( minimal )
 
