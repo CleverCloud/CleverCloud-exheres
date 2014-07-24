@@ -12,6 +12,7 @@ DOWNLOADS="ftp://ftp.proftpd.org/distrib/source/${PNV}.tar.gz"
 LICENCES="GPL-2"
 SLOT="0"
 MYOPTIONS="
+    diskuse [[ description = [ build mod_diskuse to limit filesystem usage ] ]]
     openssl
     sftp [[ requires = openssl ]]
 "
@@ -19,7 +20,11 @@ MYOPTIONS="
 DEFAULT_SRC_CONFIGURE_PARAMS=( '--disable-strip' )
 
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'openssl' )
-DEFAULT_SRC_CONFIGURE_OPTIONS=('sftp --with-modules=mod_sftp')
+DEFAULT_SRC_CONFIGURE_OPTIONS=(
+    'diskuse --with-modules=mod_diskuse'
+    'openssl --with-modules=mod_tls'
+    'sftp --with-modules=mod_sftp'
+)
 
 DEPENDENCIES="
     build+run:
