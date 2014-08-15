@@ -5,6 +5,8 @@
 
 require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.11 ] ] systemd-service
 
+export_exlib_phases src_prepare src_install
+
 SUMMARY="SSL encryption wrapper between remote client and local or remote server"
 HOMEPAGE="http://www.${PN}.org/"
 DOWNLOADS="https://www.${PN}.org/downloads/${PNV}.tar.gz"
@@ -19,12 +21,12 @@ DEPENDENCIES="
         sys-libs/zlib
 "
 
-src_prepare() {
+stunnel_src_prepare() {
     edo sed -e '/^install-data-local:/,/^$/d' -i tools/Makefile.am
     autotools_src_prepare
 }
 
-src_install() {
+stunnel_src_install() {
     default
 
     # Copy systemd unit from examples

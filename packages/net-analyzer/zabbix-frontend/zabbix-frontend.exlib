@@ -4,6 +4,8 @@
 
 require systemd-service
 
+export_exlib_phases src_configure src_install
+
 SUMMARY="Enterprise-class Monitoring Tool"
 HOMEPAGE="http://www.zabbix.com"
 DOWNLOADS="mirror://sourceforge/zabbix/zabbix-${PV}.tar.gz"
@@ -19,13 +21,13 @@ DEPENDENCIES="
         postgres? ( dev-lang/php[php_extensions:pgsql] )
 "
 
-src_configure() {
+zabbix-frontend_src_configure() {
     :
 }
 
 WORK="${WORKBASE}"/zabbix-${PV}
 
-src_install() {
+zabbix-frontend_src_install() {
     elog "The frontend is available in /usr/share/${PN}/frontends/php"
     insinto /usr/share/zabbix/frontends
     doins -r "${WORK}"/frontends/php

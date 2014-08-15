@@ -5,6 +5,8 @@ if ever at_least "1.5-pre1"; then
     require systemd-service [ systemd_files=[ contrib/systemd/${PN}.service ] ]
 else
     require systemd-service
+
+export_exlib_phases src_compile src_install
 fi
 
 SUMMARY="The Reliable, High Performance TCP/HTTP Load Balancer"
@@ -26,7 +28,7 @@ DEPENDENCIES="
 DEFAULT_SRC_COMPILE_PARAMS=( 'PREFIX=/usr' 'TARGET=linux26' 'USE_PCRE=1' 'USE_ZLIB=1' )
 DEFAULT_SRC_INSTALL_PARAMS=( 'PREFIX=/usr' "DOCDIR=/usr/share/doc/${PNVR}" )
 
-src_compile() {
+haproxy_src_compile() {
     default
 
     if ever at_least "1.5-pre1"; then
@@ -34,7 +36,7 @@ src_compile() {
     fi
 }
 
-src_install() {
+haproxy_src_install() {
     default
 
     keepdir /etc/${PN}

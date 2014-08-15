@@ -1,6 +1,8 @@
 # Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
+export_exlib_phases src_install
+
 SUMMARY="GEOS (Geometry Engine - Open Source) is a C++ port of the  Java Topology Suite (JTS)"
 HOMEPAGE="http://trac.osgeo.org/${PN}/"
 DOWNLOADS="http://download.osgeo.org/${PN}/${PNV}.tar.bz2"
@@ -8,7 +10,7 @@ DOWNLOADS="http://download.osgeo.org/${PN}/${PNV}.tar.bz2"
 LICENCES="LGPL-2.1"
 SLOT="0"
 
-src_install() {
+geos_src_install() {
     default
     edo rmdir "${IMAGE}"/usr/lib64/geos
 }

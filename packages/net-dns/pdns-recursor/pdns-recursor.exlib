@@ -3,6 +3,8 @@
 
 require systemd-service
 
+export_exlib_phases src_install
+
 SUMMARY="PowerDNS Recursive Server"
 HOMEPAGE="http://www.powerdns.com"
 DOWNLOADS="http://downloads.powerdns.com/releases/${PNV}.tar.bz2"
@@ -20,7 +22,7 @@ DEPENDENCIES="
 
 DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/makefile.patch" )
 
-src_install() {
+pdns-recursor_src_install() {
     default
 
     edo mv "${IMAGE}"/etc/powerdns/recursor.conf{-dist,}
