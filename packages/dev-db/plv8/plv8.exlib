@@ -1,0 +1,18 @@
+
+# Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require googlecode [ project=plv8js ]
+
+SUMMARY="V8 Engine Javascript Procedural Language add-on for PostgreSQL"
+DOWNLOADS="http://api.pgxn.org/dist/${PN}/${PV}/${PNV}.zip"
+
+LICENCES="BSD-3"
+SLOT="0"
+
+DEPENDENCIES="
+    build+run:
+        dev-db/postgresql
+        dev-libs/v8
+"
+

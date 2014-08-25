@@ -3,6 +3,8 @@
 
 require php-pecl [ module=module ]
 
+export_exlib_phases src_test
+
 SUMMARY="APC is a framework for caching and optimizing PHP intermediate code"
 
 LICENCES="PHP"
@@ -15,7 +17,7 @@ DEPENDENCIES="
         dev-lang/php[<5.5]
 "
 
-src_test() {
+apc_src_test() {
     NO_INTERACTION=1 default
 }
 

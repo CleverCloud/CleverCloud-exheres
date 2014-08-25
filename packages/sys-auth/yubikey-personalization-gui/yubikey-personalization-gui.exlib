@@ -3,6 +3,8 @@
 
 require github [ user=Yubico rev=${PNV} ] qmake
 
+export_exlib_phases src_install
+
 SUMMARY="YubiKey Personalization GUI"
 HOMEPAGE="http://opensource.yubico.com/yubikey-personalization-gui/"
 
@@ -17,7 +19,7 @@ DEPENDENCIES="
         x11-libs/qt:4
 "
 
-src_install() {
+yubikey-personalization-gui_src_install() {
     default
     dobin ${WORK}/build/release/yubikey-personalization-gui
 }

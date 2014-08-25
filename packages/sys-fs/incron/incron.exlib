@@ -3,6 +3,8 @@
 
 require systemd-service
 
+export_exlib_phases src_install
+
 SUMMARY="Inotify cron system"
 HOMEPAGE="http://inotify.aiken.cz/?section=incron&page=about&lang=en"
 DOWNLOADS="http://inotify.aiken.cz/download/${PN}/${PNV}.tar.gz"
@@ -11,7 +13,7 @@ LICENCES="GPL-2"
 SLOT="0"
 MYOPTIONS=""
 
-src_install() {
+incron_src_install() {
     default
 
     keepdir /var/spool/${PN} /etc/${PN}.d

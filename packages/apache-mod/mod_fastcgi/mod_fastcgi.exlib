@@ -3,6 +3,8 @@
 # Based in part upon 'mod_gnutls.exlib', which is:
 #       Copyright 2011 Quentin "Sardem FF7" Glidic <sardemff7+exherbo@sardemff7.net>
 
+export_exlib_phases src_compile src_install
+
 SUMMARY="Apache module to run php using CGI"
 DESCRIPTION="
     FastCGI is a language independent, scalable, open extension to CGI that provides high performance
@@ -23,11 +25,11 @@ DEFAULT_SRC_PREPARE_PATCHES=(
         "${FILES}"/byte-compile-against-apache24.patch
 )
 
-src_compile() {
+mod_fastcgi_src_compile() {
     edo apxs -o mod_fastcgi.so -c *.c
 }
 
-src_install() {
+mod_fastcgi_src_install() {
     exeinto /usr/libexec/apache2/modules/
     doexe .libs/${PN}.so
 

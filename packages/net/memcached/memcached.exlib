@@ -3,6 +3,8 @@
 
 require github [ user=memcached tag=${PV} ] systemd-service [ systemd_files=[ memcached.service ] ]
 
+export_exlib_phases src_install
+
 SUMMARY="memcached is a high-performance, distributed memory object caching system"
 
 LICENCES="BSD-2"
@@ -18,7 +20,7 @@ DEPENDENCIES="
 
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'platform:amd64 64bit' )
 
-src_install() {
+memcached_src_install() {
     default
 
     install_systemd_files

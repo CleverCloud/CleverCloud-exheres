@@ -1,6 +1,8 @@
 # Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
+export_exlib_phases src_install
+
 SUMMARY="GlusterFS is a cluster file-system capable of scaling to several peta-bytes"
 HOMEPAGE="http://www.gluster.org/"
 DOWNLOADS="http://bits.gluster.com/pub/gluster/${PN}/src/${PNV}.tar.gz"
@@ -18,7 +20,7 @@ DEPENDENCIES="
 DEFAULT_SRC_CONFIGURE_PARAMS=( --hates=docdir --localstatedir=/var --without-ocf --with-systemddir=/usr/${LIBDIR}/systemd/system )
 
 
-src_install() {
+glusterfs_src_install() {
     default
     keepdir /var/log/"${PN}"
     edo rm -r "${IMAGE}"/var/run

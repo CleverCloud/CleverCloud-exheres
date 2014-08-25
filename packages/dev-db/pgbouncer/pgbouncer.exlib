@@ -3,6 +3,8 @@
 
 require systemd-service
 
+export_exlib_phases src_install
+
 SUMMARY="Lightweight connection pooler for PostgreSQL"
 HOMEPAGE="http://pgfoundry.org/projects/${PN}/"
 
@@ -17,7 +19,7 @@ DEPENDENCIES="
         dev-libs/libevent
 "
 
-src_install() {
+pgbouncer_src_install() {
     install_systemd_files
 
     insinto /etc/${PN}

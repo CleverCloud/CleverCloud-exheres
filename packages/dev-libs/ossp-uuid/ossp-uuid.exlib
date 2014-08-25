@@ -1,0 +1,35 @@
+# Copyright 2014 Kevin Decherf
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="API and CLI for the generation of DCE 1.1, ISO/IEC 11578:1996 and RFC 4122 compliant Universally Unique Identifier"
+HOMEPAGE="http://www.ossp.org/pkg/lib/uuid/"
+DOWNLOADS="ftp://ftp.ossp.org/pkg/lib/uuid/uuid-${PV}.tar.gz"
+
+LICENCES="ISC"
+SLOT="0"
+MYOPTIONS="
+    perl
+    php
+    postgresql
+"
+
+DEPENDENCIES="
+    build+run:
+        perl? ( dev-lang/perl )
+        php? ( dev-lang/php )
+        postgresql? ( dev-db/postgresql )
+"
+
+WORK="${WORKBASE}/uuid-${PV}"
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/remove-strip.patch"
+        "${FILES}/prevent-conflict-with-util-linux.patch" )
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( '--disable-stripping' "--includedir=/usr/include/ossp/" )
+
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
+    perl
+    php
+    'postgresql pgsql'
+)
+

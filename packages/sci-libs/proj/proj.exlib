@@ -3,6 +3,8 @@
 # Based in part upon 'proj-4.8.0.ebuild' from Gentoo, which is:
 #     Copyright 1999-2014 Gentoo Foundation
 
+export_exlib_phases src_unpack
+
 SUMMARY="PROJ.4 - Cartographic Projections Library"
 HOMEPAGE="https://trac.osgeo.org/${PN}/"
 DOWNLOADS="http://download.osgeo.org/${PN}/${PNV}.tar.gz"
@@ -10,7 +12,7 @@ DOWNLOADS="http://download.osgeo.org/${PN}/${PNV}.tar.gz"
 LICENCES="MIT"
 SLOT="0"
 
-src_unpack() {
+proj_src_unpack() {
     default
     edo cp "${FETCHEDDIR}/${PN}-org_proj4_PJ.h" "${WORK}/src/org_proj4_PJ.h"
 }

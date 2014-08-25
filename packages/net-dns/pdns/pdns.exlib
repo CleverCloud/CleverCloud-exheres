@@ -3,6 +3,8 @@
 
 require systemd-service
 
+export_exlib_phases src_configure src_install
+
 SUMMARY="The PowerDNS Authoritative Server enables authoritative DNS service from all major databases."
 HOMEPAGE="http://www.powerdns.com"
 DOWNLOADS="http://downloads.powerdns.com/releases/${PNV}.tar.gz"
@@ -28,7 +30,7 @@ DEPENDENCIES="
         user/pdns
 "
 
-src_configure() {
+pdns_src_configure() {
     local mymodules=(
             $(option postgres gpgsql)
             $(option mysql gmysql)
@@ -44,7 +46,7 @@ src_configure() {
         --sysconfdir=/etc/powerdns
 }
 
-src_install() {
+pdns_src_install() {
     default
 
     edo mv "${IMAGE}"/etc/powerdns/pdns.conf{-dist,}
