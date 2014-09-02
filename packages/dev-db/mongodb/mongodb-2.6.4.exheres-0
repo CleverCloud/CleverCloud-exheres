@@ -40,6 +40,7 @@ MONGO_PARAMS=(
     --use-system-pcre
     --use-system-snappy
     --usev8
+    --disable-warnings-as-errors
 )
 
 SCONS_SRC_CONFIGURE_PARAMS=("${MONGO_PARAMS[@]}")
@@ -48,7 +49,7 @@ SCONS_SRC_INSTALL_PARAMS=("${MONGO_PARAMS[@]}")
 
 src_prepare() {
     default
-    edo sed -e 's/"-Werror", //' -i SConstruct
+    edo sed -e '/"-ggdb",/d' -i SConstruct
 }
 
 src_install() {
