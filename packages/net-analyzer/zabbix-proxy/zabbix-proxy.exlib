@@ -1,0 +1,65 @@
+# Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+export_exlib_phases src_install
+
+SUMMARY="Enterprise-class Monitoring Tool"
+HOMEPAGE="http://www.zabbix.com"
+DOWNLOADS="mirror://sourceforge/zabbix/zabbix-${PV}.tar.gz"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS="
+    ipv6
+    sqlite
+    snmp
+"
+
+DEPENDENCIES="
+    build+run:
+        group/zabbix
+        user/zabbix
+        sqlite? ( dev-db/sqlite:3 )
+        snmp? ( net/net-snmp )
+    suggestion:
+        net-analyzer/zabbix-agent
+"
+
+WORK="${WORKBASE}"/zabbix-${PV}
+
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'ipv6')
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( 'sqlite sqlite3' 'snmp net-snmp' )
+DEFAULT_SRC_CONFIGURE_PARAMS=( "--sysconfdir=/etc/zabbix" '--enable-proxy' '--disable-server' '--disable-agent' )
+
+zabbix-proxy_src_install() {
+    default
+
+    if option systemd; then
+        install_systemd_files
+        insinto /usr/${LIBDIR}/tmpfiles.d
+        doins "${FILES}"/tmpfiles.d/zabbix.conf
+    fi
+
+    # We have some empty folders here
+    edo rmdir "${IMAGE}"/usr/share/man/man1
+
+    KEEPDIRS=(
+        /etc/zabbix/zabbix_proxy.conf.d
+        /usr/share/zabbix/externalscripts
+        /usr/share/zabbix/alertscripts
+    )
+    keepdir ${KEEPDIRS[@]}
+
+    # This line is mandatory for systemd and can be useful for other init systems
+    sed -i -e 's@^\(# PidFile.*\)@\1\nPidFile=/run/zabbix/zabbix-proxy.pid@' \
+        "${IMAGE}"/etc/zabbix/zabbix_proxy.conf
+
+    elog "The database is not configured, schemes are available in /usr/share/zabbix/database"
+    insinto /usr/share/zabbix
+    doins -r "${WORK}"/database
+
+    # Makefile clean after copy
+    edo find "${IMAGE}"/usr/share/zabbix -type f -name "Makefile*" -delete
+}
