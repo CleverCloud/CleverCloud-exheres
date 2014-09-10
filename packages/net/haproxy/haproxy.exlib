@@ -5,9 +5,9 @@ if ever at_least "1.5-pre1"; then
     require systemd-service [ systemd_files=[ contrib/systemd/${PN}.service ] ]
 else
     require systemd-service
+fi
 
 export_exlib_phases src_compile src_install
-fi
 
 SUMMARY="The Reliable, High Performance TCP/HTTP Load Balancer"
 HOMEPAGE="http://www.haproxy.org"
