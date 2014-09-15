@@ -1,11 +1,7 @@
 # Copyright 2012 Kevin Decherf <kevin@kdecherf.com> 
 # Distributed under the terms of the GNU General Public License v2
 
-if ever at_least 1.5; then
-    require systemd-service [ systemd_files=[ contrib/systemd/${PN}.service ] ]
-else
-    require systemd-service
-fi
+require systemd-service [ systemd_files=[ contrib/systemd/${PN}.service ] ]
 
 export_exlib_phases src_compile src_install
 
@@ -15,12 +11,7 @@ DOWNLOADS="http://www.haproxy.org/download/$(ever range 1-2)/src/${PNV}.tar.gz"
 
 LICENCES="GPL-2"
 SLOT="0"
-
-if ever at_least 1.5; then
-    MYOPTIONS="ssl"
-else
-    MYOPTIONS=""
-fi
+MYOPTIONS="ssl"
 
 DEPENDENCIES="
     build+run:
@@ -28,24 +19,15 @@ DEPENDENCIES="
         sys-libs/zlib
         group/haproxy
         user/haproxy
+        ssl? ( dev-libs/openssl )
 "
-
-if ever at_least 1.5; then
-    DEPENDENCIES+="
-        build+run:
-            ssl? ( dev-libs/openssl )
-    "
-fi
 
 DEFAULT_SRC_COMPILE_PARAMS=( 'PREFIX=/usr' 'TARGET=linux26' 'USE_PCRE=1' 'USE_ZLIB=1' )
 DEFAULT_SRC_INSTALL_PARAMS=( 'PREFIX=/usr' "DOCDIR=/usr/share/doc/${PNVR}" )
 
 haproxy_src_compile() {
-    emake "${DEFAULT_SRC_COMPILE_PARAMS[@]}" $(ever at_least 1.5 && option ssl && echo 'USE_OPENSSL=1' )
-
-    if ever at_least 1.5; then
-        emake -C contrib/systemd PREFIX=/usr
-    fi
+    emake "${DEFAULT_SRC_COMPILE_PARAMS[@]}" $(option ssl && echo 'USE_OPENSSL=1' )
+    emake -C contrib/systemd PREFIX=/usr
 }
 
 haproxy_src_install() {
