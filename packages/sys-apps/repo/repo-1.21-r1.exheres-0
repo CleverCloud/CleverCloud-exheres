@@ -6,7 +6,7 @@
 require googlecode [ project=git-repo ] python [ python_dep=2.7 has_bin=true ]
 
 SUMMARY="The multiple repository tool"
-DOWNLOADS="http://git-repo.googlecode.com/files/${PNV}"
+DOWNLOADS="https://storage.googleapis.com/git-repo-downloads/${PNV}"
 
 LICENCES="Apache-2.0"
 SLOT="0"
