@@ -3,9 +3,9 @@
 
 # We don't use the github exlib as docker needs to be built in a git clone
 # even for non scm versions.
-SCM_REPOSITORY="git://github.com/dotcloud/${PN}.git"
+SCM_REPOSITORY="git://github.com/docker/${PN}.git"
 SCM_TAG="v${PV}"
-require scm-git systemd-service [ systemd_files=[ contrib/init/systemd/socket-activation ] ]
+require scm-git systemd-service [ systemd_files=[ contrib/init/systemd ] ]
 require bash-completion zsh-completion udev-rules [ udev_files=[ contrib/udev ] ]
 
 SUMMARY="ship and run any application as a lightweight container"
@@ -19,12 +19,11 @@ HOMEPAGE="http://www.docker.io/"
 LICENCES="Apache-2.0"
 SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS="man-pages"
+MYOPTIONS=""
 
 DEPENDENCIES="
     build:
-        dev-lang/go[>=1.2.1]
-        man-pages? ( app-text/pandoc )
+        dev-lang/go[>=1.3.1]
     build+run:
         dev-db/sqlite:3
         sys-apps/systemd [[ note = [ udev ] ]]
@@ -53,13 +52,14 @@ docker_make() {
 
 src_prepare() {
     default
-    edo mkdir -p gohome/src/github.com/dotcloud/
-    edo ln -s ../../../.. gohome/src/github.com/dotcloud/docker
+    edo mkdir -p gohome/src/github.com/docker/
+    edo ln -s ../../../.. gohome/src/github.com/docker/docker
 }
 
 src_compile() {
     docker_make dynbinary
-    option man-pages && edo docs/man/md2man-all.sh
+    # requires go-md2man
+    #edo docs/man/md2man-all.sh
 }
 
 src_test() {
@@ -74,7 +74,6 @@ src_install() {
     install_udev_files
     dobashcompletion contrib/completion/bash/docker
     dozshcompletion contrib/completion/zsh/_docker
-
-    option man-pages && doman docs/man/man1/*
+    #doman docs/man/man1/*
 }
 
