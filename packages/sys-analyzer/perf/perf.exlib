@@ -1,0 +1,33 @@
+# Copyright 2014 Marc-Antoine Perennou
+# Distributed under the terms of the GNU General Public License v2
+
+require kernel
+
+DOWNLOADS="mirror://kernel/linux/kernel/v$(ever major).x/linux-${PV}.tar.xz"
+
+SUMMARY="Linux kernel profiling"
+HOMEPAGE="https://perf.wiki.kernel.org/"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS=""
+
+WORK=${WORKBASE}/linux-${PV}/tools/perf/
+
+MAKE_PARAMS=( "WERROR=0" "DESTDIR=${IMAGE}/usr" "V=1" )
+
+DEFAULT_SRC_COMPILE_PARAMS=( "${MAKE_PARAMS[@]}" )
+DEFAULT_SRC_INSTALL_PARAMS=( "${MAKE_PARAMS[@]}" )
+
+RESTRICT="test"
+
+# TODO libunwind libaudit libnuma
+DEPENDENCIES="
+    build+run:
+        dev-lang/perl:=
+        dev-lang/python:=
+        dev-util/elfutils
+        sys-devel/binutils
+        sys-libs/slang
+"
+

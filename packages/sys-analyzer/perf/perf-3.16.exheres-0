@@ -1,0 +1,7 @@
+# Copyright 2014 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require perf
+
+PLATFORMS="~amd64"
+
