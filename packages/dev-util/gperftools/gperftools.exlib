@@ -1,0 +1,19 @@
+# Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Fast, multi-threaded malloc() and nifty performance analysis tools"
+HOMEPAGE="https://code.google.com/p/gperftools/"
+DOWNLOADS="https://googledrive.com/host/0B6NtGsLhIcf7MWxMMF9JdTN3UVk/${PNV}.tar.gz"
+
+LICENCES="BSD-3"
+SLOT="0"
+MYOPTIONS="debug cpu-profiler heap-profiler heap-checker"
+
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'debug debugalloc' 'cpu-profiler' 'heap-profiler'
+        'heap-checker' )
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/libunwind
+"
+

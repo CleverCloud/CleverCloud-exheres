@@ -1,0 +1,7 @@
+# Copyright 2014 <name>
+# Distributed under the terms of the GNU General Public License v2
+
+require gperftools
+
+PLATFORMS="~amd64"
+
