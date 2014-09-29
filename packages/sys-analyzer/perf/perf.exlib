@@ -21,12 +21,13 @@ DEFAULT_SRC_INSTALL_PARAMS=( "${MAKE_PARAMS[@]}" )
 
 RESTRICT="test"
 
-# TODO libunwind libaudit libnuma
+# TODO libaudit libnuma
 DEPENDENCIES="
     build+run:
         dev-lang/perl:=
         dev-lang/python:=
         dev-util/elfutils
+        dev-libs/libunwind
         sys-devel/binutils
         sys-libs/slang
 "
