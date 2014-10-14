@@ -6,7 +6,9 @@ Description=Memcached
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/memcached
+Environment=MEMCACHED_OPTS=
+EnvironmentFile=/etc/conf.d/memcached.conf
+ExecStart=/usr/bin/memcached -v $MEMCACHED_OPTS
 User=memcached
 
 [Install]
