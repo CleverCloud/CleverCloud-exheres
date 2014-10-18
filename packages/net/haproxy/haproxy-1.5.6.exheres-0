@@ -5,5 +5,3 @@ require haproxy
 
 PLATFORMS="~amd64"
 
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/fix-systemd-service.patch )
-
