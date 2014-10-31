@@ -1,2 +1,0 @@
-Openstack:
-    || (mysql pgresql) at-least-one (pgsql -> psycopg, mysql -> ?)
