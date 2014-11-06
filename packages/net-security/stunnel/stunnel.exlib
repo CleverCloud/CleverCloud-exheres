@@ -9,7 +9,7 @@ export_exlib_phases src_prepare src_install
 
 SUMMARY="SSL encryption wrapper between remote client and local or remote server"
 HOMEPAGE="http://www.${PN}.org/"
-DOWNLOADS="https://www.${PN}.org/downloads/${PNV}.tar.gz"
+DOWNLOADS="ftp://ftp.${PN}.org/stunnel/archive/5.x/${PNV}.tar.gz"
 
 LICENCES="stunnel"
 SLOT="0"
