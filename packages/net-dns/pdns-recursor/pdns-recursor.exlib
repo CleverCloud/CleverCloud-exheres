@@ -13,14 +13,14 @@ LICENCES="GPL-2"
 SLOT="0"
 MYOPTIONS=""
 
+DEFAULT_SRC_INSTALL_PARAMS=( 'STRIP_BINARIES=0' )
+
 DEPENDENCIES="
     build+run:
         dev-libs/boost
         group/pdns
         user/pdns
 "
-
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/makefile.patch" )
 
 pdns-recursor_src_install() {
     default
