@@ -1,8 +1,8 @@
 # Copyright 2013 Nicolas Braud-Santoni <nicolas+exherbo@braud-santoni.eu>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=jedisct1 rev=${PV} ] \
-    autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.13 ] ]
+require github [ user=jedisct1 ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.13 ] ]
 
 SUMMARY="Packageable port of NaCl, a fast & secure crypto lib"
 
