@@ -1,7 +1,7 @@
 # Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=Yubico rev=${PNV} ] qmake
+require github [ user=Yubico tag=${PNV} ] qmake
 
 export_exlib_phases src_install
 

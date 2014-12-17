@@ -2,7 +2,7 @@
 # Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=logplex rev="v${PV}" ]
+require github [ user=logplex tag="v${PV}" ]
 
 SUMMARY="Uses Postgres FEBE to Frame Postgres Logs"
 
