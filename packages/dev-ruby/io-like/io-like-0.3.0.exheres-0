@@ -1,0 +1,18 @@
+# Copyright 2015 Clever Cloud
+# Distributed under the terms of the GNU General Public License v2
+
+require gem
+
+SUMMARY="IO like object methods."
+DESCRIPTION="
+The IO::Like module provides the methods of an IO object based upon on a few simple methods provided
+by the including class: unbuffered_read, unbuffered_write, and unbuffered_seek.
+"
+
+LICENCES="Ruby"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+BUGS_TO="julien.durillon@clever-cloud.com"
+

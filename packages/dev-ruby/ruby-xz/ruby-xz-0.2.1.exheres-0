@@ -1,0 +1,26 @@
+# Copyright 2015 <name>
+# Distributed under the terms of the GNU General Public License v2
+
+require gem
+
+SUMMARY="A basic liblzma binding to create and extract XZ-compressed archives."
+DESCRIPTION="
+This is a basic binding for liblzma that allows you to create and extract XZ-compressed archives. It
+can cope with big files as well as small ones, but doesn't offer much of the possibilities liblzma
+itself has.
+"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        app-arch/xz
+        dev-ruby/ffi
+        dev-ruby/io-like
+"
+
+BUGS_TO="julien.durillon@clever-cloud.com"
+
