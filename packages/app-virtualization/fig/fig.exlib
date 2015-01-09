@@ -1,0 +1,11 @@
+# Copyright 2015 Clément Delafargue <clement@delafargue.name>
+# Distributed under the terms of the GNU General Public License v2
+
+require pypi github [ user=docker ]
+require setup-py [ import=setuptools blacklist=3 has_bin=true ]
+
+SUMMARY="Fast, isolated development environments using Docker"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+

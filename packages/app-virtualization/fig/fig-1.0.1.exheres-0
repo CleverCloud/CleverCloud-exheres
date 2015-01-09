@@ -1,0 +1,21 @@
+# Copyright 2015 Clément Delafargue <clement@delafargue.name>
+# Distributed under the terms of the GNU General Public License v2
+
+require fig
+
+DEPENDENCIES="
+    build+run:
+        app-virtualization/docker
+        dev-python/docker-py[>=0.6.0]
+        dev-python/dockerpty[>=0.3.2]
+        dev-python/docopt[>=0.6.1]
+        dev-python/PyYAML[>=3.10]
+        dev-python/requests[>=2.2.1]
+        dev-python/six[>=1.7.3]
+        dev-python/websocket-client[>=0.11.0]
+"
+
+RESTRICT="test"
+
+PLATFORMS="~amd64"
+
