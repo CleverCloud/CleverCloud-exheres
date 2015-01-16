@@ -1,0 +1,23 @@
+# Copyright 2015 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Dependency manager for PHP"
+HOMEPAGE="https://getcomposer.org"
+DOWNLOADS="https://getcomposer.org/download/${PV/_/-}/${PN}.phar"
+
+LICENCES="as-is"
+SLOT="0"
+
+DEPENDENCIES="
+    run:
+        dev-lang/php
+"
+
+src_unpack() {
+    mkdir -p "${WORK}"
+    edo cp "${FETCHEDDIR}"/${PN}.phar "${WORK}"/
+}
+
+src_install() {
+    dobin ${PN}.phar
+}
