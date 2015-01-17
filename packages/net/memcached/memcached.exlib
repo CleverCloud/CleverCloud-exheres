@@ -8,6 +8,7 @@ export_exlib_phases src_install
 
 SUMMARY="memcached is a high-performance, distributed memory object caching system"
 
+HOMEPAGE="http://memcached.org/"
 LICENCES="BSD-2"
 DOWNLOADS="http://www.memcached.org/files/${PNV}.tar.gz"
 SLOT="0"
