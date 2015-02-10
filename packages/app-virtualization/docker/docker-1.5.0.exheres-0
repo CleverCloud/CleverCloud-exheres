@@ -47,14 +47,8 @@ RESTRICT="test strip"
 
 docker_make() {
     DOCKER_CROSSPLATFORMS="linux/386 linux/arm darwin/amd64 darwin/386 freebsd/amd64 freebsd/386freebsd/arm" \
-    GOPATH="$(pwd)/gohome:$(pwd)/vendor" \
+    AUTO_GOPATH=1 \
     edo ./hack/make.sh "$@"
-}
-
-src_prepare() {
-    default
-    edo mkdir -p gohome/src/github.com/docker/
-    edo ln -s ../../../.. gohome/src/github.com/docker/docker
 }
 
 src_compile() {
