@@ -1,0 +1,25 @@
+# Copyright 2015 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=revnode rev=a8da1785a998bf599cfdfa97c598daf287c89467 ]
+
+SUMMARY="The xvfb-run script from the X11 project."
+
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    run:
+        x11-apps/xauth
+        x11-server/xorg-server
+"
+
+BUGS_TO="keruspe@exherbo.org"
+
+src_install() {
+    default
+    dobin ${PN}
+}
+
