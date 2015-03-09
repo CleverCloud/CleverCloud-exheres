@@ -5,8 +5,3 @@ require wkhtmltopdf
 
 PLATFORMS="~amd64"
 
-src_prepare() {
-    edo sed -e 's;QtGui.framework/QtGui.prl;libQtGui.prl;' -i wkhtmltopdf.pro
-    edo ln -s ${PNV} ${WORK}/wkhtmltopdf
-}
-

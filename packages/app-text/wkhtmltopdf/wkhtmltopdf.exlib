@@ -1,9 +1,12 @@
 # Copyright 2013 Julien Durillon <julien.durillon@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require qmake googlecode
+require qmake github
+
+export_exlib_phases src_prepare
 
 SUMMARY="Simple shell utility to convert html to pdf using the webkit rendering engine, and qt."
+HOMEPAGE="http://wkhtmltopdf.org/"
 
 LICENCES="LGPL-3"
 SLOT="0"
@@ -11,8 +14,16 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
-        x11-libs/qt:4[>=4.8.4]
+        x11-libs/qt:4[>=4.8.4][webkit]
 "
 
 BUGS_TO="julien.durillon@clever-cloud.com"
+
+DEFAULT_SRC_INSTALL_PARAMS=( INSTALL_ROOT="${IMAGE}"/usr )
+
+wkhtmltopdf_src_prepare() {
+    default
+    edo sed -e "s:INSTALLBASE/lib:INSTALLBASE/${LIBDIR}:" \
+            -i "${WORK}"/src/lib/lib.pro
+}
 
