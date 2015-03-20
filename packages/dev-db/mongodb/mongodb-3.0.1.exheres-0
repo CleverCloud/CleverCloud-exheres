@@ -1,0 +1,82 @@
+# Copyright 2014 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Copyright 2012 Michael Thomas <aelmalinka@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+# Based in part upon 'mongodb-1.6.5.exheres-0', which is:
+#    Copyright 2010 Jonathan Dahan <jedahan@gmail.com>
+
+require scons
+
+SUMMARY="A scalable, high-performance, schema-free, document-oriented database"
+DESCRIPTION="Written in C++, MongoDB bridges the gap between key-value stores
+(which are fast and highly scalable) and traditional RDBMS systems (which
+provide structured schemas and powerful queries)."
+HOMEPAGE="http://www.mongodb.org"
+DOWNLOADS="http://downloads.mongodb.org/src/${PN}-src-r${PV}.tar.gz"
+
+LICENCES="AGPL-3"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        app-arch/snappy
+        dev-libs/boost
+        dev-libs/openssl
+        dev-libs/pcre
+        net-libs/cyrus-sasl
+"
+
+WORK="${WORKBASE}/${PN}-src-r${PV}"
+
+#    --c++11
+#    --rocksdb
+MONGO_PARAMS=(
+    --nostrip
+    --prefix="${IMAGE}"/usr
+    --ssl
+    --use-sasl-client
+    --use-system-boost
+    --use-system-pcre
+    --use-system-snappy
+    --disable-warnings-as-errors
+)
+
+SCONS_SRC_CONFIGURE_PARAMS=("${MONGO_PARAMS[@]}")
+SCONS_SRC_COMPILE_PARAMS=("${MONGO_PARAMS[@]}")
+SCONS_SRC_INSTALL_PARAMS=("${MONGO_PARAMS[@]}")
+
+RESTRICT="test"
+
+src_prepare() {
+    default
+    edo sed -e '/"-ggdb",/d' -i SConstruct
+}
+
+src_compile() {
+    escons \
+        --config=cache \
+        --jobs ${EXJOBS:-1} \
+        CFLAGS="${CFLAGS}" \
+        CXXFLAGS="${CXXFLAGS}" \
+        "${SCONS_SRC_COMPILE_PARAMS[@]}"
+}
+
+src_install() {
+    escons \
+        --config=cache \
+        "${SCONS_SRC_INSTALL_PARAMS[@]}" \
+        install
+    emagicdocs
+}
+
+src_test() {
+    escons \
+        --jobs ${EXJOBS:-1} \
+        "${MONGO_PARAMS[@]}" \
+        test
+
+    edo ./test
+}
+
