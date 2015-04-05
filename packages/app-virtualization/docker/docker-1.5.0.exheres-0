@@ -63,7 +63,7 @@ src_test() {
 
 src_install() {
     newbin bundles/${PV}/dynbinary/${PNV} ${PN}
-    exeinto /usr/libexec/${PN}
+    exeinto /usr/$(exhost --target)/libexec/${PN}
     newexe bundles/${PV}/dynbinary/${PN}init-${PV} ${PN}init
     install_systemd_files
     install_udev_files
