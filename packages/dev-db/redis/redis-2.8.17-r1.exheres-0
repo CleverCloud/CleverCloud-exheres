@@ -39,10 +39,11 @@ src_test() {
 }
 
 src_install() {
-    emake PREFIX="${IMAGE}/usr" install
+    emake PREFIX="${IMAGE}/usr/$(exhost --target)" install
     install_systemd_files
     insinto /etc
     doins redis.conf
     diropts -m 0755 -o redis -g redis
     keepdir /var/db/redis/{,.rdb}
 }
+
