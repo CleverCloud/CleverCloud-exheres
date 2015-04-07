@@ -29,8 +29,8 @@ DEFAULT_SRC_COMPILE_PARAMS=( "-j1" )
 
 DEFAULT_SRC_INSTALL_PARAMS=(
     "MAN_DIR=${IMAGE}/usr/share/man"
-    "SBIN_DIR=${IMAGE}/usr/sbin"
-    "TARGET_DIR=${IMAGE}/usr/${LIBDIR}/erlang/lib/rabbitmq_server-${PV}"
+    "SBIN_DIR=${IMAGE}/usr/$(exhost --target)/bin"
+    "TARGET_DIR=${IMAGE}/usr/$(exhost --target)/lib/erlang/lib/rabbitmq_server-${PV}"
     "DOC_INSTALL_DIR=${IMAGE}/usr/share/doc/${PNVR}"
 )
 
