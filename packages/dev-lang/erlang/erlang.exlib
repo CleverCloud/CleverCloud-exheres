@@ -36,6 +36,7 @@ WORK="${WORKBASE}"/${MY_PNV:0:14}
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     --hates=docdir
+    --hates=datarootdir
     --enable-dynamic-ssl-lib
     --enable-kernel-poll
     --enable-shared-zlib
