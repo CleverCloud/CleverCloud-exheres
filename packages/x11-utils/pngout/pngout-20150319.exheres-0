@@ -1,0 +1,22 @@
+# Copyright 2015 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Optimize your png"
+HOMEPAGE="http://www.jonof.id.au/kenutils"
+DOWNLOADS="http://static.jonof.id.au/dl/kenutils/${PNV}-linux-static.tar.gz"
+
+LICENCES="BSD-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+BUGS_TO="keruspe@exherbo.org"
+
+WORK="${WORKBASE}"/${PNV}-linux-static
+
+src_install() {
+    newbin x86_64/${PN}-static ${PN}
+}
+
