@@ -24,6 +24,17 @@ test:
     dev-lang/tcl
 "
 
+DEFAULT_SRC_COMPILE_PARAMS=( AR=${AR} )
+
+src_prepare() {
+    default
+    edo sed -i deps/Makefile \
+        -e "s:./configure:& AR=${AR}:" \
+        -e "s:(MAKE):& RANLIB=${RANLIB}:"
+    edo sed -i deps/hiredis/Makefile \
+        -e "s:=ar:=$(exhost --tool-prefix)ar:"
+}
+
 src_test() {
     esandbox allow_net --connect inet:127.0.0.1@11111
     esandbox allow_net inet:127.0.0.1@11111
