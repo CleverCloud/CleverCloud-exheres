@@ -22,12 +22,12 @@ DEPENDENCIES="
         ssl? ( dev-libs/openssl )
 "
 
-DEFAULT_SRC_COMPILE_PARAMS=( 'PREFIX=/usr' 'TARGET=linux26' 'USE_PCRE=1' 'USE_ZLIB=1' )
-DEFAULT_SRC_INSTALL_PARAMS=( 'PREFIX=/usr' "DOCDIR=/usr/share/doc/${PNVR}" )
+DEFAULT_SRC_COMPILE_PARAMS=( PREFIX=/usr SBINDIR=/usr/$(exhost --target)/bin TARGET=linux26 USE_PCRE=1 USE_ZLIB=1 CC=${CC} )
+DEFAULT_SRC_INSTALL_PARAMS=( "${DEFAULT_SRC_COMPILE_PARAMS[@]}" DOCDIR=/usr/share/doc/${PNVR} )
 
 haproxy_src_compile() {
     emake "${DEFAULT_SRC_COMPILE_PARAMS[@]}" $(option ssl && echo 'USE_OPENSSL=1' )
-    emake -C contrib/systemd PREFIX=/usr
+    emake -C contrib/systemd "${DEFAULT_SRC_COMPILE_PARAMS[@]}"
 }
 
 haproxy_src_install() {
