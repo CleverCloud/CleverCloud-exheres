@@ -22,6 +22,7 @@ DEPENDENCIES="
     build+run:
         user/${PN}
         group/${PN}
+        dev-libs/libsodium
         dev-libs/openssl
         sys-libs/libcap
         ldap? ( net-directory/openldap )
