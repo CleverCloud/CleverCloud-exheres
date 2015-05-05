@@ -23,8 +23,8 @@ DEPENDENCIES="
         user/${PN}
         group/${PN}
         dev-libs/libsodium
-        dev-libs/openssl
         sys-libs/libcap
+        virtual/libssl
         ldap? ( net-directory/openldap )
     suggestion:
         user/ftp [[ description = [ Anonymous FTP ] ]]
