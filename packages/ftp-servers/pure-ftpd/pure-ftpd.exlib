@@ -40,6 +40,10 @@ DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
     ldap
 )
 
+DEFAULT_SRC_COMPILE_PARAMS=(
+    AR=${AR}
+)
+
 pure-ftpd_src_install() {
     default
 
