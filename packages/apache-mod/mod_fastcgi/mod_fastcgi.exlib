@@ -30,7 +30,7 @@ mod_fastcgi_src_compile() {
 }
 
 mod_fastcgi_src_install() {
-    exeinto /usr/libexec/apache2/modules/
+    exeinto /usr/$(exhost --target)/libexec/apache2/modules/
     doexe .libs/${PN}.so
 
     insinto /etc/apache2/modules.d
