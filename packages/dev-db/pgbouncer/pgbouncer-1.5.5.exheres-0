@@ -3,7 +3,7 @@
 
 require pgbouncer
 
-DOWNLOADS="http://pgfoundry.org/frs/download.php/3393/${PNV}.tar.gz"
+DOWNLOADS="https://${PN}.github.io/downloads/${PNV}.tar.gz"
 
 PLATFORMS="~amd64"
 

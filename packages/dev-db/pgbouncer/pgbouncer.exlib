@@ -6,7 +6,7 @@ require systemd-service
 export_exlib_phases src_install
 
 SUMMARY="Lightweight connection pooler for PostgreSQL"
-HOMEPAGE="http://pgfoundry.org/projects/${PN}/"
+HOMEPAGE="https://${PN}.github.io"
 
 LICENCES="BSD"
 SLOT="0"
