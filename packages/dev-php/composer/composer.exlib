@@ -3,7 +3,7 @@
 
 SUMMARY="Dependency manager for PHP"
 HOMEPAGE="https://getcomposer.org"
-DOWNLOADS="https://getcomposer.org/download/${PV/_/-}/${PN}.phar"
+DOWNLOADS="https://getcomposer.org/download/${PV/_/-}/${PN}.phar -> ${PNV}.phar"
 
 LICENCES="as-is"
 SLOT="0"
@@ -15,7 +15,7 @@ DEPENDENCIES="
 
 src_unpack() {
     mkdir -p "${WORK}"
-    edo cp "${FETCHEDDIR}"/${PN}.phar "${WORK}"/
+    edo cp "${FETCHEDDIR}"/${PNV}.phar "${WORK}"/${PN}.phar
 }
 
 src_install() {
