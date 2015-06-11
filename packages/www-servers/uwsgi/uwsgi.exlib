@@ -64,14 +64,14 @@ install_one_multibuild() {
     alternatives=( "${PN}_python" "${MULTIBUILD_TARGET}" "${MULTIBUILD_TARGET}" )
     for p in "${PYTHON_PLUGINS[@]}"; do
         doins "${p}"_plugin.so
-        alternatives+=( /usr/${LIBDIR}/uwsgi/"${p}"_plugin.so "${p}"${MULTIBUILD_TARGET}_plugin.so )
+        alternatives+=( /usr/$(exhost --target)/lib/uwsgi/"${p}"_plugin.so "${p}"${MULTIBUILD_TARGET}_plugin.so )
     done
     alternatives_for "${alternatives[@]}"
 }
 
 uwsgi_src_install() {
     dobin uwsgi
-    insinto /usr/${LIBDIR}/uwsgi
+    insinto /usr/$(exhost --target)/lib/uwsgi
     option ruby && for p in "${RUBY_PLUGINS[@]}"; do
         doins "${p}"_plugin.so
     done
