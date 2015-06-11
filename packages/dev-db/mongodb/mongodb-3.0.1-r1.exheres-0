@@ -34,7 +34,7 @@ WORK="${WORKBASE}/${PN}-src-r${PV}"
 #    --rocksdb
 MONGO_PARAMS=(
     --nostrip
-    --prefix="${IMAGE}"/usr
+    --prefix="${IMAGE}"/usr/"$(exhost --target)"
     --ssl
     --use-sasl-client
     --use-system-boost
