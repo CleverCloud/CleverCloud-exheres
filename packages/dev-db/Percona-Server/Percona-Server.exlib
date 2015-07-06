@@ -151,9 +151,6 @@ Percona-Server_src_install() {
     # construct ldpath for all targets
     ldpath="/usr/$(exhost --target)/lib/${PN}${ldpath:+:${ldpath}}"
 
-    # Remove empty directories
-    edo rmdir "${IMAGE}"/usr/share/mysql/info
-
     keepdir /etc/mysql
 
     edo cp "${IMAGE}"/usr/share/${PN}/my-default.cnf "${IMAGE}"/etc/mysql/my.cnf
