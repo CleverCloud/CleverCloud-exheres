@@ -7,8 +7,8 @@ Percona Toolkit for MySQL is a collection of advanced command-line tools used by
 Support staff to perform a variety of MySQL server and system tasks that are too difficult or
 complex to perform manually, including
 "
-HOMEPAGE="http://www.percona.com/software/percona-toolkit"
-DOWNLOADS="http://dev.exherbo.org/~keruspe/${PNV}.tar.xz"
+HOMEPAGE="http://www.percona.com/software/${PN}"
+DOWNLOADS="https://www.percona.com/downloads/${PN}/${PV}/tarball/${PNV}.tar.gz"
 
 LICENCES="GPL-2"
 SLOT="0"
