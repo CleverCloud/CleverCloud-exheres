@@ -149,11 +149,11 @@ Percona-Server_src_install() {
     ! option debug && edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/mysql/plugin/debug
 
     # construct ldpath for all targets
-    ldpath="/usr/$(exhost --target)/lib/${PN}${ldpath:+:${ldpath}}"
+    ldpath="/usr/$(exhost --target)/lib/mysql${ldpath:+:${ldpath}}"
 
     keepdir /etc/mysql
 
-    edo cp "${IMAGE}"/usr/share/${PN}/my-default.cnf "${IMAGE}"/etc/mysql/my.cnf
+    edo cp "${IMAGE}"/usr/share/mysql/my-default.cnf "${IMAGE}"/etc/mysql/my.cnf
     edo mv "${IMAGE}"/usr/$(exhost --target)/bin/mysqlaccess.conf "${IMAGE}"/etc/mysql/mysqlaccess.conf
     edo chmod 644 "${IMAGE}"/etc/mysql/mysqlaccess.conf
 
@@ -171,7 +171,7 @@ EOF
     install_systemd_files
 
     insinto /usr/$(exhost --target)/lib/tmpfiles.d
-    hereins ${PN}.conf <<EOF
+    hereins mysql.conf <<EOF
 d /run/mysqld 0755 mysql mysql
 EOF
 }
