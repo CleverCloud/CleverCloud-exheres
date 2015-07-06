@@ -49,7 +49,6 @@ DEPENDENCIES="
         dev-db/percona-toolkit [[ description = [ The percona toolkit to manage Percona-Server ] ]]
 "
 
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/bison3.patch )
 WORK="${WORKBASE}/${PNV,,}-$(exparam release)"
 CMAKE_SOURCE="${WORK}"
 
