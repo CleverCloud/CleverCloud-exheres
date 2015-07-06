@@ -26,9 +26,8 @@ BUGS_TO="keruspe@exherbo.org"
 
 WORK="${WORKBASE}"
 
-src_install() {
-    dodoc usr/share/doc/${PNV}/*
-    doman usr/share/man/man1/*
-    dobin usr/bin/*
+src_prepare() {
+    edo cd ${PNV}
+    edo perl Makefile.PL
 }
 
