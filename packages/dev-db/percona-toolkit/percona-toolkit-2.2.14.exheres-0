@@ -24,10 +24,7 @@ DEPENDENCIES="
 
 BUGS_TO="keruspe@exherbo.org"
 
-WORK="${WORKBASE}"
-
 src_prepare() {
-    edo cd ${PNV}
     edo perl Makefile.PL
 }
 
