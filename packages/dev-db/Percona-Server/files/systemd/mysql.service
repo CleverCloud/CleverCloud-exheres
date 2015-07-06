@@ -18,7 +18,7 @@ PrivateTmp=true
 User=mysql
 Group=mysql
 
-ExecStart=/usr/sbin/mysqld --defaults-file=/etc/mysql/my.cnf --basedir=/usr --datadir=/var/lib/mysql --pid-file=/run/mysqld/mysqld.pid --socket=/run/mysqld/mysqld.sock --log-error=/var/log/mysql/mysql.log -W
+ExecStart=/usr/bin/mysqld --defaults-file=/etc/mysql/my.cnf --basedir=/usr --datadir=/var/lib/mysql --pid-file=/run/mysqld/mysqld.pid --socket=/run/mysqld/mysqld.sock --log-error=/var/log/mysql/mysql.log -W
 
 # Give a reasonable amount of time for the server to start up/shut down
 TimeoutSec=300

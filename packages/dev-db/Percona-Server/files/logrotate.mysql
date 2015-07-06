@@ -10,6 +10,6 @@ size 5M
 sharedscripts
 missingok
 postrotate
-/bin/kill -HUP `cat /run/mysqld/mysqld.pid`
+/usr/bin/kill -HUP `cat /run/mysqld/mysqld.pid`
 endscript
 }

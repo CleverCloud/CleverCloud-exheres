@@ -1,23 +1,19 @@
-# Copyright 2014 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Copyright 2008, 2009, 2010 Ingmar Vanhassel <ingmar@exherbo.org>
+# Copyright 2011-2015 Timo Gurr <tgurr@exherbo.org>
+# Copyright 2014-2015 Marc-Antoine Perennou <keruspe@exherbo.org>
 # Distributed under the terms of the GNU General Public License v2
-# Based on mysql.exlib which is
-#   Copyright 2008, 2009, 2010 Ingmar Vanhassel <ingmar@exherbo.org>
-#   Copyright 2011-2013 Timo Gurr <tgurr@exherbo.org>
-#   Distributed under the terms of the GNU General Public License v2
 
 myexparam release
 
-require cmake [ api=2 ] systemd-service easy-multibuild
+require cmake [ api=2 ] systemd-service
 
-export_exlib_phases pkg_pretend src_install
+export_exlib_phases pkg_pretend src_configure src_install
 
 PERCONA_MAJOR_VERSION=$(ever range 1-2)
 
 SUMMARY="A relational database management system (RDBMS)"
-HOMEPAGE="http://www.percona.com/"
-DOWNLOADS="
-${HOMEPAGE}redir/downloads/${PN}-${PERCONA_MAJOR_VERSION}/${PNV}-$(exparam release)/source/tarball/${PNV,,}-$(exparam release).tar.gz
-"
+HOMEPAGE="https://www.percona.com/"
+DOWNLOADS="${HOMEPAGE}redir/downloads/${PN}-${PERCONA_MAJOR_VERSION}/${PNV}-$(exparam release)/source/tarball/${PNV,,}-$(exparam release).tar.gz"
 
 LICENCES="GPL-2" # with-exceptions
 SLOT="0"
@@ -25,26 +21,27 @@ MYOPTIONS="
     debug
     embedded-server [[ description = [ The embedded MySQL server library, a full-featured MySQL server that can be run inside a client application ] ]]
     tcpd
-    ( multibuild_c: 32 64 )
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
 DEPENDENCIES="
     build+run:
         group/mysql
         user/mysql
-        dev-libs/libaio[multibuild_c:*(-)?]
-        dev-libs/libedit[multibuild_c:*(-)?]
-        dev-libs/libevent[>=1.4.12][multibuild_c:*(-)?]
-        dev-libs/openssl[>=0.9.7][multibuild_c:*(-)?]
-        sys-libs/zlib[>=1.2.3][multibuild_c:*(-)?]
-        tcpd? ( sys-apps/tcp-wrappers[multibuild_c:*(-)?] )
+        dev-libs/libaio
+        dev-libs/libedit
+        dev-libs/libevent[>=1.4.12]
+        sys-libs/zlib[>=1.2.3]
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
+        tcpd? ( sys-apps/tcp-wrappers )
+        !dev-db/mariadb [[
+            description = [ MariaDB is a drop-in replacement for MySQL with same binary names ]
+            resolution = manual
+        ]]
         !dev-db/mysql [[
             description = [ Percona-Server is a drop-in replacement for MySQL with same binary names ]
-            resolution = uninstall-blocked-after
-        ]]
-        !dev-db/mariadb [[
-            description = [ MariaDB is another drop-in replacement for MySQL with same binary names ]
-            resolution = uninstall-blocked-after
+            resolution = manual
         ]]
     suggestion:
         app-admin/logrotate [[ description = [ Use logrotate for rotating logs ] ]]
@@ -53,14 +50,13 @@ DEPENDENCIES="
 "
 
 DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/bison3.patch )
-
 WORK="${WORKBASE}/${PNV,,}-$(exparam release)"
 CMAKE_SOURCE="${WORK}"
 
 Percona-Server_pkg_pretend() {
-    # Sanity check when upgrading to a different x.y version of Percona-Server
+    # Sanity check when upgrading to a different x.y version of mysql
     if [[ -z ${PERCONA_MAJOR_UPGRADE} ]] && has_version ${CATEGORY}/${PN} && \
-        ! has_version ${CATEGORY}/${PN}[=${PERCONA_MAJOR_VERSION}*] ; then
+        ! has_version ${CATEGORY}/${PN}[=${MYSQL_MAJOR_VERSION}*] ; then
         ewarn "To install a different major version of MySQL, you have to dump/reload your database."
         ewarn "When you've done this, please set 'PERCONA_MAJOR_UPGRADE=YesPlease', to continue the upgrade."
         ewarn "For more information visit:"
@@ -70,35 +66,38 @@ Percona-Server_pkg_pretend() {
 
     if [[ -f "${ROOT}"/etc/tmpfiles.d/${PN}.conf ]] ; then
         ewarn "The configuration file /etc/tmpfiles.d/${PN}.conf has been moved to"
-        ewarn "/usr/${LIBDIR}/tmpfiles.d/${PN}.conf and can be safely removed after upgrade"
+        ewarn "/usr/$(exhost --target)/lib/tmpfiles.d/${PN}.conf and can be safely removed after upgrade"
         ewarn "if you did not make any changes to it."
     fi
 }
 
-configure_one_multibuild() {
+Percona-Server_src_configure() {
     local cmakeargs=(
         -DBUILD_CONFIG:STRING=mysql_release
+        # The default layout STANDALONE breaks all the scripts.
+        -DINSTALL_LAYOUT:STRING="RPM"
         -DCMAKE_INSTALL_PREFIX:PATH=/usr
         -DCOMPILATION_COMMENT:STRING="Exherbo"
         -DDEFAULT_CHARSET:STRING=utf8
         -DDEFAULT_COLLATION:STRING=utf8_general_ci
         -DFEATURE_SET:STRING=community
-        -DINSTALL_BINDIR:PATH=bin
+        -DINSTALL_BINDIR:PATH=$(exhost --target)/bin
         -DINSTALL_DOCDIR:PATH=share/doc/${PNVR}
         -DINSTALL_DOCREADMEDIR:PATH=share/doc/${PNVR}
-        -DINSTALL_INCLUDEDIR:PATH=include/mysql
+        -DINSTALL_INCLUDEDIR:PATH=$(exhost --target)/include/mysql
         -DINSTALL_INFODIR:PATH=share/mysql/info
-        -DINSTALL_LIBDIR:PATH=${LIBDIR}/mysql
+        -DINSTALL_LIBDIR:PATH=$(exhost --target)/lib/mysql
         -DINSTALL_MANDIR:PATH=share/man
         -DINSTALL_MYSQLSHAREDIR:PATH=share/mysql
         # Empty value to not install the mysql-test directory
         -DINSTALL_MYSQLTESTDIR:STRING=
-        -DINSTALL_PLUGINDIR:PATH=${LIBDIR}/mysql/plugin
-        -DINSTALL_SBINDIR:PATH=sbin
-        -DINSTALL_SCRIPTDIR:PATH=bin
+        -DINSTALL_PLUGINDIR:PATH=$(exhost --target)/lib/mysql/plugin
+        -DINSTALL_SBINDIR:PATH=$(exhost --target)/bin
+        -DINSTALL_SCRIPTDIR:PATH=$(exhost --target)/bin
+        -DINSTALL_SHAREDIR:PATH=share
         # Empty value to not install the sql-bench directory
         -DINSTALL_SQLBENCHDIR:STRING=
-        -DINSTALL_SUPPORTFILESDIR:PATH=share/doc/${PNVR}/support-files
+        -DINSTALL_SUPPORTFILESDIR:PATH=share/mysql
         -DMYSQL_DATADIR:PATH=/var/lib/mysql
         -DMYSQL_UNIX_ADDR:PATH=/run/mysqld/mysqld.sock
         -DSYSCONFDIR:PATH=/etc/mysql
@@ -111,11 +110,11 @@ configure_one_multibuild() {
         -DWITH_FEDERATED_STORAGE_ENGINE:BOOL=TRUE
         -DWITH_INNOBASE_STORAGE_ENGINE:BOOL=TRUE
         -DWITH_PARTITION_STORAGE_ENGINE:BOOL=TRUE
-        -DWITH_SSL:STRING=system
         -DWITH_UNIT_TESTS:BOOL=TRUE
         -DWITH_VALGRIND:BOOL=FALSE
         -DWITH_ZLIB:STRING=system
         -DBUILD_WITH_WERROR:BOOL=FALSE
+        -DCMAKE_DISABLE_FIND_PACKAGE_Git:BOOL=TRUE
         -DCOMPILE_FLAG_WERROR:BOOL=FALSE
         -DENABLE_DTRACE:BOOL=FALSE
         -DENABLE_GCOV:BOOL=FALSE
@@ -123,6 +122,7 @@ configure_one_multibuild() {
         -DENABLED_LOCAL_INFILE:BOOL=TRUE
         -DWITH_EDITLINE:STRING=system
         -DWITH_LIBEVENT:STRING=system
+        -DWITH_SSL:STRING=/usr/$(exhost --target)
     )
 
     if option debug ; then
@@ -142,28 +142,23 @@ configure_one_multibuild() {
         $(cmake_with tcpd LIBWRAP)
 }
 
-install_one_multibuild() {
-    cmake_src_install
-
-    ! option debug && edo rmdir "${IMAGE}"/usr/${LIBDIR}/mysql/plugin/debug
-
-    # construct ldpath for all targets
-    ldpath="/usr/${LIBDIR}/mysql${ldpath:+:${ldpath}}"
-}
-
 Percona-Server_src_install() {
     local ldpath
 
-    easy-multibuild_src_install
+    cmake_src_install
+
+    ! option debug && edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/mysql/plugin/debug
+
+    # construct ldpath for all targets
+    ldpath="/usr/$(exhost --target)/lib/${PN}${ldpath:+:${ldpath}}"
 
     # Remove empty directories
-    edo rm -r "${IMAGE}"/usr/data
-    edo rm -r "${IMAGE}"/usr/share/mysql/info
+    edo rmdir "${IMAGE}"/usr/share/mysql/info
 
     keepdir /etc/mysql
 
-    edo cp "${IMAGE}"/usr/share/doc/${PNVR}/support-files/my-default.cnf "${IMAGE}"/etc/mysql/my.cnf
-    edo mv "${IMAGE}"/usr/bin/mysqlaccess.conf "${IMAGE}"/etc/mysql/mysqlaccess.conf
+    edo cp "${IMAGE}"/usr/share/${PN}/my-default.cnf "${IMAGE}"/etc/mysql/my.cnf
+    edo mv "${IMAGE}"/usr/$(exhost --target)/bin/mysqlaccess.conf "${IMAGE}"/etc/mysql/mysqlaccess.conf
     edo chmod 644 "${IMAGE}"/etc/mysql/mysqlaccess.conf
 
     keepdir /var/{lib,log}/mysql
@@ -179,11 +174,9 @@ EOF
 
     install_systemd_files
 
-    if option systemd ; then
-        insinto /usr/${LIBDIR}/tmpfiles.d
-        hereins ${PN}.conf <<EOF
+    insinto /usr/$(exhost --target)/lib/tmpfiles.d
+    hereins ${PN}.conf <<EOF
 d /run/mysqld 0755 mysql mysql
 EOF
-    fi
 }
 
