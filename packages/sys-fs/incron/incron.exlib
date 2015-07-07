@@ -3,7 +3,7 @@
 
 require systemd-service
 
-export_exlib_phases src_install
+export_exlib_phases src_prepare src_install
 
 SUMMARY="Inotify cron system"
 HOMEPAGE="http://inotify.aiken.cz/?section=incron&page=about&lang=en"
@@ -12,6 +12,11 @@ DOWNLOADS="http://inotify.aiken.cz/download/${PN}/${PNV}.tar.gz"
 LICENCES="GPL-2"
 SLOT="0"
 MYOPTIONS=""
+
+incron_src_prepare() {
+    default
+    edo sed -i "s:/usr/local:/usr/$(exhost --target):" Makefile
+}
 
 incron_src_install() {
     default
