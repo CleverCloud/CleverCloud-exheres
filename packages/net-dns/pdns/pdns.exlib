@@ -38,10 +38,10 @@ pdns_src_configure() {
 
     econf \
         --with-modules= \
-        $(option_with mysql mysql /usr) \
-        $(option_with postgres pgsql /usr) \
-        $(option postgres "--with-pgsql-includes=/usr/include") \
-        $(option postgres "--with-pgsql-libs=/usr/${LIBDIR}") \
+        $(option_with mysql mysql /usr/$(exhost --target)) \
+        $(option_with postgres pgsql /usr/$(exhost --target)) \
+        $(option postgres "--with-pgsql-includes=/usr/$(exhost --target)/include") \
+        $(option postgres "--with-pgsql-libs=/usr/$(exhost --target)/lib") \
         --with-dynmodules="${mymodules[@]}" \
         --sysconfdir=/etc/powerdns
 }
@@ -57,7 +57,7 @@ pdns_src_install() {
         -e '/set[ug]id=/s:^# ::' \
         -e '/set[ug]id=/s:$:pdns:' \
         -e '/module-dir=/s:^# ::' \
-        -e "/module-dir=/s:=.*\$:=/usr/${LIBDIR}:" \
+        -e "/module-dir=/s:=.*\$:=/usr/$(exhost --target)/lib:" \
         -e '/launch=/s:^# ::' \
         -e '/load-modules=/s:^# ::' \
         -e "/launch=/s:\$:${backend}:" \
