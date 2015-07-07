@@ -3,6 +3,8 @@
 
 require alternatives
 
+export_exlib_phases src_prepare src_install
+
 SUMMARY="ssmtp is a send-only sendmail emulator for machines which normally pick their mail up from a centralized mailhub"
 HOMEPAGE="ftp://ftp.debian.org/debian/pool/main/s/ssmtp/"
 DOWNLOADS="mirror://debian/pool/main/s/ssmtp/${PNV/-/_}.orig.tar.bz2"
@@ -15,7 +17,13 @@ DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'ipv6 inet6' )
 
 DEFAULT_SRC_CONFIGURE_PARAMS=( --hates=docdir --hates=datarootdir )
 
-src_install() {
+ssmtp_src_prepare() {
+    default
+
+    edo sed -i '/^bindir/s/sbin/bin/' Makefile.in
+}
+
+ssmtp_src_install() {
     default
 
     insinto /etc/${PN}
