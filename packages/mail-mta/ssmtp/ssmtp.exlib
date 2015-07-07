@@ -13,7 +13,7 @@ MYOPTIONS="ipv6"
 
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'ipv6 inet6' )
 
-DEFAULT_SRC_CONFIGURE_PARAMS=( --hates=docdir )
+DEFAULT_SRC_CONFIGURE_PARAMS=( --hates=docdir --hates=datarootdir )
 
 src_install() {
     default
