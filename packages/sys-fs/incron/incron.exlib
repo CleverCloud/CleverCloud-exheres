@@ -15,7 +15,7 @@ MYOPTIONS=""
 
 incron_src_prepare() {
     default
-    edo sed -i Makefile
+    edo sed -i Makefile \
         -e "s:/usr/local:/usr/$(exhost --target):" \
         -e "s/sbin/bin/"
 }
