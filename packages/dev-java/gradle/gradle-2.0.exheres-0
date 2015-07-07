@@ -29,7 +29,7 @@ src_install() {
     exeinto /usr/share/${PNV}/bin
     doexe bin/gradle
 
-    dodir /usr/bin
-    dosym /usr/share/${PNV}/bin/gradle /usr/bin/gradle
+    dodir /usr/$(exhost --target)/bin
+    dosym /usr/share/${PNV}/bin/gradle /usr/$(exhost --target)/bin/gradle
 }
 
