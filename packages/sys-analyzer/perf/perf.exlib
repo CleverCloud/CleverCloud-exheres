@@ -19,7 +19,7 @@ MAKE_PARAMS=(
     V=1
     DESTDIR="${IMAGE}"/usr/$(exhost --target)
     HOSTCC=$(exhost --tool-prefix)cc
-    CROSS_COMPILE=$(exhost --target)
+    CROSS_COMPILE=$(exhost --tool-prefix)
 )
 
 DEFAULT_SRC_COMPILE_PARAMS=( "${MAKE_PARAMS[@]}" )
