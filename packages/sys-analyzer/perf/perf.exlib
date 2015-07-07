@@ -14,7 +14,13 @@ MYOPTIONS=""
 
 WORK=${WORKBASE}/linux-${PV}/tools/perf/
 
-MAKE_PARAMS=( "WERROR=0" "DESTDIR=${IMAGE}/usr" "V=1" )
+MAKE_PARAMS=(
+    WERROR=0
+    V=1
+    DESTDIR="${IMAGE}"/usr/$(exhost --target)
+    HOSTCC=$(exhost --tool-prefix)cc
+    CROSS_COMPILE=$(exhost --target)
+)
 
 DEFAULT_SRC_COMPILE_PARAMS=( "${MAKE_PARAMS[@]}" )
 DEFAULT_SRC_INSTALL_PARAMS=( "${MAKE_PARAMS[@]}" )
