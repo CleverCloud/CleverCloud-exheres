@@ -3,8 +3,6 @@
 
 require qmake github
 
-export_exlib_phases src_prepare
-
 SUMMARY="Simple shell utility to convert html to pdf using the webkit rendering engine, and qt."
 HOMEPAGE="http://wkhtmltopdf.org/"
 
@@ -19,11 +17,5 @@ DEPENDENCIES="
 
 BUGS_TO="julien.durillon@clever-cloud.com"
 
-DEFAULT_SRC_INSTALL_PARAMS=( INSTALL_ROOT="${IMAGE}"/usr )
-
-wkhtmltopdf_src_prepare() {
-    default
-    edo sed -e "s:INSTALLBASE/lib:INSTALLBASE/${LIBDIR}:" \
-            -i "${WORK}"/src/lib/lib.pro
-}
+DEFAULT_SRC_INSTALL_PARAMS=( INSTALL_ROOT="${IMAGE}"/usr/$(exhost --target) )
 
