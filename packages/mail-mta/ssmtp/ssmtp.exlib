@@ -23,10 +23,10 @@ src_install() {
 
     doman "${WORK}"/ssmtp.conf.5
 
-    dosym /usr/sbin/${PN}{,.sendmail}
+    dosym /usr/$(exhost --target)/bin/${PN}{,.sendmail}
 
-    alternatives_for mta ${PN} 10 /usr/sbin/sendmail ${PN}.sendmail
-    alternatives_for mta ${PN} 10 /usr/${LIBDIR}/sendmail ../sbin/sendmail
-    alternatives_for mta ${PN} 10 /usr/bin/mailq ../sbin/sendmail
-    alternatives_for mta ${PN} 10 /usr/bin/newaliases ../sbin/sendmail
+    alternatives_for mta ${PN} 10 /usr/$(exhost --target)/bin/sendmail ${PN}.sendmail
+    alternatives_for mta ${PN} 10 /usr/$(exhost --target)/lib/sendmail ../bin/sendmail
+    alternatives_for mta ${PN} 10 /usr/$(exhost --target)/bin/mailq sendmail
+    alternatives_for mta ${PN} 10 /usr/$(exhost --target)/bin/newaliases sendmail
 }
