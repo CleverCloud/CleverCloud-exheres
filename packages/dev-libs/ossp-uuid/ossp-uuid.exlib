@@ -25,7 +25,7 @@ WORK="${WORKBASE}/uuid-${PV}"
 DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/remove-strip.patch"
         "${FILES}/prevent-conflict-with-util-linux.patch" )
 
-DEFAULT_SRC_CONFIGURE_PARAMS=( '--disable-stripping' "--includedir=/usr/include/ossp/" )
+DEFAULT_SRC_CONFIGURE_PARAMS=( '--disable-stripping' "--includedir=/usr/$(exhost --target)/include/ossp/" )
 
 DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
     perl
