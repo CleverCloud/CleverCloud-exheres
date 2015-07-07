@@ -50,9 +50,7 @@ pure-ftpd_src_install() {
     pamd_mimic_system ${PN} auth auth account session
 
     install_systemd_files
-    if option systemd; then
-        insinto /etc/conf.d
-        newins "${FILES}"/${PN}-confd ${PN}.conf
-    fi
+    insinto /etc/conf.d
+    newins "${FILES}"/${PN}-confd ${PN}.conf
 }
 
