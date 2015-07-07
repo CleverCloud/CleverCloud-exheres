@@ -12,5 +12,5 @@ SLOT="0"
 
 geos_src_install() {
     default
-    edo rmdir "${IMAGE}"/usr/lib64/geos
+    edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/geos
 }
