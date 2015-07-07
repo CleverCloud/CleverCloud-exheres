@@ -17,6 +17,7 @@ WORK=${WORKBASE}/linux-${PV}/tools/perf/
 MAKE_PARAMS=(
     WERROR=0
     V=1
+    lib=lib
     DESTDIR="${IMAGE}"/usr/$(exhost --target)
     HOSTCC=$(exhost --tool-prefix)cc
     CROSS_COMPILE=$(exhost --tool-prefix)
