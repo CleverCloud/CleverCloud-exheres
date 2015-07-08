@@ -55,7 +55,7 @@ CMAKE_SOURCE="${WORK}"
 Percona-Server_pkg_pretend() {
     # Sanity check when upgrading to a different x.y version of mysql
     if [[ -z ${PERCONA_MAJOR_UPGRADE} ]] && has_version ${CATEGORY}/${PN} && \
-        ! has_version ${CATEGORY}/${PN}[=${MYSQL_MAJOR_VERSION}*] ; then
+        ! has_version ${CATEGORY}/${PN}[=${PERCONA_MAJOR_VERSION}*] ; then
         ewarn "To install a different major version of MySQL, you have to dump/reload your database."
         ewarn "When you've done this, please set 'PERCONA_MAJOR_UPGRADE=YesPlease', to continue the upgrade."
         ewarn "For more information visit:"
