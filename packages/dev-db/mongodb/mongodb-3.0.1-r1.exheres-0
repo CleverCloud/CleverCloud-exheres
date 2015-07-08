@@ -35,6 +35,7 @@ WORK="${WORKBASE}/${PN}-src-r${PV}"
 MONGO_PARAMS=(
     --cc=${CC}
     --cxx=${CXX}
+    --variant-dir=build
     --nostrip
     --prefix="${IMAGE}"/usr/"$(exhost --target)"
     --ssl
