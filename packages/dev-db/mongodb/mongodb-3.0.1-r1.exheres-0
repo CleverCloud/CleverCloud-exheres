@@ -33,6 +33,8 @@ WORK="${WORKBASE}/${PN}-src-r${PV}"
 #    --c++11
 #    --rocksdb
 MONGO_PARAMS=(
+    --cc=${CC}
+    --cxx=${CXX}
     --nostrip
     --prefix="${IMAGE}"/usr/"$(exhost --target)"
     --ssl
