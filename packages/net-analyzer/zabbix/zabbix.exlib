@@ -31,15 +31,14 @@ DEPENDENCIES="
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'ipv6')
 DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( 'postgresql' 'snmp net-snmp' )
 DEFAULT_SRC_CONFIGURE_PARAMS=( "--sysconfdir=/etc/${PN}" '--enable-server' '--disable-agent' )
+DEFAULT_SRC_COMPILE_PARAMS=( AR=${AR} RANLIB=${RANLIB} )
 
 zabbix_src_install() {
     default
 
-    if option systemd; then
-        install_systemd_files
-        insinto /usr/${LIBDIR}/tmpfiles.d
-        doins "${FILES}"/tmpfiles.d/zabbix.conf
-    fi
+    install_systemd_files
+    insinto /usr/${LIBDIR}/tmpfiles.d
+    doins "${FILES}"/tmpfiles.d/zabbix.conf
 
     # We have some empty folders here
     edo rmdir "${IMAGE}"/usr/share/man/man1
