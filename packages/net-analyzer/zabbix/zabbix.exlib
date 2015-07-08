@@ -31,6 +31,7 @@ DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'ipv6')
 DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( 'snmp net-snmp' )
 DEFAULT_SRC_CONFIGURE_PARAMS=( "--sysconfdir=/etc/${PN}" '--enable-server' '--disable-agent' '--with-postgresql' )
 DEFAULT_SRC_COMPILE_PARAMS=( AR=${AR} RANLIB=${RANLIB} )
+DEFAULT_SRC_INSTALL_PARAMS=( AR=${AR} RANLIB=${RANLIB} )
 
 zabbix_src_install() {
     default
