@@ -1,9 +1,11 @@
-# Copyright 2014 Kevin Decherf
+# Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
 SUMMARY="API and CLI for the generation of DCE 1.1, ISO/IEC 11578:1996 and RFC 4122 compliant Universally Unique Identifier"
 HOMEPAGE="http://www.ossp.org/pkg/lib/uuid/"
-DOWNLOADS="ftp://ftp.ossp.org/pkg/lib/uuid/uuid-${PV}.tar.gz"
+# TODO: the main repo seems dead, we host the package as we still need it
+# but we should bury it at some time
+DOWNLOADS="http://dev.exherbo.org/~keruspe/uuid-${PV}.tar.gz"
 
 LICENCES="ISC"
 SLOT="0"
