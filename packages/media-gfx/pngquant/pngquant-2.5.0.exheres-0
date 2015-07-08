@@ -1,0 +1,76 @@
+# Copyright 2015 Julien Durillon <julien.durillon@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=pornel tag=${PV} ]
+
+SUMMARY="Lossy PNG compressor"
+DESCRIPTION="
+Lossy PNG compressor — pngquant command and libimagequant library.
+"
+HOMEPAGE="https://pngquant.org"
+
+LICENCES="BSD-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    lcms
+    openmp
+"
+
+DEPENDENCIES="
+    build+run:
+        lcms?   ( media-libs/lcms )
+        media-libs/libpng:1.6
+        openmp? ( sys-libs/libgomp:= )
+        sys-libs/zlib
+"
+
+BUGS_TO="pornel@pornel.net"
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( "--prefix=/usr/$(exhost --target)" )
+
+src_configure() {
+    local my_params=( )
+
+    if option lcms; then
+        my_params=( "${my_params[@]}" '--with-lcms2' )
+    fi
+
+    if option openmp; then
+        my_params=( "${my_params[@]}" '--with-openmp' )
+    fi
+
+    edo ./configure \
+        "${DEFAULT_SRC_CONFIGURE_PARAMS[@]}" \
+        "${my_params[@]}" \
+        --without-cocoa
+
+    edo cd lib
+
+    edo ./configure \
+        "${DEFAULT_SRC_CONFIGURE_PARAMS[@]}" \
+        "${my_params[@]}"
+}
+
+src_compile() {
+    emake
+
+    edo cd lib
+
+    emake
+}
+
+src_install() {
+    exeinto /usr/$(exhost --target)/bin
+    doexe ${PN}
+
+    insinto /usr/$(exhost --target)/lib
+    doins lib/libimagequant.so.0
+
+    insinto /usr/$(exhost --target)/include
+    doins lib/libimagequant.h
+
+    doman ${PN}.1
+
+}
+
