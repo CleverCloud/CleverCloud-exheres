@@ -34,11 +34,9 @@ WORK="${WORKBASE}"/zabbix-${PV}
 zabbix-agent_src_install() {
     default
 
-    if option systemd; then
-        install_systemd_files
-        insinto /usr/${LIBDIR}/tmpfiles.d
-        doins "${FILES}"/tmpfiles.d/zabbix-agent.conf
-    fi
+    install_systemd_files
+    insinto /usr/${LIBDIR}/tmpfiles.d
+    doins "${FILES}"/tmpfiles.d/zabbix-agent.conf
 
     KEEPDIRS=(
         /etc/zabbix/zabbix_agent.conf.d
