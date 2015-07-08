@@ -13,7 +13,11 @@ LICENCES="GPL-2"
 SLOT="0"
 MYOPTIONS=""
 
-DEFAULT_SRC_INSTALL_PARAMS=( 'STRIP_BINARIES=0' )
+DEFAULT_SRC_INSTALL_PARAMS=(
+    STRIP_BINARIES=0
+    BINDIR=/usr/$(exhost --target)/bin
+    SBINDIR=/usr/$(exhost --target)/bin
+)
 
 DEPENDENCIES="
     build+run:
