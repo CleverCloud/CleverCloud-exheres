@@ -13,15 +13,14 @@ LICENCES="GPL-2"
 SLOT="0"
 MYOPTIONS="
     ipv6
-    postgresql
     snmp
 "
 
 DEPENDENCIES="
     build+run:
+        dev-db/postgresql
         group/zabbix
         user/zabbix
-        postgresql? ( dev-db/postgresql )
         snmp? ( net/net-snmp )
     suggestion:
         net-analyzer/zabbix-agent
@@ -29,8 +28,8 @@ DEPENDENCIES="
 "
 
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'ipv6')
-DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( 'postgresql' 'snmp net-snmp' )
-DEFAULT_SRC_CONFIGURE_PARAMS=( "--sysconfdir=/etc/${PN}" '--enable-server' '--disable-agent' )
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( 'snmp net-snmp' )
+DEFAULT_SRC_CONFIGURE_PARAMS=( "--sysconfdir=/etc/${PN}" '--enable-server' '--disable-agent' '--with-postgresql' )
 DEFAULT_SRC_COMPILE_PARAMS=( AR=${AR} RANLIB=${RANLIB} )
 
 zabbix_src_install() {
