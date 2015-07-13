@@ -20,3 +20,11 @@ DEPENDENCIES="
         sci-libs/proj
 "
 
+src_prepare() {
+    default
+
+    edo sed -e "s/ar rs/${AR} rs/" \
+        -i libpgcommon/Makefile.in \
+        -i raster/rt_core/Makefile.in
+}
+
