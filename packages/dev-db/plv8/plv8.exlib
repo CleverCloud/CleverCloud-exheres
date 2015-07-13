@@ -16,3 +16,5 @@ DEPENDENCIES="
         dev-libs/v8
 "
 
+DEFAULT_SRC_COMPILE_PARAMS=( CUSTOM_CC=$(exhost --tool-prefix)g++ )
+
