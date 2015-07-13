@@ -1,6 +1,8 @@
 # Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ]
+
 SUMMARY="Spatial and Geographic objects for PostgreSQL"
 HOMEPAGE="http://postgis.net/"
 DOWNLOADS="http://download.osgeo.org/${PN}/source/${PNV}.tar.gz"
@@ -21,10 +23,12 @@ DEPENDENCIES="
 "
 
 src_prepare() {
-    default
-
     edo sed -e "s/ar rs/${AR} rs/" \
         -i libpgcommon/Makefile.in \
         -i raster/rt_core/Makefile.in
+
+    edo sed -e "/AC_PATH_PROG.*cpp/s/cpp/${CPP}/" -i configure.ac
+
+    autotools_src_prepare
 }
 
