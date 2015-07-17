@@ -36,11 +36,9 @@ DEFAULT_SRC_CONFIGURE_PARAMS=( "--sysconfdir=/etc/zabbix" '--enable-proxy' '--di
 zabbix-proxy_src_install() {
     default
 
-    if option systemd; then
-        install_systemd_files
-        insinto /usr/${LIBDIR}/tmpfiles.d
-        doins "${FILES}"/tmpfiles.d/zabbix.conf
-    fi
+    install_systemd_files
+    insinto /usr/$(exhost --target)/lib/tmpfiles.d
+    doins "${FILES}"/tmpfiles.d/zabbix.conf
 
     # We have some empty folders here
     edo rmdir "${IMAGE}"/usr/share/man/man1
