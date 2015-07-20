@@ -45,6 +45,7 @@ perf_src_install() {
     default
     edo mv "${IMAGE}"/usr/{$(exhost --target),}/share/man
     edo rmdir "${IMAGE}"/usr/$(exhost --target)/share
+    edo rm -r "${IMAGE}"/usr/$(exhost --target)/etc
 }
 
 export_exlib_phases src_install
