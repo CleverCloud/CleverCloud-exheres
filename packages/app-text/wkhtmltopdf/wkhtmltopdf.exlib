@@ -19,3 +19,10 @@ BUGS_TO="julien.durillon@clever-cloud.com"
 
 DEFAULT_SRC_INSTALL_PARAMS=( INSTALL_ROOT="${IMAGE}"/usr/$(exhost --target) )
 
+wkhtmltopdf_src_install() {
+    default
+    edo mv "${IMAGE}"/usr/{$(exhost --target),}/share/man
+    edo rmdir "${IMAGE}"/usr/$(exhost --target)/share
+}
+
+export_exlib_phases src_install
