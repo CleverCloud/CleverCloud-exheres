@@ -41,3 +41,11 @@ DEPENDENCIES="
         sys-libs/slang
 "
 
+perf_src_install() {
+    default
+    edo mv /usr/{$(exhost --target),}/share/man
+    edo rmdir /usr/$(exhost --target)/share
+}
+
+export_exlib_phases src_install
+
