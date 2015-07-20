@@ -13,6 +13,11 @@ LICENCES="GPL-2"
 SLOT="0"
 MYOPTIONS=""
 
+DEFAULT_SRC_INSTALL_PARAMS=(
+    MANPATH=/usr/share/man
+    DOCDIR=/usr/share/doc/${PNVR}
+)
+
 incron_src_prepare() {
     default
     edo sed -i Makefile \
