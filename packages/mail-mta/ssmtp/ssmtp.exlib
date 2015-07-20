@@ -17,6 +17,10 @@ DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'ipv6 inet6' )
 
 DEFAULT_SRC_CONFIGURE_PARAMS=( --hates=docdir --hates=datarootdir )
 
+DEFAULT_SRC_INSTALL_PARAMS=(
+    mandir=/usr/share/man/man8
+)
+
 ssmtp_src_prepare() {
     default
 
