@@ -13,21 +13,28 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
-        sys-devel/gcc[>=4.6][java(-)]
+        sys-devel/gcj:*
 "
 
 BUGS_TO="markus@unixforces.net"
 
 WORK=${WORKBASE}/${PNV}-dist
 
-src_compile() {
+src_prepare() {
+    default
+
     edo cd "${WORK}"/${PN}
     edo sed -e "s/-4.6//" -i Makefile.Debian
     edo sed -e "/export LIBGCJ=/d" -i Makefile.Debian
+}
+
+src_compile() {
+    edo cd "${WORK}"/${PN}
 
     # the Makefile is br0ken and should be rewritten, do not try to build in
     # parallel as it will fail - last checked for 2.02
     edo make -j1 -f Makefile.Debian \
+        TOOLPATH=$(exhost --tool-prefix) \
         LDLIBS='-lgcj -ldl -lrt -lz -pthread' # From libgcj.la
 }
 
