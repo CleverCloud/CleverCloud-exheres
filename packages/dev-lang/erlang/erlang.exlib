@@ -16,7 +16,7 @@ DOWNLOADS="http://www.erlang.org/download/${MY_PNV}.tar.gz"
 LICENCES="EPL-1.1"
 SLOT="0"
 
-MYOPTIONS="odbc
+MYOPTIONS="odbc wxwidgets
     ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
@@ -27,6 +27,7 @@ DEPENDENCIES="
         sys-libs/ncurses
         sys-libs/zlib
         odbc? ( dev-db/unixODBC )
+        wxwidgets? ( x11-libs/wxGTK:2.8 )
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl )
 "
@@ -43,6 +44,7 @@ DEFAULT_SRC_CONFIGURE_PARAMS=(
     --enable-threads
     --with-ssl
     --with-termcap
+    --with-wx-config=/usr/$(exhost --target)/lib/wx/config/gtk2-unicode-release-2.8
     --without-javac
 )
 
@@ -51,7 +53,7 @@ erlang_src_prepare() {
 
     # Avoid automagics
     option odbc || edo rm -r lib/odbc
-    edo rm -r lib/wx
+    option wxwidgets || edo rm -r lib/wx
 }
 
 erlang_src_install() {
