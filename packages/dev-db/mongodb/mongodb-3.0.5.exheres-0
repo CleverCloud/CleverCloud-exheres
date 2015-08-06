@@ -30,7 +30,6 @@ DEPENDENCIES="
 
 WORK="${WORKBASE}/${PN}-src-r${PV}"
 
-#    --c++11
 #    --rocksdb
 MONGO_PARAMS=(
     --cc=${CC}
@@ -44,6 +43,7 @@ MONGO_PARAMS=(
     --use-system-pcre
     --use-system-snappy
     --disable-warnings-as-errors
+    --c++11
 )
 
 SCONS_SRC_CONFIGURE_PARAMS=("${MONGO_PARAMS[@]}")
