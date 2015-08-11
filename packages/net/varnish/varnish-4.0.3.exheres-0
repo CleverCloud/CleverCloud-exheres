@@ -1,0 +1,35 @@
+# Copyright 2015 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Varnish Cache, the high-performance HTTP accelerator"
+HOMEPAGE="https://www.varnish-cache.org/"
+DOWNLOADS="https://repo.varnish-cache.org/source/${PNV}.tar.gz"
+
+LICENCES="as-is"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        dev-lang/python:*
+        dev-python/docutils
+        virtual/pkg-config
+    build+run:
+        dev-libs/libedit
+        dev-libs/pcre
+        sys-libs/readline
+"
+
+BUGS_TO="keruspe@exherbo.org"
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( '--without-ncurses' )
+
+# Way too much networking
+RESTRICT="test"
+
+src_install() {
+    default
+    keepdir /var/lib/varnish
+}
+
