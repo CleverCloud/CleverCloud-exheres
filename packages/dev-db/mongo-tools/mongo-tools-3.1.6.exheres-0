@@ -1,0 +1,59 @@
+# Copyright 2015 Julien Durillon <julien.durillon@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+rpv="r${PV}"
+require github [ user=mongodb tag=${rpv} ]
+
+SUMMARY="MongoDB administration tools"
+DESCRIPTION="
+Contains bsondump, mongoimport/mongoexport, mongodump/mongorestore, mongostat, mongofiles,
+mongooplog, mongotop.
+These tools used to be included in the main MongoDB dist, but they have be put aside, and rewritten
+in go since 3.0
+"
+HOMEPAGE="https://github.com/mongodb/mongo-tools"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        dev-lang/go[>=1.3]
+"
+
+BUGS_TO="julien.durillon@gmail.com"
+
+TOOLS=( bsondump
+        mongodump
+        mongorestore
+        mongofiles
+        mongoimport
+        mongoexport
+        mongooplog
+        mongostat
+        mongotop
+)
+
+src_prepare() {
+    edo ./set_gopath.sh
+    edo mkdir bin
+}
+
+src_compile() {
+    export SOURCE_GOPATH="$WORK"/.gopath
+    export VENDOR_GOPATH="$WORK"/vendor
+    export GOPATH="$SOURCE_GOPATH:$VENDOR_GOPATH"
+
+    for t in ${TOOLS[@]}; do
+        edo go build \
+            -o bin/"${t}" \
+            "${t}"/main/"${t}".go
+    done
+}
+
+src_install() {
+    dobin bin/*
+}
+
