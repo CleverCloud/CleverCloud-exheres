@@ -20,16 +20,19 @@ DOWNLOADS="http://www.erlang.org/download/${MY_PNV}.tar.gz"
 LICENCES="EPL-1.1"
 SLOT="0"
 
-MYOPTIONS="odbc"
+MYOPTIONS="odbc
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
+"
 
 DEPENDENCIES="
     build:
         dev-lang/perl:*
     build+run:
-        dev-libs/openssl
         sys-libs/ncurses
         sys-libs/zlib
         odbc? ( dev-db/unixODBC )
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
 "
 
 WORK="${WORKBASE}"/${MY_PNV:0:14}
