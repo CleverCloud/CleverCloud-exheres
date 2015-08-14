@@ -7,11 +7,7 @@ export_exlib_phases src_prepare src_install
 
 myexparam pv=$(ever replace 1 B $(ever replace 2 - ${PV}))
 
-if ever at_least 17; then
-    MY_PNV=otp_src_${PV}
-else
-    MY_PNV=otp_src_R$(exparam pv)
-fi
+MY_PNV=otp_src_${PV}
 
 SUMMARY="A language to build massively scalable soft real-time systems with requirements on high availability"
 HOMEPAGE="http://www.erlang.org/"
