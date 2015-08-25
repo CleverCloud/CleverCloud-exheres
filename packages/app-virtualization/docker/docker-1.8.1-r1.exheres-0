@@ -33,7 +33,6 @@ DEPENDENCIES="
     run:
         app-virtualization/lxc[>=1.0.0]
         group/docker
-        net-apps/s3cmd
         net-firewall/iptables
         net-misc/bridge-utils
         sys-apps/iproute2
