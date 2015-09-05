@@ -7,6 +7,7 @@ export_exlib_phases src_install
 
 SUMMARY="Lightweight connection pooler for PostgreSQL"
 HOMEPAGE="https://${PN}.github.io"
+DOWNLOADS="https://${PN}.github.io/downloads/files/${PV}/${PNV}.tar.gz"
 
 LICENCES="BSD"
 SLOT="0"

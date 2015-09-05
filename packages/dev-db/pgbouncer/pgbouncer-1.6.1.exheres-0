@@ -3,7 +3,5 @@
 
 require pgbouncer
 
-DOWNLOADS="https://${PN}.github.io/downloads/${PNV}.tar.gz"
-
 PLATFORMS="~amd64"
 
