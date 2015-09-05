@@ -7,7 +7,7 @@ export_exlib_phases src_configure src_install
 
 SUMMARY="The PowerDNS Authoritative Server enables authoritative DNS service from all major databases."
 HOMEPAGE="http://www.powerdns.com"
-DOWNLOADS="http://downloads.powerdns.com/releases/${PNV}.tar.gz"
+DOWNLOADS="http://downloads.powerdns.com/releases/${PNV}.tar.bz2"
 
 LICENCES="GPL-2"
 SLOT="0"

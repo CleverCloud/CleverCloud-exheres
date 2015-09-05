@@ -3,11 +3,16 @@
 
 [Unit]
 Description=PowerDNS Authoritative Server
-After=network.target
+Wants=network-online.target
+After=network-online.target
 
 [Service]
 ExecStart=/usr/sbin/pdns_server
 ExecReload=/usr/bin/pdns_control reload
+ExecStop=/usr/bin/pdns_control quit
+Restart=on-failure
+RestartSec=2
+PrivateTmp=true
 
 [Install]
 WantedBy=multi-user.target
