@@ -1,0 +1,24 @@
+# Copyright 2015 Marvin Schmidt <marv@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require github
+
+SUMMARY="Erlang build tool that makes it easy to compile and test Erlang applications"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        dev-lang/erlang[>=13.03]
+"
+
+# tries to download additional test tools
+RESTRICT="test"
+
+src_install() {
+    dobin rebar
+}
+
