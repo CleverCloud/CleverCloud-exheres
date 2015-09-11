@@ -8,3 +8,6 @@ SUMMARY="Apache Solr driver"
 LICENCES="PHP"
 SLOT="0"
 
+# tests are interactive
+RESTRICT="test"
+
