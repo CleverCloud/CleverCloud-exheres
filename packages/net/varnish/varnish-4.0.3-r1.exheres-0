@@ -1,6 +1,8 @@
 # Copyright 2015 Marc-Antoine Perennou <keruspe@exherbo.org>
 # Distributed under the terms of the GNU General Public License v2
 
+require systemd-service [ systemd_files=[ "${WORK}"/redhat ] ]
+
 SUMMARY="Varnish Cache, the high-performance HTTP accelerator"
 HOMEPAGE="https://www.varnish-cache.org/"
 DOWNLOADS="https://repo.varnish-cache.org/source/${PNV}.tar.gz"
@@ -16,6 +18,8 @@ DEPENDENCIES="
         dev-python/docutils
         virtual/pkg-config
     build+run:
+        user/varnish
+        group/varnish
         dev-libs/libedit
         dev-libs/pcre
         sys-libs/readline
@@ -31,5 +35,21 @@ RESTRICT="test"
 src_install() {
     default
     keepdir /var/lib/varnish
+
+    edo sed -i \
+        -e 's;/etc/sysconfig/varnish;/etc/varnish/varnish.params;' \
+        redhat/varnish_reload_vcl
+
+    dobin redhat/varnish_reload_vcl
+
+    edo mv etc/example.vcl etc/default.vcl
+    insinto /etc/varnish
+    doins redhat/varnish.params
+    doins etc/default.vcl
+
+    install_systemd_files
+
+    elog "The default service file requires a /etc/varnish/secret file.
+    You are free to (randomly) generate that file the way you want it."
 }
 
