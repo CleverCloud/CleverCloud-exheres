@@ -16,7 +16,9 @@ LICENCES="
 "
 SLOT="0"
 
-MYOPTIONS="ldap"
+MYOPTIONS="ldap
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
+"
 
 DEPENDENCIES="
     build+run:
@@ -24,8 +26,9 @@ DEPENDENCIES="
         group/${PN}
         dev-libs/libsodium
         sys-libs/libcap
-        virtual/libssl
         ldap? ( net-directory/openldap )
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
     suggestion:
         user/ftp [[ description = [ Anonymous FTP ] ]]
 "
