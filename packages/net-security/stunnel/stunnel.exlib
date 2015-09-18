@@ -13,12 +13,14 @@ DOWNLOADS="ftp://ftp.${PN}.org/stunnel/archive/5.x/${PNV}.tar.gz"
 
 LICENCES="stunnel"
 SLOT="0"
-MYOPTIONS=""
+MYOPTIONS="
+    ( providers: openssl ) [[ number-selected = exactly-one ]]
+"
 
 DEPENDENCIES="
     build+run:
-        dev-libs/openssl
         sys-libs/zlib
+        providers:openssl? ( dev-libs/openssl )
 "
 
 stunnel_src_prepare() {
