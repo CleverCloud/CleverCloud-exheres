@@ -37,7 +37,7 @@ DEPENDENCIES="
 proftpd_src_install() {
     default
 
-    edo rmdir ${IMAGE}/usr/{libexec,share/locale,lib64/proftpd} ${IMAGE}/var/{lib,}
+    edo find "${IMAGE}" -type d -empty -delete
 
     install_systemd_files
 }
