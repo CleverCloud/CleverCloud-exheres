@@ -10,11 +10,9 @@ HOMEPAGE="http://projects.unbit.it/uwsgi/"
 DOWNLOADS="http://projects.unbit.it/downloads/${PNV}.tar.gz"
 
 MYOPTIONS="
-    apache
-    (
-        python [[ description = [ Build the python plugin ] ]]
-        ruby   [[ description = [ Build the ruby plugin ] ]]
-    ) [[ number-selected = at-least-one ]]
+    apache [[ description = [ Build the apache modules ] ]]
+    python [[ description = [ Build the python plugin ] ]]
+    ruby   [[ description = [ Build the ruby plugin ] ]]
 "
 
 DEPENDENCIES="
@@ -75,12 +73,14 @@ uwsgi_src_compile() {
 
 install_one_multibuild() {
     setup-py_install_one_multibuild
-    alternatives=( "${PN}_python" "${MULTIBUILD_TARGET}" "${MULTIBUILD_TARGET}" )
-    for p in "${PYTHON_PLUGINS[@]}"; do
-        doins "${p}"_plugin.so
-        alternatives+=( /usr/$(exhost --target)/lib/uwsgi/"${p}"_plugin.so "${p}"${MULTIBUILD_TARGET}_plugin.so )
-    done
-    alternatives_for "${alternatives[@]}"
+    if option python; then
+        alternatives=( "${PN}_python" "${MULTIBUILD_TARGET}" "${MULTIBUILD_TARGET}" )
+        for p in "${PYTHON_PLUGINS[@]}"; do
+            doins "${p}"_plugin.so
+            alternatives+=( /usr/$(exhost --target)/lib/uwsgi/"${p}"_plugin.so "${p}"${MULTIBUILD_TARGET}_plugin.so )
+        done
+        alternatives_for "${alternatives[@]}"
+    fi
 }
 
 uwsgi_src_install() {
@@ -94,8 +94,10 @@ uwsgi_src_install() {
     done
     setup-py_src_install
 
-    insinto /usr/$(exhost --target)/libexec/apache2/modules
-    option apache && for m in "${APACHE_MODS[@]}"; do
-        doins apache2/.libs/${m}.so
-    done
+    if option apache; then
+        insinto /usr/$(exhost --target)/libexec/apache2/modules
+        for m in "${APACHE_MODS[@]}"; do
+            doins apache2/.libs/${m}.so
+        done
+    fi
 }
