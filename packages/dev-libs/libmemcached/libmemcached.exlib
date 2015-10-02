@@ -6,7 +6,7 @@ require launchpad
 SUMMARY="libMemcached is an open source client library for the memcached server"
 HOMEPAGE="http://libmemcached.org/libMemcached.html"
 
-LICENCES="BSD"
+LICENCES="BSD-3"
 SLOT="0"
 MYOPTIONS="sasl"
 
