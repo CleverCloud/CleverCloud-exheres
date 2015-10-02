@@ -9,7 +9,7 @@ SUMMARY="Lightweight connection pooler for PostgreSQL"
 HOMEPAGE="https://${PN}.github.io"
 DOWNLOADS="https://${PN}.github.io/downloads/files/${PV}/${PNV}.tar.gz"
 
-LICENCES="BSD"
+LICENCES="ISC"
 SLOT="0"
 MYOPTIONS=""
 
