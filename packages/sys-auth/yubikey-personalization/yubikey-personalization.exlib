@@ -7,7 +7,7 @@ require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.13 ] ]
 SUMMARY="YubiKey Personalization cross-platform library and tool"
 HOMEPAGE="http://opensource.yubico.com/yubikey-personalization/"
 
-LICENCES="BSD"
+LICENCES="BSD-2"
 SLOT="0"
 
 WORK=${WORKBASE}/${PN}-${PV}

@@ -7,6 +7,6 @@ require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.13 ] ]
 SUMMARY="Yubico C client library"
 HOMEPAGE="http://opensource.yubico.com/yubico-c-client/"
 
-LICENCES="BSD"
+LICENCES="BSD-2"
 SLOT="0"
 
