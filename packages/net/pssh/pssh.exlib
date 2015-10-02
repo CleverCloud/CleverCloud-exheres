@@ -8,6 +8,6 @@ HOMEPAGE="http://code.google.com/p/parallel-ssh/"
 
 RESTRICT="test"
 
-LICENCES="BSD"
+LICENCES="BSD-3"
 SLOT="0"
 
