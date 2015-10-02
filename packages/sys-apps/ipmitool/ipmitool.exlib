@@ -5,7 +5,7 @@ require sourceforge [ suffix=tar.bz2 ]
 
 SUMMARY="Command-line interface to IPMI-enabled devices"
 
-LICENCES="BSD"
+LICENCES="BSD-3"
 SLOT="0"
 
 # TODO add a systemd service for ipmievd
