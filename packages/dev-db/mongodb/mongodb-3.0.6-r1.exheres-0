@@ -21,7 +21,6 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
-        app-arch/snappy
         dev-libs/boost
         dev-libs/openssl
         dev-libs/pcre
@@ -41,7 +40,6 @@ MONGO_PARAMS=(
     --use-sasl-client
     --use-system-boost
     --use-system-pcre
-    --use-system-snappy
     --disable-warnings-as-errors
     --c++11
 )
