@@ -45,6 +45,8 @@ BUGS_TO="keruspe@exherbo.org"
 # We cannot strip because of a runtime check on the docker-init binary
 RESTRICT="test strip"
 
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/63b75226adcdb6c1ca663eb1dbca4f25552ed179.patch )
+
 docker_make() {
     DOCKER_CROSSPLATFORMS="linux/386 linux/arm darwin/amd64 darwin/386 freebsd/amd64 freebsd/386freebsd/arm" \
     AUTO_GOPATH=1 \
