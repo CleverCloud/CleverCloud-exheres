@@ -1,0 +1,11 @@
+# Copyright 2015 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require haproxy
+
+PLATFORMS="~amd64"
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+        "${FILES}"/fix-Makefile-install-doc.patch
+)
+
