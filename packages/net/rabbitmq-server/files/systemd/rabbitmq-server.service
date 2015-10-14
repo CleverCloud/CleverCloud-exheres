@@ -8,6 +8,7 @@ After=network.target
 [Service]
 User=rabbitmq
 WorkingDirectory=/var/lib/rabbitmq
+Restart=on-failure
 ExecStart=/usr/sbin/rabbitmq-server
 
 [Install]
