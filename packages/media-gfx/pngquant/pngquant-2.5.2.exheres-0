@@ -19,37 +19,34 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build+run:
-        lcms?   ( media-libs/lcms )
         media-libs/libpng:1.6
-        openmp? ( sys-libs/libgomp:= )
         sys-libs/zlib
+        lcms? ( media-libs/lcms )
+        openmp? ( sys-libs/libgomp:= )
 "
 
-BUGS_TO="pornel@pornel.net"
+src_prepare() {
+    default
 
-DEFAULT_SRC_CONFIGURE_PARAMS=( "--prefix=/usr/$(exhost --target)" )
+    edo sed -e "s/pkg-config/${PKG_CONFIG}/" -i configure -i lib/configure
+}
 
 src_configure() {
-    local my_params=( )
+    local my_params=( --prefix=/usr/$(exhost --target) )
 
     if option lcms; then
-        my_params=( "${my_params[@]}" '--with-lcms2' )
+        my_params=( --with-lcms2 )
     fi
 
     if option openmp; then
-        my_params=( "${my_params[@]}" '--with-openmp' )
+        my_params=( --with-openmp )
     fi
 
-    edo ./configure \
-        "${DEFAULT_SRC_CONFIGURE_PARAMS[@]}" \
-        "${my_params[@]}" \
-        --without-cocoa
+    edo ./configure "${my_params[@]}"
 
     edo cd lib
 
-    edo ./configure \
-        "${DEFAULT_SRC_CONFIGURE_PARAMS[@]}" \
-        "${my_params[@]}"
+    edo ./configure "${my_params[@]}"
 }
 
 src_compile() {
