@@ -1,0 +1,15 @@
+# Copyright 2015 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module ]
+
+SUMMARY="PHP extension for interfacing with Couchbase"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/libcouchbase[>=2.2.0]
+"
+
