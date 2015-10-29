@@ -1,0 +1,17 @@
+# Copyright 2012 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+# Distributed under the termes of the GNU Geneal Public License v2
+
+[Unit]
+Description=Redis Sentinel
+After=network.target
+Requires=network.target
+
+[Service]
+User=redis
+WorkingDirectory=/var/db/redis
+LimitNOFILE=32768
+ExecStart=/usr/bin/redis-server --sentinel /etc/sentinel.conf
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
