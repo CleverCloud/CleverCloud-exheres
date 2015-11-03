@@ -10,7 +10,7 @@ Requires=network.target
 User=redis
 WorkingDirectory=/var/db/redis
 LimitNOFILE=32768
-ExecStart=/usr/bin/redis-server --sentinel /etc/sentinel.conf
+ExecStart=/usr/bin/redis-server /etc/sentinel.conf --sentinel
 Restart=always
 
 [Install]
