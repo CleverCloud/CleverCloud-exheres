@@ -1,0 +1,15 @@
+# Copyright 2015 Clever Cloud
+# Distributed under the terms of the GNU General Public License v2
+
+require gem
+
+SUMMARY="This is a native Ruby package for reading and writing INI files."
+
+HOMEPAGE="https://github.com/twp/inifile"
+LICENCES="Ruby"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+BUGS_TO="julien.durillon@clever-cloud.com"
+
