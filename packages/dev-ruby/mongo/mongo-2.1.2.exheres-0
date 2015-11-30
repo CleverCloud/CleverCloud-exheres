@@ -1,0 +1,19 @@
+# Copyright 2015 Clever Cloud
+# Distributed under the terms of the GNU General Public License v2
+
+require gem
+
+SUMMARY="The officially supported Ruby driver for MongoDB."
+
+HOMEPAGE="https://github.com/mongodb/mongo-ruby-driver"
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+BUGS_TO="julien.durillon@clever-cloud.com"
+
+DEPENDENCIES=(
+    "dev-ruby/bson"
+)
+
