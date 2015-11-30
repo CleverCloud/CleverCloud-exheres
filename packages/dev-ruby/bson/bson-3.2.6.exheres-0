@@ -1,0 +1,15 @@
+# Copyright 2015 Clever Cloud
+# Distributed under the terms of the GNU General Public License v2
+
+require gem
+
+SUMMARY="A full featured BSON specification implementation, in Ruby"
+
+HOMEPAGE="https://rubygems.org/gems/bson"
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+BUGS_TO="julien.durillon@clever-cloud.com"
+
