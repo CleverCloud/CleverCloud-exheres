@@ -11,6 +11,9 @@ PLATFORMS="~amd64"
 MYOPTIONS=""
 
 DEPENDENCIES="
+    build+run:
+        dev-libs/libev
+        dev-libs/libevent
 "
 
 # Since tests are needing net access, we then skip'em
