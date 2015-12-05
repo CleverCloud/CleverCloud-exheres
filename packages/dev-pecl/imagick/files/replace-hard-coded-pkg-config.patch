@@ -1,0 +1,15 @@
+Upstream: no
+Reason: hard-coded pkg-config
+
+--- a/imagemagick.m4
++++ b/imagemagick.m4
+@@ -28,7 +28,7 @@ AC_DEFUN([IM_FIND_IMAGEMAGICK],[
+   IM_MINIMUM_VERSION=$1
+   IM_EXTRA_SEARCH_PREFIX=$2
+ 
+-  AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
++  AC_PATH_PROG(PKG_CONFIG, ${PKG_CONFIG}, no)
+   if test "x$PKG_CONFIG" = "xno"; then
+     AC_MSG_RESULT([pkg-config not found])
+     AC_MSG_ERROR([Please reinstall the pkg-config distribution])
+
