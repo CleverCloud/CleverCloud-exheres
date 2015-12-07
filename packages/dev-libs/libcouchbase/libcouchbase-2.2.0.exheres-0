@@ -12,7 +12,6 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
-        dev-libs/libev
         dev-libs/libevent
 "
 
