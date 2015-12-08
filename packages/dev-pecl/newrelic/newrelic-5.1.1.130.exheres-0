@@ -1,0 +1,51 @@
+# Copyright 2015 Julien Durillon <julien.durillon@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+
+SUMMARY="Newrelic Agent for PHP"
+HOMEPAGE="http://www.newrelic.com/"
+
+BASE_FILENAME="${PN}-php5-${PV}-linux"
+DOWNLOADS="https://download.newrelic.com/php_agent/release/${BASE_FILENAME}.tar.gz"
+
+PHP_ABIS=( 5.4 5.5 5.6 )
+
+LICENCES="Apache-2.0 BSD PHP TSRM MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="( php_abis: ${PHP_ABIS[@]} ) [[ number-selected = at-least-one ]]"
+
+DEPENDENCIES="
+    build:
+    build+run:
+        (
+            php_abis:5.4? ( dev-lang/php:5.4 )
+            php_abis:5.5? ( dev-lang/php:5.5 )
+            php_abis:5.6? ( dev-lang/php:5.6 )
+        )
+"
+
+BUGS_TO="julien.durillon@gmail.com"
+
+WORK="${WORKBASE}/${BASE_FILENAME}"
+
+src_install() {
+    for abi in ${PHP_ABIS[@]}; do
+        local pi_modver=
+        case "${abi}" in
+            5.4)  pi_modver="20100525" ;;
+            5.5)  pi_modver="20121212" ;;
+            5.6)  pi_modver="20131226" ;;
+        esac
+
+        cp agent/x64/newrelic-${pi_modver}.so newrelic.so
+        cp scripts/newrelic.ini.template newrelic.ini
+
+        insinto /usr/share/php-${abi}/${pi_modver}
+        doins newrelic.so
+
+        insinto /etc/php-${abi}
+        doins newrelic.ini
+    done
+}
+
