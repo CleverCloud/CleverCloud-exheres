@@ -1,0 +1,41 @@
+# Copyright 2015 Julien Durillon <julien.durillon@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+
+SUMMARY="Newrelic Agent for PHP"
+HOMEPAGE="http://www.newrelic.com/"
+
+BASE_FILENAME="${PN}-php5-${PV}-linux"
+DOWNLOADS="https://download.newrelic.com/php_agent/release/${BASE_FILENAME}.tar.gz"
+
+LICENCES="Apache-2.0 BSD PHP TSRM MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+require php-pecl [ module=module work=${BASE_FILENAME} php_abis=[ 5.4 5.5 5.6 ] ]
+
+DEPENDENCIES=""
+
+BUGS_TO="julien.durillon@gmail.com"
+
+php-pecl_prepare_one_multibuild() {
+    :
+}
+
+php-pecl_install_one_multibuild() {
+    local abi=$(php-pecl_get_abi)
+    local extensionDir extensionFileName modver
+
+    edo mkdir -p "${IMAGE}"/etc/php-${abi}
+    extensionDir=$(php-config-${abi} --extension-dir)
+    extensionFileName="${extensionDir}/${PN}.so"
+    modver=$(basename ${extensionDir})
+
+    insinto ${extensionDir}
+    newins agent/x64/${PN}-${modver}.so ${PN}.so
+
+    insinto /etc/php-${abi}
+    newins scripts/newrelic.ini.template newrelic.ini
+}
+
