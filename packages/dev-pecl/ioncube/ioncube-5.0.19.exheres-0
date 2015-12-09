@@ -1,0 +1,39 @@
+# Copyright 2015 Julien Durillon <julien.durillon@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Ioncube loader"
+HOMEPAGE="http://www.ioncube.com/"
+DOWNLOADS="http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz"
+
+LICENCES="ioncube"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS=""
+
+require php-pecl [ module=zend work="${PN}" php_abis=[ 5.4 5.5 5.6 ] ]
+require checksums [ sha1=[ ioncube_loaders_lin_x86-64.tar.gz=0a016c8f7785f69132f106c24181cec25027b353 ] ]
+
+DEPENDENCIES=""
+
+BUGS_TO="julien.durillon@gmail.com"
+
+src_prepare() {
+    :
+}
+
+php-pecl_install_one_multibuild() {
+    local abi=$(php-pecl_get_abi)
+    local extensionDir extensionFilename
+
+    extensionDir=$(php-config-${abi} --extension-dir)
+    extensionFileName="${extensionDir}/${PN}.so"
+
+    insinto "${extensionDir}"
+    newins ioncube_loader_lin_${abi}.so ioncube_loader.so
+
+    edo mkdir -p "${IMAGE}"/etc/php-${abi}
+    echo "zend_extension = ${extensionFileName}" > "${IMAGE}"/etc/php-${abi}/${PN}.ini
+    echo "ic24.enable = off" >> "${IMAGE}"/etc/php-${abi}/${PN}.ini
+}
+
