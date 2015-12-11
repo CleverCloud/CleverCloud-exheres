@@ -30,6 +30,7 @@ DEPENDENCIES="
         sys-fs/btrfs-progs
         sys-fs/lvm2[>=2.02.103]
         sys-libs/libcap
+        sys-libs/libseccomp
     run:
         group/docker
         net-firewall/iptables
