@@ -1,7 +1,8 @@
 # Copyright 2012 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require googlecode [ suffix=tar.gz ] systemd-service
+require github [ user=antirez ]
+require systemd-service
 
 SUMMARY="Open source in-memory key-value store"
 DESCRIPTION="
@@ -17,12 +18,16 @@ PLATFORMS="~amd64"
 MYOPTIONS=""
 
 DEPENDENCIES="
-run:
-    group/redis
-    user/redis
-test:
-    dev-lang/tcl
+    run:
+        group/redis
+        user/redis
+    test:
+        dev-lang/tcl
 "
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/${PNV}-CVE-2015-8080.patch
+)
 
 DEFAULT_SRC_COMPILE_PARAMS=( AR=${AR} )
 
