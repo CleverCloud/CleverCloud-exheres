@@ -21,7 +21,6 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
-        dev-libs/boost
         dev-libs/openssl
         dev-libs/pcre
         net-libs/cyrus-sasl
@@ -29,19 +28,16 @@ DEPENDENCIES="
 
 WORK="${WORKBASE}/${PN}-src-r${PV}"
 
-#    --rocksdb
 MONGO_PARAMS=(
-    --cc=${CC}
-    --cxx=${CXX}
-    --variant-dir=build
+    CC="${CC}"
+    CXX="${CXX}"
+    --release
     --nostrip
     --prefix="${IMAGE}"/usr/"$(exhost --target)"
     --ssl
     --use-sasl-client
-    --use-system-boost
     --use-system-pcre
     --disable-warnings-as-errors
-    --c++11
 )
 
 SCONS_SRC_CONFIGURE_PARAMS=("${MONGO_PARAMS[@]}")
@@ -58,10 +54,11 @@ src_prepare() {
 src_compile() {
     escons \
         --config=cache \
-        --jobs ${EXJOBS:-1} \
+        --jobs=${EXJOBS:-1} \
         CFLAGS="${CFLAGS}" \
         CXXFLAGS="${CXXFLAGS}" \
-        "${SCONS_SRC_COMPILE_PARAMS[@]}"
+        "${SCONS_SRC_COMPILE_PARAMS[@]}" \
+        all
 }
 
 src_install() {
