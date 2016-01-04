@@ -11,18 +11,23 @@ DOWNLOADS="http://download.osgeo.org/${PN}/${PV}/${PNV}.tar.gz"
 
 LICENCES="MIT"
 SLOT="0"
-MYOPTIONS="geos postgresql"
+MYOPTIONS="
+    geos
+    postgresql
+    ( providers: ijg-jpeg jpeg-turbo ) [[ number-selected = exactly-one ]]
+"
 
 DEPENDENCIES="
     build+run:
         dev-libs/expat
-        dev-libs/pcre
         dev-libs/libxml2
         media-libs/tiff
+        net-misc/curl
         sci-libs/libgeotiff
-        sys-libs/zlib
         geos? ( sci-libs/geos )
         postgresql? ( dev-db/postgresql )
+        providers:ijg-jpeg? ( media-libs/jpeg )
+        providers:jpeg-turbo? ( media-libs/libjpeg-turbo )
 "
 
 DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
