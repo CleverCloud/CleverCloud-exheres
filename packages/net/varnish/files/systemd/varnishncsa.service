@@ -1,0 +1,9 @@
+[Unit]
+Description=Varnish HTTP accelerator NCSA daemon
+After=varnish.service
+
+[Service]
+ExecStart=/usr/bin/varnishncsa -a -w /var/log/varnish/varnishncsa.log -P /run/varnishncsa.pid
+
+[Install]
+WantedBy=multi-user.target

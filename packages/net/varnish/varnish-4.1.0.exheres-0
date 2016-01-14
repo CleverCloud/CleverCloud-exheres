@@ -1,7 +1,7 @@
 # Copyright 2015 Marc-Antoine Perennou <keruspe@exherbo.org>
 # Distributed under the terms of the GNU General Public License v2
 
-require systemd-service [ systemd_files=[ "${WORK}"/redhat ] ]
+require systemd-service
 
 SUMMARY="Varnish Cache, the high-performance HTTP accelerator"
 HOMEPAGE="https://www.varnish-cache.org/"
@@ -36,16 +36,11 @@ src_install() {
     default
     keepdir /var/lib/varnish
 
-    edo sed -i \
-        -e 's;/etc/sysconfig/varnish;/etc/varnish/varnish.params;' \
-        redhat/varnish_reload_vcl
+    dobin "${FILES}"/varnish_reload_vcl
 
-    dobin redhat/varnish_reload_vcl
-
-    edo mv etc/example.vcl etc/default.vcl
     insinto /etc/varnish
-    doins redhat/varnish.params
-    doins etc/default.vcl
+    newins etc/example.vcl default.vcl
+    doins "${FILES}"/varnish.params
 
     install_systemd_files
 

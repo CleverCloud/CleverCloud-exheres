@@ -1,0 +1,9 @@
+[Unit]
+Description=Varnish HTTP accelerator logging daemon
+After=varnish.service
+
+[Service]
+ExecStart=/usr/bin/varnishlog -a -w /var/log/varnish/varnish.log -P /run/varnishlog.pid
+
+[Install]
+WantedBy=multi-user.target
