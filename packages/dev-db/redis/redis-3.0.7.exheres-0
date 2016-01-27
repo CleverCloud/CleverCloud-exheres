@@ -25,10 +25,6 @@ DEPENDENCIES="
         dev-lang/tcl
 "
 
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/${PNV}-CVE-2015-8080.patch
-)
-
 DEFAULT_SRC_COMPILE_PARAMS=( AR=${AR} )
 
 src_prepare() {
