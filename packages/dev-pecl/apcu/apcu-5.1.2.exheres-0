@@ -4,7 +4,7 @@
 require php-pecl [ module=module php_abis=[ 7.0 ] pn=${PN} ]
 
 SUMMARY="APCu - APC User Cache"
-LICENCES="PHP"
+LICENCES="PHP-3"
 PLATFORMS="~amd64"
 SLOT="5"
 
