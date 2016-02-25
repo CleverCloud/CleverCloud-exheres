@@ -1,0 +1,10 @@
+# Copyright 2015 Julien Durillon <julien.durillon@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module php_abis=[ 7.0 ] ]
+
+SUMMARY="OAuth consumer extension"
+LICENCES="BSD"
+PLATFORMS="~amd64"
+SLOT="2"
+
