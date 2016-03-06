@@ -1,0 +1,54 @@
+# Copyright 2016 Julien Durillon <julien.durillon@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ]
+
+SUMMARY="Kea is ISC’s modern open source DHCPv4 and DHCPv6 server."
+DESCRIPTION="
+Kea is the new alternative to ISC DHCP, ISC’s older open source DHCP distribution.
+
+Kea is a high performance, production grade solution for IPv4 or IPv6 addressing for the enterprise,
+education and service providers.
+"
+HOMEPAGE="https://www.isc.org/kea/"
+DOWNLOADS="http://ftp.isc.org/isc/${PN}/${PV}/${PNV}.tar.gz"
+
+LICENCES="ISC"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    postgresql
+    mysql
+"
+
+DEPENDENCIES="
+    build+run:
+        postgresql? ( dev-db/postgresql )
+        mysql? ( dev-db/mysql )
+        dev-cpp/log4cplus
+        dev-libs/boost
+        dev-libs/botan[>=1.8]
+"
+
+BUGS_TO="julien.durillon@gmail.com"
+
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
+    "mysql dhcp-mysql"
+    "postgresql dhcp-pgsql"
+)
+
+src_test() {
+    esandbox allow_net 'inet:0.0.0.0@0'
+    default
+    esandbox disallow_net 'inet:0.0.0.0@0'
+}
+
+src_install() {
+    default
+
+    insinto /usr/$(exhost --target)/include/kea/dhcpsrv
+    doins src/lib/dhcpsrv/*.h
+
+    keepdir /var/lib/{kea,log,run/kea}
+}
+
