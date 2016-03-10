@@ -29,8 +29,8 @@ php-pecl_install_one_multibuild() {
     extensionDir=$(php-config-${abi} --extension-dir)
     extensionFileName="${extensionDir}/${PN}.so"
 
-    insinto "${extensionDir}"
-    newins ioncube_loader_lin_${abi}.so ioncube_loader.so
+    exeinto "${extensionDir}"
+    newexe ioncube_loader_lin_${abi}.so ioncube_loader.so
 
     edo mkdir -p "${IMAGE}"/etc/php-${abi}
     echo "zend_extension = ${extensionFileName}" > "${IMAGE}"/etc/php-${abi}/${PN}.ini
