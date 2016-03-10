@@ -3,7 +3,7 @@
 
 SUMMARY="Ioncube loader"
 HOMEPAGE="http://www.ioncube.com/"
-DOWNLOADS="http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz"
+DOWNLOADS="http://downloads3.ioncube.com/loader_downloads/${PN}_loaders_lin_x86-64_${PV}.tar.gz"
 
 LICENCES="ioncube"
 SLOT="0"
@@ -12,7 +12,6 @@ PLATFORMS="~amd64"
 MYOPTIONS=""
 
 require php-pecl [ module=zend work="${PN}" php_abis=[ 5.4 5.5 5.6 ] ]
-require checksums [ sha1=[ ioncube_loaders_lin_x86-64.tar.gz=0a016c8f7785f69132f106c24181cec25027b353 ] ]
 
 DEPENDENCIES=""
 
@@ -30,7 +29,7 @@ php-pecl_install_one_multibuild() {
     extensionFileName="${extensionDir}/${PN}.so"
 
     exeinto "${extensionDir}"
-    newexe ioncube_loader_lin_${abi}.so ioncube_loader.so
+    newexe ${PN}_loader_lin_${abi}.so ${PN}_loader.so
 
     edo mkdir -p "${IMAGE}"/etc/php-${abi}
     echo "zend_extension = ${extensionFileName}" > "${IMAGE}"/etc/php-${abi}/${PN}.ini
