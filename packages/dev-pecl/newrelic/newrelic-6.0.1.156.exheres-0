@@ -32,8 +32,8 @@ php-pecl_install_one_multibuild() {
     extensionFileName="${extensionDir}/${PN}.so"
     modver=$(basename ${extensionDir})
 
-    insinto ${extensionDir}
-    newins agent/x64/${PN}-${modver}.so ${PN}.so
+    exeinto ${extensionDir}
+    newexe agent/x64/${PN}-${modver}.so ${PN}.so
 
     insinto /etc/php-${abi}
     newins scripts/newrelic.ini.template newrelic.ini
