@@ -13,7 +13,7 @@ SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""
 
-require php-pecl [ module=module work=${BASE_FILENAME} php_abis=[ 5.4 5.5 5.6 ] ]
+require php-pecl [ module=module work=${BASE_FILENAME} ]
 
 DEPENDENCIES=""
 
@@ -39,3 +39,7 @@ php-pecl_install_one_multibuild() {
     newins scripts/newrelic.ini.template newrelic.ini
 }
 
+src_install() {
+    php-pecl_src_install
+    newbin daemon/newrelic-daemon.x64 newrelic-daemon
+}
