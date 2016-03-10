@@ -37,9 +37,6 @@ php-pecl_install_one_multibuild() {
 
     insinto /etc/php-${abi}
     newins scripts/newrelic.ini.template newrelic.ini
-}
 
-src_install() {
-    php-pecl_src_install
     newbin daemon/newrelic-daemon.x64 newrelic-daemon
 }
