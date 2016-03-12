@@ -26,7 +26,7 @@ php-pecl_install_one_multibuild() {
     local extensionDir extensionFilename
 
     extensionDir=$(php-config-${abi} --extension-dir)
-    extensionFileName="${extensionDir}/${PN}.so"
+    extensionFileName="${extensionDir}/${PN}_loader.so"
 
     exeinto "${extensionDir}"
     newexe ${PN}_loader_lin_${abi}.so ${PN}_loader.so
