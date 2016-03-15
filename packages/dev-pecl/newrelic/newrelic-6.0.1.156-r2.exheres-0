@@ -1,7 +1,6 @@
 # Copyright 2015 Julien Durillon <julien.durillon@gmail.com>
 # Distributed under the terms of the GNU General Public License v2
 
-
 SUMMARY="Newrelic Agent for PHP"
 HOMEPAGE="http://www.newrelic.com/"
 
@@ -39,4 +38,6 @@ php-pecl_install_one_multibuild() {
     newins scripts/newrelic.ini.template newrelic.ini
 
     newbin daemon/newrelic-daemon.x64 newrelic-daemon
+
+    keepdir /var/log/newrelic/
 }
