@@ -4,7 +4,7 @@
 require php-pecl [ module=module php_abis=[ 7.0 ] ]
 
 SUMMARY="OAuth consumer extension"
-LICENCES="BSD"
+LICENCES="BSD-3"
 PLATFORMS="~amd64"
 SLOT="2"
 
