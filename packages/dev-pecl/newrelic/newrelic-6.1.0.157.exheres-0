@@ -7,7 +7,7 @@ HOMEPAGE="http://www.newrelic.com/"
 BASE_FILENAME="${PN}-php5-${PV}-linux"
 DOWNLOADS="https://download.newrelic.com/php_agent/release/${BASE_FILENAME}.tar.gz"
 
-LICENCES="Apache-2.0 BSD PHP TSRM MIT"
+LICENCES="Apache-2.0 BSD-2 BSD-3 BSD-4 MIT PHP-3 newrelic"
 SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""
