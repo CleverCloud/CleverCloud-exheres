@@ -11,7 +11,7 @@ SUMMARY="SSL encryption wrapper between remote client and local or remote server
 HOMEPAGE="http://www.${PN}.org/"
 DOWNLOADS="ftp://ftp.${PN}.org/stunnel/archive/5.x/${PNV}.tar.gz"
 
-LICENCES="stunnel"
+LICENCES="GPL-2"
 SLOT="0"
 MYOPTIONS="
     ( providers: openssl ) [[ number-selected = exactly-one ]]
