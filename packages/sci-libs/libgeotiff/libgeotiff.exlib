@@ -7,12 +7,16 @@ DOWNLOADS="http://download.osgeo.org/geotiff/${PN}/${PNV}.tar.gz"
 
 LICENCES="GPL-2"
 SLOT="0"
+MYOPTIONS="
+     ( providers: ijg-jpeg jpeg-turbo ) [[ number-selected = exactly-one ]]
+ "
 
 DEPENDENCIES="
     build+run:
-        media-libs/jpeg
         media-libs/tiff
         sci-libs/proj
         sys-libs/zlib
+        providers:ijg-jpeg? ( media-libs/jpeg:= )
+        providers:jpeg-turbo? ( media-libs/libjpeg-turbo )
 "
 
