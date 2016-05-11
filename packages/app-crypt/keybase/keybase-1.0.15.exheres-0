@@ -1,0 +1,39 @@
+# Copyright 2016 Julien Durillon <julien.durillon@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+VPV="v${PV}"
+require github [ user="${PN}" pn=client tag=${VPV} ]
+
+SUMMARY="Keybase CLI tool"
+HOMEPAGE="https://keybase.io/"
+
+LICENCES="BSD-3"
+SLOT="0"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+    build:
+        dev-lang/go[>=1.5]
+"
+
+BUGS_TO="julien.durillon@gmail.com"
+
+src_prepare() {
+    edo mkdir -p "${WORK}"/.gopath/src/github.com/keybase/
+    edo ln -s "${WORK}" "${WORK}"/.gopath/src/github.com/keybase/client
+    edo mkdir bin
+}
+
+src_compile() {
+    export GOPATH="${WORK}"/.gopath
+
+    edo go build \
+        -o "${WORK}"/bin/keybase \
+        -tags production \
+        github.com/keybase/client/go/keybase
+}
+
+src_install() {
+    dobin bin/*
+}
+
