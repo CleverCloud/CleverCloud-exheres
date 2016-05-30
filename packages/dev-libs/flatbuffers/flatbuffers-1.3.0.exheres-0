@@ -1,0 +1,16 @@
+# Copyright 2016 Julien Durillon <julien.durillon@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="google" tag="v${PV}" ] cmake [ api=2 ]
+
+SUMMARY="Memory Efficient Serialization Library"
+HOMEPAGE="http://google.github.io/flatbuffers/"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+
+BUGS_TO="julien.durillon@gmail.com"
+
+CMAKE_SRC_CONFIGURE_PARAMS=( "-G" "Unix Makefiles" )
+
