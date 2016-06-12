@@ -5,7 +5,9 @@ require dockerpty
 
 DEPENDENCIES="
     build+run:
-        dev-python/docker-py
+        dev-python/six[>=1.3.0][python_abis:*(-)?]
+    test:
+        dev-python/expects[python_abis:*(-)?]
 "
 
 PLATFORMS="~amd64"
