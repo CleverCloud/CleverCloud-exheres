@@ -4,7 +4,3 @@
 require haproxy
 
 PLATFORMS="~amd64"
-
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/${PN}-1.6.5-CVE-2016-5360.patch
-)
