@@ -1,0 +1,16 @@
+# Copyright 2015 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module php_abis=[ 7.0 ] ]
+
+SUMMARY="PHP extension which provides bindings to the functions of libssh2"
+LICENCES="PHP-3"
+PLATFORMS="~amd64"
+SLOT="1"
+
+DEPENDENCIES="
+    build+run:
+        net-libs/libssh2
+"
+
+
