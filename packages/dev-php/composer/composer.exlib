@@ -10,7 +10,7 @@ SLOT="0"
 
 DEPENDENCIES="
     run:
-        dev-lang/php
+        dev-lang/php:*
 "
 
 src_unpack() {
