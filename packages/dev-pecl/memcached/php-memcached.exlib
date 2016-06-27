@@ -8,6 +8,7 @@ SUMMARY="PHP extension for interfacing with memcached via libmemcached library"
 LICENCES="PHP-3"
 SLOT="0"
 
+RESTRICT="test"
 MYOPTIONS="sasl"
 
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'sasl memcached-sasl' )
@@ -18,7 +19,7 @@ DEPENDENCIES="
 "
 
 prepare_one_multibuild() {
-    edo sed -e '/AC_PATH_PROG(PKG_CONFIG/s/.*/PKG_PROG_PKG_CONFIG/' -i config.m4
+    edo sed -e '/AC_PATH_PROG(PKG_CONFIG/d' -i config.m4
     php-pecl_prepare_one_multibuild
 }
 
