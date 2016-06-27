@@ -17,3 +17,8 @@ DEPENDENCIES="
         dev-libs/libmemcached[<1.0.17][sasl?]
 "
 
+src_prepare() {
+    edo sed -e '/AC_PATH_PROG(PKG_CONFIG/s/.*/PKG_PROG_PKG_CONFIG/' -i config.m4
+    php-pecl_src_prepare
+}
+
