@@ -14,11 +14,14 @@ SLOT="0"
 MYOPTIONS="
     ipv6
     snmp
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
 DEPENDENCIES="
     build+run:
         dev-db/postgresql
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
         group/zabbix
         user/zabbix
         snmp? ( net/net-snmp )
@@ -29,9 +32,14 @@ DEPENDENCIES="
 
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'ipv6')
 DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( 'snmp net-snmp' )
-DEFAULT_SRC_CONFIGURE_PARAMS=( "--sysconfdir=/etc/${PN}" '--enable-server' '--disable-agent' '--with-postgresql' )
+DEFAULT_SRC_CONFIGURE_PARAMS=( "--sysconfdir=/etc/${PN}" '--enable-server' '--disable-agent' '--with-postgresql' '--disable-java' )
 DEFAULT_SRC_COMPILE_PARAMS=( AR=${AR} RANLIB=${RANLIB} )
 DEFAULT_SRC_INSTALL_PARAMS=( AR=${AR} RANLIB=${RANLIB} )
+
+if ever at_least 3.0.3 ; then
+    DEFAULT_SRC_CONFIGURE_PARAMS+=( '--with-openssl' '--without-mbedtls' '--without-gnutls' )
+fi
+
 
 zabbix_src_install() {
     default
@@ -40,8 +48,10 @@ zabbix_src_install() {
     insinto /usr/$(exhost --target)/lib/tmpfiles.d
     doins "${FILES}"/tmpfiles.d/zabbix.conf
 
-    # We have some empty folders here
-    edo rmdir "${IMAGE}"/usr/share/man/man1
+    if ! ever at_least 3.0.3 ; then
+        # We have some empty folders here
+        edo rmdir "${IMAGE}"/usr/share/man/man1
+    fi
 
     KEEPDIRS=(
         /etc/${PN}/zabbix_server.conf.d
