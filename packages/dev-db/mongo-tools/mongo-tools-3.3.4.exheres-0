@@ -23,9 +23,9 @@ DEPENDENCIES="
         dev-lang/go[>=1.3]
         virtual/pkg-config
     build+run:
-        providers:libressl? ( dev-libs/libressl )
-        providers:openssl? ( dev-libs/openssl )
         net-libs/cyrus-sasl
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
 "
 
 BUGS_TO="julien.durillon@gmail.com"
