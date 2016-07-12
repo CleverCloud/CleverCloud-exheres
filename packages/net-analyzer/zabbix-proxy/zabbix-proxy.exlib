@@ -14,11 +14,14 @@ SLOT="0"
 MYOPTIONS="
     ipv6
     snmp
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
 DEPENDENCIES="
     build+run:
         dev-db/sqlite:3
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
         group/zabbix
         user/zabbix
         snmp? ( net/net-snmp )
@@ -34,6 +37,10 @@ DEFAULT_SRC_CONFIGURE_PARAMS=( "--sysconfdir=/etc/zabbix" '--enable-proxy' '--di
 DEFAULT_SRC_COMPILE_PARAMS=( AR=${AR} RANLIB=${RANLIB} )
 DEFAULT_SRC_INSTALL_PARAMS=( AR=${AR} RANLIB=${RANLIB} )
 
+if ever at_least 3.0.3 ; then
+    DEFAULT_SRC_CONFIGURE_PARAMS+=( '--with-openssl' '--without-mbedtls' '--without-gnutls' )
+fi
+
 RESTRICT="test"
 
 zabbix-proxy_src_install() {
@@ -43,8 +50,10 @@ zabbix-proxy_src_install() {
     insinto /usr/$(exhost --target)/lib/tmpfiles.d
     doins "${FILES}"/tmpfiles.d/zabbix.conf
 
-    # We have some empty folders here
-    edo rmdir "${IMAGE}"/usr/share/man/man1
+    if ! ever at_least 3.0.3 ; then
+        # We have some empty folders here
+        edo rmdir "${IMAGE}"/usr/share/man/man1
+    fi
 
     KEEPDIRS=(
         /etc/zabbix/zabbix_proxy.conf.d
