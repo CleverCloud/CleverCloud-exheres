@@ -15,10 +15,13 @@ SLOT="0"
 MYOPTIONS="
     ipv6
     snmp
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
 DEPENDENCIES="
     build+run:
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
         group/zabbix
         user/zabbix
         snmp? ( net/net-snmp )
@@ -28,6 +31,10 @@ DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'ipv6')
 DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( 'snmp net-snmp' )
 DEFAULT_SRC_CONFIGURE_PARAMS=( '--sysconfdir=/etc/zabbix' '--enable-agent' '--disable-server' )
 DEFAULT_SRC_COMPILE_PARAMS=( AR=${AR} RANLIB=${RANLIB} )
+
+if ever at_least 3.0.3 ; then
+    DEFAULT_SRC_CONFIGURE_PARAMS+=( '--with-openssl' '--without-mbedtls' '--without-gnutls' )
+fi
 
 WORK="${WORKBASE}"/zabbix-${PV}
 
