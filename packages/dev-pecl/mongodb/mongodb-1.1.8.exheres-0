@@ -8,4 +8,12 @@ SUMMARY="MongoDB database driver"
 PLATFORMS="~amd64"
 LICENCES="PHP-3"
 SLOT="0"
+MYOPTIONS="( providers: libressl openssl ) [[ number-selected = exactly-one ]]"
+
+DEPENDENCIES="
+    build+run:
+        net-libs/cyrus-sasl
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
+"
 
