@@ -3,7 +3,7 @@
 # Based in part upon 'gdal-1.10.1.ebuild' from Gentoo, which is:
 #     Copyright 1999-2014 Gentoo Foundation
 
-export_exlib_phases src_install
+export_exlib_phases src_prepare src_install
 
 SUMMARY="Geospatial Data Abstraction Library"
 HOMEPAGE="http://gdal.org/"
@@ -33,6 +33,17 @@ DEPENDENCIES="
 DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
     'geos' 'postgresql'
 )
+
+# gdal directly installs its files in /usr/share instead of
+# creating its own folder
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --datarootdir=/usr/share/${PN}
+    --datadir=/usr/share/${PN}
+)
+
+gdal_src_prepare(){
+    edo sed -i "s/pkg-config/$(exhost --target)-pkg-config/g" scripts/GNUmakefile
+}
 
 gdal_src_install() {
     default
