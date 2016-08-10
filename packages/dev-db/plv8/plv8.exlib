@@ -13,8 +13,9 @@ SLOT="0"
 DEPENDENCIES="
     build+run:
         dev-db/postgresql
+        dev-libs/icu:*
         dev-libs/v8
 "
 
-DEFAULT_SRC_COMPILE_PARAMS=( CUSTOM_CC=$(exhost --tool-prefix)g++ )
+DEFAULT_SRC_COMPILE_PARAMS=( CUSTOM_CC=$(exhost --tool-prefix)g++ V8_OUTDIR=/dev/null )
 
