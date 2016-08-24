@@ -1,0 +1,17 @@
+# Copyright 2016 Marc-Antoine Perennou
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=phokz rev=58dbe5b05b761b45a998da0d446f8a5d895fb486 ]
+
+SUMMARY="Apache External Authentication Module"
+BUGS_TO="keruspe@exherbo.org"
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        www-servers/apache[>=2.4]
+"
+
