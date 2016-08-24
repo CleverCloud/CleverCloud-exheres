@@ -21,7 +21,7 @@ src_install() {
 
     insinto /etc/apache2/modules.d
     hereins 50_${PN}.conf <<EOF
-LoadModule fastcgi_module libexec/apache2/modules/${PN}.so
+LoadModule authnz_external_module libexec/apache2/modules/${PN}.so
 EOF
 
     emagicdocs
