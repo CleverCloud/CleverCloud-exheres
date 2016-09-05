@@ -109,9 +109,9 @@ Percona-Server_src_prepare() {
     cmake_src_prepare
 
     # https://bugs.mysql.com/bug.php?id=72353 (only relevant when using system libevent)
-    edo sed -i -e "s:\(LIBEVENT_LIBRAR\)IES:\1Y:" "${WORKBASE}"/${PNV}/cmake/libevent.cmake
+    edo sed -i -e "s:\(LIBEVENT_LIBRAR\)IES:\1Y:" "${WORK}"/cmake/libevent.cmake
 
-    option sphinx && edo ln -s "${WORKBASE}"/sphinx-${SPHINX_PV}-release/mysqlse "${WORKBASE}"/${PNV}/storage/sphinx
+    option sphinx && edo ln -s "${WORKBASE}"/sphinx-${SPHINX_PV}-release/mysqlse "${WORK}"/storage/sphinx
 }
 
 Percona-Server_src_configure() {

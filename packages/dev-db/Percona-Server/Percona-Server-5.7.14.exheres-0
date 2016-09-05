@@ -6,5 +6,5 @@ require Percona-Server [ release="7" ]
 PLATFORMS="~amd64 ~x86"
 
 DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/${PN}-5.7.14-build-failure.patch
+    "${FILES}"/mysql-5.7.14-build-failure.patch
 )
