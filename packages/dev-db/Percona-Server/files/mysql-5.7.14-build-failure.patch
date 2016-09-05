@@ -1,0 +1,101 @@
+Source/Upstream: https://bugs.mysql.com/bug.php?id=82426
+Reason: Fix build with system lz4
+
+diff -Nrup a/extra/lz4/my_xxhash.h b/extra/lz4/my_xxhash.h
+--- a/extra/lz4/my_xxhash.h	1970-01-01 01:00:00.000000000 +0100
++++ b/extra/lz4/my_xxhash.h	2016-08-05 13:53:42.247344144 +0200
+@@ -0,0 +1,27 @@
++#ifndef MY_XXHASH_H_INCLUDED
++#define MY_XXHASH_H_INCLUDED
++
++/*
++  Copyright (c) 2016, Oracle and/or its affiliates. All rights reserved.
++
++  This program is free software; you can redistribute it and/or modify
++  it under the terms of the GNU General Public License as published by
++  the Free Software Foundation; version 2 of the License.
++
++  This program is distributed in the hope that it will be useful,
++  but WITHOUT ANY WARRANTY; without even the implied warranty of
++  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++  GNU General Public License for more details.
++
++  You should have received a copy of the GNU General Public License
++  along with this program; if not, write to the Free Software Foundation,
++  51 Franklin Street, Suite 500, Boston, MA 02110-1335 USA
++*/
++
++// Define a namespace prefix to all xxhash functions. This is done to
++// avoid conflict with xxhash symbols in liblz4.
++#define XXH_NAMESPACE MY_
++
++#include "xxhash.h"
++
++#endif // MY_XXHASH_H_INCLUDED
+diff -Nrup a/libmysqld/CMakeLists.txt b/libmysqld/CMakeLists.txt
+--- a/libmysqld/CMakeLists.txt	2016-07-12 13:55:26.000000000 +0200
++++ b/libmysqld/CMakeLists.txt	2016-08-05 13:53:42.251344165 +0200
+@@ -62,6 +62,7 @@ SET(SQL_EMBEDDED_SOURCES
+   libmysqld.c
+   ${GEN_SOURCES}
+   ${GEN_YACC_SOURCES}
++  ../extra/lz4/xxhash.c
+   ../client/get_password.c
+   ../libmysql/errmsg.c
+   ../libmysql/libmysql.c
+@@ -118,6 +119,11 @@ ADD_COMPILE_FLAGS(
+   COMPILE_FLAGS -I${BOOST_PATCHES_DIR} -I${BOOST_INCLUDE_DIR}
+ )
+ 
++ADD_COMPILE_FLAGS(
++  ../extra/lz4/xxhash.c
++  COMPILE_FLAGS -DXXH_NAMESPACE=MY_
++)
++
+ # Fixes "C1128: number of sections exceeded object file format limit" in MSVC /MD
+ # The flag /bigobj is not added if the build is not /MD
+ IF(WIN32 AND CMAKE_SIZEOF_VOID_P MATCHES 8)
+diff -Nrup a/sql/CMakeLists.txt b/sql/CMakeLists.txt
+--- a/sql/CMakeLists.txt	2016-07-12 13:55:26.000000000 +0200
++++ b/sql/CMakeLists.txt	2016-08-05 13:53:42.251344165 +0200
+@@ -254,6 +254,7 @@ SET(SQL_SOURCE
+   ${GEN_DIGEST_SOURCES}
+   ${CONF_SOURCES}
+   ${SQL_SHARED_SOURCES}
++  ../extra/lz4/xxhash.c
+   ../libmysql/errmsg.c
+   ../sql-common/client.c
+   ../sql-common/client_plugin.c
+@@ -314,6 +315,11 @@ ADD_COMPILE_FLAGS(
+   COMPILE_FLAGS -I${BOOST_PATCHES_DIR} -I${BOOST_INCLUDE_DIR}
+ )
+ 
++ADD_COMPILE_FLAGS(
++  ../extra/lz4/xxhash.c
++  COMPILE_FLAGS -DXXH_NAMESPACE=MY_
++)
++
+ # Fixes "C1128: number of sections exceeded object file format limit" in MSVC /MD
+ # The flag /bigobj is not added if the build is not WINDOWS_RUNTIME_MD (/MD)
+ IF(WINDOWS_RUNTIME_MD AND CMAKE_SIZEOF_VOID_P MATCHES 8)
+diff -Nrup a/sql/rpl_write_set_handler.cc b/sql/rpl_write_set_handler.cc
+--- a/sql/rpl_write_set_handler.cc	2016-07-12 13:55:26.000000000 +0200
++++ b/sql/rpl_write_set_handler.cc	2016-08-05 13:53:42.251344165 +0200
+@@ -23,7 +23,7 @@
+ #include "table.h"         // TABLE
+ 
+ #include "my_murmur3.h"    // murmur3_32
+-#include "xxhash.h"        // xxHash
++#include "../extra/lz4/my_xxhash.h" // xxHash
+ 
+ #include <map>
+ #include <string>
+@@ -61,7 +61,7 @@ template <class type> uint64 calc_hash(u
+   if(algorithm == HASH_ALGORITHM_MURMUR32)
+     return (murmur3_32((const uchar*)T, strlen(T), 0));
+   else
+-    return (XXH64((const uchar*)T, strlen(T), 0));
++    return (MY_XXH64((const uchar*)T, strlen(T), 0));
+ }
+ 
+ /**

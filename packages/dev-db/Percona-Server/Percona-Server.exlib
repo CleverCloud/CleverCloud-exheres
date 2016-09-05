@@ -1,36 +1,55 @@
 # Copyright 2008, 2009, 2010 Ingmar Vanhassel <ingmar@exherbo.org>
-# Copyright 2011-2015 Timo Gurr <tgurr@exherbo.org>
-# Copyright 2014-2015 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Copyright 2011-2016 Timo Gurr <tgurr@exherbo.org>
+# Copyright 2011-2016 Marc-Antoine Perennou <keruspe@exherbo.org>
 # Distributed under the terms of the GNU General Public License v2
 
 myexparam release
 
 require cmake [ api=2 ] systemd-service
 
-export_exlib_phases pkg_pretend src_configure src_install
+export_exlib_phases pkg_pretend src_prepare src_configure src_install pkg_postinst
 
-PERCONA_MAJOR_VERSION=$(ever range 1-2)
+MYSQL_MAJOR_VERSION=$(ever range 1-2)
+
+# Miraculously works for MySQL >= 5.1 till at least 5.6
+SPHINX_PV="2.2.9"
+
+# In order to provide a stable code base, MySQL depends on a specific version of Boost.
+# Currently only Boost.Geometry headers are used and boost is just required at build time.
+BOOST_PV="1.59.0"
 
 SUMMARY="A relational database management system (RDBMS)"
 HOMEPAGE="https://www.percona.com/"
-DOWNLOADS="${HOMEPAGE}redir/downloads/${PN}-${PERCONA_MAJOR_VERSION}/${PNV}-$(exparam release)/source/tarball/${PNV,,}-$(exparam release).tar.gz"
+DOWNLOADS="
+    ${HOMEPAGE}redir/downloads/${PN}-${MYSQL_MAJOR_VERSION}/${PNV}-$(exparam release)/source/tarball/${PNV,,}-$(exparam release).tar.gz
+    mirror://sourceforge/boost/boost_${BOOST_PV//./_}.tar.bz2
+    sphinx? ( http://sphinxsearch.com/files/sphinx-${SPHINX_PV}-release.tar.gz )
+"
 
 LICENCES="GPL-2" # with-exceptions
 SLOT="0"
 MYOPTIONS="
     debug
     embedded-server [[ description = [ The embedded MySQL server library, a full-featured MySQL server that can be run inside a client application ] ]]
+    memcached [[ description = [ Enable using memcached for InnoDb tables (don't know it? Don't enable it.) ] ]]
+    sphinx [[ description = [ Add the Sphinx Search Engine with fulltext search support (external engine) ] ]]
+    systemd
     tcpd
     ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
 DEPENDENCIES="
+    build:
+        virtual/pkg-config
+        systemd? ( sys-apps/systemd )
     build+run:
         group/mysql
         user/mysql
+        app-admin/eclectic[>=2.0.18] [[ note = [ Split ld-*.path, @TARGET@ substitution ] ]]
+        app-arch/lz4
         dev-libs/libaio
         dev-libs/libedit
-        dev-libs/libevent[>=1.4.12]
+        dev-libs/protobuf[>=2.6.1]
         sys-libs/zlib[>=1.2.3]
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl )
@@ -43,23 +62,39 @@ DEPENDENCIES="
             description = [ Percona-Server is a drop-in replacement for MySQL with same binary names ]
             resolution = manual
         ]]
-    suggestion:
-        app-admin/logrotate [[ description = [ Use logrotate for rotating logs ] ]]
     recommendation:
         dev-db/percona-toolkit [[ description = [ The percona toolkit to manage Percona-Server ] ]]
+        memcached? ( net/memcached [[ description = [ The option provides the bundled memcached but you might want to use a stand-alone memcached as well ] ]] )
+    suggestion:
+        app-admin/logrotate [[ description = [ Use logrotate for rotating logs ] ]]
 "
+
+# event_comment
+# >= 5.6 needs libevent[>=1.4.12&<2.0] but
+# a) we only have 2.0.22 at the time of writing
+# b) lots of other stuff needs >=2.0
+#
+# Options:
+#
+# 1. Add libevent 1.4.x, imlement the dep as [>=1.4.12&<2.0] and watch the fun
+# 2. Us the bundled libevent for MySQL to ensure it's always the right version.
+# 3. Add libevent 1.4.x as SLOT=1.4, slot 2.0.x as SLOT=2.0, dep on the 1.4 slot here.
+#
+# I prefer 3., of course, but I went with 2. for now to be on the safe side.
+#
+#            dev-libs/libevent[>=1.4.12]
 
 WORK="${WORKBASE}/${PNV,,}-$(exparam release)"
 CMAKE_SOURCE="${WORK}"
 
 Percona-Server_pkg_pretend() {
     # Sanity check when upgrading to a different x.y version of mysql
-    if [[ -z ${PERCONA_MAJOR_UPGRADE} ]] && has_version ${CATEGORY}/${PN} && \
-        ! has_version ${CATEGORY}/${PN}[=${PERCONA_MAJOR_VERSION}*] ; then
+    if [[ -z ${MYSQL_MAJOR_UPGRADE} ]] && has_version ${CATEGORY}/${PN} && \
+        ! has_version ${CATEGORY}/${PN}[=${MYSQL_MAJOR_VERSION}*] ; then
         ewarn "To install a different major version of MySQL, you have to dump/reload your database."
-        ewarn "When you've done this, please set 'PERCONA_MAJOR_UPGRADE=YesPlease', to continue the upgrade."
+        ewarn "When you've done this, please set 'MYSQL_MAJOR_UPGRADE=YesPlease', to continue the upgrade."
         ewarn "For more information visit:"
-        ewarn "${HOMEPAGE}/doc/${PN,,}/${PV}/upgrading_guide_55_56.html"
+        ewarn "${HOMEPAGE}/doc/${PN,,}/${PV}/upgrading_guide_56_57.html"
         die "Dump your databases before doing a major version upgrade of MySQL."
     fi
 
@@ -68,6 +103,15 @@ Percona-Server_pkg_pretend() {
         ewarn "/usr/$(exhost --target)/lib/tmpfiles.d/${PN}.conf and can be safely removed after upgrade"
         ewarn "if you did not make any changes to it."
     fi
+}
+
+Percona-Server_src_prepare() {
+    cmake_src_prepare
+
+    # https://bugs.mysql.com/bug.php?id=72353 (only relevant when using system libevent)
+    edo sed -i -e "s:\(LIBEVENT_LIBRAR\)IES:\1Y:" "${WORKBASE}"/${PNV}/cmake/libevent.cmake
+
+    option sphinx && edo ln -s "${WORKBASE}"/sphinx-${SPHINX_PV}-release/mysqlse "${WORKBASE}"/${PNV}/storage/sphinx
 }
 
 Percona-Server_src_configure() {
@@ -94,8 +138,6 @@ Percona-Server_src_configure() {
         -DINSTALL_SBINDIR:PATH=$(exhost --target)/bin
         -DINSTALL_SCRIPTDIR:PATH=$(exhost --target)/bin
         -DINSTALL_SHAREDIR:PATH=share
-        # Empty value to not install the sql-bench directory
-        -DINSTALL_SQLBENCHDIR:STRING=
         -DINSTALL_SUPPORTFILESDIR:PATH=share/mysql
         -DMYSQL_DATADIR:PATH=/var/lib/mysql
         -DMYSQL_UNIX_ADDR:PATH=/run/mysqld/mysqld.sock
@@ -112,17 +154,39 @@ Percona-Server_src_configure() {
         -DWITH_UNIT_TESTS:BOOL=TRUE
         -DWITH_VALGRIND:BOOL=FALSE
         -DWITH_ZLIB:STRING=system
-        -DBUILD_WITH_WERROR:BOOL=FALSE
         -DCMAKE_DISABLE_FIND_PACKAGE_Git:BOOL=TRUE
-        -DCOMPILE_FLAG_WERROR:BOOL=FALSE
         -DENABLE_DTRACE:BOOL=FALSE
         -DENABLE_GCOV:BOOL=FALSE
         -DENABLE_GPROF:BOOL=FALSE
         -DENABLED_LOCAL_INFILE:BOOL=TRUE
         -DWITH_EDITLINE:STRING=system
-        -DWITH_LIBEVENT:STRING=system
+        # Search for event_comment in this exlib for the reason for using bundled
+        -DWITH_LIBEVENT:STRING=bundled
+        -DWITH_NUMA:BOOL=FALSE
         -DWITH_SSL:STRING=/usr/$(exhost --target)
+        -DBOOST_INCLUDE_DIR:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
+        -DWITH_BOOST:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
+        -DWITH_CLIENT_PROTOCOL_TRACING:BOOL=FALSE
+        -DWITH_LZ4:STRING=system
+        -DWITH_MSAN:BOOL=FALSE
+        -DWITH_PROTOBUF=system
+        -DWITH_RAPID:BOOL=FALSE
+        -DWITH_TEST_TRACE_PLUGIN:BOOL=FALSE
+        -DWITH_UBSAN:BOOL=FALSE
     )
+
+    if option systemd ; then
+        cmakeargs+=(
+            -DWITH_SYSTEMD:BOOL=TRUE
+            -DSYSTEMD_PID_DIR:PATH=/run/mysqld
+            -DSYSTEMD_SERVICES_DIR:PATH=${SYSTEMDSYSTEMUNITDIR}
+            -DSYSTEMD_TMPFILES_DIR:PATH=/usr/$(exhost --target)/lib/tmpfiles.d
+        )
+    else
+        cmakeargs+=(
+            -DWITH_SYSTEMD:BOOL=FALSE
+        )
+    fi
 
     if option debug ; then
         cmakeargs+=(
@@ -134,6 +198,24 @@ Percona-Server_src_configure() {
         )
     fi
 
+    if option sphinx ; then
+        cmakeargs+=(
+            -DWITH_SPHINX_STORAGE_ENGINE:BOOL=TRUE
+        )
+    fi
+
+    if option memcached ; then
+        cmakeargs+=(
+            # Unfortunately, the InnoDb/memcached interface needs libevent 1.4.x
+            # as bundled with MySQL or trying to use memcached WILL make MySQL
+            # segfault immediately.
+            # (Keeping this comment even though the bundled lib is used anyway in
+            # order to remember *why* I changed it.)
+            -DWITH_LIBEVENT:STRING=bundled
+            -DWITH_INNODB_MEMCACHED:BOOL=TRUE
+        )
+    fi
+
     ecmake \
         "${cmakeargs[@]}" \
         $(cmake_with debug DEBUG)\
@@ -142,37 +224,43 @@ Percona-Server_src_configure() {
 }
 
 Percona-Server_src_install() {
-    local ldpath
-
     cmake_src_install
 
+    # Remove empty directories
+    edo rmdir "${IMAGE}"/usr/share/mysql/info
     ! option debug && edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/mysql/plugin/debug
-
-    # construct ldpath for all targets
-    ldpath="/usr/$(exhost --target)/lib/mysql${ldpath:+:${ldpath}}"
 
     keepdir /etc/mysql
 
     edo cp "${IMAGE}"/usr/share/mysql/my-default.cnf "${IMAGE}"/etc/mysql/my.cnf
-    edo mv "${IMAGE}"/usr/$(exhost --target)/bin/mysqlaccess.conf "${IMAGE}"/etc/mysql/mysqlaccess.conf
-    edo chmod 644 "${IMAGE}"/etc/mysql/mysqlaccess.conf
-
-    keepdir /var/{lib,log}/mysql
-    edo chown mysql:mysql "${IMAGE}"/var/{lib,log}/mysql
-    edo chmod 755 "${IMAGE}"/var/{lib,log}/mysql
 
     hereenvd 46mysql <<EOF
-LDPATH=${ldpath}
+LDPATH=/usr/@TARGET@/lib/mysql
 EOF
 
     insinto /etc/logrotate.d
     newins "${FILES}"/logrotate.mysql mysql
 
-    install_systemd_files
+    keepdir /var/lib/mysql-files
+    edo chown mysql:mysql "${IMAGE}"/var/lib/mysql-files
+    edo chmod 0750 "${IMAGE}"/var/lib/mysql-files
+}
 
-    insinto /usr/$(exhost --target)/lib/tmpfiles.d
-    hereins mysql.conf <<EOF
-d /run/mysqld 0755 mysql mysql
-EOF
+Percona-Server_pkg_postinst() {
+    if option sphinx ; then
+        elog "In order to finalise your installation of the Sphinx Search Engine, you must install"
+        elog "it in MySQL using the following command as an administrative user:"
+        elog ""
+        elog "mysql> INSTALL PLUGIN SPHINX SONAME 'ha_sphinx.so';"
+        elog ""
+    fi
+
+    if option memcached ; then
+        elog "In order to finalise your installation of the memcached plugin, you must install"
+        elog "it in MySQL using the following command as an administrative user:"
+        elog ""
+        elog "mysql> install plugin daemon_memcached soname "libmemcached.so";"
+        elog ""
+    fi
 }
 
