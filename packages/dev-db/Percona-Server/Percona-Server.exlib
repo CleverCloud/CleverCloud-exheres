@@ -108,6 +108,9 @@ Percona-Server_pkg_pretend() {
 Percona-Server_src_prepare() {
     cmake_src_prepare
 
+    edo sed -i -e 's:"gcc-ar":'$(exhost --tool-prefix)gcc-ar: "${WORK}"/storage/tokudb/PerconaFT/CMakeLists.txt
+    edo sed -i -e 's:"gcc-ranlib":'$(exhost --tool-prefix)gcc-ranlib: "${WORK}"/storage/tokudb/PerconaFT/CMakeLists.txt
+
     # https://bugs.mysql.com/bug.php?id=72353 (only relevant when using system libevent)
     edo sed -i -e "s:\(LIBEVENT_LIBRAR\)IES:\1Y:" "${WORK}"/cmake/libevent.cmake
 
@@ -173,6 +176,7 @@ Percona-Server_src_configure() {
         -DWITH_RAPID:BOOL=FALSE
         -DWITH_TEST_TRACE_PLUGIN:BOOL=FALSE
         -DWITH_UBSAN:BOOL=FALSE
+        -DUSE_CTAGS:BOOL=FALSE
     )
 
     if option systemd ; then
