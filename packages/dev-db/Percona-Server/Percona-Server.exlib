@@ -110,6 +110,8 @@ Percona-Server_src_prepare() {
 
     edo sed -i -e 's:"gcc-ar":'$(exhost --tool-prefix)gcc-ar: "${WORK}"/storage/tokudb/PerconaFT/CMakeLists.txt
     edo sed -i -e 's:"gcc-ranlib":'$(exhost --tool-prefix)gcc-ranlib: "${WORK}"/storage/tokudb/PerconaFT/CMakeLists.txt
+    edo sed -i -e '/^install/s/bin/${INSTALL_BINDIR}/' "${WORK}"/storage/tokudb/PerconaFT/tools/CMakeLists.txt
+    edo sed -i -e '/^install/s/include/${INSTALL_INCLUDEDIR}/' "${WORK}"/plugin/tokudb-backup-plugin/Percona-TokuBackup/backup/CMakeLists.txt
 
     # https://bugs.mysql.com/bug.php?id=72353 (only relevant when using system libevent)
     edo sed -i -e "s:\(LIBEVENT_LIBRAR\)IES:\1Y:" "${WORK}"/cmake/libevent.cmake
@@ -231,7 +233,6 @@ Percona-Server_src_install() {
     cmake_src_install
 
     # Remove empty directories
-    edo rmdir "${IMAGE}"/usr/share/mysql/info
     ! option debug && edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/mysql/plugin/debug
 
     keepdir /etc/mysql
