@@ -6,7 +6,7 @@ require pam systemd-service
 export_exlib_phases src_install
 
 SUMMARY="A fast, production-quality, standard-conformant FTP server"
-HOMEPAGE="http://www.pureftpd.org/project/${PN}"
+HOMEPAGE="https://www.pureftpd.org/project/${PN}"
 
 LICENCES="
     MIT
@@ -23,14 +23,13 @@ MYOPTIONS="ldap
 DEPENDENCIES="
     build+run:
         user/${PN}
+        user/ftp [[ description = [ Anonymous FTP, required to start ${PN} ] ]]
         group/${PN}
         dev-libs/libsodium
         sys-libs/libcap
         ldap? ( net-directory/openldap )
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl )
-    suggestion:
-        user/ftp [[ description = [ Anonymous FTP ] ]]
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(

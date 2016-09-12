@@ -3,7 +3,7 @@
 
 require pure-ftpd
 
-DOWNLOADS="http://download.pureftpd.org/pub/${PN}/releases/${PNV}.tar.bz2"
+DOWNLOADS="https://download.pureftpd.org/pub/${PN}/releases/${PNV}.tar.bz2"
 
 PLATFORMS="~amd64"
 
