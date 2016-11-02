@@ -35,3 +35,9 @@ RESTRICT="test"
 
 DEFAULT_SRC_INSTALL_PARAMS=( BINDIR=/usr/$(exhost --target)/bin )
 
+src_install() {
+    default
+    edo cd ../..
+    emagicdocs
+    dodoc -r contrib/examples
+}
