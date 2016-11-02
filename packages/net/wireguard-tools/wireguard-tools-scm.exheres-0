@@ -33,8 +33,5 @@ WORK="${WORK}/src/tools/"
 
 RESTRICT="test"
 
-DEFAULT_SRC_PREPARE_PATCHES=(
-    -p3 "${FILES}"/0001-tools-allow-better-build-system-configuration.patch
-)
-DEFAULT_SRC_INSTALL_PARAMS=( BINDIR=/usr/$(exhost --target)/bin INSTALL_STRIP_OPT="" )
+DEFAULT_SRC_INSTALL_PARAMS=( BINDIR=/usr/$(exhost --target)/bin )
 
