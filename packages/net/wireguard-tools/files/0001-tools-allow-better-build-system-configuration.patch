@@ -1,0 +1,46 @@
+From 6ecd1133b7714207082f599a5e2a59bfc9f6f79a Mon Sep 17 00:00:00 2001
+From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+Date: Wed, 2 Nov 2016 11:25:53 +0100
+Subject: [PATCH] tools: allow better build system configuration
+
+Signed-off-by: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+---
+ src/tools/Makefile | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/src/tools/Makefile b/src/tools/Makefile
+index fc0c0f3..92e0528 100644
+--- a/src/tools/Makefile
++++ b/src/tools/Makefile
+@@ -4,6 +4,8 @@ BINDIR ?= $(PREFIX)/bin
+ LIBDIR ?= $(PREFIX)/lib
+ MANDIR ?= $(PREFIX)/share/man
+ RUNSTATEDIR ?= /var/run
++PKG_CONFIG ?= pkg-config
++INSTALL_STRIP_OPT ?= -s
+ 
+ CFLAGS ?= -O3
+ CFLAGS += -std=gnu11
+@@ -12,8 +14,8 @@ CFLAGS += -MMD -MP
+ CFLAGS += -DRUNSTATEDIR="\"$(RUNSTATEDIR)\""
+ LDLIBS += -lresolv
+ ifeq ($(shell uname -s),Linux)
+-LIBMNL_CFLAGS := $(shell pkg-config --cflags libmnl 2>/dev/null)
+-LIBMNL_LDLIBS := $(shell pkg-config --libs libmnl 2>/dev/null || echo -lmnl)
++LIBMNL_CFLAGS := $(shell $(PKG_CONFIG) --cflags libmnl 2>/dev/null)
++LIBMNL_LDLIBS := $(shell $(PKG_CONFIG) --libs libmnl 2>/dev/null || echo -lmnl)
+ CFLAGS += $(LIBMNL_CFLAGS)
+ LDLIBS += $(LIBMNL_LDLIBS)
+ endif
+@@ -24,7 +26,7 @@ clean:
+ 	rm -f wg *.o *.d
+ 
+ install: wg
+-	install -v -d "$(DESTDIR)$(BINDIR)" && install -s -m 0755 -v wg "$(DESTDIR)$(BINDIR)/wg"
++	install -v -d "$(DESTDIR)$(BINDIR)" && install $(INSTALL_STRIP_OPT) -m 0755 -v wg "$(DESTDIR)$(BINDIR)/wg"
+ 	install -v -d "$(DESTDIR)$(MANDIR)/man8" && install -m 0644 -v wg.8 "$(DESTDIR)$(MANDIR)/man8/wg.8"
+ 
+ check: clean
+-- 
+2.10.1
+

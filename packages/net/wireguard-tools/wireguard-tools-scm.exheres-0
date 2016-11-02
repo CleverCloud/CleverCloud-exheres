@@ -31,12 +31,10 @@ BUGS_TO="keruspe@exherbo.org"
 
 WORK="${WORK}/src/tools/"
 
-RESTRICT="test strip"
+RESTRICT="test"
 
-DEFAULT_SRC_INSTALL_PARAMS=( BINDIR=/usr/$(exhost --target)/bin )
-
-src_prepare() {
-    default
-    edo sed -r -e "s/pkg-config/${PKG_CONFIG}/" -e '/install/s/-s//' -i Makefile
-}
+DEFAULT_SRC_PREPARE_PATCHES=(
+    -p3 "${FILES}"/0001-tools-allow-better-build-system-configuration.patch
+)
+DEFAULT_SRC_INSTALL_PARAMS=( BINDIR=/usr/$(exhost --target)/bin INSTALL_STRIP_OPT="" )
 
