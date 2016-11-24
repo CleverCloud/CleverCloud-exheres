@@ -25,7 +25,8 @@ DEPENDENCIES="
         postgres? ( dev-db/postgresql )
         mysql? ( dev-db/mysql )
         dev-libs/boost
-        dev-lang/lua:5.1
+        dev-libs/protobuf
+        dev-lang/lua:=
         group/pdns
         user/pdns
 "
