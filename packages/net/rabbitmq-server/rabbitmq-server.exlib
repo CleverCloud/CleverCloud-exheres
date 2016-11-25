@@ -27,11 +27,11 @@ DEFAULT_SRC_INSTALL_PARAMS=(
 export_exlib_phases src_install
 
 rabbitmq-server_src_install() {
-    edo touch .erlang.mk/list-deps.log
+    edo touch .erlang.mk/recursive-deps-list.log
     default
     emake DESTDIR="${IMAGE}" PREFIX=/usr install-man
     emake DESTDIR="${IMAGE}" PREFIX=/usr/$(exhost --target) install-bin
-    dodoc docs/rabbitmq.config.example
+    dodoc deps/rabbit/docs/rabbitmq.config.example
     edo mkdir -p "${IMAGE}"/usr/$(exhost --target)/bin
     for bin in "${IMAGE}"/usr/$(exhost --target)/lib/erlang/bin/*; do
         dosym ../lib/erlang/bin/"$(basename "${bin}")" /usr/$(exhost --target)/bin/
