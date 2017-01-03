@@ -1,0 +1,47 @@
+# Copyright 2016 Arnaud Lefebvre <a.lefebvre@outlook.fr>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=edenhill tag=v${PV} ]
+
+SUMMARY="The Apache Kafka C/C++ library"
+
+LICENCES="BDS-2"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS="doc ssl sasl"
+
+DEPENDENCIES="
+    build+run:
+        doc? ( app-doc/doxygen media-gfx/graphviz )
+        sys-libs/zlib
+        sasl? ( net-libs/gsasl )
+        ssl? ( dev-libs/openssl )
+"
+
+src_configure(){
+    econf \
+        --hates=datarootdir \
+        --hates=docdir \
+        --hates=enable-fast-install \
+        $(option_enable sasl) \
+        $(option_enable ssl)
+}
+
+src_compile(){
+    default
+
+    if optionq doc; then
+        emake docs
+    fi
+}
+
+src_install(){
+    default
+    if optionq doc; then
+        edo cd staging-docs && dodoc -r ./{html,latex}
+    else
+        edo rm "${IMAGE}"/usr/share/doc -r
+        edo rmdir "${IMAGE}"/usr/share
+    fi
+}
