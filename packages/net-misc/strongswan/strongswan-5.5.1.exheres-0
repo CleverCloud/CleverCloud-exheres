@@ -1,0 +1,146 @@
+# Copyright 2017 Julien Durillon <julien.durillon@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ]
+
+SUMMARY="IPsec-based VPN solution focused on security and ease of use, supporting IKEv1/IKEv2 and MOBIKE"
+HOMEPAGE="http://www.strongswan.org/"
+DOWNLOADS="http://download.strongswan.org/${PNV}.tar.bz2"
+
+LICENCES="GPL-2 RSA DES"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    caps [[ presumed = true ]]
+    constraints [[ presumed = true ]]
+    curl
+    debug
+    dhcp
+    eap
+    farp
+    gcrypt
+    gmp [[ presumed = true ]]
+    ldap
+    mysql
+    networkmanager
+    ( providers: libressl openssl ) [[ number-selected = at-most-one ]]
+    pam
+    pkcs11
+    sqlite
+    systemd
+    ( plugins:
+        led [[ presumed = true ]]
+        lookip [[ presumed = true ]]
+        systime-fix [[ presumed = true ]]
+        unity [[ presumed = true ]]
+        vici [[ presumed = true ]]
+        slowfish
+        ccm
+        ctr
+        gcm
+        ha
+        ipseckey
+        ntru
+        padlock
+        rdrand
+        whitelist
+    )
+"
+
+DEPENDENCIES="
+    build+run:
+        !net-misc/openswan
+        sys-kernel/linux-headers
+        gmp? ( dev-libs/gmp:=[>=4.1.5] )
+        gcrypt? ( dev-libs/libgcrypt:0 )
+        caps? ( sys-libs/libcap )
+        curl? ( net-misc/curl )
+        ldap? ( net-directory/openldap )
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl:= )
+        mysql? ( virtual/mysql )
+        sqlite? ( dev-db/sqlite[>=3.3.1] )
+        networkmanager? ( net-apps/NetworkManager )
+        pam? ( sys-libs/pam )
+    run:
+        sys-apps/iproute2
+"
+
+BUGS_TO="julien.durillon@gmail.com"
+
+src_configure() {
+    local params=(
+        "--disable-static"
+        "--enable-ikev1"
+        "--enable-ikev2"
+        "--enable-swanctl"
+        "--enable-socket-dynamic"
+        $(option_with caps capabilities /usr/$(exhost --target))
+        $(option_with systemd systemdsystemunitdir /usr/$(exhost --target)/lib/systemd/system)
+        $(option_enable constraints)
+        $(option_enable curl)
+        $(option_enable debug leak-detective)
+        $(option_enable dhcp)
+        $(option_enable eap)
+        $(option_enable eap eap-sim)
+        $(option_enable eap eap-sim-file)
+        $(option_enable eap eap-simaka-sql)
+        $(option_enable eap eap-simaka-pseudonym)
+        $(option_enable eap eap-simaka-reauth)
+        $(option_enable eap eap-identity)
+        $(option_enable eap eap-md5)
+        $(option_enable eap eap-aka)
+        $(option_enable eap eap-aka-3gpp2)
+        $(option_enable eap md4)
+        $(option_enable eap eap-mschapv2)
+        $(option_enable eap eap-radius)
+        $(option_enable eap eap-tls)
+        $(option_enable eap xauth-eap)
+        $(option_enable farp)
+        $(option_enable gcrypt)
+        $(option_enable gmp)
+        $(option_enable ldap)
+        $(option_enable mysql)
+        $(option_enable mysql attr-sql)
+        $(option_enable mysql sql)
+        $(option_enable networkmanager nm)
+        $(option_enable pam xauth-pam)
+        $(option_enable pkcs11)
+        $(option_enable sqlite)
+        $(option_enable sqlite attr-sql)
+        $(option_enable sqlite sql)
+        $(option_enable plugins:led         led)
+        $(option_enable plugins:lookip      lookip)
+        $(option_enable plugins:systime-fix systime-fix)
+        $(option_enable plugins:unity       unity)
+        $(option_enable plugins:vici        vici)
+        $(option_enable plugins:slowfish    slowfish)
+        $(option_enable plugins:ccm         ccm)
+        $(option_enable plugins:ctr         ctr)
+        $(option_enable plugins:gcm         gcm)
+        $(option_enable plugins:ha          ha)
+        $(option_enable plugins:ipseckey    ipseckey)
+        $(option_enable plugins:ntru        ntru)
+        $(option_enable plugins:padlock     padlock)
+        $(option_enable plugins:rdrand      rdrand)
+        $(option_enable plugins:whitelist   whitelist)
+        $(option_enable providers:openssl   openssl)
+        $(option_enable providers:libressl  openssl)
+    )
+    if option pam && option eap; then
+        params+=( '--enable-eap-gtc' )
+    else
+        params+=( '--disable-eap-gtc' )
+    fi
+    econf ${params[@]}
+}
+
+src_install() {
+    default
+
+    edo find "${IMAGE}/usr/$(exhost --target)" -name '*.la' -delete
+
+    keepdir /etc/ipsec.d/{aacerts,acerts,cacerts,certs,crls,ocspcerts,private,reqs}
+    keepdir /etc/swanctl/{bliss,ecdsa,pkcs12,pkcs8,private,pubkey,rsa,x509,x509aa,x509ac,x509ca,x509crl,x509ocsp}
+}
+
