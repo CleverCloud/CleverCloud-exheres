@@ -10,6 +10,7 @@ SLOT="0"
 
 DEPENDENCIES="
     build+run:
+        dev-pecl/pcs[php_abis:*(-)?]
         dev-libs/libcouchbase[>=2.2.0]
 "
 
