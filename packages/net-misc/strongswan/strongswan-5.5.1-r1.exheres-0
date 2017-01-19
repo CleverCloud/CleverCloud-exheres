@@ -12,15 +12,15 @@ SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS="
     caps
-    constraints [[ description=[ Advanced X509 constraint checking plugin. ] ]]
-    curl [[ description=[ Fetch files via libcurl ] ]]
+    constraints [[ description = [ Advanced X509 constraint checking plugin. ] ]]
+    curl [[ description = [ Fetch files via libcurl ] ]]
     debug
     dhcp
-    eap [[ description=[ Enable all EAP modules ] ]]
-    farp [[ description=[ ARP faking plugin that responds to ARP requests to peers virtual IP ] ]]
+    eap [[ description = [ Enable all EAP modules ] ]]
+    farp [[ description = [ ARP faking plugin that responds to ARP requests to peers virtual IP ] ]]
     gcrypt
     gmp
-    ldap [[ description=[ Fetch files via libldap ] ]]
+    ldap [[ description = [ Fetch files via libldap ] ]]
     mysql
     networkmanager
     ( providers: libressl openssl ) [[ number-selected = at-most-one ]]
@@ -29,20 +29,20 @@ MYOPTIONS="
     sqlite
     systemd
     ( plugins:
-        led [[ description=[ Control LEDs on IKEv2 activity using the kernel LED subsystem ] ]]
-        lookip [[ description=[ Fast virtual IP lookup and notification plugin ] ]]
-        systime-fix [[ description=[ Handle cert lifetimes with invalid system time gracefully ] ]]
-        unity [[ description=[ Cisco Unity extension plugin ] ]]
-        vici [[ description=[ StrongSwan IKE generic IPC interface plugin ] ]]
+        led [[ description = [ Control LEDs on IKEv2 activity using the kernel LED subsystem ] ]]
+        lookip [[ description = [ Fast virtual IP lookup and notification plugin ] ]]
+        systime-fix [[ description = [ Handle cert lifetimes with invalid system time gracefully ] ]]
+        unity [[ description = [ Cisco Unity extension plugin ] ]]
+        vici [[ description = [ StrongSwan IKE generic IPC interface plugin ] ]]
         blowfish
-        ccm [[ description=[ CCM Authenticated Encryption with Associated Data wrapper plugin ] ]]
-        ctr [[ description=[ Counter mode wrapper plugin ] ]]
+        ccm [[ description = [ CCM Authenticated Encryption with Associated Data wrapper plugin ] ]]
+        ctr [[ description = [ Counter mode wrapper plugin ] ]]
         gcm
-        ha [[ description=[ High availability cluster plugin ] ]]
-        ipseckey [[ description=[ IPSECKEY authentication plugin ] ]]
-        ntru [[ description=[ Quantum-resistent NTRU crypto plugin ] ]]
-        padlock [[ description=[ VIA Padlock crypto plugin ] ]]
-        rdrand [[ description=[ Intel RDRAND random generator plugin ] ]]
+        ha [[ description = [ High availability cluster plugin ] ]]
+        ipseckey [[ description = [ IPSECKEY authentication plugin ] ]]
+        ntru [[ description = [ Quantum-resistent NTRU crypto plugin ] ]]
+        padlock [[ description = [ VIA Padlock crypto plugin ] ]]
+        rdrand [[ description = [ Intel RDRAND random generator plugin ] ]]
         whitelist
     )
 "
