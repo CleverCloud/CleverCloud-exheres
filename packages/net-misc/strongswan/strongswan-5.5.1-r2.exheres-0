@@ -20,31 +20,33 @@ MYOPTIONS="
     farp [[ description = [ ARP faking plugin that responds to ARP requests to peers virtual IP ] ]]
     gcrypt
     gmp
+    kernel-libipsec [[ description = [ User space IPsec implementation. ] ]]
+    kernel-pfkey [[ description = [ PF_KEY kernel interface ] ]]
     ldap [[ description = [ Fetch files via libldap ] ]]
     mysql
     networkmanager
-    ( providers: libressl openssl ) [[ number-selected = at-most-one ]]
     pam
     pkcs11
     sqlite
     systemd
     ( plugins:
-        led [[ description = [ Control LEDs on IKEv2 activity using the kernel LED subsystem ] ]]
-        lookip [[ description = [ Fast virtual IP lookup and notification plugin ] ]]
-        systime-fix [[ description = [ Handle cert lifetimes with invalid system time gracefully ] ]]
-        unity [[ description = [ Cisco Unity extension plugin ] ]]
-        vici [[ description = [ StrongSwan IKE generic IPC interface plugin ] ]]
         blowfish
         ccm [[ description = [ CCM Authenticated Encryption with Associated Data wrapper plugin ] ]]
         ctr [[ description = [ Counter mode wrapper plugin ] ]]
         gcm
         ha [[ description = [ High availability cluster plugin ] ]]
         ipseckey [[ description = [ IPSECKEY authentication plugin ] ]]
+        led [[ description = [ Control LEDs on IKEv2 activity using the kernel LED subsystem ] ]]
+        lookip [[ description = [ Fast virtual IP lookup and notification plugin ] ]]
         ntru [[ description = [ Quantum-resistent NTRU crypto plugin ] ]]
         padlock [[ description = [ VIA Padlock crypto plugin ] ]]
         rdrand [[ description = [ Intel RDRAND random generator plugin ] ]]
+        systime-fix [[ description = [ Handle cert lifetimes with invalid system time gracefully ] ]]
+        unity [[ description = [ Cisco Unity extension plugin ] ]]
+        vici [[ description = [ StrongSwan IKE generic IPC interface plugin ] ]]
         whitelist
     )
+    ( providers: libressl openssl ) [[ number-selected = at-most-one ]]
 "
 
 DEPENDENCIES="
@@ -73,6 +75,7 @@ src_configure() {
         "--disable-static"
         "--enable-ikev1"
         "--enable-ikev2"
+        "--enable-kernel-netlink"
         "--enable-swanctl"
         "--enable-socket-dynamic"
         $(option_with caps capabilities /usr/$(exhost --target))
@@ -99,6 +102,8 @@ src_configure() {
         $(option_enable farp)
         $(option_enable gcrypt)
         $(option_enable gmp)
+        $(option_enable kernel-libipsec)
+        $(option_enable kernel-pfkey)
         $(option_enable ldap)
         $(option_enable mysql)
         $(option_enable mysql attr-sql)
