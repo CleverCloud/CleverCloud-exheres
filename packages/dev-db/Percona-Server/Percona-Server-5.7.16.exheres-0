@@ -1,10 +1,7 @@
 # Copyright 2014 Marc-Antoine Perennou <keruspe@exherbo.org>
 # Distributed under the terms of the GNU General Public License v2
 
-require Percona-Server [ release="7" ]
+require Percona-Server [ release="10" ]
 
 PLATFORMS="~amd64 ~x86"
 
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/mysql-5.7.14-build-failure.patch
-)
