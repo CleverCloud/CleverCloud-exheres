@@ -2,13 +2,13 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user=stedolan tag=${PNV} ]
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.13 ] ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 1.13 ] ]
 require python # gen_utf8_table.py
 
 export_exlib_phases src_prepare src_install
 
 SUMMARY="Command-line JSON processor"
-HOMEPAGE="http://stedolan.github.io/jq/"
+HOMEPAGE+=" https://stedolan.github.io/jq/"
 
 LICENCES="jq"
 SLOT="0"
@@ -23,11 +23,13 @@ DEPENDENCIES="
         dev-util/valgrind
 "
 
+DEFAULT_SRC_CONFIGURE_PARAMS=( --disable-static )
+
 jq_src_prepare() {
     # The onigtest is simply broken. Last checked: 1.5
     edo sed -i -e "/^TESTS = /s:tests/onigtest::g" Makefile.{am,in}
 
-    eautoreconf
+    autotools_src_prepare
 }
 
 jq_src_install() {
