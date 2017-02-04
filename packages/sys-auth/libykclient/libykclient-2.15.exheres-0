@@ -1,12 +1,23 @@
 # Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
+# Copyright 2017 Marc-Antoine Perennou <keruspe@exherbo.org>
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user=Yubico pn=yubico-c-client tag="ykclient-${PV}" ]
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.13 ] ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ]
 
 SUMMARY="Yubico C client library"
 HOMEPAGE="http://opensource.yubico.com/yubico-c-client/"
 
+PLATFORMS="~amd64"
 LICENCES="BSD-2"
 SLOT="0"
+
+RESTRICT="test"
+
+DEPENDENCIES="
+    build:
+        sys-devel/libtool
+    build+run:
+        net-misc/curl
+"
 
