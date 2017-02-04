@@ -1,0 +1,19 @@
+# Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
+# Copyright 2017 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=Yubico pn=yubico-c tag="$PNV" ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ]
+
+SUMMARY="YubiKey C low-level library"
+HOMEPAGE="httsp://opensource.yubico.com/yubico-c/"
+PLATFORMS="~amd64"
+
+LICENCES="BSD-2"
+SLOT="0"
+
+DEPENDENCIES="
+    build:
+        sys-devel/libtool
+"
+
