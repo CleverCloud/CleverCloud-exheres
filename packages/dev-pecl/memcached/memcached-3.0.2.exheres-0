@@ -7,7 +7,7 @@ SUMMARY="PHP extension for interfacing with memcached via libmemcached library"
 
 PLATFORMS="~amd64"
 LICENCES="PHP-3"
-SLOT="0"
+SLOT="7"
 
 RESTRICT="test"
 MYOPTIONS="sasl"
