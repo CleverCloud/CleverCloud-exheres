@@ -1,27 +1,73 @@
+# Copyright 2017 John Kallimanis <johnkall007@gmail.com>
 # Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
-export_exlib_phases src_install
+require python [ blacklist="3" multibuild=false ]
+
+#Strangely it is needed, according to the documentation
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ]
+
+export_exlib_phases src_prepare src_compile src_install
 
 SUMMARY="GlusterFS is a cluster file-system capable of scaling to several peta-bytes"
 HOMEPAGE="http://www.gluster.org/"
-DOWNLOADS="http://bits.gluster.com/pub/gluster/${PN}/src/${PNV}.tar.gz"
+DOWNLOADS="http://download.gluster.org/pub/gluster/${PN}/$(ever range 1-2)/${PV}/${PNV}.tar.gz"
 
 LICENCES="GPL-3"
 SLOT="0"
-MYOPTIONS=""
+MYOPTIONS="
+    georeplication [[ description = [ Support replication of resources over LAN, WAN or the Internet. ] ]]
+    debug
+"
 
 DEPENDENCIES="
     build+run:
+        dev-db/sqlite
+        dev-libs/glib:2
+        dev-libs/libaio
         dev-libs/libxml2[>=2.6.19]
+        dev-libs/openssl
+        dev-libs/urcu
+        sys-libs/readline
         sys-fs/fuse
 "
 
-DEFAULT_SRC_CONFIGURE_PARAMS=( --hates=docdir --localstatedir=/var --without-ocf --with-systemddir=/usr/${LIBDIR}/systemd/system )
+DEFAULT_SRC_PREPARE_PATCHES=(-p0 "${FILES}"/disable_silent_build.patch)
 
+#Empty parameter LEXLIB required for building with newer flex, for obscure reasons
+#http://gluster-users.gluster.narkive.com/1PCAgGRF/gluster-compilation-error-undefined-reference-to-yylex
+DEFAULT_SRC_CONFIGURE_PARAMS=( --localstatedir=/var --without-ocf --with-systemddir=/usr/"$(exhost --target)"/lib/systemd/system \
+                                              --disable-cmocka --enable-glupy --disable-ibverbs LEXLIB= )
+
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( "georeplication" "debug" )
+
+gluster_autogen() {
+    #Emulate autogen.sh with exheres commands (autoreconf won 't do, as it descends recursively, which it should not)
+    eaclocal
+    eautoheader
+    elibtoolize
+    eautoconf
+    eautomake --force-missing --foreign
+}
+
+glusterfs_src_prepare() {
+    default
+    gluster_autogen
+    edo cd contrib/argp-standalone
+    gluster_autogen
+    #Ugly hack to make rpcgen use cross cpp
+    edo mkdir "${WORK}"/cpp-path
+    edo ln -s $(which ${CPP}) "${WORK}"/cpp-path/cpp
+}
+
+glusterfs_src_compile() {
+    PATH="${WORK}"/cpp-path:"${PATH}" emake
+}
 
 glusterfs_src_install() {
     default
-    keepdir /var/log/"${PN}"
     edo rm -r "${IMAGE}"/var/run
+    edo mv "${IMAGE}"/sbin/* "${IMAGE}"/usr/$(exhost --target)/bin/
+    edo find "${IMAGE}"/ -type d -empty -delete
 }
+
