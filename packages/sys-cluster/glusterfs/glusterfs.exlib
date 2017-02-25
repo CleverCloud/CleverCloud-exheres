@@ -2,12 +2,9 @@
 # Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require python [ blacklist="3" multibuild=false ]
+require systemd-service python [ blacklist="3" multibuild=false ]
 
-#Strangely it is needed, according to the documentation
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ]
-
-export_exlib_phases src_prepare src_compile src_install
+export_exlib_phases src_prepare src_install
 
 SUMMARY="GlusterFS is a cluster file-system capable of scaling to several peta-bytes"
 HOMEPAGE="http://www.gluster.org/"
@@ -17,56 +14,48 @@ LICENCES="GPL-3"
 SLOT="0"
 MYOPTIONS="
     georeplication [[ description = [ Support replication of resources over LAN, WAN or the Internet. ] ]]
-    debug
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
 DEPENDENCIES="
+    build:
+        sys-devel/bison
     build+run:
-        dev-db/sqlite
+        dev-db/sqlite:3
         dev-libs/glib:2
         dev-libs/libaio
-        dev-libs/libxml2[>=2.6.19]
-        dev-libs/openssl
+        dev-libs/libxml2:2.0[>=2.6.19]
         dev-libs/urcu
-        sys-libs/readline
+        sys-libs/readline:=
         sys-fs/fuse
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
 "
 
-DEFAULT_SRC_PREPARE_PATCHES=(-p0 "${FILES}"/disable_silent_build.patch)
-
-#Empty parameter LEXLIB required for building with newer flex, for obscure reasons
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --localstatedir=/var
+    --with-systemddir=${SYSTEMDSYSTEMUNITDIR}
+    --with-tmpfilesdir=/usr/$(exhost --target)/lib/tmpfiles.d
+    --enable-glupy
+    --disable-cmocka
+    --disable-ibverbs
+    --without-ocf
 #http://gluster-users.gluster.narkive.com/1PCAgGRF/gluster-compilation-error-undefined-reference-to-yylex
-DEFAULT_SRC_CONFIGURE_PARAMS=( --localstatedir=/var --without-ocf --with-systemddir=/usr/"$(exhost --target)"/lib/systemd/system \
-                                              --disable-cmocka --enable-glupy --disable-ibverbs LEXLIB= )
+    LEXLIB=
+)
 
-DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( "georeplication" "debug" )
-
-gluster_autogen() {
-    #Emulate autogen.sh with exheres commands (autoreconf won 't do, as it descends recursively, which it should not)
-    eaclocal
-    eautoheader
-    elibtoolize
-    eautoconf
-    eautomake --force-missing --foreign
-}
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( "georeplication" )
 
 glusterfs_src_prepare() {
     default
-    gluster_autogen
-    edo cd contrib/argp-standalone
-    gluster_autogen
-    #Ugly hack to make rpcgen use cross cpp
-    edo mkdir "${WORK}"/cpp-path
-    edo ln -s $(which ${CPP}) "${WORK}"/cpp-path/cpp
-}
-
-glusterfs_src_compile() {
-    PATH="${WORK}"/cpp-path:"${PATH}" emake
+    # Workaround glibc hardcoding cpp in rpcgen
+    edo mkdir cpp-tweak
+    edo ln -s /usr/host/bin/${CPP} cpp-tweak/cpp
+    edo sed -e "s:rpcgen:& -Y ${WORK}/cpp-tweak:" -i build-aux/xdrgen
 }
 
 glusterfs_src_install() {
     default
-    edo rm -r "${IMAGE}"/var/run
     edo mv "${IMAGE}"/sbin/* "${IMAGE}"/usr/$(exhost --target)/bin/
     edo find "${IMAGE}"/ -type d -empty -delete
 }
