@@ -13,7 +13,7 @@ PLATFORMS="~amd64"
 
 DEPENDENCIES="
     build:
-        dev-lang/go[>=1.6]
+        dev-lang/go[>=1.7.1]
 "
 
 BUGS_TO="julien.durillon@gmail.com"
