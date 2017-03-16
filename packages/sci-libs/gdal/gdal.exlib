@@ -39,10 +39,12 @@ DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     --datarootdir=/usr/share/${PN}
     --datadir=/usr/share/${PN}
+    --without-jasper
 )
 
 gdal_src_prepare(){
     edo sed -i "s/pkg-config/$(exhost --target)-pkg-config/g" scripts/GNUmakefile
+    default
 }
 
 gdal_src_install() {
