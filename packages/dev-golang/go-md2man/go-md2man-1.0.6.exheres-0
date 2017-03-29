@@ -33,10 +33,7 @@ src_compile(){
 }
 
 src_install(){
-    local target=$(exhost --target)
-    local build=$(exhost --build)
-
-    if [[ "${target}" == "${build}" ]]; then
+    if exhost --is-native -q; then
         edo ./go-md2man -in go-md2man.1.md -out go-md2man.1
         doman go-md2man.1
     fi
