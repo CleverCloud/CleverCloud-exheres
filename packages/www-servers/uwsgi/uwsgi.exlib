@@ -57,6 +57,15 @@ compile_one_multibuild () {
     option python && euwsgiplugins "${PYTHON_PLUGINS[@]}"
 }
 
+test_one_multibuild() {
+    # tests don't pass with python >=3 due to some printf syntax changes
+    # So we don't execute tests for python >=3
+    # Still waiting for a response from upstream: https://github.com/unbit/uwsgi/issues/1507
+    if ! ever at_least 3 ${MULTIBUILD_TARGET}; then
+        setup-py_src_test_one_multibuild
+    fi
+}
+
 uwsgi_src_compile() {
     emake PROFILE=nolang
     option ruby && euwsgiplugins "${RUBY_PLUGINS[@]}"
