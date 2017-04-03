@@ -5,27 +5,32 @@
 
 require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ] systemd-service
 
-export_exlib_phases src_prepare src_install
+export_exlib_phases src_prepare src_configure src_install
 
 SUMMARY="SSL encryption wrapper between remote client and local or remote server"
-HOMEPAGE="http://www.${PN}.org/"
-DOWNLOADS="ftp://ftp.${PN}.org/stunnel/archive/5.x/${PNV}.tar.gz"
+HOMEPAGE="https://www.${PN}.org/"
+DOWNLOADS="https://www.${PN}.org/downloads/${PNV}.tar.gz"
 
 LICENCES="GPL-2"
 SLOT="0"
 MYOPTIONS="
+    systemd [[ description = [ support activation through systemd socket ] ]]
     ( providers: openssl ) [[ number-selected = exactly-one ]]
 "
 
 DEPENDENCIES="
     build+run:
-        sys-libs/zlib
+        systemd? ( sys-apps/systemd )
         providers:openssl? ( dev-libs/openssl )
 "
 
 stunnel_src_prepare() {
     edo sed -e '/^install-data-local:/,/^$/d' -i tools/Makefile.am
     autotools_src_prepare
+}
+
+stunnel_src_configure(){
+    econf $(option_enable systemd)
 }
 
 stunnel_src_install() {
