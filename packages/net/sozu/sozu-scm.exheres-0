@@ -4,3 +4,5 @@
 require sozu
 
 PLATFORMS="~amd64"
+DOWNLOADS=""
+

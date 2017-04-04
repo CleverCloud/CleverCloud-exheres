@@ -13,13 +13,11 @@ DEPENDENCIES="
 
 BUGS_TO="keruspe@exherbo.org"
 
-src_unpack() {
-    scm_src_unpack
-    edo cd "${WORK}"
-    ecargo_fetch
-}
-
 SOZU_BIN_DIRS=("bin" "ctl")
+
+src_unpack() {
+    cargo_src_unpack
+}
 
 src_compile() {
     local bin
