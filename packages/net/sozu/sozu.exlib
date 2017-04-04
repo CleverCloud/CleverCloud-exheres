@@ -1,0 +1,50 @@
+# Copyright 2017 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require cargo github [ user=sozu-proxy ]
+
+SUMMARY="sozu HTTP proxy"
+
+LICENCES="AGPL-3.0"
+SLOT="0"
+
+DEPENDENCIES="
+"
+
+BUGS_TO="keruspe@exherbo.org"
+
+src_unpack() {
+    scm_src_unpack
+    edo cd "${WORK}"
+    ecargo_fetch
+}
+
+SOZU_BIN_DIRS=("bin" "ctl")
+
+src_compile() {
+    local bin
+    for bin in "${SOZU_BIN_DIRS[@]}"; do
+        edo pushd "${bin}"
+        cargo_src_compile
+        edo popd
+    done
+}
+
+src_test() {
+    local bin
+    for bin in "${SOZU_BIN_DIRS[@]}"; do
+        edo pushd "${bin}"
+        cargo_src_test
+        edo popd
+    done
+}
+
+src_install() {
+    local bin
+    for bin in "${SOZU_BIN_DIRS[@]}"; do
+        edo pushd "${bin}"
+        ecargo_install
+        edo popd
+    done
+    emagicdocs
+}
