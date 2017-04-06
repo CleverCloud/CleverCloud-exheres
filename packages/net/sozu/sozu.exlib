@@ -1,7 +1,7 @@
 # Copyright 2017 Marc-Antoine Perennou <keruspe@exherbo.org>
 # Distributed under the terms of the GNU General Public License v2
 
-require cargo github [ user=sozu-proxy ]
+require github [ user=sozu-proxy force_git_clone=true ] cargo
 
 SUMMARY="sozu HTTP proxy"
 
@@ -14,10 +14,6 @@ DEPENDENCIES="
 BUGS_TO="keruspe@exherbo.org"
 
 SOZU_BIN_DIRS=("bin" "ctl")
-
-src_unpack() {
-    cargo_src_unpack
-}
 
 src_compile() {
     local bin
