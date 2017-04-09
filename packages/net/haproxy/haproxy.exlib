@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require systemd-service [ systemd_files=[ contrib/systemd/${PN}.service ] ]
-ever at_least 1.6 && require lua [ multibuild=false with_opt=true whitelist="5.3" ]
+require lua [ multibuild=false with_opt=true whitelist="5.3" ]
 
 export_exlib_phases src_compile src_install
 
@@ -29,7 +29,7 @@ DEFAULT_SRC_INSTALL_PARAMS=( "${DEFAULT_SRC_COMPILE_PARAMS[@]}" DOCDIR=/usr/shar
 
 haproxy_src_compile() {
     emake "${DEFAULT_SRC_COMPILE_PARAMS[@]}" \
-        $(ever at_least 1.6 && option lua "USE_LUA=1 LUA_INC=/usr/$(exhost --target)/include/lua$(lua_get_abi)")
+        $(option lua "USE_LUA=1 LUA_INC=/usr/$(exhost --target)/include/lua$(lua_get_abi)")
 
     emake -C contrib/systemd "${DEFAULT_SRC_COMPILE_PARAMS[@]}"
 }
