@@ -11,7 +11,7 @@ LICENCES="MIT"
 SLOT="0"
 PLATFORMS="~amd64"
 
-MY_OPTIONS=""
+MYOPTIONS=""
 DEPENDENCIES="
     build:
         dev-lang/go
