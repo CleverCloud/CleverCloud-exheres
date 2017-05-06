@@ -1,0 +1,12 @@
+Title: app-virtualization/fig has been replaced by app-virtualization/docker-compose
+Author: Arnaud Lefebvre <a.lefebvre@outlook.fr>
+Content-Type: text/plain
+Posted: 2017-05-06
+Revision: 1
+News-Item-Format: 1.0
+Display-If-Installed: app-virtualization/fig
+
+fig has been replaced some times ago by the docker-compose project.
+You can now remove fig to install docker-compose instead:
+
+cave resolve \!app-virtualization/fig app-virtualization/docker-compose
