@@ -12,6 +12,10 @@ PLATFORMS="~amd64"
 
 BUGS_TO="julien.durillon@gmail.com"
 
+DEFAULT_SRC_PREPARE_PATCHES+=(
+    "${FILES}"/${PN}-Tweak-fallthrough-comments-to-get-recognized-by-gcc7.patch
+)
+
 CMAKE_SRC_CONFIGURE_PARAMS=(
     "-G" "Unix Makefiles"
     -DFLATBUFFERS_BUILD_SHAREDLIB:BOOL=TRUE
