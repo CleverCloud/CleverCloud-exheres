@@ -32,10 +32,8 @@ zabbix-frontend_src_install() {
     insinto /usr/share/zabbix/frontends
     doins -r "${WORK}"/frontends/php
 
-    if ever at_least 3.0.3 ; then
-        # Clean up empty folder
-        edo rmdir "${IMAGE}"/usr/share/zabbix/frontends/php/local/app
-    fi
+    # Clean up empty folder
+    edo rmdir "${IMAGE}"/usr/share/zabbix/frontends/php/local/app
 
     # Makefile clean after copy
     edo find "${IMAGE}"/usr/share/zabbix -type f -name "Makefile*" -delete
