@@ -46,17 +46,13 @@ DEFAULT_SRC_CONFIGURE_PARAMS=(
 DEFAULT_SRC_COMPILE_PARAMS=( AR=${AR} RANLIB=${RANLIB} )
 DEFAULT_SRC_INSTALL_PARAMS=( AR=${AR} RANLIB=${RANLIB} )
 
-RESTRICT="test"
-
 zabbix-proxy_src_install() {
     default
+    local db_target=/usr/share/zabbix/database
 
     install_systemd_files
     insinto /usr/$(exhost --target)/lib/tmpfiles.d
     doins "${FILES}"/tmpfiles.d/zabbix.conf
-
-    # We have some empty folders here
-    edo rmdir "${IMAGE}"/usr/share/man/man1
 
     KEEPDIRS=(
         /etc/zabbix/zabbix_proxy.conf.d
@@ -70,9 +66,7 @@ zabbix-proxy_src_install() {
         "${IMAGE}"/etc/zabbix/zabbix_proxy.conf
 
     elog "The database is not configured, schemes are available in /usr/share/zabbix/database"
-    insinto /usr/share/zabbix
-    doins -r "${WORK}"/database
-
-    # Makefile clean after copy
-    edo find "${IMAGE}"/usr/share/zabbix -type f -name "Makefile*" -delete
+    dodir "${db_target}"
+    insinto "${db_target}"
+    doins -r "${WORK}"/database/sqlite3
 }
