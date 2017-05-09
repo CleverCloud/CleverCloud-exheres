@@ -7,7 +7,7 @@ DOWNLOADS="https://yarnpkg.com/downloads/${PV}/${PN}-v${PV}.tar.gz"
 
 PLATFORMS="~amd64 ~x86"
 SLOT="0"
-LICENCES="BDS-2"
+LICENCES="BSD-2"
 
 DEPENDENCIES="
     run:
