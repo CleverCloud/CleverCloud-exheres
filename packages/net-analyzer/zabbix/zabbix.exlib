@@ -47,12 +47,11 @@ DEFAULT_SRC_INSTALL_PARAMS=( AR=${AR} RANLIB=${RANLIB} )
 
 zabbix_src_install() {
     default
+    local db_target=/usr/share/${PN}/database
 
     install_systemd_files
     insinto /usr/$(exhost --target)/lib/tmpfiles.d
     doins "${FILES}"/tmpfiles.d/zabbix.conf
-
-    edo rmdir "${IMAGE}"/usr/share/man/man1
 
     KEEPDIRS=(
         /etc/${PN}/zabbix_server.conf.d
@@ -65,8 +64,9 @@ zabbix_src_install() {
     sed -i -e 's@^\(# PidFile.*\)@\1\nPidFile=/run/zabbix/zabbix-server.pid@' "${IMAGE}"/etc/${PN}/zabbix_server.conf
 
     elog "The database is not configured, schemes are available in /usr/share/${PN}/database"
-    insinto /usr/share/${PN}
-    doins -r "${WORK}"/database
+    dodir "${db_target}"
+    insinto "${db_target}"
+    doins -r "${WORK}"/database/postgresql
 
     # Makefile clean after copy
     edo find "${IMAGE}"/usr/share/${PN} -type f -name "Makefile*" -delete
