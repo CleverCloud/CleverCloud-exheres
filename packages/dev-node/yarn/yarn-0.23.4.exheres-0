@@ -1,0 +1,35 @@
+# Copyright 2017 Arnaud Lefebvre <a.lefebvre@outlook.fr>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Fast, reliable, and secure dependency management for Node.js"
+
+DOWNLOADS="https://yarnpkg.com/downloads/${PV}/${PN}-v${PV}.tar.gz"
+
+PLATFORMS="~amd64 ~x86"
+SLOT="0"
+LICENCES="BDS-2"
+
+DEPENDENCIES="
+    run:
+        dev-lang/node[>=4]
+"
+
+src_unpack() {
+    # the tarball contains a dist directory with the package files in it
+    edo mkdir "${WORK}"
+    edo cd "${WORK}"
+    unpack --if-compressed ${ARCHIVES}
+}
+
+src_install() {
+    local node_modules=/usr/$(exhost --target)/lib/node_modules
+    local target=/usr/$(exhost --target)/bin
+
+    edo mkdir -p "${IMAGE}"/${node_modules}
+    edo mkdir -p "${IMAGE}"/${target}
+    edo mv dist "${IMAGE}"/${node_modules}/${PN}
+
+    for exe in yarn yarnpkg;
+        do dosym ${node_modules}/${PN}/bin/${PN}.js ${target}/${exe}
+    done
+}
