@@ -32,4 +32,7 @@ src_install() {
     for exe in yarn yarnpkg;
         do dosym ${node_modules}/${PN}/bin/${PN}.js ${target}/${exe}
     done
+
+    # remove .cmd files
+    edo find "${IMAGE}""${node_modules}" -name "*.cmd" -exec rm {} \;
 }
