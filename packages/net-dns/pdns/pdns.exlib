@@ -30,7 +30,7 @@ DEPENDENCIES="
         user/pdns
         dev-lang/lua:=
         dev-libs/boost[>=1.35.0]
-        dev-libs/protobuf
+        dev-libs/protobuf:=
         mysql? ( virtual/mysql )
         postgres? ( dev-db/postgresql )
         systemd? ( sys-apps/systemd )
