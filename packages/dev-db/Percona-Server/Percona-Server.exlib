@@ -49,7 +49,7 @@ DEPENDENCIES="
         app-arch/lz4
         dev-libs/libaio
         dev-libs/libedit
-        dev-libs/protobuf[>=2.6.1]
+        dev-libs/protobuf:=[>=2.6.1]
         sys-libs/zlib[>=1.2.3]
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl )
