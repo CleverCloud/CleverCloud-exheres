@@ -3,6 +3,8 @@
 
 require github [ user=sozu-proxy force_git_clone=true ] cargo
 
+export_exlib_phases src_compile src_test src_install
+
 SUMMARY="sozu HTTP proxy"
 
 LICENCES="AGPL-3.0"
@@ -15,7 +17,7 @@ BUGS_TO="keruspe@exherbo.org"
 
 SOZU_BIN_DIRS=("bin" "ctl")
 
-src_compile() {
+sozu_src_compile() {
     local bin
     for bin in "${SOZU_BIN_DIRS[@]}"; do
         edo pushd "${bin}"
@@ -24,7 +26,7 @@ src_compile() {
     done
 }
 
-src_test() {
+sozu_src_test() {
     local bin
     for bin in "${SOZU_BIN_DIRS[@]}"; do
         edo pushd "${bin}"
@@ -33,7 +35,7 @@ src_test() {
     done
 }
 
-src_install() {
+sozu_src_install() {
     local bin
     for bin in "${SOZU_BIN_DIRS[@]}"; do
         edo pushd "${bin}"

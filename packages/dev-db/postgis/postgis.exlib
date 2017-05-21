@@ -3,6 +3,8 @@
 
 require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ]
 
+export_exlib_phases src_prepare
+
 SUMMARY="Spatial and Geographic objects for PostgreSQL"
 HOMEPAGE="http://postgis.net/"
 DOWNLOADS="http://download.osgeo.org/${PN}/source/${PNV}.tar.gz"
@@ -22,7 +24,7 @@ DEPENDENCIES="
         sci-libs/proj
 "
 
-src_prepare() {
+postgis_src_prepare() {
     edo sed -e "s/ar rs/${AR} rs/" \
         -i libpgcommon/Makefile.in \
         -i raster/rt_core/Makefile.in
