@@ -17,7 +17,7 @@ MYOPTIONS="
     sftp [[ requires = openssl ]]
 "
 
-DEFAULT_SRC_CONFIGURE_PARAMS=( '--disable-strip' )
+DEFAULT_SRC_CONFIGURE_PARAMS=( --disable-strip --enable-nls )
 
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'openssl' )
 DEFAULT_SRC_CONFIGURE_OPTIONS=(
