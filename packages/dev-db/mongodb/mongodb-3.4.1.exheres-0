@@ -26,6 +26,8 @@ DEPENDENCIES="
         net-libs/cyrus-sasl
 "
 
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/fix-gcc-6-compilation.patch" )
+
 WORK="${WORKBASE}/${PN}-src-r${PV}"
 
 MONGO_PARAMS=(
