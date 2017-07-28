@@ -1,0 +1,14 @@
+# Copyright 2017 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=google tag="2017-07-01" ] cmake [ api=2 ]
+
+SUMMARY="RE2 is a fast, safe, thread-friendly alternative to backtracking regular expression engines"
+
+LICENCES="BSD-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+BUGS_TO="keruspe@exherbo.org"
+
