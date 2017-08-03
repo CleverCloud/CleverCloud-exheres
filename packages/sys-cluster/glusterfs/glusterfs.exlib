@@ -27,7 +27,7 @@ DEPENDENCIES="
         dev-libs/libxml2:2.0[>=2.6.19]
         dev-libs/urcu
         sys-libs/readline:=
-        sys-fs/fuse
+        sys-fs/fuse:0
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl )
 "
