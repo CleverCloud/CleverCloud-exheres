@@ -28,29 +28,17 @@ export_exlib_phases src_install
 
 rabbitmq-server_src_install() {
     edo touch .erlang.mk/recursive-deps-list.log
-
     default
-
     emake DESTDIR="${IMAGE}" PREFIX=/usr install-man
     emake DESTDIR="${IMAGE}" PREFIX=/usr/$(exhost --target) install-bin
-
     dodoc deps/rabbit/docs/rabbitmq.config.example
-
     edo mkdir -p "${IMAGE}"/usr/$(exhost --target)/bin
     for bin in "${IMAGE}"/usr/$(exhost --target)/lib/erlang/bin/*; do
         dosym ../lib/erlang/bin/"$(basename "${bin}")" /usr/$(exhost --target)/bin/
     done
-
     install_systemd_files
-
     diropts -m 0755 -o rabbitmq -g rabbitmq
     keepdir /etc/rabbitmq /var/log/rabbitmq /var/lib/rabbitmq
     edo chown -R rabbitmq:rabbitmq "${IMAGE}"/var/lib/rabbitmq "${IMAGE}"/var/log/rabbitmq
-
-    insinto /etc/rabbitmq
-    hereins rabbitmq-env.conf <<EOF
-HOME=/var/lib/rabbitmq
-EOF
-
 }
 
