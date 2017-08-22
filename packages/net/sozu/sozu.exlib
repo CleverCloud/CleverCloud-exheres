@@ -2,6 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user=sozu-proxy force_git_clone=true ] cargo
+require systemd-service [ systemd_files=[ generated/${PN}.service ] systemd_tmpfiles=[ generated/${PN}.conf ] ]
 
 export_exlib_phases src_compile src_test src_install
 
@@ -42,5 +43,9 @@ sozu_src_install() {
         ecargo_install
         edo popd
     done
+    edo env BINDIR="/usr/$(exhost --target)/bin" SYSCONFDIR="/etc" DATADIR="/usr/share" RUNDIR="/run" os-build/exherbo/generate.sh
+    install_systemd_files
+    insinto /etc/sozu
+    doins generated/config.toml
     emagicdocs
 }
