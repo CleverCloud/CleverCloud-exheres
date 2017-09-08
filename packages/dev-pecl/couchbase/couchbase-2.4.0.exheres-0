@@ -11,6 +11,6 @@ SLOT="0"
 DEPENDENCIES="
     build+run:
         dev-pecl/pcs[php_abis:*(-)?]
-        dev-libs/libcouchbase[>=2.7.3]
+        dev-libs/libcouchbase[>=2.8.0]
 "
 
