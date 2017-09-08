@@ -12,3 +12,9 @@ DEPENDENCIES="
     build+run:
         net-libs/librabbitmq[>=0.6.0]
 "
+
+prepare_one_multibuild() {
+    edo sed -e "s/pkg-config/${PKG_CONFIG}/" -i config.m4
+    php-pecl_prepare_one_multibuild
+}
+
