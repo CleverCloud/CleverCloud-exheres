@@ -1,8 +1,8 @@
 # Copyright 2017 Marc-Antoine Perennou <keruspe@exherbo.org>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=alanxz pn=rabbitmq-c ]
-require autotools [ required_autoconf=[ 2.5 ] required_automake=[ 1.15 ] ]
+require github [ user=alanxz pn=rabbitmq-c tag=v${PV} ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ]
 
 SUMMARY="RabbitMQ C client"
 
