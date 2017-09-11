@@ -1,0 +1,11 @@
+--- a/include/zbar/Exception.h   2017-09-11 13:47:50.042156689 +0200
++++ b/include/zbar/Exception.h   2017-09-11 13:47:40.897971466 +0200
+@@ -30,6 +30,7 @@
+ # error "include zbar.h in your application, **not** zbar/Exception.h"
+ #endif
+ 
++#include <stddef.h>
+ #include <exception>
+ #include <new>
+ 
+

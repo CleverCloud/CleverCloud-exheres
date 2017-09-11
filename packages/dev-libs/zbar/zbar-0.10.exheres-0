@@ -1,0 +1,32 @@
+# Copyright 2017 Julien Durillon <julien@durillon.xyz>
+# Distributed under the terms of the GNU General Public License v2
+
+require autotools [ supported_autoconf=[ 2.5 ]  supported_automake=[ 1.10 ] ]
+
+SUMMARY="ZBar is an open source software suite for reading bar codes from various sources, such as video streams, image files and raw intensity sensors."
+
+DOWNLOADS="https://vorboss.dl.sourceforge.net/project/${PN}/${PN}/${PV}/${PNV}.tar.bz2"
+
+LICENCES="LGPL-2.1"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+BUGS_TO="julien@durillon.xyz"
+
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    '--disable-video'
+    '--with-x=no'
+    '--with-gtk=no'
+    '--with-qt=no'
+)
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/2017-09-11-fix-tests.patch"
+)
+
+src_install() {
+    default
+
+    edo rmdir "${IMAGE}/usr/share/zbar"
+}
