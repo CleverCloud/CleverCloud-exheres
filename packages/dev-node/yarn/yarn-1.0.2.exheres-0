@@ -15,7 +15,6 @@ DEPENDENCIES="
 "
 
 src_unpack() {
-    # the tarball contains a dist directory with the package files in it
     edo mkdir "${WORK}"
     edo cd "${WORK}"
     unpack --if-compressed ${ARCHIVES}
@@ -27,7 +26,7 @@ src_install() {
 
     edo mkdir -p "${IMAGE}"/${node_modules}
     edo mkdir -p "${IMAGE}"/${target}
-    edo mv dist "${IMAGE}"/${node_modules}/${PN}
+    edo mv ${PN}-v${PV} "${IMAGE}"/${node_modules}/${PN}
 
     for exe in yarn yarnpkg;
         do dosym ${node_modules}/${PN}/bin/${PN}.js ${target}/${exe}
