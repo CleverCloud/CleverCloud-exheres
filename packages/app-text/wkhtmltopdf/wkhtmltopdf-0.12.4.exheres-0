@@ -4,4 +4,5 @@
 require wkhtmltopdf
 
 PLATFORMS="~amd64"
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/af95531eabb212ae16a9fb689bb25a767eb580bc.patch )
 
