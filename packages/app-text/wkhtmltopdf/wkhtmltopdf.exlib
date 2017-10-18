@@ -1,7 +1,7 @@
 # Copyright 2013 Julien Durillon <julien.durillon@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require qmake github
+require qmake github [ suffix=tar.bz2 pnv=wkhtmltox-${PV} release=${PV} ]
 
 SUMMARY="Simple shell utility to convert html to pdf using the webkit rendering engine, and qt."
 HOMEPAGE="http://wkhtmltopdf.org/"
