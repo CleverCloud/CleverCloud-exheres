@@ -11,14 +11,21 @@ DOWNLOADS="https://${PN}.github.io/downloads/files/${PV}/${PNV}.tar.gz"
 
 LICENCES="ISC"
 SLOT="0"
-MYOPTIONS=""
+MYOPTIONS="
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
+"
 
 DEPENDENCIES="
-    build:
     build+run:
         dev-db/postgresql-client
-        dev-libs/libevent
+        dev-libs/libevent:=
+        net-dns/c-ares
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
 "
+
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/lib_usual_tls_tls.c.patch" )
 
 pgbouncer_src_install() {
     install_systemd_files
