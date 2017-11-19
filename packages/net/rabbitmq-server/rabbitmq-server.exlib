@@ -13,6 +13,8 @@ SLOT="0"
 MYOPTIONS=""
 
 DEPENDENCIES="
+    build:
+        app-arch/zip
     build+run:
         dev-lang/erlang[>=18]
     run:
