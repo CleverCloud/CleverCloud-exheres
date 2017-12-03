@@ -1,15 +1,20 @@
-# Copyright 2012 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
-# Distributed under the termes of the GNU Geneal Public License v2
-
 [Unit]
-Description=RabbitMQ messaging service
-After=network.target
+Description=RabbitMQ broker
+After=network.target epmd@0.0.0.0.socket
+Wants=network.target epmd@0.0.0.0.socket
 
 [Service]
+Type=notify
 User=rabbitmq
-WorkingDirectory=/var/lib/rabbitmq
+Group=rabbitmq
+NotifyAccess=all
+TimeoutStartSec=3600
 Restart=on-failure
-ExecStart=/usr/sbin/rabbitmq-server
+RestartSec=10
+WorkingDirectory=/var/lib/rabbitmq
+ExecStart=/usr/bin/rabbitmq-server
+ExecStop=/usr/bin/rabbitmqctl stop
+ExecStop=/bin/sh -c "while ps -p $MAINPID >/dev/null 2>&1; do sleep 1; done"
 
 [Install]
 WantedBy=multi-user.target

@@ -1,12 +1,11 @@
 # Copyright 2012, 2013 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require systemd-service python [ multibuild=false blacklist=none ]
+require systemd-service python [ multibuild=false blacklist=none ] github [ user=rabbitmq suffix=tar.xz release=v${PV} ] utf8-locale
 
 SUMMARY="AMQP-compliant message broker"
 
 HOMEPAGE="http://www.rabbitmq.com/"
-DOWNLOADS="http://www.rabbitmq.com/releases/${PN}/v${PV}/${PNV}.tar.xz"
 
 LICENCES="MPL-1.1"
 SLOT="0"
@@ -16,8 +15,10 @@ DEPENDENCIES="
     build:
         app-arch/zip
     build+run:
-        dev-lang/erlang[>=18]
+        dev-lang/elixir
+        dev-lang/erlang[>=19.3]
     run:
+        net-misc/socat
         group/rabbitmq
         user/rabbitmq
 "
@@ -26,7 +27,32 @@ DEFAULT_SRC_INSTALL_PARAMS=(
     "PREFIX=/usr/$(exhost --target)"
 )
 
-export_exlib_phases src_install
+RESTRICT=test
+
+export_exlib_phases pkg_setup src_prepare src_install
+
+rabbitmq-server_pkg_setup() {
+    # elixir requires utf8
+    require_utf8_locale
+
+    export MIX_ENV=prod
+    export MIX_HOME="${TEMP}"/.mix
+    export MIX_ARCHIVES="${MIX_HOME}"/archives
+}
+
+rabbitmq-server_src_prepare() {
+    default
+
+    # Yes, this is ugly, but no workaround possible atm. Upstream working on it.
+    esandbox disable_net
+    edo mix local.hex --force
+    for dep in rabbitmq_cli jsx; do
+        edo cd "${WORK}"/deps/${dep}
+        DEPS_DIR="${WORK}"/deps edo mix deps.get
+        edo sed -e '/deps.get/d' -i mix.exs
+    done
+    esandbox enable_net
+}
 
 rabbitmq-server_src_install() {
     edo touch .erlang.mk/recursive-deps-list.log
