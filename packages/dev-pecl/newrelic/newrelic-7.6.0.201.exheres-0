@@ -12,7 +12,7 @@ SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""
 
-require php-pecl [ module=module work=${BASE_FILENAME} ]
+require php-pecl [ module=module work=${BASE_FILENAME} php_abis=[ 5.4 5.5 5.6 7.0 7.1 ] ]
 
 DEPENDENCIES=""
 
