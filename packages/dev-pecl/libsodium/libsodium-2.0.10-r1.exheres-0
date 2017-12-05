@@ -1,7 +1,7 @@
 # Copyright 2017 Marc-Antoine Perennou
 # Distributed under the terms of the GNU General Public License v2
 
-require php-pecl [ module=module php_abis=[ 7.0 7.1 ] ]
+require php-pecl [ module=module soname=sodium php_abis=[ 7.0 7.1 ] ]
 
 SUMMARY="Wrapper for the Sodium cryptographic library"
 PLATFORMS="~amd64"
