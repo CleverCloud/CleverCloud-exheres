@@ -237,7 +237,8 @@ Percona-Server_src_install() {
 
     keepdir /etc/mysql
 
-    edo cp "${IMAGE}"/usr/share/mysql/my-default.cnf "${IMAGE}"/etc/mysql/my.cnf
+    insinto /etc/mysql
+    newins "${FILES}"/mysql-$(ever range 1-2)-my.cnf my.cnf
 
     hereenvd 46mysql <<EOF
 LDPATH=/usr/@TARGET@/lib/mysql
