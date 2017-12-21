@@ -1,0 +1,145 @@
+Upstream: yes
+From 737854e2e48664de7b650775e04ab5e989933c2f Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Bj=C3=B6rn=20Esser?= <besser82@fedoraproject.org>
+Date: Mon, 11 Dec 2017 17:01:20 +0100
+Subject: [PATCH] geojson: Adaptions for json-c v0.13
+
+---
+ gdal/ogr/ogrsf_frmts/geojson/ogrgeojsonreader.cpp | 16 +++++++++++-
+ gdal/ogr/ogrsf_frmts/geojson/ogrgeojsonwriter.cpp | 30 +++++++++++++++++------
+ 2 files changed, 37 insertions(+), 9 deletions(-)
+
+diff --git a/gdal/ogr/ogrsf_frmts/geojson/ogrgeojsonreader.cpp b/gdal/ogr/ogrsf_frmts/geojson/ogrgeojsonreader.cpp
+index 18d45fd447a..770ed542980 100644
+--- a/gdal/ogr/ogrsf_frmts/geojson/ogrgeojsonreader.cpp
++++ b/gdal/ogr/ogrsf_frmts/geojson/ogrgeojsonreader.cpp
+@@ -27,11 +27,17 @@
+  * DEALINGS IN THE SOFTWARE.
+  ****************************************************************************/
+ 
++#define JSON_C_VER_013 (13 << 8)
++
+ #include "ogrgeojsonreader.h"
+ #include "ogrgeojsonutils.h"
+ #include "ogr_geojson.h"
+ #include <json.h> // JSON-C
+-#include "libjson/json_object_private.h" // just for sizeof(struct json_object)
++
++#if (!defined(JSON_C_VERSION_NUM)) || (JSON_C_VERSION_NUM < JSON_C_VER_013)
++#include <json_object_private.h> // just for sizeof(struct json_object)
++#endif
++
+ #include "cpl_json_streaming_parser.h"
+ #include <ogr_api.h>
+ 
+@@ -42,7 +48,15 @@ OGRGeometry* OGRGeoJSONReadGeometry( json_object* poObj,
+                                      OGRSpatialReference* poParentSRS );
+ 
+ const size_t MAX_OBJECT_SIZE = 100 * 1024 * 1024;
++
++#if (!defined(JSON_C_VERSION_NUM)) || (JSON_C_VERSION_NUM < JSON_C_VER_013)
+ const size_t ESTIMATE_BASE_OBJECT_SIZE = sizeof(struct json_object);
++#elif JSON_C_VERSION_NUM == JSON_C_VER_013 // no way to get the size
++const size_t ESTIMATE_BASE_OBJECT_SIZE = 96;
++#elif JSON_C_VERSION_NUM > JSON_C_VER_013 // we have json_c_object_sizeof()
++const size_t ESTIMATE_BASE_OBJECT_SIZE = json_c_object_sizeof();
++#endif
++
+ const size_t ESTIMATE_ARRAY_SIZE = ESTIMATE_BASE_OBJECT_SIZE +
+                                    sizeof(struct array_list);
+ const size_t ESTIMATE_ARRAY_ELT_SIZE = sizeof(void*);
+diff --git a/gdal/ogr/ogrsf_frmts/geojson/ogrgeojsonwriter.cpp b/gdal/ogr/ogrsf_frmts/geojson/ogrgeojsonwriter.cpp
+index 949c6004d43..7522d0e223f 100644
+--- a/gdal/ogr/ogrsf_frmts/geojson/ogrgeojsonwriter.cpp
++++ b/gdal/ogr/ogrsf_frmts/geojson/ogrgeojsonwriter.cpp
+@@ -27,12 +27,18 @@
+  * DEALINGS IN THE SOFTWARE.
+  ****************************************************************************/
+ 
++#define JSON_C_VER_013 (13 << 8)
++
+ #include "ogrgeojsonwriter.h"
+ #include "ogrgeojsonutils.h"
+ #include "ogr_geojson.h"
+ #include "ogrgeojsonreader.h"
+ #include <json.h>  // JSON-C
++
++#if (!defined(JSON_C_VERSION_NUM)) || (JSON_C_VERSION_NUM < JSON_C_VER_013)
+ #include <json_object_private.h>
++#endif
++
+ #include <printbuf.h>
+ #include <ogr_api.h>
+ #include <ogr_p.h>
+@@ -1381,13 +1387,17 @@ static int OGR_json_double_with_precision_to_string( struct json_object *jso,
+ {
+     // TODO(schwehr): Explain this casting.
+     const int nPrecision =
++#if (!defined(JSON_C_VERSION_NUM)) || (JSON_C_VERSION_NUM < JSON_C_VER_013)
+         static_cast<int>(reinterpret_cast<GUIntptr_t>(jso->_userdata));
++#else
++        static_cast<int>(reinterpret_cast<GUIntptr_t>(json_object_get_userdata(jso)));
++#endif
+     char szBuffer[75] = {};
+-    OGRFormatDouble( szBuffer, sizeof(szBuffer), jso->o.c_double, '.',
++    OGRFormatDouble( szBuffer, sizeof(szBuffer), json_object_get_double(jso), '.',
+                      (nPrecision < 0) ? 15 : nPrecision );
+     if( szBuffer[0] == 't' /*oobig */ )
+     {
+-        CPLsnprintf(szBuffer, sizeof(szBuffer), "%.18g", jso->o.c_double);
++        CPLsnprintf(szBuffer, sizeof(szBuffer), "%.18g", json_object_get_double(jso));
+     }
+     return printbuf_memappend(pb, szBuffer, static_cast<int>(strlen(szBuffer)));
+ }
+@@ -1417,11 +1427,11 @@ OGR_json_double_with_significant_figures_to_string( struct json_object *jso,
+ {
+     char szBuffer[75] = {};
+     int nSize = 0;
+-    if( CPLIsNan(jso->o.c_double))
++    if( CPLIsNan(json_object_get_double(jso)))
+         nSize = CPLsnprintf(szBuffer, sizeof(szBuffer), "NaN");
+-    else if( CPLIsInf(jso->o.c_double) )
++    else if( CPLIsInf(json_object_get_double(jso)) )
+     {
+-        if( jso->o.c_double > 0 )
++        if( json_object_get_double(jso) > 0 )
+             nSize = CPLsnprintf(szBuffer, sizeof(szBuffer), "Infinity");
+         else
+             nSize = CPLsnprintf(szBuffer, sizeof(szBuffer), "-Infinity");
+@@ -1429,13 +1439,17 @@ OGR_json_double_with_significant_figures_to_string( struct json_object *jso,
+     else
+     {
+         char szFormatting[32] = {};
++#if (!defined(JSON_C_VERSION_NUM)) || (JSON_C_VERSION_NUM < JSON_C_VER_013)
+         const int nSignificantFigures = (int) (GUIntptr_t) jso->_userdata;
++#else
++        const int nSignificantFigures = (int) (GUIntptr_t) json_object_get_userdata(jso);
++#endif
+         const int nInitialSignificantFigures =
+             nSignificantFigures >= 0 ? nSignificantFigures : 17;
+         CPLsnprintf(szFormatting, sizeof(szFormatting),
+                     "%%.%dg", nInitialSignificantFigures);
+         nSize = CPLsnprintf(szBuffer, sizeof(szBuffer),
+-                            szFormatting, jso->o.c_double);
++                            szFormatting, json_object_get_double(jso));
+         const char* pszDot = nullptr;
+         if( nSize+2 < static_cast<int>(sizeof(szBuffer)) &&
+             (pszDot = strchr(szBuffer, '.')) == nullptr )
+@@ -1457,7 +1471,7 @@ OGR_json_double_with_significant_figures_to_string( struct json_object *jso,
+                 CPLsnprintf(szFormatting, sizeof(szFormatting),
+                             "%%.%dg", nInitialSignificantFigures- i);
+                 nSize = CPLsnprintf(szBuffer, sizeof(szBuffer),
+-                                    szFormatting, jso->o.c_double);
++                                    szFormatting, json_object_get_double(jso));
+                 pszDot = strchr(szBuffer, '.');
+                 if( pszDot != nullptr &&
+                     strstr(pszDot, "999999") == nullptr &&
+@@ -1472,7 +1486,7 @@ OGR_json_double_with_significant_figures_to_string( struct json_object *jso,
+                 CPLsnprintf(szFormatting, sizeof(szFormatting),
+                             "%%.%dg", nInitialSignificantFigures);
+                 nSize = CPLsnprintf(szBuffer, sizeof(szBuffer),
+-                                    szFormatting, jso->o.c_double);
++                                    szFormatting, json_object_get_double(jso));
+                 if( nSize+2 < static_cast<int>(sizeof(szBuffer)) &&
+                     strchr(szBuffer, '.') == nullptr )
+                 {
