@@ -5,5 +5,5 @@ require gdal
 
 PLATFORMS="~amd64"
 
-DEFAUL_SRC_PREPARE_PATCHES=( "${FILES}/json-c.patch" )
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/json-c.patch" )
 
