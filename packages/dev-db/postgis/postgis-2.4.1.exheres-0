@@ -6,4 +6,5 @@ require postgis
 PLATFORMS="~amd64"
 
 DEFAULT_SRC_COMPILE_PARAMS=( -j1 )
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/json-c.patch" )
 
