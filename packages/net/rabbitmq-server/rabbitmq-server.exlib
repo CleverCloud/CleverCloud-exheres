@@ -40,20 +40,6 @@ rabbitmq-server_pkg_setup() {
     export MIX_ARCHIVES="${MIX_HOME}"/archives
 }
 
-rabbitmq-server_src_prepare() {
-    default
-
-    # Yes, this is ugly, but no workaround possible atm. Upstream working on it.
-    esandbox disable_net
-    edo mix local.hex --force
-    for dep in rabbitmq_cli jsx; do
-        edo cd "${WORK}"/deps/${dep}
-        DEPS_DIR="${WORK}"/deps edo mix deps.get
-        edo sed -e '/deps.get/d' -i mix.exs
-    done
-    esandbox enable_net
-}
-
 rabbitmq-server_src_install() {
     edo touch .erlang.mk/recursive-deps-list.log
     default
