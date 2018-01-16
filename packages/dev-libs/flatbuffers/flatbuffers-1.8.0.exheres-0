@@ -14,6 +14,13 @@ BUGS_TO="julien.durillon@gmail.com"
 
 CMAKE_SRC_CONFIGURE_PARAMS=(
     "-G" "Unix Makefiles"
+    # flatc is only installed for the Release configuration
+    --hates=CMAKE_BUILD_TYPE
+    -DCMAKE_BUILD_TYPE:STRING='Release'
+    # We need to set C/CXXFLAGS again because of the above
+    -DCMAKE_C_FLAGS:STRING="${CFLAGS}"
+    -DCMAKE_CXX_FLAGS:STRING="${CXXFLAGS}"
+    -DFLATBUFFERS_BUILD_FLATC:BOOL=TRUE
     -DFLATBUFFERS_BUILD_SHAREDLIB:BOOL=TRUE
 )
 
