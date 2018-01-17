@@ -23,13 +23,10 @@ DEPENDENCIES="
     build+run:
         dev-libs/openssl
         dev-libs/pcre
+        dev-python/Cheetah
+        dev-python/PyYAML
         net-libs/cyrus-sasl
 "
-
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}/fix-gcc-6-compilation.patch"
-    "${FILES}/3.4.9-fix-string.patch"
-)
 
 WORK="${WORKBASE}/${PN}-src-r${PV}"
 
