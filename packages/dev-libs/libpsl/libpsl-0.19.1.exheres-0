@@ -1,0 +1,20 @@
+# Copyright 2018 Julien Durillon <julien.durillon@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=rockdaboot suffix="tar.gz" release="${PNV}" ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ]
+
+SUMMARY="C library for the Public Suffix List"
+HOMEPAGE="https://github.com/rockdaboot/libpsl"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+    build:
+        sys-devel/gcc
+"
+
+BUGS_TO="julien.durillon@clever-cloud.com"
+
