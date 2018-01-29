@@ -32,11 +32,11 @@ BUGS_TO="julien.durillon@gmail.com"
 
 TOOLS=( bsondump
         mongodump
-        mongorestore
+        mongoexport
         mongofiles
         mongoimport
-        mongoexport
-        mongooplog
+        mongoreplay
+        mongorestore
         mongostat
         mongotop
 )
