@@ -10,6 +10,8 @@ SLOT="0"
 PLATFORMS="~amd64"
 
 DEPENDENCIES="
+    build:
+        dev-util/patchelf
     build+run:
         dev-libs/libpsl
         net-libs/libssh2
@@ -30,6 +32,7 @@ src_unpack() {
 src_compile() {
     edo ./clever --bash-autocomplete-script "/usr/$(exhost --target)/bin/clever" > clever-bash-completion
     edo ./clever --zsh-autocomplete-script "/usr/$(exhost --target)/bin/clever" > clever-zsh-completion
+    edo patchelf --replace-needed libcurl-gnutls.so.4 libcurl.so.4 nodegit.node
 }
 
 src_install() {
