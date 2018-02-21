@@ -19,6 +19,7 @@ DEPENDENCIES="
         dev-db/postgresql
         dev-libs/json-c
         dev-libs/libxml2
+        media-libs/libwebp:0.6
         sci-libs/gdal
         sci-libs/geos
         sci-libs/proj
