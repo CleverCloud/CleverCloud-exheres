@@ -1,11 +1,12 @@
-
 # Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
+# Copyright 2018 Arnaud Lefebvre <a.lefebvre@outlook.fr>
 # Distributed under the terms of the GNU General Public License v2
 
-require googlecode [ project=plv8js ]
+require github [ tag=v${PV} ]
+
+export_exlib_phases src_compile src_install
 
 SUMMARY="V8 Engine Javascript Procedural Language add-on for PostgreSQL"
-DOWNLOADS="http://api.pgxn.org/dist/${PN}/${PV}/${PNV}.zip"
 
 LICENCES="BSD-3"
 SLOT="0"
@@ -14,8 +15,13 @@ DEPENDENCIES="
     build+run:
         dev-db/postgresql
         dev-libs/icu:*
-        dev-libs/v8
+        dev-libs/v8[>=6.4.388.40]
 "
 
-DEFAULT_SRC_COMPILE_PARAMS=( CUSTOM_CC=$(exhost --tool-prefix)g++ V8_OUTDIR=/dev/null )
+plv8_src_compile() {
+    emake -f ./Makefile.shared CUSTOM_CC=$(exhost --tool-prefix)g++
+}
 
+plv8_src_install() {
+    emake -f ./Makefile.shared DESTDIR=${IMAGE} install
+}
