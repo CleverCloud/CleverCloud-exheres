@@ -22,6 +22,7 @@ DEPENDENCIES="
         dev-libs/expat
         dev-libs/json-c
         dev-libs/libxml2
+        media-libs/libwebp:0.6
         media-libs/tiff
         net-misc/curl
         sci-libs/libgeotiff
