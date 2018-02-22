@@ -13,8 +13,11 @@ MYOPTIONS="doc ssl sasl"
 
 DEPENDENCIES="
     build+run:
-        doc? ( app-doc/doxygen media-gfx/graphviz )
         sys-libs/zlib
+        doc? (
+            app-doc/doxygen
+            media-gfx/graphviz
+        )
         sasl? ( net-libs/gsasl )
         ssl? ( dev-libs/openssl )
 "
