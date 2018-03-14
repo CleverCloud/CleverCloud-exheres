@@ -12,7 +12,7 @@ SLOT="0"
 
 DEPENDENCIES="
     run:
-        dev-lang/php:*
+        dev-lang/php:*[php_extensions:filter]
 "
 
 composer_src_unpack() {
