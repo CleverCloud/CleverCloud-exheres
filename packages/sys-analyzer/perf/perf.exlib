@@ -22,6 +22,7 @@ MAKE_PARAMS=(
     ETC_PERFCONFIG=/etc/perfconfig
     DESTDIR="${IMAGE}"/usr/$(exhost --target)
     HOSTCC=$(exhost --tool-prefix)cc
+    HOSTLD=$(exhost --tool-prefix)ld
     CROSS_COMPILE=$(exhost --tool-prefix)
 )
 
@@ -43,9 +44,9 @@ DEPENDENCIES="
 
 perf_src_install() {
     default
-    edo mv "${IMAGE}"/usr/{$(exhost --target),}/share/man
-    edo rmdir "${IMAGE}"/usr/$(exhost --target)/share
-    edo rm -r "${IMAGE}"/usr/$(exhost --target)/etc
+    edo mv "${IMAGE}"/usr{/$(exhost --target),}/share/man
+    edo mv "${IMAGE}"/usr{/$(exhost --target),}/etc
+    edo rm -r "${IMAGE}"/usr/$(exhost --target)/share
 }
 
 export_exlib_phases src_install
