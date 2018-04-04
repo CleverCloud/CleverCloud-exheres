@@ -29,24 +29,11 @@ DEFAULT_SRC_INSTALL_PARAMS=(
 
 RESTRICT=test
 
-export_exlib_phases pkg_setup src_prepare src_install
+export_exlib_phases pkg_setup src_install
 
 rabbitmq-server_pkg_setup() {
     # elixir requires utf8
     require_utf8_locale
-
-    export MIX_ENV=prod
-    export MIX_HOME="${TEMP}"/.mix
-    export MIX_ARCHIVES="${MIX_HOME}"/archives
-}
-
-rabbitmq-server_src_prepare() {
-    default
-
-    # Yes, this is ugly, but no workaround possible atm. Upstream working on it.
-    esandbox disable_net
-    edo mix local.hex --force
-    esandbox enable_net
 }
 
 rabbitmq-server_src_install() {
