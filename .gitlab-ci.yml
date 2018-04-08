@@ -1,0 +1,10 @@
+image: exherbo/exherbo_ci
+
+variables:
+  REPO: CleverCloud
+  REPO_NAMESPACE: exherbo-unofficial
+
+build:
+  script:
+    - buildtest
+
