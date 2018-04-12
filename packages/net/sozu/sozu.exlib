@@ -23,12 +23,15 @@ MYOPTIONS+="
         description = [ Add support for TRACE logs level ]
         requires = logs-debug
     ]]
-    openssl [[ description = [ Add OpenSSL support ] ]]
+    (
+        providers:
+            openssl [[ description = [ Add support for OpenSSL as a SSL provider ] ]]
+    )
 "
 
 DEPENDENCIES+="
     build+run:
-        openssl? ( dev-libs/openssl )
+        providers:openssl? ( dev-libs/openssl )
 "
 
 # rustls is the default SSL backend for now and doesn't
@@ -36,7 +39,7 @@ DEPENDENCIES+="
 BIN_ECARGO_FEATURE_ENABLES=(
     'logs-debug logs-debug'
     'logs-trace logs-trace'
-    'openssl use-openssl'
+    'providers:openssl use-openssl'
 )
 
 BUGS_TO="keruspe@exherbo.org"
