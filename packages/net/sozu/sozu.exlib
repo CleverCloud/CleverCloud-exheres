@@ -17,37 +17,27 @@ MYOPTIONS=""
 DEPENDENCIES="
 "
 
-if ever is_scm && [[ "${SCM_BRANCH}" == "master" ]]; then
-    MYOPTIONS+="
-        logs-debug [[ description = [ Add support for DEBUG logs level ] ]]
-        logs-trace [[
-            description = [ Add support for TRACE logs level ]
-            requires = logs-debug
-        ]]
+MYOPTIONS+="
+    logs-debug [[ description = [ Add support for DEBUG logs level ] ]]
+    logs-trace [[
+        description = [ Add support for TRACE logs level ]
+        requires = logs-debug
+    ]]
+    openssl [[ description = [ Add OpenSSL support ] ]]
+"
 
-        (
-            providers:
-                openssl
-                rustls [[ description = [ Use Rustls as the SSL provider ] ]]
-        ) [[
-            number-selected = exactly-one
-        ]]
-    "
+DEPENDENCIES+="
+    build+run:
+        openssl? ( dev-libs/openssl )
+"
 
-    DEPENDENCIES+="
-        build+run:
-            providers:openssl? ( dev-libs/openssl )
-    "
-
-    # rustls is the default SSL backend for now and doesn't
-    # have an option
-    BIN_ECARGO_FEATURE_ENABLES=(
-        'logs-debug logs-debug'
-        'logs-trace logs-trace'
-        'providers:openssl use-openssl'
-    )
-
-fi
+# rustls is the default SSL backend for now and doesn't
+# have an option
+BIN_ECARGO_FEATURE_ENABLES=(
+    'logs-debug logs-debug'
+    'logs-trace logs-trace'
+    'openssl use-openssl'
+)
 
 BUGS_TO="keruspe@exherbo.org"
 
