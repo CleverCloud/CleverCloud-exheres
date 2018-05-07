@@ -14,7 +14,8 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
-        dev-libs/libevent
+        dev-libs/libev
+        dev-libs/libevent:=
 "
 
 # Since tests are needing net access, we then skip'em
