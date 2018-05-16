@@ -2,7 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user=Yubico tag="v${PV}" ]
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.13 ] ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
+require udev-rules
 
 SUMMARY="YubiKey Personalization cross-platform library and tool"
 HOMEPAGE="http://opensource.yubico.com/yubikey-personalization/"
@@ -10,10 +11,15 @@ HOMEPAGE="http://opensource.yubico.com/yubikey-personalization/"
 LICENCES="BSD-2"
 SLOT="0"
 
-WORK=${WORKBASE}/${PN}-${PV}
-
 DEPENDENCIES="
+    build:
+        app-doc/asciidoc
+        virtual/pkg-config
     build+run:
-        dev-libs/libusb
+        dev-libs/json-c
+        dev-libs/libusb:1
         sys-auth/libyubikey
 "
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( --with-udevrulesdir="${UDEVRULESDIR=}" )
+
