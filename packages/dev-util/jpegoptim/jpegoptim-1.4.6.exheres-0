@@ -1,0 +1,24 @@
+# Copyright 2018 Arnaud Lefebvre <arnaud.lefebvre@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="tjko" tag="RELEASE.${PV}" ]
+
+SUMMARY="Utility to optimize/compress JPEG files"
+
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64"
+
+BUGS_TO="arnaud.lefebvre@clever-cloud.com"
+
+MYOPTIONS="
+    providers:
+        ijg-jpeg
+        jpeg-turbo
+"
+
+DEPENDENCIES="
+    build+run:
+        providers:ijg-jpeg? ( media-libs/jpeg:= )
+        providers:jpeg-turbo? ( media-libs/libjpeg-turbo )
+"
