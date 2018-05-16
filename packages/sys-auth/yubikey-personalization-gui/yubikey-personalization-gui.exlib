@@ -1,12 +1,13 @@
 # Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=Yubico tag=${PNV} ] qmake
+require github [ user=Yubico tag=${PNV} ] qmake [ slot=5 ]
+require gtk-icon-cache
 
 export_exlib_phases src_install
 
 SUMMARY="YubiKey Personalization GUI"
-HOMEPAGE="http://opensource.yubico.com/yubikey-personalization-gui/"
+HOMEPAGE="https://opensource.yubico.com/yubikey-personalization-gui/"
 
 LICENCES="BSD-2"
 SLOT="0"
@@ -14,13 +15,24 @@ SLOT="0"
 EQMAKE_SOURCES=( "YKPersonalization.pro" )
 
 DEPENDENCIES="
+    build:
+        virtual/pkg-config
     build+run:
+        sys-auth/libyubikey
         sys-auth/yubikey-personalization
-        x11-libs/qt:4
+        x11-libs/qtbase:5
 "
 
 yubikey-personalization-gui_src_install() {
     default
-    dobin ${WORK}/build/release/yubikey-personalization-gui
+
+    dobin "${WORK}"/build/release/${PN}
+    doman "${WORK}"/resources/lin/${PN}.1
+
+    insinto /usr/share/applications
+    doins resources/lin/${PN}.desktop
+
+    insinto /usr/share/icons/hicolor/128x128/apps
+    doins resources/lin/${PN}.png
 }
 
