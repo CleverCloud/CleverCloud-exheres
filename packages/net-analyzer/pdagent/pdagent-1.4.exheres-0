@@ -1,0 +1,47 @@
+# Copyright 2018 Alexandre Berthaud <alexandre@berthaud.me>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Agent used to integrate a monitoring tool with PagerDuty"
+HOMEPAGE="https://www.pagerduty.com/"
+PLATFORMS="~amd64"
+LICENCES="pagerduty"
+SLOT="0"
+VPV="v${PV}"
+require github [ user="PagerDuty" pn="${PN}" tag="${VPV}" ]
+require systemd-service [ systemd_files=[ build-linux/pdagent.service  ] ]
+
+DEPENDENCIES="
+    build+run:
+        group/pdagent
+        user/pdagent
+        dev-lang/python:2.7
+"
+
+WORK="${WORKBASE}"/pdagent-${PV}
+
+src_install() {
+  dobin bin/pd-*
+
+  exeinto /usr/share/pdagent/bin
+  doexe bin/pdagentd.py
+
+  insinto /usr/$(exhost --target)/lib/python2.7/site-packages
+  doins -r pdagent
+
+  insinto /etc/
+  doins conf/pdagent.conf
+
+  diropts -m 0755 -o pdagent -g pdagent
+  keepdir /var/log/pdagent
+  keepdir /var/lib/pdagent
+  keepdir /var/lib/pdagent/db
+  keepdir /var/lib/pdagent/outqueue
+  keepdir /var/lib/pdagent/outqueue/pdq
+  keepdir /var/lib/pdagent/outqueue/tmp
+  keepdir /var/lib/pdagent/outqueue/err
+  keepdir /var/lib/pdagent/outqueue/suc
+  keepdir /var/lib/pdagent/scripts
+
+  install_systemd_files
+}
+
