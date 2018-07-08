@@ -22,7 +22,7 @@ MYOPTIONS=""
 DEPENDENCIES="
     build+run:
         dev-libs/openssl
-        dev-libs/pcre
+        dev-python/typing
         dev-python/Cheetah
         dev-python/PyYAML
         net-libs/cyrus-sasl
@@ -38,7 +38,6 @@ MONGO_PARAMS=(
     --prefix="${IMAGE}"/usr/"$(exhost --target)"
     --ssl
     --use-sasl-client
-    --use-system-pcre
     --disable-warnings-as-errors
 )
 
