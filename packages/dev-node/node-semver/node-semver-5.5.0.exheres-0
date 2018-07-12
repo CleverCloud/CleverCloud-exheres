@@ -1,0 +1,28 @@
+# Copyright 2018 Arnaud Lefebvre <a.lefebvre@outlook.fr>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="The semver parser for node (the one npm uses)"
+
+require github [ user="npm" project="node-semver" tag="v${PV}" ]
+
+PLATFORMS="~amd64 ~x86"
+SLOT="0"
+LICENCES="ISC"
+
+DEPENDENCIES="
+    run:
+        dev-lang/node
+"
+
+WORK="${WORKBASE}"
+
+src_install() {
+    local node_modules=/usr/$(exhost --target)/lib/node_modules
+    local target=/usr/$(exhost --target)/bin
+
+    edo mkdir -p "${IMAGE}"/${node_modules}
+    edo mkdir -p "${IMAGE}"/${target}
+    edo mv ${PNV} "${IMAGE}"/${node_modules}/semver
+
+    dosym ${node_modules}/semver/bin/semver ${target}/semver
+}
