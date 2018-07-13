@@ -23,6 +23,7 @@ MYOPTIONS+="
         description = [ Add support for TRACE logs level ]
         requires = logs-debug
     ]]
+    tolerant-http1-parser [[ description = [ Enable a more tolerant parser for HTTP1 requests ] ]]
     (
         providers:
             openssl [[ description = [ Add support for OpenSSL as a SSL provider ] ]]
@@ -39,6 +40,7 @@ DEPENDENCIES+="
 BIN_ECARGO_FEATURE_ENABLES=(
     'logs-debug logs-debug'
     'logs-trace logs-trace'
+    'tolerant-http1-parser tolerant-http1-parser'
     'providers:openssl use-openssl'
 )
 
