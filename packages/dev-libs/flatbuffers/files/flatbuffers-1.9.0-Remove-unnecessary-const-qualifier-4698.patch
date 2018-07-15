@@ -1,0 +1,36 @@
+Upstream: yes
+Reason: Fix build with gcc8
+
+From 86153fd7405ad3bae28aee7f5affdbeb2d77e533 Mon Sep 17 00:00:00 2001
+From: Sergey Avseyev <sergey.avseyev@gmail.com>
+Date: Fri, 6 Apr 2018 21:33:07 +0300
+Subject: [PATCH] Remove unnecessary const qualifier (#4698)
+
+In file included from include/flatbuffers/flexbuffers.h:24,
+                 from src/idl_gen_text.cpp:20:
+include/flatbuffers/util.h: In function 'int flatbuffers::FromUTF8(const char**)':
+include/flatbuffers/util.h:324:45: error: type qualifiers ignored on cast result type [-Werror=ignored-qualifiers]
+   if ((static_cast<const unsigned char>(**in) << len) & 0x80) return -1;  // Bit after leading 1's must be 0.
+                                             ^
+cc1plus: all warnings being treated as errors
+make[2]: *** [CMakeFiles/flatbuffers_shared.dir/build.make:92: CMakeFiles/flatbuffers_shared.dir/src/idl_gen_text.cpp.o] Error 1
+---
+ include/flatbuffers/util.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/flatbuffers/util.h b/include/flatbuffers/util.h
+index e654010..7cadd0b 100644
+--- a/include/flatbuffers/util.h
++++ b/include/flatbuffers/util.h
+@@ -321,7 +321,7 @@ inline int FromUTF8(const char **in) {
+       break;
+     }
+   }
+-  if ((static_cast<const unsigned char>(**in) << len) & 0x80) return -1;  // Bit after leading 1's must be 0.
++  if ((static_cast<unsigned char>(**in) << len) & 0x80) return -1;  // Bit after leading 1's must be 0.
+   if (!len) return *(*in)++;
+   // UTF-8 encoded values with a length are between 2 and 4 bytes.
+   if (len < 2 || len > 4) { return -1; }
+-- 
+2.18.0
+
