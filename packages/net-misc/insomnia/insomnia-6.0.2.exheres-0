@@ -1,0 +1,35 @@
+# Copyright 2018 Alexandre DUVAL <alexanduval@wanadoo.fr>
+# Distributed under the terms of the MIT License
+
+VPV="v${PV}"
+U="getinsomnia"
+PLATFORMS="~amd64"
+
+require github [ user=${U} pn=${PN} tag=${VPV} ]
+
+SUMMARY="Insomnia - A cool REST client"
+HOMEPAGE="https://insomnia.rest/"
+LICENCES="MIT"
+SLOT="0"
+BUGS_TO="alexanduval@wanadoo.fr"
+REMOTE_IDS="github:${U}/${PN}"
+
+DEPENDENCIES="
+  build+run:
+    dev-lang/node[=8*]
+    dev-node/yarn[>=1.7]
+"
+
+src_unpack() {
+  edo mkdir "${WORK}"
+  edo cd "${WORK}"
+  unpack --if-compressed ${ARCHIVES}
+}
+
+src_install() {
+  local target=/usr/$(exhost --target)/bin
+
+  edo mkdir -p ${target}
+  edo yarn bootstrap
+  edo echo "yarn app-start" > ${target}/${PN}.sh
+}
