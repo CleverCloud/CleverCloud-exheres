@@ -27,7 +27,7 @@ DEPENDENCIES="
         net-misc/curl
         sci-libs/libgeotiff
         geos? ( sci-libs/geos )
-        postgresql? ( dev-db/postgresql )
+        postgresql? ( dev-db/postgresql-client )
         providers:ijg-jpeg? ( media-libs/jpeg )
         providers:jpeg-turbo? ( media-libs/libjpeg-turbo )
 "

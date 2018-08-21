@@ -3,16 +3,12 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user=logplex tag="v${PV}" ]
+require postgresql
 
 SUMMARY="Uses Postgres FEBE to Frame Postgres Logs"
 
 LICENCES="PostgreSQL"
 SLOT="0"
 
-WORK="${WORKBASE}"/${PNV}
-
-DEPENDENCIES="
-    build+run:
-        dev-db/postgresql
-"
+DEPENDENCIES=""
 

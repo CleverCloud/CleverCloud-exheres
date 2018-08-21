@@ -2,8 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ]
-
-export_exlib_phases src_prepare
+require postgresql
 
 SUMMARY="Spatial and Geographic objects for PostgreSQL"
 HOMEPAGE="http://postgis.net/"
@@ -16,7 +15,6 @@ RESTRICT="test"
 
 DEPENDENCIES="
     build+run:
-        dev-db/postgresql
         dev-libs/json-c
         dev-libs/libxml2
         media-libs/libwebp:0.6
@@ -25,7 +23,7 @@ DEPENDENCIES="
         sci-libs/proj
 "
 
-postgis_src_prepare() {
+prepare_one_multibuild() {
     edo sed -e "s/ar rs/${AR} rs/" \
         -i libpgcommon/Makefile.in \
         -i raster/rt_core/Makefile.in

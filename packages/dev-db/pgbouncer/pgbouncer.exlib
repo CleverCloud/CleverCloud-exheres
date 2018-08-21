@@ -16,7 +16,7 @@ MYOPTIONS=""
 DEPENDENCIES="
     build:
     build+run:
-        dev-db/postgresql
+        dev-db/postgresql-client
         dev-libs/libevent
 "
 

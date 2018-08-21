@@ -23,11 +23,13 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build+run:
-        postgresql? ( dev-db/postgresql )
+        postgresql? ( dev-db/postgresql-client )
         mysql? ( dev-db/mysql )
         dev-cpp/log4cplus
         dev-libs/boost
         dev-libs/botan[>=1.8]
+    suggestion:
+        postgresql? ( dev-db/postgresql )
 "
 
 BUGS_TO="julien.durillon@gmail.com"

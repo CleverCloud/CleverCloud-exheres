@@ -19,7 +19,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build+run:
-        dev-db/postgresql
+        dev-db/postgresql-client
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl )
         group/zabbix
@@ -28,6 +28,7 @@ DEPENDENCIES="
     suggestion:
         net-analyzer/zabbix-agent
         net-analyzer/zabbix-frontend
+        dev-db/postgresql
 "
 
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'ipv6')

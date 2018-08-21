@@ -32,8 +32,10 @@ DEPENDENCIES="
         dev-libs/boost[>=1.35.0]
         dev-libs/protobuf:=
         mysql? ( virtual/mysql )
-        postgres? ( dev-db/postgresql )
+        postgres? ( dev-db/postgresql-client )
         systemd? ( sys-apps/systemd )
+    suggestion:
+        postgres? ( dev-db/postgresql )
 "
 
 pdns_src_configure() {
