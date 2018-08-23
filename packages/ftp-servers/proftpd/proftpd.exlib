@@ -12,23 +12,27 @@ DOWNLOADS="ftp://ftp.proftpd.org/distrib/source/${PNV}.tar.gz"
 LICENCES="GPL-2"
 SLOT="0"
 MYOPTIONS="
-    diskuse [[ description = [ build mod_diskuse to limit filesystem usage ] ]]
+    caps
     openssl
     sftp [[ requires = openssl ]]
+    pam
+    xattr
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS=( --disable-strip --enable-nls )
 
-DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'openssl' )
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'openssl' 'xattr' 'caps cap' 'pam auth-pam' )
 DEFAULT_SRC_CONFIGURE_OPTIONS=(
-    'diskuse --with-modules=mod_diskuse'
     'openssl --with-modules=mod_tls'
     'sftp --with-modules=mod_sftp'
 )
 
 DEPENDENCIES="
     build+run:
+        caps? ( sys-libs/libcap )
         openssl? ( dev-libs/openssl )
+        pam? ( sys-libs/pam )
+        xattr? ( sys-apps/attr )
     run:
         user/ftp
         group/ftp
