@@ -32,6 +32,8 @@ DEPENDENCIES="
         providers:openssl? ( dev-libs/openssl )
 "
 
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/max-data-size-argon2id.patch" )
+
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     --with-pam
     --with-puredb
