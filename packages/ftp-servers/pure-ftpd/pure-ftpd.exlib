@@ -27,6 +27,7 @@ DEPENDENCIES="
         group/${PN}
         dev-libs/libsodium
         sys-libs/libcap
+        sys-libs/pam
         ldap? ( net-directory/openldap )
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl )
