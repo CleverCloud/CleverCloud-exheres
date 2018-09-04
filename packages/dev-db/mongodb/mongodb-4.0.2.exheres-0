@@ -4,14 +4,14 @@
 # Based in part upon 'mongodb-1.6.5.exheres-0', which is:
 #    Copyright 2010 Jonathan Dahan <jedahan@gmail.com>
 
-require scons
+require scons systemd-service [ systemd_files=[ debian/mongod.service ] ]
 
 SUMMARY="A scalable, high-performance, schema-free, document-oriented database"
 DESCRIPTION="Written in C++, MongoDB bridges the gap between key-value stores
 (which are fast and highly scalable) and traditional RDBMS systems (which
 provide structured schemas and powerful queries)."
-HOMEPAGE="http://www.mongodb.org"
-DOWNLOADS="http://downloads.mongodb.org/src/${PN}-src-r${PV}.tar.gz"
+HOMEPAGE="https://www.mongodb.org"
+DOWNLOADS="https://downloads.mongodb.org/src/${PN}-src-r${PV}.tar.gz"
 
 LICENCES="AGPL-3"
 SLOT="0"
@@ -20,6 +20,9 @@ PLATFORMS="~amd64"
 MYOPTIONS=""
 
 DEPENDENCIES="
+    run:
+        group/mongodb
+        user/mongodb
     build+run:
         dev-libs/openssl
         dev-python/typing
@@ -50,6 +53,7 @@ RESTRICT="test"
 src_prepare() {
     default
     edo sed -e '/"-ggdb",/d' -i SConstruct
+    edo sed "s@/usr/bin@/usr/$(exhost --target)/bin@" -i debian/mongod.service
 }
 
 src_compile() {
@@ -68,6 +72,11 @@ src_install() {
         "${SCONS_SRC_INSTALL_PARAMS[@]}" \
         install
     emagicdocs
+
+    install_systemd_files
+    insinto /etc/
+    doins debian/mongod.conf
+
 }
 
 src_test() {
