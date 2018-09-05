@@ -77,6 +77,8 @@ src_install() {
     insinto /etc/
     doins debian/mongod.conf
 
+    diropts -o mongodb -g mongodb
+    keepdir /var/lib/mongodb
 }
 
 src_test() {
