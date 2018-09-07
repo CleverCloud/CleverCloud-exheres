@@ -78,7 +78,7 @@ src_install() {
     doins debian/mongod.conf
 
     diropts -o mongodb -g mongodb
-    keepdir /var/lib/mongodb
+    keepdir /var/{lib,log}/mongodb
 }
 
 src_test() {
