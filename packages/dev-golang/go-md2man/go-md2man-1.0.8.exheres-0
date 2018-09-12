@@ -40,3 +40,9 @@ src_install(){
 
     dobin go-md2man
 }
+
+src_test() {
+    # no tests but there is a `check` target in the makefile
+    # that needs a linter (which isn't packaged yet)
+    :
+}
