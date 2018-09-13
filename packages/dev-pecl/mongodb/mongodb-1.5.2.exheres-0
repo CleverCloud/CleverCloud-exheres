@@ -10,6 +10,9 @@ LICENCES="PHP-3"
 SLOT="0"
 MYOPTIONS="( providers: libressl openssl ) [[ number-selected = exactly-one ]]"
 
+# Lots of sandbox error
+RESTRICT="test"
+
 DEPENDENCIES="
     build+run:
         net-libs/cyrus-sasl
