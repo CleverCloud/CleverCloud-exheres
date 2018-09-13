@@ -12,3 +12,12 @@ DEPENDENCIES="
     build+run:
         dev-libs/libsodium[>=1.0.8]
 "
+
+prepare_one_multibuild() {
+    local abi
+    abi=$(php-pecl_get_abi)
+
+    sed "s/pkg-config/${PKG_CONFIG}/" -i "${WORK}/PHP_ABIS/${abi}/${PNV}/config.m4"
+
+    php-pecl_prepare_one_multibuild
+}
