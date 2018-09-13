@@ -4,8 +4,8 @@
 require cmake [ api=2 ]
 
 SUMMARY="Couchbase client library"
-HOMEPAGE="http://www.couchbase.com/develop/c/current"
-DOWNLOADS="http://packages.couchbase.com/clients/c/${PN}-${PV}.tar.gz"
+HOMEPAGE="https://developer.couchbase.com/open-source-projects"
+DOWNLOADS="https://packages.couchbase.com/clients/c/${PN}-${PV}.tar.gz"
 
 LICENCES="Apache-2.0"
 SLOT="0"
