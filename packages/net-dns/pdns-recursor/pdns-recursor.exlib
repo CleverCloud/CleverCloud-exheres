@@ -6,25 +6,29 @@ require systemd-service
 export_exlib_phases src_install
 
 SUMMARY="PowerDNS Recursive Server"
-HOMEPAGE="http://www.powerdns.com"
-DOWNLOADS="http://downloads.powerdns.com/releases/${PNV}.tar.bz2"
+HOMEPAGE="https://www.powerdns.com"
+DOWNLOADS="https://downloads.powerdns.com/releases/${PNV}.tar.bz2"
 
 LICENCES="GPL-2"
 SLOT="0"
-MYOPTIONS=""
-
-DEFAULT_SRC_INSTALL_PARAMS=(
-    STRIP_BINARIES=0
-    BINDIR=/usr/$(exhost --target)/bin
-    SBINDIR=/usr/$(exhost --target)/bin
-)
+MYOPTIONS="
+    systemd
+"
 
 DEPENDENCIES="
     build+run:
-        dev-libs/boost
         group/pdns
         user/pdns
+        dev-lang/lua:=
+        dev-libs/boost
+        dev-libs/libsodium
+        dev-libs/openssl
+        dev-libs/protobuf:=
+        systemd? ( sys-apps/systemd )
 "
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( --sysconfdir=/etc/powerdns )
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( systemd )
 
 pdns-recursor_src_install() {
     default
