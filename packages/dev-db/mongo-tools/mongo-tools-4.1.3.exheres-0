@@ -20,7 +20,8 @@ MYOPTIONS="( providers: libressl openssl ) [[ number-selected = exactly-one ]]"
 
 DEPENDENCIES="
     build:
-        dev-lang/go[>=1.3]
+        dev-lang/go[>=1.10]
+        dev-libs/libpcap
         virtual/pkg-config
     build+run:
         net-libs/cyrus-sasl
