@@ -16,7 +16,7 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     run:
-        dev-lang/ghc-bin
+        virtual/GHC
         dev-libs/gmp[>=6.1] [[ note = [ depends on libgmp.so.10 ] ]]
 "
 
