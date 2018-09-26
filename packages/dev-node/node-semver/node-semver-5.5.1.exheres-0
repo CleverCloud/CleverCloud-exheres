@@ -14,7 +14,21 @@ DEPENDENCIES="
         dev-lang/node
 "
 
-WORK="${WORKBASE}"
+src_unpack() {
+    default
+
+    # We need dependencies for tests to run
+    esandbox disable_net
+    edo cd "${WORK}"
+    edo npm install
+    esandbox enable_net
+}
+
+src_test() {
+    edo npm test
+    # Clean up tests reports
+    edo rm -r .nyc_output
+}
 
 src_install() {
     local node_modules=/usr/$(exhost --target)/lib/node_modules
@@ -22,7 +36,8 @@ src_install() {
 
     edo mkdir -p "${IMAGE}"/${node_modules}
     edo mkdir -p "${IMAGE}"/${target}
-    edo mv ${PNV} "${IMAGE}"/${node_modules}/semver
+    edo rm "${WORKBASE}/${PNV}"/{node_modules,.gitignore,.travis.yml,test,package-lock.json} -r
+    edo mv "${WORKBASE}/${PNV}" "${IMAGE}"/${node_modules}/semver
 
     dosym ${node_modules}/semver/bin/semver ${target}/semver
 }
