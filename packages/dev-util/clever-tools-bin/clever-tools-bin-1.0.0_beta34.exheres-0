@@ -6,7 +6,7 @@ require bash-completion zsh-completion
 
 SUMMARY="Command Line Interface for Clever Cloud."
 MY_PN="clever-tools"
-MY_PV="1.0.0-beta.31"
+MY_PV="1.0.0-beta.34"
 MY_PNV="${MY_PN}-${MY_PV}"
 HOMEPAGE="https://github.com/CleverCloud/${MY_PN}"
 DOWNLOADS="https://${MY_PN}.cellar.services.clever-cloud.com/releases/${MY_PV}/${MY_PNV}_linux.tar.gz"
