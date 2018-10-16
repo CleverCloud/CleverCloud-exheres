@@ -1,0 +1,49 @@
+# Copyright 2017 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=alanxz pn=rabbitmq-c tag=v${PV} ]
+require cmake [ api=2 ]
+
+SUMMARY="RabbitMQ C client"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    ( providers: openssl libressl ) [[ number-selected = exactly-one ]]
+"
+
+DEPENDENCIES="
+    build:
+        app-text/xmlto  [[ note = [ for tools docs ] ]]
+        virtual/pkg-config
+    build+run:
+        dev-libs/popt  [[ note = [ for tools ] ]]
+        providers:openssl? ( dev-libs/openssl[>=0.9.8] )
+        providers:libressl? ( dev-libs/libressl:= )
+"
+
+BUGS_TO="keruspe@exherbo.org"
+
+# test_basic requires rabbitmq server up and running
+RESTRICT="test"
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    ${FILES}/mandir-location.patch
+)
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    -DBUILD_API_DOCS:BOOL=OFF
+    -DBUILD_EXAMPLES:BOOL=OFF
+    -DBUILD_SSL_SUPPORT:BOOL=ON
+    -DBUILD_TESTS:BOOL=OFF
+    -DBUILD_TOOLS:BOOL=ON
+    -DBUILD_TOOLS_DOCS:BOOL=ON
+)
+
+src_test() {
+    esandbox allow_net --connect LOCAL@5672
+    default
+    esandbox disallow_net LOCAL@5672
+}
+

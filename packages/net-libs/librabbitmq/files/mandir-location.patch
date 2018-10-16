@@ -1,0 +1,16 @@
+Upstream: no
+Reason: correct man directory in Exherbo
+
+diff --git a/tools/CMakeLists.txt b/tools/CMakeLists.txt
+index 1471043..7609cd3 100644
+--- a/tools/CMakeLists.txt
++++ b/tools/CMakeLists.txt
+@@ -62,7 +62,7 @@ if (BUILD_TOOLS_DOCS)
+       string( REGEX REPLACE "^[.]" "" fileExt ${fileExt} )
+       install(
+         FILES ${file}
+-        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/man/man${fileExt}
++        DESTINATION ${CMAKE_INSTALL_MANDIR}/man${fileExt}
+         )
+     endforeach()
+
