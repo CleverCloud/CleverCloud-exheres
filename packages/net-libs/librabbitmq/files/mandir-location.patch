@@ -1,4 +1,5 @@
-Upstream: no
+Upstream: yes
+Source: https://github.com/alanxz/rabbitmq-c/pull/534
 Reason: correct man directory in Exherbo
 
 diff --git a/tools/CMakeLists.txt b/tools/CMakeLists.txt
