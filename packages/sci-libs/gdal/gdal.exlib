@@ -20,7 +20,7 @@ MYOPTIONS="
 DEPENDENCIES="
     build+run:
         dev-libs/expat
-        dev-libs/json-c
+        dev-libs/json-c[>=0.13]
         dev-libs/libxml2
         media-libs/libwebp:0.6
         media-libs/tiff
