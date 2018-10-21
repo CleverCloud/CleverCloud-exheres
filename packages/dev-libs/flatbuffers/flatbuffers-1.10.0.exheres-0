@@ -12,10 +12,6 @@ PLATFORMS="~amd64"
 
 BUGS_TO="julien.durillon@gmail.com"
 
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/${PNV}-Remove-unnecessary-const-qualifier-4698.patch
-)
-
 CMAKE_SRC_CONFIGURE_PARAMS=(
     "-G" "Unix Makefiles"
     # flatc is only installed for the Release configuration
