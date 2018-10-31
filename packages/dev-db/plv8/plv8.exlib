@@ -18,12 +18,20 @@ DEPENDENCIES="
 
 prepare_one_multibuild() {
     sed -i 's/^PG_CONFIG\s*=.*/PG_CONFIG ?= pg_config/g' Makefile.shared
+    sed -i "s:$(PGXS):/usr/$(exhost --target)/lib/postgresql-$(MULTIBUILD_TARGET)/pgxs/src/makefiles/pgxs.mk:" Makefile.shared
+    cat >> Makefile.shared << EOF
+
+%.bc: %.cc
+	\$(COMPILE.cxx.bc) \$(CCFLAGS) \$(CPPFLAGS) -fPIC -c -o \$@ \$<
+
+EOF
 }
 
 compile_one_multibuild() {
-    emake -f ./Makefile.shared CUSTOM_CC=$(exhost --tool-prefix)g++
+    emake -f ./Makefile.shared CUSTOM_CC=$(exhost --tool-prefix)g++ all
 }
 
 install_one_multibuild() {
-    emake -f ./Makefile.shared DESTDIR=${IMAGE} install
+    emake -f ./Makefile.shared CUSTOM_CC=$(exhost --tool-prefix)g++ DESTDIR=${IMAGE} install
 }
+
