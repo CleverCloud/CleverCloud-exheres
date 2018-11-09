@@ -16,8 +16,8 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     run:
-        virtual/GHC
         dev-libs/gmp[>=6.1] [[ note = [ depends on libgmp.so.10 ] ]]
+        virtual/GHC
 "
 
 BUGS_TO="hasufell@posteo.de"
