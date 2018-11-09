@@ -18,7 +18,6 @@ DEPENDENCIES="
 
 prepare_one_multibuild() {
     sed -i 's/^PG_CONFIG\s*=.*/PG_CONFIG ?= pg_config/g' Makefile.shared
-    sed -i "s:$(PGXS):/usr/$(exhost --target)/lib/postgresql-$(MULTIBUILD_TARGET)/pgxs/src/makefiles/pgxs.mk:" Makefile.shared
     cat >> Makefile.shared << EOF
 
 %.bc: %.cc
