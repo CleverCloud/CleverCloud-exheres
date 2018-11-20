@@ -1,0 +1,69 @@
+Upstream: no, in https://github.com/kholia/edk2/
+From cab42c216a1f2a1a30d8ec38244cf34494613570 Mon Sep 17 00:00:00 2001
+From: Yuuki Galaxy <galaxy001@gmail.com>
+Date: Wed, 7 Nov 2018 12:44:35 +0530
+Subject: [PATCH 2/2] Add more 16:10 HiDPI(2x) resolution modes
+
+* 1920 => 3840x2400
+* 1680 => 3360x2100
+* 1440 => 2880x1800
+* 1280 => 2560x1600 (exists, skip)
+* 1024 => 2048x1280
+
+Based on supported scaled resolutions from Apple Retina displays.
+
+See [Retina, 13-inch](https://support.apple.com/kb/SP715?locale=en_US) and [15-inch](https://support.apple.com/kb/SP776?locale=en_US) for details.
+---
+ OvmfPkg/QemuVideoDxe/Initialize.c | 4 ++++
+ OvmfPkg/VirtioGpuDxe/Gop.c        | 4 ++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/OvmfPkg/QemuVideoDxe/Initialize.c b/OvmfPkg/QemuVideoDxe/Initialize.c
+index 357124d628..64a6a2a444 100644
+--- a/OvmfPkg/QemuVideoDxe/Initialize.c
++++ b/OvmfPkg/QemuVideoDxe/Initialize.c
+@@ -234,14 +234,18 @@ QEMU_VIDEO_BOCHS_MODES  QemuVideoBochsModes[] = {
+   { 1920, 1200, 32 },
+   { 1920, 1440, 32 },
+   { 2000, 2000, 32 },
++  { 2048, 1280, 32 },
+   { 2048, 1536, 32 },
+   { 2048, 2048, 32 },
+   { 2560, 1440, 32 },
+   { 2560, 1600, 32 },
+   { 2560, 2048, 32 },
+   { 2800, 2100, 32 },
++  { 2880, 1800, 32 },
+   { 3200, 2400, 32 },
++  { 3360, 2100, 32 },
+   { 3840, 2160, 32 },
++  { 3840, 2400, 32 },
+   { 4096, 2160, 32 },
+   { 7680, 4320, 32 },
+   { 8192, 4320, 32 }
+diff --git a/OvmfPkg/VirtioGpuDxe/Gop.c b/OvmfPkg/VirtioGpuDxe/Gop.c
+index 936e181e8a..50dd7a7424 100644
+--- a/OvmfPkg/VirtioGpuDxe/Gop.c
++++ b/OvmfPkg/VirtioGpuDxe/Gop.c
+@@ -175,14 +175,18 @@ STATIC CONST GOP_RESOLUTION mGopResolutions[] = {
+   { 1920, 1200 },
+   { 1920, 1440 },
+   { 2000, 2000 },
++  { 2048, 1280 },
+   { 2048, 1536 },
+   { 2048, 2048 },
+   { 2560, 1440 },
+   { 2560, 1600 },
+   { 2560, 2048 },
+   { 2800, 2100 },
++  { 2880, 1800 },
+   { 3200, 2400 },
++  { 3360, 2100 },
+   { 3840, 2160 },
++  { 3840, 2400 },
+   { 4096, 2160 },
+   { 7680, 4320 },
+   { 8192, 4320 },
+-- 
+2.19.1
+

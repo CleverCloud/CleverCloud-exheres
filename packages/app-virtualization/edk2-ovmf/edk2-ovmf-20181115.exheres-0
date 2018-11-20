@@ -1,0 +1,61 @@
+# Copyright 2018 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=tianocore project=edk2 tag=edk2-stable${PV:0:6} ]
+
+SUMMARY="iA modern, feature-rich, cross-platform firmware development environment for the UEFI"
+HOMEPAGE="http://www.tianocore.org/edk2/"
+
+# See openssl submodule in https://github.com/tianocore/edk2/tree/master/CryptoPkg/Library/OpensslLib
+OPENSSL_VERSION="1.1.0h"
+DOWNLOADS+=" https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz"
+
+LICENCES="BSD-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        dev-lang/python:2.7
+        dev-lang/nasm
+        sys-power/iasl
+"
+
+BUGS_TO="keurspe@exherbo.org"
+
+OVMF_ARCH="X64"
+OVMF_BUILD="RELEASE"
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/0001-Revert-readonly-pagetables-introduced-by-2ac1730-and.patch
+    "${FILES}"/0002-Add-more-16-10-HiDPI-2x-resolution-modes.patch
+)
+
+src_prepare() {
+    local openssl_dir=CryptoPkg/Library/OpensslLib/openssl
+
+    default
+    edo rmdir ${openssl_dir}
+    edo ln -s "${WORKBASE}"/openssl-${OPENSSL_VERSION} ${openssl_dir}
+
+    local dir="${WORKBASE}"/symlinked-build-tools
+    local tool
+    edo mkdir -p "${dir}"
+    for tool in ar cc g++ gcc gcc-ar ld objcopy; do
+        edo ln -s /usr/host/bin/$(exhost --tool-prefix)${tool} "${dir}"/${tool}
+    done
+    export PATH="${dir}:${PATH}"
+}
+
+src_compile() {
+    emake BUILD_CC=${CC} BUILD_CXX=${CXX} BUILD_AR=${AR} -C BaseTools
+    . edksetup.sh
+    edo OvmfPkg/build.sh -a ${OVMF_ARCH} -b ${OVMF_BUILD}
+}
+
+src_install() {
+    insinto /usr/share/ovmf/${OVMF_ARCH}
+    doins Build/Ovmf${OVMF_ARCH}/${OVMF_BUILD}_GCC*/FV/OVMF*.fd
+    emagicdocs
+}
