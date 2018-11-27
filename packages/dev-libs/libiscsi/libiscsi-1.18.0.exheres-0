@@ -1,0 +1,17 @@
+# Copyright 2018 Alexandre DUVAL <alexanduval@wanadoo.fr>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=sahlberg pn=libiscsi tag=${PV} ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
+
+SUMMARY="Libiscsi is a client-side library to implement the iSCSI protocol"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+
+DEPENDENCIES=""
+
+BUGS_TO="alexanduval@wanadoo.fr"
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( --disable-werror )
