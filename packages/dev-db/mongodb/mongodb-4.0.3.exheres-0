@@ -54,6 +54,8 @@ src_prepare() {
     default
     edo sed -e '/"-ggdb",/d' -i SConstruct
     edo sed "s@/usr/bin@/usr/$(exhost --target)/bin@" -i debian/mongod.service
+    # TLS 1.3 build is broken
+    edo sed '/counts.tls13/d' -i src/mongo/util/net/ssl_manager_openssl.cpp
 }
 
 src_compile() {
