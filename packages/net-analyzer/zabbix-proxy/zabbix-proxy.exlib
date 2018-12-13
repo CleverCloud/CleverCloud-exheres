@@ -69,4 +69,7 @@ zabbix-proxy_src_install() {
     dodir "${db_target}"
     insinto "${db_target}"
     doins -r "${WORK}"/database/sqlite3
+
+    # Remove empty dirs
+    edo find "${IMAGE}" -type d -empty -delete
 }
