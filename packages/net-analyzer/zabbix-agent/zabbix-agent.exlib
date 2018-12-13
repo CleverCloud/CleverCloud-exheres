@@ -56,5 +56,8 @@ zabbix-agent_src_install() {
 
     # This line is mandatory for systemd and can be useful for other init systems
     sed -i -e 's@^\(# PidFile.*\)@\1\nPidFile=/run/zabbix/zabbix-agentd.pid@' "${IMAGE}"/etc/zabbix/zabbix_agentd.conf
+
+    # Remove empty dirs
+    edo find "${IMAGE}" -type d -empty -delete
 }
 
