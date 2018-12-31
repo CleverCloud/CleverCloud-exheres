@@ -1,0 +1,12 @@
+SUMMARY="An alternative to ping, which is better to ping multiple hosts"
+HOMEPAGE="https://fping.org"
+DOWNLOADS="https://fping.org/dist/${PNV}.tar.gz"
+PLATFORMS="~amd64"
+
+SLOT="0"
+
+src_install() {
+    default
+
+    edo chmod u+s ${IMAGE}/usr/$(exhost --target)/bin/fping
+}
