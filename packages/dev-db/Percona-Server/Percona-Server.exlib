@@ -11,12 +11,12 @@ export_exlib_phases pkg_pretend src_prepare src_configure src_install pkg_postin
 
 MYSQL_MAJOR_VERSION=$(ever range 1-2)
 
-# Miraculously works for MySQL >= 5.1 till at least 5.6
-SPHINX_PV="2.2.9"
+# Miraculously works for MySQL >= 5.1 till at least 8.x
+SPHINX_PV="3.1.1"
 
 # In order to provide a stable code base, MySQL depends on a specific version of Boost.
 # Currently only Boost.Geometry headers are used and boost is just required at build time.
-BOOST_PV="1.59.0"
+BOOST_PV="1.67.0"
 
 SUMMARY="A relational database management system (RDBMS)"
 HOMEPAGE="https://www.percona.com/"
@@ -34,9 +34,15 @@ MYOPTIONS="
     memcached [[ description = [ Enable using memcached for InnoDb tables (don't know it? Don't enable it.) ] ]]
     sphinx [[ description = [ Add the Sphinx Search Engine with fulltext search support (external engine) ] ]]
     systemd
-    tcpd
     ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
+# tcpd option can't compile because of https://jira.percona.com/browse/PS-5155
+# Upstream mysql fixed it according to https://bugs.mysql.com/bug.php?id=92983
+# but it's not yet released
+# Disable the option for now
+# tcpd
+# DEPENDENCIES build+run:
+# tcpd? ( sys-apps/tcp-wrappers )
 
 DEPENDENCIES="
     build:
@@ -50,10 +56,14 @@ DEPENDENCIES="
         dev-libs/libaio
         dev-libs/libedit
         dev-libs/protobuf:=[>=2.6.1]
+        dev-libs/rapidjson[>=1.1.0]
+        dev-libs/re2
+        net-libs/cyrus-sasl
+        net-libs/libtirpc
+        net-misc/curl
         sys-libs/zlib[>=1.2.3]
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl )
-        tcpd? ( sys-apps/tcp-wrappers )
         !dev-db/mariadb [[
             description = [ MariaDB is a drop-in replacement for MySQL with same binary names ]
             resolution = manual
@@ -68,21 +78,6 @@ DEPENDENCIES="
     suggestion:
         app-admin/logrotate [[ description = [ Use logrotate for rotating logs ] ]]
 "
-
-# event_comment
-# >= 5.6 needs libevent[>=1.4.12&<2.0] but
-# a) we only have 2.0.22 at the time of writing
-# b) lots of other stuff needs >=2.0
-#
-# Options:
-#
-# 1. Add libevent 1.4.x, imlement the dep as [>=1.4.12&<2.0] and watch the fun
-# 2. Us the bundled libevent for MySQL to ensure it's always the right version.
-# 3. Add libevent 1.4.x as SLOT=1.4, slot 2.0.x as SLOT=2.0, dep on the 1.4 slot here.
-#
-# I prefer 3., of course, but I went with 2. for now to be on the safe side.
-#
-#            dev-libs/libevent[>=1.4.12]
 
 WORK="${WORKBASE}/${PNV,,}-$(exparam release)"
 CMAKE_SOURCE="${WORK}"
@@ -165,10 +160,10 @@ Percona-Server_src_configure() {
         -DENABLE_GPROF:BOOL=FALSE
         -DENABLED_LOCAL_INFILE:BOOL=TRUE
         -DWITH_EDITLINE:STRING=system
-        # Search for event_comment in this exlib for the reason for using bundled
+        # Compilation fails because of undefined symbols when using system libevent
         -DWITH_LIBEVENT:STRING=bundled
         -DWITH_NUMA:BOOL=FALSE
-        -DWITH_SSL:STRING=/usr/$(exhost --target)
+        -DWITH_SSL:STRING=system
         -DBOOST_INCLUDE_DIR:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
         -DWITH_BOOST:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
         -DWITH_CLIENT_PROTOCOL_TRACING:BOOL=FALSE
@@ -179,6 +174,8 @@ Percona-Server_src_configure() {
         -DWITH_TEST_TRACE_PLUGIN:BOOL=FALSE
         -DWITH_UBSAN:BOOL=FALSE
         -DUSE_CTAGS:BOOL=FALSE
+        -DWITH_RE2:STRING=system
+        -DWITH_RAPIDJSON:STRING=system
     )
 
     if option systemd ; then
@@ -225,8 +222,9 @@ Percona-Server_src_configure() {
     ecmake \
         "${cmakeargs[@]}" \
         $(cmake_with debug DEBUG)\
-        $(cmake_with embedded-server EMBEDDED_SERVER)\
-        $(cmake_with tcpd LIBWRAP)
+        $(cmake_with embedded-server EMBEDDED_SERVER)
+        # See comment above about tcpd
+        #$(cmake_with tcpd LIBWRAP)
 }
 
 Percona-Server_src_install() {
