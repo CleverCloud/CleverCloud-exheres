@@ -66,9 +66,7 @@ DEPENDENCIES="
         pam? ( sys-libs/pam )
     run:
         sys-apps/iproute2
-        lower-privs? (
-            group/ipsec
-        )
+        group/ipsec
 "
 
 BUGS_TO="julien.durillon@gmail.com"
