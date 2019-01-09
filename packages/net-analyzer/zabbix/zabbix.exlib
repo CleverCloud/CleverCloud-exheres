@@ -21,6 +21,7 @@ DEPENDENCIES="
     build+run:
         dev-db/postgresql-client
         dev-libs/libevent:=
+        net-misc/curl
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl )
         group/zabbix
@@ -43,6 +44,7 @@ DEFAULT_SRC_CONFIGURE_PARAMS=(
     '--without-mbedtls'
     '--with-openssl'
     '--with-postgresql'
+    '--with-libcurl'
 )
 DEFAULT_SRC_COMPILE_PARAMS=( AR=${AR} RANLIB=${RANLIB} )
 DEFAULT_SRC_INSTALL_PARAMS=( AR=${AR} RANLIB=${RANLIB} )
