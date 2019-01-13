@@ -1,0 +1,54 @@
+# Copyright 2019 Julien Durillon <julien.durillon@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service [ systemd_files=[ "dnsdist.service" ] ]
+
+export_exlib_phases src_configure src_install
+
+SUMMARY="A highly DNS-, DoS- and abuse-aware loadbalancer. By the PowerDNS folks."
+HOMEPAGE="https://dnsdist.org"
+DOWNLOADS="https://downloads.powerdns.com/releases/${PNV}.tar.bz2"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS="
+    systemd
+"
+
+DEPENDENCIES="
+    build:
+        virtual/pkg-config[>=0.9.0]
+    build+run:
+        group/dnsdist
+        user/dnsdist
+        dev-lang/lua:=
+        dev-libs/boost[>=1.35.0]
+        dev-libs/libedit
+        dev-libs/libsodium
+        dev-libs/openssl
+        dev-libs/protobuf:=
+        dev-libs/re2
+        systemd? ( sys-apps/systemd )
+"
+
+dnsdist_src_configure() {
+    econf \
+        --sysconfdir=/etc/dnsdist \
+        --enable-libsodium \
+        --enable-re2 \
+        --enable-dnscrypt \
+        --enable-dns-over-tls \
+        --enable-libssl \
+        $(option_enable systemd)
+}
+
+dnsdist_src_install() {
+    default
+
+    ## So, we install users and groups. Let's use them.
+    edo sed -i dnsdist.service \
+        -e '/^ExecStart=/s/$/ --uid=dnsdist --gid=dnsdist/'
+
+    install_systemd_files
+}
+
