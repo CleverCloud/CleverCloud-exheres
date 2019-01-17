@@ -22,7 +22,7 @@ DEPENDENCIES="
         group/varnish
         dev-libs/libedit
         dev-libs/pcre
-        sys-libs/readline
+        sys-libs/readline:=
 "
 
 BUGS_TO="keruspe@exherbo.org"
