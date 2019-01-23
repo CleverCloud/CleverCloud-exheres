@@ -15,7 +15,13 @@ SLOT="$(ever range 1-2)"
 
 # In order to provide a stable code base, MySQL depends on a specific version of Boost.
 # Currently only Boost.Geometry headers are used and boost is just required at build time.
-BOOST_PV="1.67.0"
+if ever at_least 8; then
+    SPHINX_PV="3.1.1"
+    BOOST_PV="1.67.0"
+else
+    SPHINX_PV="2.2.9"
+    BOOST_PV="1.59.0"
+fi
 
 SUMMARY="A relational database management system (RDBMS)"
 HOMEPAGE="https://www.percona.com/"
@@ -61,11 +67,6 @@ DEPENDENCIES="
         dev-libs/libaio
         dev-libs/libedit
         dev-libs/protobuf:=[>=2.6.1]
-        dev-libs/rapidjson[>=1.1.0]
-        dev-libs/re2
-        net-libs/cyrus-sasl
-        net-libs/libtirpc
-        net-misc/curl
         sys-libs/zlib[>=1.2.3]
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl )
@@ -197,8 +198,6 @@ Percona-Server_src_configure() {
         -DWITH_TEST_TRACE_PLUGIN:BOOL=FALSE
         -DWITH_UBSAN:BOOL=FALSE
         -DUSE_CTAGS:BOOL=FALSE
-        -DWITH_RE2:STRING=system
-        -DWITH_RAPIDJSON:STRING=system
     )
 
     if option systemd ; then
