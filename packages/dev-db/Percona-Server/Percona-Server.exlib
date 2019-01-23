@@ -5,14 +5,13 @@
 
 myexparam release
 
-require cmake [ api=2 ] systemd-service
+require alternatives cmake [ api=2 ] systemd-service
 
 export_exlib_phases pkg_pretend src_prepare src_configure src_install pkg_postinst
 
 MYSQL_MAJOR_VERSION=$(ever range 1-2)
 
-# Miraculously works for MySQL >= 5.1 till at least 8.x
-SPHINX_PV="3.1.1"
+SLOT="$(ever range 1-2)"
 
 # In order to provide a stable code base, MySQL depends on a specific version of Boost.
 # Currently only Boost.Geometry headers are used and boost is just required at build time.
@@ -27,7 +26,6 @@ DOWNLOADS="
 "
 
 LICENCES="GPL-2" # with-exceptions
-SLOT="0"
 MYOPTIONS="
     debug
     embedded-server [[ description = [ The embedded MySQL server library, a full-featured MySQL server that can be run inside a client application ] ]]
@@ -36,6 +34,13 @@ MYOPTIONS="
     systemd
     ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
+
+if ! ever at_least 8; then
+    MYOPTIONS+="
+        tcpd
+    "
+fi
+
 # tcpd option can't compile because of https://jira.percona.com/browse/PS-5155
 # Upstream mysql fixed it according to https://bugs.mysql.com/bug.php?id=92983
 # but it's not yet released
@@ -72,6 +77,10 @@ DEPENDENCIES="
             description = [ Percona-Server is a drop-in replacement for MySQL with same binary names ]
             resolution = manual
         ]]
+        !dev-db/Percona-Server:0 [[
+            description = [ Slotify dev-db/Percona-Server ]
+            resolution = uninstall-blocked-before
+        ]]
     recommendation:
         dev-db/percona-toolkit [[ description = [ The percona toolkit to manage Percona-Server ] ]]
         memcached? ( net/memcached [[ description = [ The option provides the bundled memcached but you might want to use a stand-alone memcached as well ] ]] )
@@ -79,17 +88,31 @@ DEPENDENCIES="
         app-admin/logrotate [[ description = [ Use logrotate for rotating logs ] ]]
 "
 
+if ever at_least 8; then
+    DEPENDENCIES+="
+        build+run:
+            dev-libs/rapidjson[>=1.1.0]
+            dev-libs/re2
+            net-libs/cyrus-sasl
+            net-libs/libtirpc
+            net-misc/curl
+    "
+else
+    DEPENDENCIES+="
+        build+run:
+            tcpd? ( sys-apps/tcp-wrappers )
+    "
+fi
+
 WORK="${WORKBASE}/${PNV,,}-$(exparam release)"
 CMAKE_SOURCE="${WORK}"
 
 Percona-Server_pkg_pretend() {
     # Sanity check when upgrading to a different x.y version of mysql
-    if [[ -z ${MYSQL_MAJOR_UPGRADE} ]] && has_version ${CATEGORY}/${PN} && \
-        ! has_version ${CATEGORY}/${PN}[=${MYSQL_MAJOR_VERSION}*] ; then
-        ewarn "To install a different major version of MySQL, you have to dump/reload your database."
-        ewarn "When you've done this, please set 'MYSQL_MAJOR_UPGRADE=YesPlease', to continue the upgrade."
+    if [[ -z ${MYSQL_MOVE_TO_SLOTS} ]] && has_version --root "${CATEGORY}/${PN}:0"; then
+        ewarn "To migrate to the slotted versions of Percona-Server, you have to dump/reload your database."
+        ewarn "When you've done this, please set 'MYSQL_MOVE_TO_SLOTS=YesPlease', to continue the upgrade."
         ewarn "For more information visit:"
-        ewarn "${HOMEPAGE}/doc/${PN,,}/${PV}/upgrading_guide_56_57.html"
         die "Dump your databases before doing a major version upgrade of MySQL."
     fi
 
@@ -124,24 +147,24 @@ Percona-Server_src_configure() {
         -DDEFAULT_CHARSET:STRING=utf8
         -DDEFAULT_COLLATION:STRING=utf8_general_ci
         -DFEATURE_SET:STRING=community
-        -DINSTALL_BINDIR:PATH=$(exhost --target)/bin
-        -DINSTALL_DOCDIR:PATH=share/doc/${PNVR}
-        -DINSTALL_DOCREADMEDIR:PATH=share/doc/${PNVR}
-        -DINSTALL_INCLUDEDIR:PATH=$(exhost --target)/include/mysql
-        -DINSTALL_INFODIR:PATH=share/mysql/info
-        -DINSTALL_LIBDIR:PATH=$(exhost --target)/lib/mysql
-        -DINSTALL_MANDIR:PATH=share/man
-        -DINSTALL_MYSQLSHAREDIR:PATH=share/mysql
+        -DINSTALL_BINDIR:PATH=$(exhost --target)/libexec/mysql-${SLOT}
+        -DINSTALL_DOCDIR:PATH=share/doc/${PNVR}-${SLOT}
+        -DINSTALL_DOCREADMEDIR:PATH=share/doc/${PNVR}-${SLOT}
+        -DINSTALL_INCLUDEDIR:PATH=$(exhost --target)/include/mysql-${SLOT}
+        -DINSTALL_INFODIR:PATH=share/mysql-${SLOT}/info
+        -DINSTALL_LIBDIR:PATH=$(exhost --target)/lib/mysql-${SLOT}
+        -DINSTALL_MANDIR:PATH=share/man/mysql-${SLOT}
+        -DINSTALL_MYSQLSHAREDIR:PATH=share/mysql-${SLOT}
         # Empty value to not install the mysql-test directory
         -DINSTALL_MYSQLTESTDIR:STRING=
-        -DINSTALL_PLUGINDIR:PATH=$(exhost --target)/lib/mysql/plugin
-        -DINSTALL_SBINDIR:PATH=$(exhost --target)/bin
-        -DINSTALL_SCRIPTDIR:PATH=$(exhost --target)/bin
+        -DINSTALL_PLUGINDIR:PATH=$(exhost --target)/lib/mysql-${SLOT}/plugin
+        -DINSTALL_SBINDIR:PATH=$(exhost --target)/libexec/mysql-${SLOT}
+        -DINSTALL_SCRIPTDIR:PATH=$(exhost --target)/libexec/mysql-${SLOT}
         -DINSTALL_SHAREDIR:PATH=share
-        -DINSTALL_SUPPORTFILESDIR:PATH=share/mysql
-        -DMYSQL_DATADIR:PATH=/var/lib/mysql
-        -DMYSQL_UNIX_ADDR:PATH=/run/mysqld/mysqld.sock
-        -DSYSCONFDIR:PATH=/etc/mysql
+        -DINSTALL_SUPPORTFILESDIR:PATH=share/mysql-${SLOT}
+        -DMYSQL_DATADIR:PATH=/var/lib/mysql/${SLOT}
+        -DMYSQL_UNIX_ADDR:PATH=/run/mysqld-${SLOT}/mysqld.sock
+        -DSYSCONFDIR:PATH=/etc/mysql-${SLOT}
         -DENABLED_PROFILING:BOOL=TRUE
         -DWITH_ASAN:BOOL=FALSE
         -DWITH_EXTRA_CHARSETS:STRING=all
@@ -181,7 +204,7 @@ Percona-Server_src_configure() {
     if option systemd ; then
         cmakeargs+=(
             -DWITH_SYSTEMD:BOOL=TRUE
-            -DSYSTEMD_PID_DIR:PATH=/run/mysqld
+            -DSYSTEMD_PID_DIR:PATH=/run/mysqld-${SLOT}
             -DSYSTEMD_SERVICES_DIR:PATH=${SYSTEMDSYSTEMUNITDIR}
             -DSYSTEMD_TMPFILES_DIR:PATH=/usr/$(exhost --target)/lib/tmpfiles.d
         )
@@ -219,27 +242,37 @@ Percona-Server_src_configure() {
         )
     fi
 
+    if ever at_least 8; then
+        cmakeargs+=(
+            -DWITH_RE2:STRING=system
+            -DWITH_RAPIDJSON:STRING=system
+        )
+    else
+        cmakeargs+=( $(cmake_with tcpd LIBWRAP) )
+    fi
+
     ecmake \
         "${cmakeargs[@]}" \
         $(cmake_with debug DEBUG)\
         $(cmake_with embedded-server EMBEDDED_SERVER)
-        # See comment above about tcpd
-        #$(cmake_with tcpd LIBWRAP)
 }
 
 Percona-Server_src_install() {
+    local alternatives=()
     cmake_src_install
 
     # Remove empty directories
-    ! option debug && edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/mysql/plugin/debug
+    ! option debug && edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/mysql-${SLOT}/plugin/debug
 
-    keepdir /etc/mysql
+    keepdir /etc/mysql-${SLOT}
 
-    insinto /etc/mysql
-    newins "${FILES}"/mysql-$(ever range 1-2)-my.cnf my.cnf
+    insinto /etc/mysql-${SLOT}
+    newins "${FILES}"/my-${SLOT}.cnf my.cnf
 
-    hereenvd 46mysql <<EOF
-LDPATH=/usr/@TARGET@/lib/mysql
+    alternatives+=( "/etc/mysql/" "/etc/mysql-${SLOT}" )
+
+    hereenvd 46mysql-${SLOT} <<EOF
+LDPATH=/usr/@TARGET@/lib/mysql-${SLOT}
 EOF
 
     insinto /etc/logrotate.d
@@ -248,6 +281,32 @@ EOF
     keepdir /var/lib/mysql-files
     edo chown mysql:mysql "${IMAGE}"/var/lib/mysql-files
     edo chmod 0750 "${IMAGE}"/var/lib/mysql-files
+    edo rm "${IMAGE}"/usr/{README.md,COPYING.*,PATENTS}
+
+    for bin in mysql mysqldump mysqladmin; do
+        alternatives+=(
+            /usr/$(exhost --target)/bin/${bin}  /usr/$(exhost --target)/libexec/mysql-${SLOT}/${bin}
+        )
+    done
+
+    edo cd "${IMAGE}"
+
+    for manpage in usr/share/man/man1/*.1; do
+        manfile=${manpage##*/}
+        alternatives+=( "/${manpage}" "${manfile/%.1/-${SLOT}.1}" )
+    done
+
+    alternatives+=(
+        "/usr/share/man/man8/mysqld.8" "mysqld-${SLOT}.8"
+        "/usr/share/aclocal/mysql.m4" "mysql-${SLOT}.m4"
+    )
+
+    edo mv "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}/"mysqld{,-${SLOT//./}}.service
+    edo mv "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}/"mysqld{,-${SLOT//./}}@.service
+    edo mv "${IMAGE}"/usr/$(exhost --target)/lib/tmpfiles.d/mysql{,-${SLOT}}.conf
+    edo mv "${IMAGE}"/usr/share/aclocal/mysql{,-${SLOT}}.m4
+
+    alternatives_for ${PN} ${SLOT} ${SLOT} "${alternatives[@]}"
 }
 
 Percona-Server_pkg_postinst() {
