@@ -282,7 +282,7 @@ EOF
     edo chmod 0750 "${IMAGE}"/var/lib/mysql-files
     edo rm "${IMAGE}"/usr/{README.md,COPYING.*,PATENTS}
 
-    for bin in mysql mysqldump mysqladmin; do
+    for bin in mysql mysqldump mysqladmin mysql_config; do
         alternatives+=(
             /usr/$(exhost --target)/bin/${bin}  /usr/$(exhost --target)/libexec/mysql-${SLOT}/${bin}
         )
