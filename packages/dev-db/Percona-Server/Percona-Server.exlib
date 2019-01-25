@@ -301,6 +301,7 @@ EOF
     )
 
     edo mv "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}/"mysqld{,-${SLOT//./}}.service
+    edo sed -e "s/@MYSQL_SLOT@/${SLOT}/g" -i "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}/"mysqld-${SLOT//./}.service
     edo mv "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}/"mysqld{,-${SLOT//./}}@.service
     edo mv "${IMAGE}"/usr/$(exhost --target)/lib/tmpfiles.d/mysql{,-${SLOT}}.conf
     edo mv "${IMAGE}"/usr/share/aclocal/mysql{,-${SLOT}}.m4
