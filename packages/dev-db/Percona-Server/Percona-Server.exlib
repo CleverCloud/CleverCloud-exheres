@@ -309,6 +309,8 @@ EOF
 }
 
 Percona-Server_pkg_postinst() {
+    alternatives_pkg_postinst
+
     if option sphinx ; then
         elog "In order to finalise your installation of the Sphinx Search Engine, you must install"
         elog "it in MySQL using the following command as an administrative user:"
