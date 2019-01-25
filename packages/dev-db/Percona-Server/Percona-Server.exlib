@@ -305,7 +305,7 @@ EOF
     edo mv "${IMAGE}"/usr/$(exhost --target)/lib/tmpfiles.d/mysql{,-${SLOT}}.conf
     edo mv "${IMAGE}"/usr/share/aclocal/mysql{,-${SLOT}}.m4
 
-    alternatives_for ${PN} ${SLOT} ${SLOT} "${alternatives[@]}"
+    alternatives_for mysql ${SLOT} ${SLOT} "${alternatives[@]}"
 }
 
 Percona-Server_pkg_postinst() {
