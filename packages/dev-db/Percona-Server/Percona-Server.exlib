@@ -268,8 +268,6 @@ Percona-Server_src_install() {
     insinto /etc/mysql-${SLOT}
     newins "${FILES}"/my-${SLOT}.cnf my.cnf
 
-    alternatives+=( "/etc/mysql/" "/etc/mysql-${SLOT}" )
-
     hereenvd 46mysql-${SLOT} <<EOF
 LDPATH=/usr/@TARGET@/lib/mysql-${SLOT}
 EOF
@@ -301,7 +299,6 @@ EOF
     )
 
     edo mv "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}/"mysqld{,-${SLOT//./}}.service
-    edo sed -e "s/@MYSQL_SLOT@/${SLOT}/g" -i "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}/"mysqld-${SLOT//./}.service
     edo mv "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}/"mysqld{,-${SLOT//./}}@.service
     edo mv "${IMAGE}"/usr/$(exhost --target)/lib/tmpfiles.d/mysql{,-${SLOT}}.conf
     edo mv "${IMAGE}"/usr/share/aclocal/mysql{,-${SLOT}}.m4
