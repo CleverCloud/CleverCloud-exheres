@@ -1,8 +1,0 @@
-# Copyright 2016 Julien Durillon <julien.durillon@gmail.com>
-# Distributed under the terms of the GNU General Public License v2
-
-require github [ user="${PN}" pn=client ]
-require keybase
-
-PLATFORMS="~amd64"
-
