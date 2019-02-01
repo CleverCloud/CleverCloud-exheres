@@ -1,0 +1,373 @@
+Upstream: yes
+From c388d2db35d576862ebf42758686df340bc0bb9f Mon Sep 17 00:00:00 2001
+From: Blake Oler <blake.oler@mongodb.com>
+Date: Wed, 10 Oct 2018 10:48:11 -0400
+Subject: [PATCH] SERVER-36964 Prevent secondaries in SessionsCollectionRS from
+ attempting to set up the sessions collection.
+
+(cherry picked from commit 6894b72f134534c3739a66ed9eee11e265b9c1e1)
+---
+ jstests/replsets/refresh_sessions_rs.js       |  6 +++-
+ .../sessions_collection_auto_healing.js       | 14 ++++-----
+ src/mongo/db/logical_session_cache_impl.cpp   | 23 +++++++++-----
+ src/mongo/db/sessions_collection.cpp          |  4 ++-
+ src/mongo/db/sessions_collection.h            |  6 ++++
+ .../db/sessions_collection_config_server.cpp  |  4 +++
+ .../db/sessions_collection_config_server.h    |  5 ++++
+ src/mongo/db/sessions_collection_mock.h       |  4 +++
+ src/mongo/db/sessions_collection_rs.cpp       | 30 ++++++++++++++-----
+ src/mongo/db/sessions_collection_rs.h         |  5 ++++
+ src/mongo/db/sessions_collection_sharded.cpp  |  6 +++-
+ src/mongo/db/sessions_collection_sharded.h    |  6 ++++
+ .../db/sessions_collection_standalone.cpp     | 21 +++++++++++++
+ src/mongo/db/sessions_collection_standalone.h |  5 ++++
+ 14 files changed, 112 insertions(+), 27 deletions(-)
+
+diff --git a/jstests/replsets/refresh_sessions_rs.js b/jstests/replsets/refresh_sessions_rs.js
+index 3a5cdd98218..4539e667d07 100644
+--- a/jstests/replsets/refresh_sessions_rs.js
++++ b/jstests/replsets/refresh_sessions_rs.js
+@@ -26,9 +26,13 @@
+ 
+     var res;
+ 
+-    // Trigger an initial refresh on all members, as a sanity check.
++    // The primary needs to create the sessions collection so that the secondaries can act upon it.
++    // This is done by an initial refresh of the primary.
+     res = db1.runCommand(refresh);
+     assert.commandWorked(res, "failed to refresh");
++    replTest.awaitReplication();
++
++    // Trigger an initial refresh on secondaries as a sanity check.
+     res = db2.runCommand(refresh);
+     assert.commandWorked(res, "failed to refresh");
+     res = db3.runCommand(refresh);
+diff --git a/jstests/replsets/sessions_collection_auto_healing.js b/jstests/replsets/sessions_collection_auto_healing.js
+index c56fb24639a..ed332241921 100644
+--- a/jstests/replsets/sessions_collection_auto_healing.js
++++ b/jstests/replsets/sessions_collection_auto_healing.js
+@@ -45,7 +45,7 @@ load('jstests/libs/sessions_collection.js');
+         validateSessionsCollection(secondary, false, false);
+     }
+ 
+-    // Test that a refresh on a secondary creates the sessions collection.
++    // Test that a refresh on a secondary does not create the sessions collection.
+     {
+         validateSessionsCollection(primary, false, false);
+ 
+@@ -54,15 +54,13 @@ load('jstests/libs/sessions_collection.js');
+ 
+         assert.commandWorked(secondaryAdmin.runCommand({refreshLogicalSessionCacheNow: 1}));
+ 
+-        validateSessionsCollection(primary, true, true);
++        validateSessionsCollection(primary, false, false);
+ 
+         replTest.awaitReplication();
+-        validateSessionsCollection(secondary, true, true);
++        validateSessionsCollection(secondary, false, false);
+     }
+     // Test that a refresh on the primary creates the sessions collection.
+     {
+-        assert.commandWorked(primary.getDB("config").runCommand(
+-            {drop: "system.sessions", writeConcern: {w: "majority"}}));
+         validateSessionsCollection(primary, false, false);
+ 
+         replTest.awaitReplication();
+@@ -73,7 +71,7 @@ load('jstests/libs/sessions_collection.js');
+         validateSessionsCollection(primary, true, true);
+     }
+ 
+-    // Test that a refresh on a secondary will create the TTL index on the sessions collection.
++    // Test that a refresh on a secondary will not create the TTL index on the sessions collection.
+     {
+         assert.commandWorked(primary.getDB("config").system.sessions.dropIndex({lastUse: 1}));
+ 
+@@ -81,13 +79,11 @@ load('jstests/libs/sessions_collection.js');
+ 
+         assert.commandWorked(secondaryAdmin.runCommand({refreshLogicalSessionCacheNow: 1}));
+ 
+-        validateSessionsCollection(primary, true, true);
++        validateSessionsCollection(primary, true, false);
+     }
+ 
+     // Test that a refresh on the primary will create the TTL index on the sessions collection.
+     {
+-        assert.commandWorked(primary.getDB("config").system.sessions.dropIndex({lastUse: 1}));
+-
+         validateSessionsCollection(primary, true, false);
+ 
+         assert.commandWorked(primaryAdmin.runCommand({refreshLogicalSessionCacheNow: 1}));
+diff --git a/src/mongo/db/logical_session_cache_impl.cpp b/src/mongo/db/logical_session_cache_impl.cpp
+index 210d8b5626f..1b32ed8d3cc 100644
+--- a/src/mongo/db/logical_session_cache_impl.cpp
++++ b/src/mongo/db/logical_session_cache_impl.cpp
+@@ -221,10 +221,18 @@ Status LogicalSessionCacheImpl::_reap(Client* client) {
+             return uniqueCtx->get();
+         }();
+ 
+-        auto res = _sessionsColl->setupSessionsCollection(opCtx);
+-        if (!res.isOK()) {
+-            log() << "Sessions collection is not set up; "
+-                  << "waiting until next sessions reap interval: " << res.reason();
++        auto existsStatus = _sessionsColl->checkSessionsCollectionExists(opCtx);
++        if (!existsStatus.isOK()) {
++            StringData notSetUpWarning =
++                "Sessions collection is not set up; "
++                "waiting until next sessions reap interval";
++            if (existsStatus.code() != ErrorCodes::NamespaceNotFound ||
++                existsStatus.code() != ErrorCodes::NamespaceNotSharded) {
++                log() << notSetUpWarning << ": " << existsStatus.reason();
++            } else {
++                log() << notSetUpWarning;
++            }
++
+             return Status::OK();
+         }
+ 
+@@ -284,10 +292,11 @@ void LogicalSessionCacheImpl::_refresh(Client* client) {
+         return uniqueCtx->get();
+     }();
+ 
+-    auto res = _sessionsColl->setupSessionsCollection(opCtx);
+-    if (!res.isOK()) {
++    auto setupStatus = _sessionsColl->setupSessionsCollection(opCtx);
++
++    if (!setupStatus.isOK()) {
+         log() << "Sessions collection is not set up; "
+-              << "waiting until next sessions refresh interval: " << res.reason();
++              << "waiting until next sessions refresh interval: " << setupStatus.reason();
+         return;
+     }
+ 
+diff --git a/src/mongo/db/sessions_collection.cpp b/src/mongo/db/sessions_collection.cpp
+index eee9445d85c..05b6df1666c 100644
+--- a/src/mongo/db/sessions_collection.cpp
++++ b/src/mongo/db/sessions_collection.cpp
+@@ -48,6 +48,8 @@
+ 
+ namespace mongo {
+ 
++constexpr StringData SessionsCollection::kSessionsTTLIndex;
++
+ namespace {
+ 
+ // This batch size is chosen to ensure that we don't form requests larger than the 16mb limit.
+@@ -304,7 +306,7 @@ StatusWith<LogicalSessionIdSet> SessionsCollection::doFetch(const NamespaceStrin
+ BSONObj SessionsCollection::generateCreateIndexesCmd() {
+     NewIndexSpec index;
+     index.setKey(BSON("lastUse" << 1));
+-    index.setName("lsidTTLIndex");
++    index.setName(kSessionsTTLIndex);
+     index.setExpireAfterSeconds(localLogicalSessionTimeoutMinutes * 60);
+ 
+     std::vector<NewIndexSpec> indexes;
+diff --git a/src/mongo/db/sessions_collection.h b/src/mongo/db/sessions_collection.h
+index 46df9465af8..e592e9a7b5d 100644
+--- a/src/mongo/db/sessions_collection.h
++++ b/src/mongo/db/sessions_collection.h
+@@ -50,6 +50,7 @@ class SessionsCollection {
+ 
+ public:
+     static const NamespaceString kSessionsNamespaceString;
++    static constexpr StringData kSessionsTTLIndex = "lsidTTLIndex"_sd;
+ 
+     virtual ~SessionsCollection();
+ 
+@@ -58,6 +59,11 @@ class SessionsCollection {
+      */
+     virtual Status setupSessionsCollection(OperationContext* opCtx) = 0;
+ 
++    /**
++     * Checks if the sessions collection exists and has the proper indexes.
++     */
++    virtual Status checkSessionsCollectionExists(OperationContext* opCtx) = 0;
++
+     /**
+      * Updates the last-use times on the given sessions to be greater than
+      * or equal to the given time. Returns an error if a networking issue occurred.
+diff --git a/src/mongo/db/sessions_collection_config_server.cpp b/src/mongo/db/sessions_collection_config_server.cpp
+index 2d082f9fa66..8ae627f1b90 100644
+--- a/src/mongo/db/sessions_collection_config_server.cpp
++++ b/src/mongo/db/sessions_collection_config_server.cpp
+@@ -124,4 +124,8 @@ Status SessionsCollectionConfigServer::setupSessionsCollection(OperationContext*
+     }
+ }
+ 
++Status SessionsCollectionConfigServer::checkSessionsCollectionExists(OperationContext* opCtx) {
++    return _checkCacheForSessionsCollection(opCtx);
++}
++
+ }  // namespace mongo
+diff --git a/src/mongo/db/sessions_collection_config_server.h b/src/mongo/db/sessions_collection_config_server.h
+index 65138e94d49..2e80ca90fca 100644
+--- a/src/mongo/db/sessions_collection_config_server.h
++++ b/src/mongo/db/sessions_collection_config_server.h
+@@ -56,6 +56,11 @@ class SessionsCollectionConfigServer : public SessionsCollectionSharded {
+     */
+     Status setupSessionsCollection(OperationContext* opCtx) override;
+ 
++    /**
++    * Checks if the sessions collection exists.
++    */
++    Status checkSessionsCollectionExists(OperationContext* opCtx) override;
++
+ private:
+     Status _shardCollectionIfNeeded(OperationContext* opCtx);
+     Status _generateIndexesIfNeeded(OperationContext* opCtx);
+diff --git a/src/mongo/db/sessions_collection_mock.h b/src/mongo/db/sessions_collection_mock.h
+index 7d7c3dfd8d8..c7cb1ff5338 100644
+--- a/src/mongo/db/sessions_collection_mock.h
++++ b/src/mongo/db/sessions_collection_mock.h
+@@ -110,6 +110,10 @@ class MockSessionsCollection : public SessionsCollection {
+         return Status::OK();
+     }
+ 
++    Status checkSessionsCollectionExists(OperationContext* opCtx) override {
++        return Status::OK();
++    }
++
+     Status refreshSessions(OperationContext* opCtx,
+                            const LogicalSessionRecordSet& sessions) override {
+         return _impl->refreshSessions(sessions);
+diff --git a/src/mongo/db/sessions_collection_rs.cpp b/src/mongo/db/sessions_collection_rs.cpp
+index cdb2d1b2321..cec3efe7e61 100644
+--- a/src/mongo/db/sessions_collection_rs.cpp
++++ b/src/mongo/db/sessions_collection_rs.cpp
+@@ -169,14 +169,28 @@ Status SessionsCollectionRS::setupSessionsCollection(OperationContext* opCtx) {
+ 
+             return Status::OK();
+         },
+-        [&](DBClientBase* client) {
+-            BSONObj info;
+-            auto cmd = generateCreateIndexesCmd();
+-            if (!client->runCommand(kSessionsNamespaceString.db().toString(), cmd, info)) {
+-                return getStatusFromCommandResult(info);
+-            }
+-            return Status::OK();
+-        });
++        [&](DBClientBase*) { return checkSessionsCollectionExists(opCtx); });
++}
++
++Status SessionsCollectionRS::checkSessionsCollectionExists(OperationContext* opCtx) {
++    DBDirectClient client(opCtx);
++
++    auto indexes = client.getIndexSpecs(kSessionsNamespaceString.toString());
++
++    if (indexes.size() == 0u) {
++        return Status{ErrorCodes::NamespaceNotFound, "config.system.sessions does not exist"};
++    }
++
++    auto indexExists = std::find_if(indexes.begin(), indexes.end(), [](const BSONObj& index) {
++        return index.getField("name").String() == kSessionsTTLIndex;
++    });
++
++    if (indexExists == indexes.end()) {
++        return Status{ErrorCodes::IndexNotFound,
++                      "config.system.sessions does not have the required TTL index"};
++    }
++
++    return Status::OK();
+ }
+ 
+ Status SessionsCollectionRS::refreshSessions(OperationContext* opCtx,
+diff --git a/src/mongo/db/sessions_collection_rs.h b/src/mongo/db/sessions_collection_rs.h
+index 9558f92860b..0dfe92fe301 100644
+--- a/src/mongo/db/sessions_collection_rs.h
++++ b/src/mongo/db/sessions_collection_rs.h
+@@ -60,6 +60,11 @@ class SessionsCollectionRS : public SessionsCollection {
+      */
+     Status setupSessionsCollection(OperationContext* opCtx) override;
+ 
++    /**
++     * Checks if the sessions collection exists and has the proper indexes.
++     */
++    Status checkSessionsCollectionExists(OperationContext* opCtx) override;
++
+     /**
+      * Updates the last-use times on the given sessions to be greater than
+      * or equal to the current time.
+diff --git a/src/mongo/db/sessions_collection_sharded.cpp b/src/mongo/db/sessions_collection_sharded.cpp
+index 3a598aeec24..a4f5735954b 100644
+--- a/src/mongo/db/sessions_collection_sharded.cpp
++++ b/src/mongo/db/sessions_collection_sharded.cpp
+@@ -75,10 +75,14 @@ Status SessionsCollectionSharded::_checkCacheForSessionsCollection(OperationCont
+         return Status::OK();
+     }
+ 
+-    return {ErrorCodes::NamespaceNotFound, "config.system.sessions is not yet sharded"};
++    return {ErrorCodes::NamespaceNotFound, "config.system.sessions does not exist"};
+ }
+ 
+ Status SessionsCollectionSharded::setupSessionsCollection(OperationContext* opCtx) {
++    return checkSessionsCollectionExists(opCtx);
++}
++
++Status SessionsCollectionSharded::checkSessionsCollectionExists(OperationContext* opCtx) {
+     return _checkCacheForSessionsCollection(opCtx);
+ }
+ 
+diff --git a/src/mongo/db/sessions_collection_sharded.h b/src/mongo/db/sessions_collection_sharded.h
+index 333c202337e..39e1ff29087 100644
+--- a/src/mongo/db/sessions_collection_sharded.h
++++ b/src/mongo/db/sessions_collection_sharded.h
+@@ -51,6 +51,12 @@ class SessionsCollectionSharded : public SessionsCollection {
+      */
+     Status setupSessionsCollection(OperationContext* opCtx) override;
+ 
++    /**
++     * Checks if the sessions collection exists. Does not check if the index exists in the sharded
++     * version of this function.
++     */
++    virtual Status checkSessionsCollectionExists(OperationContext* opCtx) override;
++
+     /**
+      * Updates the last-use times on the given sessions to be greater than
+      * or equal to the current time.
+diff --git a/src/mongo/db/sessions_collection_standalone.cpp b/src/mongo/db/sessions_collection_standalone.cpp
+index e0d3de526e1..c835b1fc90f 100644
+--- a/src/mongo/db/sessions_collection_standalone.cpp
++++ b/src/mongo/db/sessions_collection_standalone.cpp
+@@ -58,6 +58,27 @@ Status SessionsCollectionStandalone::setupSessionsCollection(OperationContext* o
+     return Status::OK();
+ }
+ 
++Status SessionsCollectionStandalone::checkSessionsCollectionExists(OperationContext* opCtx) {
++    DBDirectClient client(opCtx);
++
++    auto indexes = client.getIndexSpecs(kSessionsNamespaceString.toString());
++
++    if (indexes.size() == 0u) {
++        return Status{ErrorCodes::NamespaceNotFound, "config.system.sessions does not exist"};
++    }
++
++    auto indexExists = std::find_if(indexes.begin(), indexes.end(), [](const BSONObj& index) {
++        return index.getField("name").String() == kSessionsTTLIndex;
++    });
++
++    if (indexExists == indexes.end()) {
++        return Status{ErrorCodes::IndexNotFound,
++                      "config.system.sessions does not have the required TTL index"};
++    };
++
++    return Status::OK();
++}
++
+ Status SessionsCollectionStandalone::refreshSessions(OperationContext* opCtx,
+                                                      const LogicalSessionRecordSet& sessions) {
+     DBDirectClient client(opCtx);
+diff --git a/src/mongo/db/sessions_collection_standalone.h b/src/mongo/db/sessions_collection_standalone.h
+index 53e572b9d28..ac45fe33336 100644
+--- a/src/mongo/db/sessions_collection_standalone.h
++++ b/src/mongo/db/sessions_collection_standalone.h
+@@ -49,6 +49,11 @@ class SessionsCollectionStandalone : public SessionsCollection {
+      */
+     Status setupSessionsCollection(OperationContext* opCtx) override;
+ 
++    /**
++     * Checks if the sessions collection exists and has the proper indexes.
++     */
++    Status checkSessionsCollectionExists(OperationContext* opCtx) override;
++
+     /**
+      * Updates the last-use times on the given sessions to be greater than
+      * or equal to the current time.

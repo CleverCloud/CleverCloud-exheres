@@ -50,6 +50,8 @@ SCONS_SRC_INSTALL_PARAMS=("${MONGO_PARAMS[@]}")
 
 RESTRICT="test"
 
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/c388d2db35d576862ebf42758686df340bc0bb9f.patch )
+
 src_prepare() {
     default
     edo sed -e '/"-ggdb",/d' -i SConstruct
