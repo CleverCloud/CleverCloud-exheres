@@ -14,6 +14,7 @@ DEPENDENCIES="
     build+run:
         x11-libs/qtsvg:5
         x11-libs/qtwebkit:5
+        x11-libs/qtxmlpatterns:5
 "
 
 BUGS_TO="julien.durillon@clever-cloud.com"
