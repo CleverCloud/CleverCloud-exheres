@@ -4,6 +4,9 @@
 require github [ user=Yubico tag="v${PV}" ]
 require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
 require udev-rules
+require utf8-locale
+
+export_exlib_phases pkg_setup
 
 SUMMARY="YubiKey Personalization cross-platform library and tool"
 HOMEPAGE="http://opensource.yubico.com/yubikey-personalization/"
@@ -22,4 +25,9 @@ DEPENDENCIES="
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS=( --with-udevrulesdir="${UDEVRULESDIR=}" )
+
+
+yubikey-personalization_pkg_setup() {
+    require_utf8_locale
+}
 
