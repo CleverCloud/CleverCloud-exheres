@@ -1,0 +1,48 @@
+Upstream: yes
+
+From c7524e65d96c70d5c2315b150346fc7c4bd89914 Mon Sep 17 00:00:00 2001
+From: Heiko Becker <heirecka@exherbo.org>
+Date: Thu, 7 Feb 2019 19:32:10 +0100
+Subject: [PATCH] Handle the *BSDs specifically instead of glibc and win
+
+After all they appear to be different in that regard.
+This also fixes building with musl (#115).
+---
+ tests/test_args_to_config.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/tests/test_args_to_config.c b/tests/test_args_to_config.c
+index d0bf261..d70ddc8 100644
+--- a/tests/test_args_to_config.c
++++ b/tests/test_args_to_config.c
+@@ -132,10 +132,10 @@ static int _test_config (YKP_CONFIG *cfg, YK_STATUS *st, int argc, char **argv)
+ 	ykp_errno = 0;
+ 
+ /* getopt reinit (BSD systems use optreset and a different optind value) */
+-#if defined(__GLIBC__) || defined(_WIN32)
+-	optind = 0;
+-#else
++#if defined __FreeBSD__ || defined __OpenBSD__ || defined __NetBSD__
+ 	optind = optreset = 1;
++#else
++	optind = 0;
+ #endif
+ 
+ 	/* copy version number from st into cfg */
+@@ -329,10 +329,10 @@ static void _test_non_config_args(void)
+ 	ykp_errno = 0;
+ 
+ /* getopt reinit (BSD systems use optreset and a different optind value) */
+-#if defined(__GLIBC__) || defined(_WIN32)
+-	optind = 0;
+-#else
++#if defined __FreeBSD__ || defined __OpenBSD__ || defined __NetBSD__
+ 	optind = optreset = 1;
++#else
++	optind = 0;
+ #endif
+ 
+ 	/* copy version number from st into cfg */
+-- 
+2.20.1
+
