@@ -1,0 +1,43 @@
+# Copyright 2019 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Extends the SQLite core to support fully fledged Spatial SQL capabilities"
+HOMEPAGE="https://www.gaia-gis.it/fossil/${PN}/index"
+DOWNLOADS="https://www.gaia-gis.it/gaia-sins/${PNV}.tar.gz"
+
+LICENCES="|| ( MPL-1.1 GPL-2 LGPL-2.1 )"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+        dev-db/sqlite:3[>=3.7.3]
+        dev-libs/libxml2:2.0
+        sci-libs/geos[>=3.4.0]
+        sci-libs/proj
+        sys-libs/zlib
+"
+
+BUGS_TO="keruspe@exherbo.org"
+
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --enable-epsg
+    --enable-gcp
+    --enable-geocallbacks
+    --enable-geopackage
+    --enable-geos
+    --enable-geosadvanced
+    --enable-iconv
+    --enable-libxml2
+    --enable-mathsql
+    --enable-proj
+
+    --disable-examples
+    --disable-freexl
+    --disable-gcov
+    --disable-lwgeom
+)
+
+
