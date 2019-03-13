@@ -5,7 +5,3 @@ require yubikey-personalization
 
 PLATFORMS="~amd64"
 
-DEFAULT_SRC_PREPARE_PATCHES+=(
-    "${FILES}"/${PN}-Handle-the-BSDs-specifically-instead-of-glibc-and-wi.patch
-)
-
