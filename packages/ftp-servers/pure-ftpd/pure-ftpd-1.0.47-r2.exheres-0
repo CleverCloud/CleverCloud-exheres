@@ -7,3 +7,8 @@ DOWNLOADS="https://download.pureftpd.org/pub/${PN}/releases/${PNV}.tar.bz2"
 
 PLATFORMS="~amd64"
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/max-data-size-argon2id.patch"
+    "${FILES}/tls-1.3.patch"
+)
+
