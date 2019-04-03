@@ -9,7 +9,7 @@ SUMMARY="Process markdown into man pages"
 
 LICENCES="MIT"
 SLOT="0"
-PLATFORMS="~amd64"
+PLATFORMS="~amd64 ~armv7"
 
 MYOPTIONS=""
 DEPENDENCIES="
