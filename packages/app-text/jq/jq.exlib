@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user=stedolan tag=${PNV} ]
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 1.13 ] ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 1.15 1.13 ] ]
 require python # gen_utf8_table.py
 
 export_exlib_phases src_prepare src_install
