@@ -1,0 +1,32 @@
+# Copyright 2019 Julien Durillon <julien.durillon@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="LLDP allows you to know exactly on which port is a server (and reciprocally)."
+DESCRIPTION="
+lldpd is an ISC-licensed implementation of LLDP for various Unixes. It also supports some
+proprietary protocols.
+"
+HOMEPAGE="https://vincentbernat.github.io/lldpd/"
+DOWNLOADS="https://media.luffy.cx/files/lldpd/${PNV}.tar.gz"
+
+LICENCES="ISC"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+        user/$PN
+        group/$PN
+"
+
+BUGS_TO="julien.durillon@clever-cloud.com"
+
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --enable-pie
+    --with-privsep-group="$PN"
+    --with-privsep-user="$PN"
+    --runstatedir=/var/run
+)
+
