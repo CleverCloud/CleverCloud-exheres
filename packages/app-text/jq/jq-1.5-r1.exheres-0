@@ -3,7 +3,7 @@
 
 require jq
 
-PLATFORMS="~amd64 ~armv7"
+PLATFORMS="~amd64 ~armv7 ~armv8"
 
 # Tests fail: last checked: 1.5
 RESTRICT="test"
