@@ -1,0 +1,46 @@
+Upstream: submitted, https://github.com/graalvm/mx/pull/190
+From da7e8d93dd08c4c8101c8299318b7e7cc872b637 Mon Sep 17 00:00:00 2001
+From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+Date: Mon, 8 Apr 2019 14:19:04 +0200
+Subject: [PATCH] Support overriding gcc/g++/ar from environment
+
+Signed-off-by: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+---
+ mx_native.py | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/mx_native.py b/mx_native.py
+index c78a6989..ca412a44 100644
+--- a/mx_native.py
++++ b/mx_native.py
+@@ -342,7 +342,9 @@ def cc_rule(self, cxx=False):
+             depfile = None
+             deps = 'msvc'
+         else:
+-            command = '%s -MMD -MF $out.d $includes $cflags -c $in -o $out' % ('g++' if cxx else 'gcc')
++            c_compiler = os.getenv('CC', 'gcc')
++            cxx_compiler = os.getenv('CXX', 'g++')
++            command = '%s -MMD -MF $out.d $includes $cflags -c $in -o $out' % cxx_compiler if cxx else c_compiler
+             depfile = '$out.d'
+             deps = 'gcc'
+ 
+@@ -388,7 +390,7 @@ def ar_rule(self):
+         if mx.is_windows():
+             command = 'lib -nologo -out:$out $in'
+         else:
+-            command = 'ar -rc $out $in'
++            command = os.getenv('AR', 'ar') + ' -rc $out $in'
+ 
+         self.n.rule('ar',
+                     command=command,
+@@ -401,7 +403,9 @@ def link_rule(self, cxx=False):
+         if mx.is_windows():
+             command = 'link -nologo $ldflags -out:$out $in $ldlibs'
+         else:
+-            command = '%s $ldflags -o $out $in $ldlibs' % ('g++' if cxx else 'gcc')
++            c_compiler = os.getenv('CC', 'gcc')
++            cxx_compiler = os.getenv('CXX', 'g++')
++            command = '%s $ldflags -o $out $in $ldlibs' % (cxx_compiler if cxx else c_compiler)
+ 
+         self.n.rule('link',
+                     command=command,
