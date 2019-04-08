@@ -13,11 +13,16 @@ DEFAULT_SRC_PREPARE_PATCHES=(
     "${FILES}"/190.patch
 )
 
+DEPENDENCIES="
+    run:
+        dev-lang/python:*
+"
+
 src_install(){
-	insinto /usr/share/${PNV}
-	doins -r */
-	exeinto /usr/share/${PNV}
-	doexe mx *.py
-	dodir /usr/$(exhost --target)/bin
-	dosym /usr/share/${PNV}/mx /usr/$(exhost --target)/bin/mx
+    insinto /usr/share/${PNV}
+    doins -r */
+    exeinto /usr/share/${PNV}
+    doexe mx *.py
+    dodir /usr/$(exhost --target)/bin
+    dosym /usr/share/${PNV}/mx /usr/$(exhost --target)/bin/mx
 }
