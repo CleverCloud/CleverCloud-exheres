@@ -7,7 +7,7 @@ SLOT="0"
 
 SUMMARY="Command line based tool for managing the development of (primarily) Java code"
 
-require github [ user=graalvm project=mx release=${PV} suffix=tar.gz ]
+require github [ user=graalvm project=mx tag=${PV} ]
 
 DEFAULT_SRC_PREPARE_PATCHES=(
     "${FILES}"/190.patch
