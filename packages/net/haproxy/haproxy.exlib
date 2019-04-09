@@ -42,14 +42,12 @@ DEFAULT_SRC_COMPILE_PARAMS=(
     USE_REGPARM=1
     USE_GETADDRINFO=1
     USE_OPENSSL=1
+    USE_SYSTEMD=1
     USE_ZLIB=1
     CC=${CC}
 )
 # USE_STATIC_PCRE=1
 # TODO: switch to PCRE2
-if ever at_least 1.8; then
-    DEFAULT_SRC_COMPILE_PARAMS+=( USE_SYSTEMD=1 )
-fi
 DEFAULT_SRC_INSTALL_PARAMS=( "${DEFAULT_SRC_COMPILE_PARAMS[@]}" DOCDIR=/usr/share/doc/${PNVR} )
 
 haproxy_src_compile() {
