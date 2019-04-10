@@ -17,7 +17,7 @@ SLOT="$(ever range 1-2)"
 # Currently only Boost.Geometry headers are used and boost is just required at build time.
 if ever at_least 8; then
     SPHINX_PV="3.1.1"
-    BOOST_PV="1.67.0"
+    BOOST_PV="1.68.0"
 else
     SPHINX_PV="2.2.9"
     BOOST_PV="1.59.0"
@@ -103,8 +103,7 @@ else
     "
 fi
 
-WORK="${WORKBASE}/${PNV,,}-$(exparam release)"
-CMAKE_SOURCE="${WORK}"
+CMAKE_SOURCE="${WORKBASE}/${PNV,,}-$(exparam release)"
 
 Percona-Server_pkg_pretend() {
     # Sanity check when upgrading to a different x.y version of mysql
@@ -125,15 +124,15 @@ Percona-Server_pkg_pretend() {
 Percona-Server_src_prepare() {
     cmake_src_prepare
 
-    edo sed -i -e 's:"gcc-ar":'$(exhost --tool-prefix)gcc-ar: "${WORK}"/storage/tokudb/PerconaFT/CMakeLists.txt
-    edo sed -i -e 's:"gcc-ranlib":'$(exhost --tool-prefix)gcc-ranlib: "${WORK}"/storage/tokudb/PerconaFT/CMakeLists.txt
-    edo sed -i -e '/^install/s/bin/${INSTALL_BINDIR}/' "${WORK}"/storage/tokudb/PerconaFT/tools/CMakeLists.txt
-    edo sed -i -e '/^install/s/include/${INSTALL_INCLUDEDIR}/' "${WORK}"/plugin/tokudb-backup-plugin/Percona-TokuBackup/backup/CMakeLists.txt
+    edo sed -i -e 's:"gcc-ar":'$(exhost --tool-prefix)gcc-ar: "${CMAKE_SOURCE}"/storage/tokudb/PerconaFT/CMakeLists.txt
+    edo sed -i -e 's:"gcc-ranlib":'$(exhost --tool-prefix)gcc-ranlib: "${CMAKE_SOURCE}"/storage/tokudb/PerconaFT/CMakeLists.txt
+    edo sed -i -e '/^install/s/bin/${INSTALL_BINDIR}/' "${CMAKE_SOURCE}"/storage/tokudb/PerconaFT/tools/CMakeLists.txt
+    edo sed -i -e '/^install/s/include/${INSTALL_INCLUDEDIR}/' "${CMAKE_SOURCE}"/plugin/tokudb-backup-plugin/Percona-TokuBackup/backup/CMakeLists.txt
 
     # https://bugs.mysql.com/bug.php?id=72353 (only relevant when using system libevent)
-    edo sed -i -e "s:\(LIBEVENT_LIBRAR\)IES:\1Y:" "${WORK}"/cmake/libevent.cmake
+    edo sed -i -e "s:\(LIBEVENT_LIBRAR\)IES:\1Y:" "${CMAKE_SOURCE}"/cmake/libevent.cmake
 
-    option sphinx && edo ln -s "${WORKBASE}"/sphinx-${SPHINX_PV}-release/mysqlse "${WORK}"/storage/sphinx
+    option sphinx && edo ln -s "${WORKBASE}"/sphinx-${SPHINX_PV}-release/mysqlse "${CMAKE_SOURCE}"/storage/sphinx
 }
 
 Percona-Server_src_configure() {
@@ -187,6 +186,7 @@ Percona-Server_src_configure() {
         -DWITH_NUMA:BOOL=FALSE
         -DWITH_SSL:STRING=system
         -DBOOST_INCLUDE_DIR:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
+        -DLOCAL_BOOST_DIR:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
         -DWITH_BOOST:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
         -DWITH_CLIENT_PROTOCOL_TRACING:BOOL=FALSE
         -DWITH_LZ4:STRING=system
