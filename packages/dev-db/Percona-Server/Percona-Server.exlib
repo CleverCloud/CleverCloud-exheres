@@ -85,8 +85,6 @@ DEPENDENCIES="
     recommendation:
         dev-db/percona-toolkit [[ description = [ The percona toolkit to manage Percona-Server ] ]]
         memcached? ( net/memcached [[ description = [ The option provides the bundled memcached but you might want to use a stand-alone memcached as well ] ]] )
-    suggestion:
-        app-admin/logrotate [[ description = [ Use logrotate for rotating logs ] ]]
 "
 
 if ever at_least 8; then
@@ -148,24 +146,24 @@ Percona-Server_src_configure() {
         -DDEFAULT_CHARSET:STRING=utf8
         -DDEFAULT_COLLATION:STRING=utf8_general_ci
         -DFEATURE_SET:STRING=community
-        -DINSTALL_BINDIR:PATH=$(exhost --target)/libexec/mysql-${SLOT}
+        -DINSTALL_BINDIR:PATH=$(exhost --target)/libexec/${PN}-${SLOT}
         -DINSTALL_DOCDIR:PATH=share/doc/${PNVR}-${SLOT}
         -DINSTALL_DOCREADMEDIR:PATH=share/doc/${PNVR}-${SLOT}
-        -DINSTALL_INCLUDEDIR:PATH=$(exhost --target)/include/mysql-${SLOT}
-        -DINSTALL_INFODIR:PATH=share/mysql-${SLOT}/info
-        -DINSTALL_LIBDIR:PATH=$(exhost --target)/lib/mysql-${SLOT}
-        -DINSTALL_MANDIR:PATH=share/man/mysql-${SLOT}
-        -DINSTALL_MYSQLSHAREDIR:PATH=share/mysql-${SLOT}
+        -DINSTALL_INCLUDEDIR:PATH=$(exhost --target)/include/${PN}-${SLOT}
+        -DINSTALL_INFODIR:PATH=share/${PN}-${SLOT}/info
+        -DINSTALL_LIBDIR:PATH=$(exhost --target)/lib/${PN}-${SLOT}
+        -DINSTALL_MANDIR:PATH=share/man/${PN}-${SLOT}
+        -DINSTALL_MYSQLSHAREDIR:PATH=share/${PN}-${SLOT}
         # Empty value to not install the mysql-test directory
         -DINSTALL_MYSQLTESTDIR:STRING=
-        -DINSTALL_PLUGINDIR:PATH=$(exhost --target)/lib/mysql-${SLOT}/plugin
-        -DINSTALL_SBINDIR:PATH=$(exhost --target)/libexec/mysql-${SLOT}
-        -DINSTALL_SCRIPTDIR:PATH=$(exhost --target)/libexec/mysql-${SLOT}
+        -DINSTALL_PLUGINDIR:PATH=$(exhost --target)/lib/${PN}-${SLOT}/plugin
+        -DINSTALL_SBINDIR:PATH=$(exhost --target)/libexec/${PN}-${SLOT}
+        -DINSTALL_SCRIPTDIR:PATH=$(exhost --target)/libexec/${PN}-${SLOT}
         -DINSTALL_SHAREDIR:PATH=share
-        -DINSTALL_SUPPORTFILESDIR:PATH=share/mysql-${SLOT}
-        -DMYSQL_DATADIR:PATH=/var/lib/mysql/${SLOT}
-        -DMYSQL_UNIX_ADDR:PATH=/run/mysqld-${SLOT}/mysqld.sock
-        -DSYSCONFDIR:PATH=/etc/mysql-${SLOT}
+        -DINSTALL_SUPPORTFILESDIR:PATH=share/${PN}-${SLOT}
+        -DMYSQL_DATADIR:PATH=/var/lib/${PN}/${SLOT}
+        -DMYSQL_UNIX_ADDR:PATH=/run/${PN}-${SLOT}/mysqld.sock
+        -DSYSCONFDIR:PATH=/etc/${PN}-${SLOT}
         -DENABLED_PROFILING:BOOL=TRUE
         -DWITH_ASAN:BOOL=FALSE
         -DWITH_EXTRA_CHARSETS:STRING=all
@@ -203,7 +201,7 @@ Percona-Server_src_configure() {
     if option systemd ; then
         cmakeargs+=(
             -DWITH_SYSTEMD:BOOL=TRUE
-            -DSYSTEMD_PID_DIR:PATH=/run/mysqld-${SLOT}
+            -DSYSTEMD_PID_DIR:PATH=/run/${PN}-${SLOT}
             -DSYSTEMD_SERVICES_DIR:PATH=${SYSTEMDSYSTEMUNITDIR}
             -DSYSTEMD_TMPFILES_DIR:PATH=/usr/$(exhost --target)/lib/tmpfiles.d
         )
@@ -261,19 +259,16 @@ Percona-Server_src_install() {
     cmake_src_install
 
     # Remove empty directories
-    ! option debug && edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/mysql-${SLOT}/plugin/debug
+    ! option debug && edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/${PN}-${SLOT}/plugin/debug
 
-    keepdir /etc/mysql-${SLOT}
+    keepdir /etc/${PN}-${SLOT}
 
-    insinto /etc/mysql-${SLOT}
+    insinto /etc/${PN}-${SLOT}
     newins "${FILES}"/my-${SLOT}.cnf my.cnf
 
-    hereenvd 46mysql-${SLOT} <<EOF
-LDPATH=/usr/@TARGET@/lib/mysql-${SLOT}
+    hereenvd 46${PN}-${SLOT} <<EOF
+LDPATH=/usr/@TARGET@/lib/${PN}-${SLOT}
 EOF
-
-    insinto /etc/logrotate.d
-    newins "${FILES}"/logrotate.mysql mysql
 
     keepdir /var/lib/mysql-files
     edo chown mysql:mysql "${IMAGE}"/var/lib/mysql-files
@@ -282,7 +277,7 @@ EOF
 
     for bin in mysql mysqldump mysqladmin mysql_config; do
         alternatives+=(
-            /usr/$(exhost --target)/bin/${bin}  /usr/$(exhost --target)/libexec/mysql-${SLOT}/${bin}
+            /usr/$(exhost --target)/bin/${bin}  /usr/$(exhost --target)/libexec/${PN}-${SLOT}/${bin}
         )
     done
 
@@ -294,16 +289,16 @@ EOF
     done
 
     alternatives+=(
-        "/usr/share/man/man8/mysqld.8" "mysqld-${SLOT}.8"
-        "/usr/share/aclocal/mysql.m4" "mysql-${SLOT}.m4"
+        "/usr/share/man/man8/mysqld.8" "${PN}-${SLOT}.8"
+        "/usr/share/aclocal/mysql.m4" "${PN}-${SLOT}.m4"
     )
 
-    edo mv "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}/"mysqld{,-${SLOT//./}}.service
-    edo mv "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}/"mysqld{,-${SLOT//./}}@.service
-    edo mv "${IMAGE}"/usr/$(exhost --target)/lib/tmpfiles.d/mysql{,-${SLOT}}.conf
-    edo mv "${IMAGE}"/usr/share/aclocal/mysql{,-${SLOT}}.m4
+    edo mv "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}/"{mysqld,${PN}-${SLOT//./}}.service
+    edo mv "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}/"{mysqld,${PN}-${SLOT//./}}@.service
+    edo mv "${IMAGE}"/usr/$(exhost --target)/lib/tmpfiles.d/{mysql,${PN}-${SLOT}}.conf
+    edo mv "${IMAGE}"/usr/share/aclocal/{mysql,${PN}-${SLOT}}.m4
 
-    alternatives_for mysql ${SLOT} ${SLOT} "${alternatives[@]}"
+    alternatives_for mysql ${PN}-${SLOT} ${SLOT} "${alternatives[@]}"
 }
 
 Percona-Server_pkg_postinst() {

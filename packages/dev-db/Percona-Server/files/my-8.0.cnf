@@ -26,4 +26,4 @@
 # read_rnd_buffer_size = 2M
 
 sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
-datadir=/var/lib/mysql/8.0/
+datadir=/var/lib/Percona-Server/8.0/
