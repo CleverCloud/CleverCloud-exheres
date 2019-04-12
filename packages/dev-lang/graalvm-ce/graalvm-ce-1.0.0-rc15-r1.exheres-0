@@ -150,4 +150,8 @@ src_install(){
         fi
     done
     popd > /dev/null
+
+    hereenvd 45graal <<EOF
+GRAALVM_HOME="${java_home}"
+EOF
 }
