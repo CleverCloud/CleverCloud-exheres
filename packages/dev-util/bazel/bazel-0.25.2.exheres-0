@@ -1,0 +1,35 @@
+# Copyright 2019 Julien Durilon <julien.durillon@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Build and test software of any size, quickly and reliably"
+HOMEPAGE="https://www.bazel.build/"
+DOWNLOADS="https://github.com/bazelbuild/bazel/releases/download/${PV}/${PNV}-dist.zip"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        virtual/jdk:1.8
+        dev-lang/python:*
+"
+
+BUGS_TO="julien.durillon@clever-cloud.com"
+
+
+src_unpack() {
+    edo mkdir -p "${WORK}"
+    edo cd "${WORK}"
+    unpack --if-compressed ${ARCHIVES}
+}
+
+src_compile() {
+    EXTRA_BAZEL_ARGS="--host_javabase=@local_jdk//:jdk" edo ./compile.sh
+}
+
+src_install() {
+    dobin output/bazel
+}
+
