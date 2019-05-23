@@ -1,0 +1,53 @@
+# Copyright 2019 Maxime SORIN <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+export_exlib_phases pkg_setup pkg_postinst src_unpack src_install
+
+MY_PN="${PN}17"
+MY_PV="${PV}.1-1"
+MY_REPO="https://packages.microsoft.com/debian/9/prod/pool/main/m/${MY_PN}"
+
+SUMMARY="ODBC Driver for SQL Server"
+HOMEPAGE="https://docs.microsoft.com/en-us/sql/connect/odbc/microsoft-odbc-driver-for-sql-server?view=sql-server-2017"
+DOWNLOADS="${MY_REPO}/${MY_PN}_${MY_PV}_amd64.deb"
+
+LICENCES="msodbcsql"
+SLOT="0"
+MYOPTIONS="
+    doc
+"
+DEPENDENCIES="
+    run:
+        app-crypt/krb5[>=1.17]
+        dev-db/unixODBC[>=2.3.7]
+        dev-libs/openssl[>=1.1.1b]
+        sys-fs/e2fsprogs[>=1.45.0]
+        sys-libs/glibc[>=2.27-r2]
+"
+
+WORK=${WORKBASE}
+
+msodbcsql_pkg_setup() {
+    exdirectory --allow /opt
+}
+
+msodbcsql_src_unpack() {
+    default
+
+    unpack ./data.tar.xz
+}
+
+msodbcsql_src_install() {
+    insinto /opt
+    doins -r opt/microsoft 
+
+    dodir /usr/$(exhost --target)/lib
+    dosym /opt/microsoft/${MY_PN}/lib64/lib${PN}-17.3.so.1.1 /usr/$(exhost --target)/lib/lib${PN}-17.so
+
+    option doc && dodoc usr/share/doc/msodbcsql17/*
+}
+
+msodbcsql_pkg_postinst() {
+    #Load the driver
+    odbcinst -i -d -f /opt/microsoft/${MY_PN}/etc/odbcinst.ini
+}
