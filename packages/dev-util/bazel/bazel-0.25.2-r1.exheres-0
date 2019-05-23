@@ -18,6 +18,7 @@ DEPENDENCIES="
 
 BUGS_TO="julien.durillon@clever-cloud.com"
 
+RESTRICT=strip
 
 src_unpack() {
     edo mkdir -p "${WORK}"
