@@ -43,7 +43,6 @@ MYOPTIONS="
         rdrand [[ description = [ Intel RDRAND random generator plugin ] ]]
         systime-fix [[ description = [ Handle cert lifetimes with invalid system time gracefully ] ]]
         unity [[ description = [ Cisco Unity extension plugin ] ]]
-        vici [[ description = [ StrongSwan IKE generic IPC interface plugin ] ]]
         whitelist
     )
     ( providers: libressl openssl ) [[ number-selected = at-most-one ]]
@@ -77,8 +76,10 @@ src_configure() {
         "--enable-ikev1"
         "--enable-ikev2"
         "--enable-kernel-netlink"
-        "--enable-swanctl"
         "--enable-socket-dynamic"
+        "--enable-swanctl"
+        "--enable-systemd"
+        "--enable-vici"
         "--with-group=ipsec"
         $(option_with caps capabilities /usr/$(exhost --target))
         $(option_with systemd systemdsystemunitdir /usr/$(exhost --target)/lib/systemd/system)
@@ -120,7 +121,6 @@ src_configure() {
         $(option_enable plugins:lookip      lookip)
         $(option_enable plugins:systime-fix systime-fix)
         $(option_enable plugins:unity       unity)
-        $(option_enable plugins:vici        vici)
         $(option_enable plugins:blowfish    blowfish)
         $(option_enable plugins:ccm         ccm)
         $(option_enable plugins:ctr         ctr)
