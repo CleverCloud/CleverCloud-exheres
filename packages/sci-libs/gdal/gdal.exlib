@@ -15,25 +15,32 @@ MYOPTIONS="
     geos
     postgresql
     ( providers: ijg-jpeg jpeg-turbo ) [[ number-selected = exactly-one ]]
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
 DEPENDENCIES="
     build+run:
+        app-arch/xz
         dev-libs/expat
         dev-libs/json-c[>=0.13]
-        dev-libs/libxml2
+        dev-libs/libxml2:2.0
+        media-libs/libpng:=
         media-libs/libwebp:0.6
         media-libs/tiff
         net-misc/curl
         sci-libs/libgeotiff
+        sys-libs/zlib
         geos? ( sci-libs/geos )
         postgresql? ( dev-db/postgresql-client )
         providers:ijg-jpeg? ( media-libs/jpeg )
         providers:jpeg-turbo? ( media-libs/libjpeg-turbo )
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
 "
 
 DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
-    'geos' 'postgresql'
+    'geos'
+    'postgresql pg'
 )
 
 # gdal directly installs its files in /usr/share instead of
@@ -41,7 +48,15 @@ DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     --datarootdir=/usr/share/${PN}
     --datadir=/usr/share/${PN}
+    --without-cryptopp
+    --without-gif
+    --without-hdf5
     --without-jasper
+    --without-openjpeg
+    --without-pcre
+    --without-sqlite3
+    --without-xerces
+    --without-zstd
 )
 
 gdal_src_prepare(){
@@ -53,3 +68,4 @@ gdal_src_install() {
     default
     edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/gdalplugins
 }
+
