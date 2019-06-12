@@ -1,0 +1,8 @@
+# Copyright 2019 Julien Durillon <julien.durillon@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require stream-dns
+
+SLOT="0"
+PLATFORMS="~amd64"
+

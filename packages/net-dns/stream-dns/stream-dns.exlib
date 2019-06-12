@@ -1,0 +1,38 @@
+# Copyright 2019 Julien Durillon <julien.durillon@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service [ systemd_files=[ data/${PN}.service ] ] github [ user="CleverCloud" ]
+
+SUMMARY="DNS server implementation using kafka as backend."
+LICENCES="MIT"
+
+DEPENDENCIES="
+    build:
+        dev-lang/go[>=1.11]
+"
+
+BUGS_TO="alessio.coltellacci@clever-cloud.com"
+
+src_prepare() {
+    edo mkdir -p ${WORKBASE}/gopath
+    default
+}
+
+src_compile() {
+    GOPATH="${WORKBASE}/gopath"
+
+    esandbox disable_net
+    GO111MODULE=on edo go build -o ${PN}
+    esandbox enable_net
+}
+
+src_install() {
+    dobin ${PN}
+    install_systemd_files
+}
+
+src_post_install() {
+    einfo "You will need /etc/conf.d/stream-dns configuration file."
+}
+
+
