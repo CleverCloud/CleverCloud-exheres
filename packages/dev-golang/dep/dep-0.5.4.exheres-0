@@ -1,0 +1,33 @@
+# Copyright 2019 Arnaud Lefebvre <arnaud.lefebvre@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="golang" tag="v${PV}" force_git_clone=true ]
+require go [ use_vendor=true project=github.com/golang/dep ]
+
+SUMMARY="Go dependency management tool"
+DESCRIPTION="
+dep is a dependency management tool for Go
+"
+HOMEPAGE="https://golang.github.io/dep/"
+
+LICENCES="BSD-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+"
+
+BUGS_TO="arnaud.lefebvre@clever-cloud.com"
+
+# Go binaries doesn't like to be stripped
+# tests try to do some HTTP calls
+RESTRICT="strip test"
+
+src_prepare() {
+    go_src_prepare
+}
+
+src_compile() {
+    emake build
+}
