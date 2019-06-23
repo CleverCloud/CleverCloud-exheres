@@ -32,10 +32,16 @@ if ever at_least 1.8; then
     "
 fi
 
+if ever at_least 2.0; then
+    _target=linux-glibc
+else
+    _target=linux2628
+fi
+
 DEFAULT_SRC_COMPILE_PARAMS=(
     PREFIX=/usr
     SBINDIR=/usr/$(exhost --target)/bin
-    TARGET=linux2628
+    TARGET=${_target}
     USE_PCRE=1
     USE_PCRE_JIT=1
     USE_THREAD=1
