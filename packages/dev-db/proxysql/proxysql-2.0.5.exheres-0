@@ -1,7 +1,7 @@
 # Copyright 2019 Arnaud Lefebvre <arnaud.lefebvre@clever-cloud.com)
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user="sysown" tag="${PV}" ] systemd-service [ systemd_files=[ "systemd/proxysql.service" ] ]
+require github [ user="sysown" tag="${PV}" ] systemd-service [ systemd_files=[ "systemd/system/proxysql.service" ] ]
 
 SUMMARY="High-performance MySQL proxy"
 BUGS_TO="arnaud.lefebvre@clever-cloud.com"
@@ -18,8 +18,8 @@ DEPENDENCIES="
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl:= )
     run:
-        user/mysql
-        group/mysql
+        user/proxysql
+        group/proxysql
 "
 
 src_prepare() {
@@ -32,14 +32,17 @@ src_install() {
 
     dodir /etc
     insinto /etc
-    insopts -m600
     doins etc/proxysql.cnf
 
     if option systemd; then
         install_systemd_files
     fi
 
-    diropts -o mysql -g mysql
     dodir /var/lib/${PN}
     keepdir /var/lib/${PN}
+}
+
+pkg_postinst() {
+    default
+    edo chown proxysql:proxysql -R /var/lib/${PN}
 }
