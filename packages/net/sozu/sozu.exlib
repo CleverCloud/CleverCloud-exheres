@@ -35,11 +35,13 @@ DEPENDENCIES+="
         providers:openssl? ( dev-libs/openssl )
 "
 
+COMMON_ECARGO_FEATURE_ENABLES=(
+    'logs-debug logs-debug'
+    'logs-trace logs-trace'
+)
 # rustls is the default SSL backend for now and doesn't
 # have an option
 BIN_ECARGO_FEATURE_ENABLES=(
-    'logs-debug logs-debug'
-    'logs-trace logs-trace'
     'tolerant-http1-parser tolerant-http1-parser'
     'providers:openssl use-openssl'
 )
@@ -51,9 +53,9 @@ SOZU_BIN_DIRS=("bin" "ctl")
 setup_cargo_features() {
     local bin="${1}"
     if [[ "${bin}" == "bin" ]]; then
-        ECARGO_FEATURE_ENABLES=( "${BIN_ECARGO_FEATURE_ENABLES[@]}" )
+        ECARGO_FEATURE_ENABLES=( "${COMMON_ECARGO_FEATURE_ENABLES[@]}" "${BIN_ECARGO_FEATURE_ENABLES[@]}" )
     else
-        ECARGO_FEATURE_ENABLES=()
+        ECARGO_FEATURE_ENABLES=( "${COMMON_ECARGO_FEATURE_ENABLES[@]}" )
     fi
 }
 
