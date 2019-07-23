@@ -1,6 +1,8 @@
 # Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/CVE-2019-12815.patch" )
+
 require proftpd
 
 PLATFORMS="~amd64"
