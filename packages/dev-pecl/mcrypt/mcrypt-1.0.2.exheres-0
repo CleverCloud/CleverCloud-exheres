@@ -1,0 +1,14 @@
+# Copyright 2019 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module soname=mcrypt php_abis=[ 7.2 7.3 ] ]
+
+SUMMARY="Bindings for the libmcrypt library"
+PLATFORMS="~amd64"
+LICENCES="PHP-3"
+SLOT="0"
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/libmcrypt[>=2.5.8]
+"
