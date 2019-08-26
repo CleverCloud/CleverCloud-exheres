@@ -17,9 +17,9 @@ SCM_TAG="vm-${PV}"
 require scm-git java-jdk autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
 
 # Temporary, waiting for jvm support for openjdk 11
-JDK="openjdk-8u202"
-JVMCI="jvmci-0.58"
-JDK_EXTRACT="openjdk1.8.0_202"
+JDK="openjdk-8u222"
+JVMCI="jvmci-19.2-b02"
+JDK_EXTRACT="openjdk1.8.0_222"
 DOWNLOADS="https://github.com/graalvm/openjdk8-jvmci-builder/releases/download/${JVMCI}/${JDK}-${JVMCI}-linux-amd64.tar.gz"
 
 MYOPTIONS="
@@ -61,6 +61,10 @@ src_unpack() {
     scm_src_unpack
 }
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/graalvm-ce-19.2.0-fix-SIOCGSTAMP-undeclared.patch
+)
+
 src_prepare(){
     # Temporary, waiting for jvm support for openjdk 11
     export JAVA_HOME=${WORKBASE}/${JDK_EXTRACT}-${JVMCI}
@@ -89,6 +93,8 @@ src_prepare(){
 
     # Change the location of the mxbuild folder
     export MX_ALT_OUTPUT_ROOT=${WORK}/mxbuild
+
+    default
 }
 
 src_compile(){
