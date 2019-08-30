@@ -4,12 +4,11 @@
 export_exlib_phases pkg_setup pkg_postinst src_unpack src_install
 
 MY_PN="${PN}17"
-MY_PV="${PV}.1-1"
-MY_REPO="https://packages.microsoft.com/ubuntu/18.10/prod/pool/main/m/${MY_PN}"
+MY_PV="${PV}-1"
 
 SUMMARY="ODBC Driver for SQL Server"
 HOMEPAGE="https://docs.microsoft.com/en-us/sql/connect/odbc/microsoft-odbc-driver-for-sql-server?view=sql-server-2017"
-DOWNLOADS="${MY_REPO}/${MY_PN}_${MY_PV}_amd64.deb"
+DOWNLOADS="https://packages.microsoft.com/debian/9/prod/pool/main/m/${MY_PN}/${MY_PN}_${MY_PV}_amd64.deb"
 
 LICENCES="msodbcsql"
 SLOT="0"
@@ -42,7 +41,7 @@ msodbcsql_src_install() {
     doins -r opt/microsoft
 
     dodir /usr/$(exhost --target)/lib
-    dosym /opt/microsoft/${MY_PN}/lib64/lib${PN}-17.3.so.1.1 /usr/$(exhost --target)/lib/lib${PN}-17.so
+    dosym /opt/microsoft/${MY_PN}/lib64/lib${PN}-17.4.so.1.1 /usr/$(exhost --target)/lib/lib${PN}-17.so
 
     option doc && dodoc usr/share/doc/msodbcsql17/*
 }
