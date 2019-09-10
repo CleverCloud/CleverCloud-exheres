@@ -46,6 +46,7 @@ src_install() {
     doins "${FILES}"/sysconfig/*
     hereenvd 99${MY_PN} <<EOF
 ES_HOME="/opt/${MY_PN}"
+CONFIG_PROTECT="/opt/elasticsearch/config"
 EOF
 }
 
