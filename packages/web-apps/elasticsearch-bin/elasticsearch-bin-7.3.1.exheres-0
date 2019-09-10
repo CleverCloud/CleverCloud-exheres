@@ -1,0 +1,51 @@
+# Copyright 2019 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service [ systemd_tmpfiles=[ "${FILES}"/tmpfiles ] ]
+
+MY_PN=${PN/-bin}
+MY_PNV="${MY_PN}-${PV}"
+
+SUMMARY="Store, search, analyze"
+HOMEPAGE="https://www.elastic.co/products/elastic-stack"
+DOWNLOADS="https://artifacts.elastic.co/downloads/${MY_PN}/${MY_PNV}-linux-x86_64.tar.gz"
+
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    run:
+        group/${MY_PN}
+        user/${MY_PN}
+"
+
+BUGS_TO="marc-antoine.perennou@clever-cloud.com"
+
+WORK="${WORKBASE}/${MY_PNV}"
+
+RESTRICT="strip"
+
+pkg_setup() {
+    exdirectory --allow /opt
+}
+
+src_install() {
+    default
+    edo mkdir "${IMAGE}"/opt
+    edo cd "${WORKBASE}"
+    edo mv ${MY_PNV} "${IMAGE}"/opt/${MY_PN}
+    keepdir /opt/${MY_PN}/logs
+    edo rmdir "${IMAGE}"/opt/${MY_PN}/plugins
+    edo chown -R ${MY_PN}:${MY_PN} "${IMAGE}"/opt/${MY_PN}
+    install_systemd_files
+    insinto /usr/$(exhost --target)/lib/sysctl.d
+    doins "${FILES}"/sysctl/*
+    insinto /etc/sysconfig
+    doins "${FILES}"/sysconfig/*
+    hereenvd 99${MY_PN} <<EOF
+ES_HOME="/opt/${MY_PN}"
+EOF
+}
+
