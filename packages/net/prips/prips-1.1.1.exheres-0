@@ -1,0 +1,25 @@
+# Copyright 2019 Julien Durillon <julien.durillon@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="A tool that can be used to print all of the IP address on a given range."
+HOMEPAGE="https://gitlab.com/prips/prips"
+DOWNLOADS="${HOMEPAGE}/-/archive/master/${PN}-release-${PV}.tar.gz"
+
+LICENCES="GPLv2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+BUGS_TO="julien.durillon@clever-cloud.com"
+
+
+src_unpack() {
+    default
+
+    edo mv ${WORKBASE}/${PN}-master-* ${WORKBASE}/${PNV}
+}
+
+src_install() {
+    dobin ${WORK}/prips
+    doman ${WORK}/prips.1
+}
