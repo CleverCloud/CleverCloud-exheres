@@ -16,7 +16,7 @@ WorkingDirectory=/opt/elasticsearch
 User=elasticsearch
 Group=elasticsearch
 
-ExecStart=/opt/elasticsearch/bin/elasticsearch -p ${PID_DIR}/elasticsearch.pid --quiet
+ExecStart=/opt/elasticsearch/bin/elasticsearch -p ${PID_DIR}/elasticsearch.pid
 
 # StandardOutput is configured to redirect to journalctl since
 # some error messages may be logged in standard output before
