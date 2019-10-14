@@ -1,7 +1,7 @@
 # Copyright 2017 Marc-Antoine Perennou
 # Distributed under the terms of the GNU General Public License v2
 
-require php-pecl [ module=module php_abis=[ 5.6 7.0 7.1 7.2 7.3 ] ]
+require php-pecl [ module=module ]
 
 SUMMARY="Communicate with any AMQP compliant server"
 PLATFORMS="~amd64"
