@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require systemd-service [ systemd_files=[ memcached.service ] ]
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.13 ] ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
 
 export_exlib_phases src_install
 
@@ -16,9 +16,10 @@ MYOPTIONS="sasl platform: amd64"
 
 DEPENDENCIES="
     build+run:
-        dev-libs/libevent
-        group/memcached
+        dev-libs/libevent:=
         sasl? ( net-libs/cyrus-sasl )
+    run:
+        group/memcached
         user/memcached
 "
 
