@@ -1,12 +1,9 @@
 # Copyright 2015 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require php-pecl [ module=module php_abis=[ 5.6 7.0 7.1 ] ]
-
 SUMMARY="Apache Solr driver"
 
 LICENCES="PHP-3"
-SLOT="0"
 
 DEPENDENCIES="
     build+run:
