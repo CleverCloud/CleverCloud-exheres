@@ -13,4 +13,4 @@ DEPENDENCIES="
         net-libs/libssh2
 "
 
-
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/fccde532cd03981a7030523dd7b6feb4.patch )
