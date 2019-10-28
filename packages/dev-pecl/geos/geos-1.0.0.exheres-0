@@ -1,0 +1,17 @@
+# Copyright 2019 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module pn="php-geos" ]
+
+SUMMARY="PHP bindings for libgeos"
+PLATFORMS="~amd64"
+LICENCES="LGPL-2"
+SLOT="0"
+
+HOMEPAGE="https://trac.osgeo.org/geos"
+DOWNLOADS="https://github.com/libgeos/php-geos/archive/${PV}.tar.gz -> ${PNV}.tar.gz"
+
+DEPENDENCIES="
+    build+run:
+        sci-libs/geos
+"
