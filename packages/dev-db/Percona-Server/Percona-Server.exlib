@@ -17,7 +17,7 @@ SLOT="$(ever range 1-2)"
 # Currently only Boost.Geometry headers are used and boost is just required at build time.
 if ever at_least 8; then
     SPHINX_PV="3.1.1"
-    BOOST_PV="1.68.0"
+    BOOST_PV="1.69.0"
 else
     SPHINX_PV="2.2.9"
     BOOST_PV="1.59.0"
