@@ -3,16 +3,29 @@
 # Based in part upon 'proj-4.8.0.ebuild' from Gentoo, which is:
 #     Copyright 1999-2014 Gentoo Foundation
 
-export_exlib_phases src_unpack
+export_exlib_phases src_test
+require cmake
 
 SUMMARY="PROJ.4 - Cartographic Projections Library"
 HOMEPAGE="https://trac.osgeo.org/${PN}/"
 DOWNLOADS="http://download.osgeo.org/${PN}/${PNV}.tar.gz"
 
+DEPENDENCIES="
+    build+run:
+        dev-db/sqlite:3
+    test:
+        dev-cpp/gtest[>=1.8.1]
+"
+
 LICENCES="MIT"
 SLOT="0"
 
-proj_src_unpack() {
-    default
-    edo cp "${FETCHEDDIR}/${PN}-org_proj4_PJ.h" "${WORK}/src/org_proj4_PJ.h"
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/0001-CmakeLists-Fix-hardcoded-datarootdir.patch )
+CMAKE_SRC_CONFIGURE_PARAMS=("-DUSE_EXTERNAL_GTEST=ON")
+
+proj_src_test(){
+    # PROJ_LIB is used as searchpath for proj.db
+    export PROJ_LIB="${CMAKE_BUILDDIR}/data"
+    cmake_src_test
 }
+
