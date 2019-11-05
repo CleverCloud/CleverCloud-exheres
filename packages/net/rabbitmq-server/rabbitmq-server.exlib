@@ -41,7 +41,7 @@ rabbitmq-server_src_install() {
     default
     emake DESTDIR="${IMAGE}" PREFIX=/usr install-man
     emake DESTDIR="${IMAGE}" PREFIX=/usr/$(exhost --target) install-bin
-    dodoc deps/rabbit/docs/rabbitmq.config.example
+    dodoc deps/rabbit/docs/rabbitmq.conf.example
     edo mkdir -p "${IMAGE}"/usr/$(exhost --target)/bin
     for bin in "${IMAGE}"/usr/$(exhost --target)/lib/erlang/bin/*; do
         dosym ../lib/erlang/bin/"$(basename "${bin}")" /usr/$(exhost --target)/bin/
