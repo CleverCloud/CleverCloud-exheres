@@ -1,6 +1,8 @@
 # Copyright 2019 Marc-Antoine Perennou <keruspe@exherbo.org>
 # Distributed under the terms of the GNU General Public License v2
 
+require flag-o-matic
+
 SUMMARY="Extends the SQLite core to support fully fledged Spatial SQL capabilities"
 HOMEPAGE="https://www.gaia-gis.it/fossil/${PN}/index"
 DOWNLOADS="https://www.gaia-gis.it/gaia-sins/${PNV}.tar.gz"
@@ -40,4 +42,7 @@ DEFAULT_SRC_CONFIGURE_PARAMS=(
     --disable-lwgeom
 )
 
+pkg_setup() {
+    append-flags -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H
+}
 
