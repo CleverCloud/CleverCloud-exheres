@@ -281,6 +281,11 @@ EOF
         )
     done
 
+    alternatives+=(
+        /usr/$(exhost --target)/lib/pkgconfig/mysqlclient.pc /usr/$(exhost --target)/lib/${PN}-${SLOT}/pkgconfig/perconaserverclient.pc
+        /usr/$(exhost --target)/lib/pkgconfig/perconaserverclient.pc /usr/$(exhost --target)/lib/${PN}-${SLOT}/pkgconfig/perconaserverclient.pc
+    )
+
     edo cd "${IMAGE}"
 
     for manpage in usr/share/man/man1/*.1; do
