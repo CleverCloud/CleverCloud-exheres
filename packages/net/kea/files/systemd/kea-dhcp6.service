@@ -1,0 +1,13 @@
+[Unit]
+Description=Kea DHCPv6 Server
+Documentation=man:kea-dhcp6(8)
+Wants=network-online.target
+After=network-online.target
+After=time-sync.target
+
+[Service]
+ExecStart=/usr/host/bin/kea-dhcp6 -c /etc/kea/kea-dhcp6.conf
+Environment=KEA_PIDFILE_DIR=/run/kea
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,13 @@
+[Unit]
+Description=Kea DHCPv4 Server
+Documentation=man:kea-dhcp4(8)
+Wants=network-online.target
+After=network-online.target
+After=time-sync.target
+
+[Service]
+ExecStart=/usr/host/bin/kea-dhcp4 -c /etc/kea/kea-dhcp4.conf
+Environment=KEA_PIDFILE_DIR=/run/kea
+
+[Install]
+WantedBy=multi-user.target

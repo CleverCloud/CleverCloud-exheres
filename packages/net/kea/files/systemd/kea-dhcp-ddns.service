@@ -1,0 +1,13 @@
+[Unit]
+Description=Kea DHCP-DDNS Server
+Documentation=man:kea-dhcp-ddns(8)
+Wants=network-online.target
+After=network-online.target
+After=time-sync.target
+
+[Service]
+ExecStart=/usr/host/bin/kea-dhcp-ddns -c /etc/kea/kea-dhcp-ddns.conf
+Environment=KEA_PIDFILE_DIR=/run/kea
+
+[Install]
+WantedBy=multi-user.target

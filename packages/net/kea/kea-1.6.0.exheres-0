@@ -1,0 +1,85 @@
+# Copyright 2016 Julien Durillon <julien.durillon@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+SUMMARY="Kea is ISC’s modern open source DHCPv4 and DHCPv6 server"
+DESCRIPTION="
+Kea is the new alternative to ISC DHCP, ISC’s older open source DHCP distribution.
+
+Kea is a high performance, production grade solution for IPv4 or IPv6 addressing for the enterprise,
+education and service providers.
+"
+HOMEPAGE="https://www.isc.org/kea/"
+DOWNLOADS="https://ftp.isc.org/isc/${PN}/${PV}/${PNV}.tar.gz"
+
+BUGS_TO="julien.durillon@gmail.com"
+
+LICENCES="
+    Boost-1.0 [[ note = [ ext/coroutine ] ]]
+    MPL-2.0
+"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    postgresql
+    mysql
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
+"
+
+# some tests fail
+RESTRICT="test"
+
+DEPENDENCIES="
+    build+run:
+        dev-cpp/log4cplus
+        dev-libs/boost
+        postgresql? ( dev-db/postgresql-client )
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
+        mysql? ( dev-db/mysql )
+    suggestion:
+        postgresql? ( dev-db/postgresql )
+"
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --localstatedir=/var
+    --enable-perfdhcp
+    --disable-debug
+    --disable-generate-docs
+    --disable-generate-messages
+    --disable-generate-parser
+    --disable-shell
+    --disable-static
+    --with-log4cplus
+    --with-openssl
+    --without-werror
+)
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
+    "mysql mysql"
+    "postgresql pgsql"
+)
+
+src_test() {
+    esandbox allow_net 'inet:0.0.0.0@0'
+    default
+    esandbox disallow_net 'inet:0.0.0.0@0'
+}
+
+src_install() {
+    default
+
+    insinto /usr/$(exhost --target)/include/kea/dhcpsrv
+    doins src/lib/dhcpsrv/*.h
+
+    edo rmdir "${IMAGE}"/var/run{/kea,}
+
+    keepdir /var/{lib,log}/kea
+
+    install_systemd_files
+
+    insinto ${SYSTEMDTMPFILESDIR}
+    hereins ${PN}.conf <<EOF
+d /run/kea 0755 root root -
+EOF
+}
+
