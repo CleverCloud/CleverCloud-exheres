@@ -1,0 +1,38 @@
+# Copyright 2016 Julien Durillon <julien.durillon@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ release=REL_${PV//./_} suffix=tar.xz ]
+
+SUMMARY="Logging Framework for C++"
+DESCRIPTION="
+log4cplus is a simple to use C++ logging API providing thread-safe, flexible, and arbitrarily
+granular control over log management and configuration. It is modelled after the Java log4j API
+"
+
+BUGS_TO="julien.durillon@gmail.com"
+
+LICENCES="|| ( Apache-2.0 BSD-2 )"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --enable-implicit-initialization
+    --enable-release-version
+    --enable-so-version
+    --enable-threads
+    --enable-warnings
+    --disable-debugging
+    --disable-lto
+    --disable-profiling
+    --with-iconv
+    --with-wchar_t-support
+    --without-python
+    --without-qt{,5}
+)
+DEFAULT_SRC_CONFIGURE_TESTS=(
+    '--enable-unit-tests --disable-unit-tests'
+)
+
