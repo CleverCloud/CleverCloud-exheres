@@ -1,0 +1,29 @@
+# Copyright 2019 Maxime SORIN <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ force_git_clone=true user='apache' project='pulsar' tag=v${PV} ]
+require cmake
+
+SUMMARY="Pulsar C++ client library"
+HOMEPAGE="https://pulsar.apache.org/docs/en/client-libraries-cpp/"
+
+LICENCES="APACHE-2.0"
+SLOT="0"
+
+MYOPTIONS=""
+DEPENDENCIES="
+    build:
+        dev-cpp/gtest[googlemock]
+    build+run:
+        dev-cpp/log4cplus
+        dev-libs/boost
+        dev-libs/jsoncpp:=
+        dev-libs/protobuf:=
+        net-misc/curl
+"
+
+CMAKE_SOURCE="${WORKBASE}/${PNV}/${PN}"
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    -DBUILD_PYTHON_WRAPPER:BOOL=OFF
+)
