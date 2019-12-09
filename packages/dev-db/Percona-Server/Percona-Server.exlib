@@ -242,7 +242,7 @@ Percona-Server_src_configure() {
     if ever at_least 8; then
         cmakeargs+=(
             -DWITH_RE2:STRING=system
-            -DWITH_RAPIDJSON:STRING=system
+            -DWITH_RAPIDJSON:STRING=bundled
         )
     else
         cmakeargs+=( $(cmake_with tcpd LIBWRAP) )
