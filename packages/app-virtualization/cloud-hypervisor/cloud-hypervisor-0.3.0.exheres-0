@@ -1,0 +1,14 @@
+# Copyright 2019 Marc-Antoine Perennou <marc-antoine.perennou@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cargo github [ tag=v${PV} ]
+
+SUMMARY="A rust-vmm based cloud hypervisor"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+BUGS_TO="marc-antoine.perennou@clever-cloud.com"
+
