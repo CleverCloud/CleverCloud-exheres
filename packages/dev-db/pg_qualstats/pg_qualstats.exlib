@@ -1,0 +1,13 @@
+# Copyright 2019 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="powa-team" tag="${PV}" ]
+require postgresql
+
+SUMMARY="A PostgreSQL extension for collecting statistics about predicates, helping find what indices are missing"
+
+LICENCES="PostgreSQL"
+SLOT="0"
+
+DEPENDENCIES=""
+
