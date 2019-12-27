@@ -1,0 +1,13 @@
+# Copyright 2019 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="powa-team" tag="${PV/_/}" ]
+require postgresql [ work="${PNV/_/}" ]
+
+SUMMARY="PostgreSQL Workload Analyzer that gathers performance stats and provides real-time charts and graphs"
+
+LICENCES="PostgreSQL"
+SLOT="0"
+
+DEPENDENCIES=""
+
