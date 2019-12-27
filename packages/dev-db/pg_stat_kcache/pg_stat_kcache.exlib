@@ -1,0 +1,15 @@
+# Copyright 2019 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+MY_PV="REL${PV//./_}"
+
+require github [ user="powa-team" tag="${MY_PV}" ]
+require postgresql [ work="${PN}-${MY_PV}" ]
+
+SUMMARY="Gather statistics about physical disk access and CPU consumption done by backends"
+
+LICENCES="PostgreSQL"
+SLOT="0"
+
+DEPENDENCIES=""
+
