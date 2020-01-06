@@ -1,0 +1,12 @@
+# Copyright 2020 Marc-Antoine Perennou
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module ]
+
+SUMMARY="Email message manipulation"
+PLATFORMS="~amd64"
+LICENCES="PHP-3"
+SLOT="0"
+
+DEPENDENCIES=""
+
