@@ -13,6 +13,7 @@ LICENCES="GPL-2"
 SLOT="0"
 MYOPTIONS="
     ipv6
+    java [[ description = [ Install the Java Gateway for JMX monitoring ] ]]
     snmp
     ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
@@ -26,6 +27,7 @@ DEPENDENCIES="
         providers:openssl? ( dev-libs/openssl )
         group/zabbix
         user/zabbix
+        java? ( virtual/jre )
         snmp? ( net/net-snmp )
     suggestion:
         net-analyzer/zabbix-agent
@@ -33,11 +35,10 @@ DEPENDENCIES="
         dev-db/postgresql
 "
 
-DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'ipv6')
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'ipv6' 'java' )
 DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( 'snmp net-snmp' )
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     '--disable-agent'
-    '--disable-java'
     '--enable-server'
     "--sysconfdir=/etc/${PN}"
     '--without-gnutls'
@@ -56,11 +57,15 @@ zabbix_src_install() {
     install_systemd_files
     insinto /usr/$(exhost --target)/lib/tmpfiles.d
     doins "${FILES}"/tmpfiles.d/zabbix.conf
+    if optionq java; then
+        doins "${FILES}"/tmpfiles.d/zabbix-java-gateway.conf
+    fi
 
     KEEPDIRS=(
         /etc/${PN}/zabbix_server.conf.d
         /usr/share/${PN}/externalscripts
         /usr/share/${PN}/alertscripts
+        /usr/share/${PN}/zabbix_java
     )
     keepdir ${KEEPDIRS[@]}
 
@@ -71,6 +76,19 @@ zabbix_src_install() {
     dodir "${db_target}"
     insinto "${db_target}"
     doins -r "${WORK}"/database/postgresql
+
+    if optionq java; then
+        insinto "/usr/share/${PN}/zabbix_java"
+        doins -r "${IMAGE}"/usr/$(exhost --target)/bin/zabbix_java/{bin,lib}
+
+        exeinto "/usr/share/${PN}/zabbix_java/"
+        for exe in startup.sh shutdown.sh settings.sh; do
+            doexe "${IMAGE}/usr/$(exhost --target)/bin/zabbix_java/${exe}"
+        done
+
+        edo mv "${IMAGE}/usr/share/${PN}/zabbix_java/bin/zabbix-java-gateway-${PV}.jar" "${IMAGE}/usr/share/${PN}/zabbix_java/bin/zabbix-java-gateway.jar"
+        edo sed 's/PID_FILE/#PID_FILE/' -i "${IMAGE}/usr/share/${PN}/zabbix_java/settings.sh"
+    fi
 
     # Makefile clean after copy
     edo find "${IMAGE}"/usr/share/${PN} -type f -name "Makefile*" -delete

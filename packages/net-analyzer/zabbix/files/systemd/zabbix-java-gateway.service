@@ -1,0 +1,20 @@
+[Unit]
+Description=Zabbix Java Gateway
+After=network.target
+
+[Service]
+Type=forking
+Environment=PID_FILE=/run/zabbix/zabbix-java-gateway.pid
+Environment=LISTEN_IP=0.0.0.0
+Environment=LISTEN_PORT=10052
+Environment=START_POLLERS=5
+Environment=TIMEOUT=3
+Environment=JAVA_OPTIONS=-Xmx256m
+ExecStart=/usr/share/zabbix/zabbix_java/startup.sh
+PIDFile=/run/zabbix/zabbix-java-gateway.pid
+User=zabbix
+Group=zabbix
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
