@@ -12,7 +12,7 @@ SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""
 
-require php-pecl [ module=module work=${BASE_FILENAME} php_abis=[ 5.6 7.0 7.1 7.2 7.3 ] ]
+require php-pecl [ module=module work=${BASE_FILENAME} php_abis=[ 5.6 7.0 7.1 7.2 7.3 7.4 ] ]
 
 DEPENDENCIES=""
 
@@ -41,3 +41,4 @@ php-pecl_install_one_multibuild() {
 
     keepdir /var/log/newrelic/
 }
+
