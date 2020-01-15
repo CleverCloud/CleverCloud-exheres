@@ -1,11 +1,8 @@
 # Copyright 2019 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-# We need the latest commits for compatibility with PG12
-# https://github.com/postgrespro/pg_wait_sampling/commit/9f56819d5370bd2710c051189a6af3c5e7a31fbf
-MY_REV="9f56819d5370bd2710c051189a6af3c5e7a31fbf"
-require github [ user="postgrespro" rev="${MY_REV}" ]
-require postgresql [ work="${PN}-${MY_REV}" ]
+require github [ user="postgrespro" tag="v${PV}" ]
+require postgresql
 
 SUMMARY="Sampling based statistics of wait events"
 PLATFORMS="~amd64"
