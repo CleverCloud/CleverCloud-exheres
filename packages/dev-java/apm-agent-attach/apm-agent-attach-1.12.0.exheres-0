@@ -1,0 +1,45 @@
+# Copyright 2020 Arnaud Lefebvre <arnaud.lefebvre@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="elastic" project="apm-agent-java" tag="v${PV}" ]
+
+SUMMARY="Elastic APM Java Agent"
+DESCRIPTION="
+Elastic APM automatically measures the performance of your application
+and tracks errors.
+"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+
+BUGS_TO="arnaud.lefebvre@clever-cloud.com"
+
+DEPENDENCIES="
+    build:
+        dev-java/maven
+    build+run:
+        virtual/jdk:=[>=9]
+        virtual/jre:=[>=9]
+"
+
+src_compile () {
+    # mvn needs to fetch dependencies
+    esandbox disable_net
+    edo /usr/$(exhost --target)/bin/mvn package --projects "${PN}" -DskipTests=true -Dmaven.javadoc.skip=true
+    esandbox enable_net
+}
+
+src_test () {
+    # mvn needs to fetch dependencies
+    esandbox disable_net
+    edo /usr/$(exhost --target)/bin/mvn test --projects "${PN}"
+    esandbox enable_net
+}
+
+src_install () {
+    insinto /usr/share/"${PN}"
+    newins "${PN}"/target/"${PNV}".jar "${PN}".jar
+    newins "${PN}"/target/"${PNV}"-standalone.jar "${PN}"-standalone.jar
+}
+
