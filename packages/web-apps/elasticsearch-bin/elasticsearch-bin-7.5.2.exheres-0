@@ -36,7 +36,8 @@ src_install() {
     edo mkdir "${IMAGE}"/opt
     edo cd "${WORKBASE}"
     edo mv ${MY_PNV} "${IMAGE}"/opt/${MY_PN}
-    keepdir /opt/${MY_PN}/{logs,plugins}
+    keepdir /opt/${MY_PN}/logs
+    edo rmdir "${IMAGE}"/opt/${MY_PN}/plugins
     install_systemd_files
     insinto /usr/$(exhost --target)/lib/sysctl.d
     doins "${FILES}"/sysctl/*
