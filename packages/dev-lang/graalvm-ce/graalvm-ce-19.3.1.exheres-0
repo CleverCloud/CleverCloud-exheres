@@ -33,7 +33,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build:
-        dev-java/mx[>=5.215.4]
+        dev-java/mx[>=5.247.11]
         sys-devel/binutils[>=2.29.1]
         sys-devel/gcc[>=4.9.1]
         sys-devel/make[>=3.8.3]
