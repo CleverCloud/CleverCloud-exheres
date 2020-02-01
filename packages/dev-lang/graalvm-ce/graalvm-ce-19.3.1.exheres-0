@@ -86,6 +86,7 @@ src_prepare(){
     # Replace hard coded binary / native image
     edo sed -e s/gcc/${CC}/ -i substratevm/src/com.oracle.svm.hosted/src/com/oracle/svm/hosted/c/codegen/CCompilerInvoker.java
     edo sed -e /compilerCommand/s/cc/${CC}/ -i substratevm/src/com.oracle.svm.hosted/src/com/oracle/svm/hosted/image/CCLinkerInvocation.java
+    edo sed -e "s/objdump/$(exhost --tool-prefix)&/" -i substratevm/mx.substratevm/mx_substratevm.py
 
     # Change the location of the mxbuild folder
     export MX_ALT_OUTPUT_ROOT=${WORK}/mxbuild
@@ -95,7 +96,8 @@ src_prepare(){
 
 src_compile(){
     esandbox disable_net
-    edo cd vm && edo mx --env build-configuration build
+    edo cd vm
+    edo mx -v --env build-configuration build
     esandbox enable_net
 }
 
