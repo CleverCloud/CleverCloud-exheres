@@ -1,0 +1,76 @@
+# Copyright 2019 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+MY_PN=${PN/-bin}
+MY_PNV="${MY_PN}-${PV}"
+
+require systemd-service [ systemd_tmpfiles=[ "${FILES}"/tmpfiles/"${MY_PN}-${SLOT}".conf ] systemd_files=[ "${MY_PN}-${SLOT}".service ] ]
+
+export_exlib_phases pkg_setup src_install pkg_postinst
+
+SUMMARY="Store, search, analyze"
+HOMEPAGE="https://www.elastic.co/products/elastic-stack"
+
+if ever at_least 7; then
+    DOWNLOADS="https://artifacts.elastic.co/downloads/${MY_PN}/${MY_PNV}-linux-x86_64.tar.gz"
+else
+    DOWNLOADS="https://artifacts.elastic.co/downloads/${MY_PN}/${MY_PNV}.tar.gz"
+fi
+
+
+LICENCES="GPL-2"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    run:
+        group/${MY_PN}
+        user/${MY_PN}
+
+        !web-apps/elasticsearch-bin:0 [[
+            description = [ Alternatives conflict ]
+            resolution = uninstall-blocked-before
+        ]]
+"
+
+if ! ever at_least 7; then
+    DEPENDENCIES+="
+        run:
+            virtual/jdk:=[>=8]
+            virtual/jre:=[>=8]
+    "
+fi
+
+BUGS_TO="marc-antoine.perennou@clever-cloud.com"
+
+WORK="${WORKBASE}/${MY_PNV}"
+
+RESTRICT="strip"
+
+elasticsearch-bin_pkg_setup() {
+    exdirectory --allow /opt
+}
+
+elasticsearch-bin_src_install() {
+    default
+
+    edo mkdir "${IMAGE}"/opt
+    edo cd "${WORKBASE}"
+    edo mv ${MY_PNV} "${IMAGE}"/opt/${MY_PN}-${SLOT}
+    keepdir /opt/${MY_PN}-${SLOT}/logs
+    edo rmdir "${IMAGE}"/opt/${MY_PN}-${SLOT}/plugins
+    install_systemd_files
+    insinto /usr/$(exhost --target)/lib/sysctl.d
+    doins "${FILES}"/sysctl/*-${SLOT}*
+    insinto /etc/sysconfig
+    doins "${FILES}"/sysconfig/*-${SLOT}*
+    hereenvd 99${MY_PN}-${SLOT} <<EOF
+CONFIG_PROTECT="/opt/${MY_PN}-${SLOT}/config"
+EOF
+
+    sed -e "s@#JAVA_HOME=@JAVA_HOME=/usr/$(exhost --target)/lib/jdk@" \
+        -i "${IMAGE}/etc/sysconfig/${MY_PN}-${SLOT}"
+}
+
+elasticsearch-bin_pkg_postinst() {
+    edo chown -R ${MY_PN}:${MY_PN} /opt/${MY_PN}-${SLOT}
+}

@@ -3,16 +3,16 @@
 ################################
 
 # Elasticsearch home directory
-#ES_HOME=/opt/elasticsearch
+#ES_HOME=/opt/elasticsearch-7
 
 # Elasticsearch Java path
 #JAVA_HOME=
 
 # Elasticsearch configuration directory
-#ES_PATH_CONF=/opt/elasticsearch/etc/elasticsearch
+#ES_PATH_CONF=/opt/elasticsearch-7/etc/elasticsearch
 
 # Elasticsearch PID directory
-#PID_DIR=/run/elasticsearch
+#PID_DIR=/run/elasticsearch-7
 
 # Additional Java OPTS
 #ES_JAVA_OPTS=
