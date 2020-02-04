@@ -1,0 +1,131 @@
+# Copyright 2014 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Copyright 2012 Michael Thomas <aelmalinka@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+# Based in part upon 'mongodb-1.6.5.exheres-0', which is:
+#    Copyright 2010 Jonathan Dahan <jedahan@gmail.com>
+
+require scons systemd-service [ systemd_files=[ debian/mongod.service ] ] \
+    python [ blacklist=2 multibuild=false ]
+
+SUMMARY="A scalable, high-performance, schema-free, document-oriented database"
+DESCRIPTION="
+Written in C++, MongoDB bridges the gap between key-value stores (which are fast and highly
+scalable) and traditional RDBMS systems (which provide structured schemas and powerful queries).
+"
+HOMEPAGE="https://www.mongodb.org"
+DOWNLOADS="https://downloads.mongodb.org/src/${PN}-src-r${PV}.tar.gz"
+
+LICENCES="Apache-2.0 SSPL-1"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    sasl [[ description = [ Support SASL authentication in the client library ] ]]
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
+"
+
+RESTRICT="test"
+
+DEPENDENCIES="
+    build:
+        dev-python/Cheetah3[python_abis:*(-)?]
+        dev-python/psutil[python_abis:*(-)?]
+        dev-python/PyYAML[python_abis:*(-)?]
+        sys-devel/scons[>=3.0.4][python_abis:*(-)?]
+    build+run:
+        group/mongodb
+        user/mongodb
+        app-arch/snappy
+        app-arch/zstd
+        dev-libs/boost[>=1.49]
+        dev-libs/pcre
+        dev-libs/yaml-cpp
+        net-misc/curl
+        sys-libs/zlib
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
+        sasl? ( net-libs/cyrus-sasl )
+"
+
+WORK="${WORKBASE}/${PN}-src-r${PV}"
+
+MONGO_PARAMS=(
+    CC="${CC}"
+    CXX="${CXX}"
+    --release
+    --nostrip
+    --prefix="${IMAGE}"/usr/$(exhost --target)
+    --ssl
+    --disable-warnings-as-errors
+    --use-system-boost
+    --use-system-pcre
+    --use-system-snappy
+    --use-system-yaml
+    --use-system-zlib
+    --use-system-zstd
+)
+
+SCONS_SRC_CONFIGURE_PARAMS=( "${MONGO_PARAMS[@]}" )
+SCONS_SRC_CONFIGURE_OPTIONS=( "sasl --use-sasl-client" )
+SCONS_SRC_COMPILE_PARAMS=( "${MONGO_PARAMS[@]}" )
+SCONS_SRC_INSTALL_PARAMS=( "${MONGO_PARAMS[@]}" )
+
+src_prepare() {
+    default
+
+    edo sed \
+        -e '/"-ggdb",/d' \
+        -i SConstruct
+    edo sed \
+        -e 's:/var/run:/run:g' \
+        -e "s@/usr/bin@/usr/$(exhost --target)/bin@" \
+        -i debian/mongod.service
+    edo sed \
+        -e '/timeZoneInfo:/a \ \ pidFilePath: \/run\/mongodb\/mongod.pid' \
+        -i debian/mongod.conf
+}
+
+src_compile() {
+    escons \
+        --config=cache \
+        --jobs ${EXJOBS:-1} \
+        CFLAGS="${CFLAGS}" \
+        CXXFLAGS="${CXXFLAGS}" \
+        "${SCONS_SRC_COMPILE_PARAMS[@]}" \
+        core tools
+}
+
+src_install() {
+    escons \
+        --config=cache \
+        "${SCONS_SRC_INSTALL_PARAMS[@]}" \
+        install
+
+    edo rm "${IMAGE}"/usr/$(exhost --target)/bin/install_compass
+
+    insinto /etc
+    doins debian/mongod.conf
+
+    emagicdocs
+
+    install_systemd_files
+
+    insinto ${SYSTEMDTMPFILESDIR}
+    hereins ${PN}.conf <<EOF
+d /run/mongodb 0755 mongodb mongodb -
+EOF
+
+    diropts -o mongodb -g mongodb
+    keepdir /var/log/mongodb
+    diropts -m 0750 -o mongodb -g mongodb
+    keepdir /var/lib/mongodb
+}
+
+src_test() {
+    escons \
+        --jobs ${EXJOBS:-1} \
+        "${MONGO_PARAMS[@]}" \
+        test
+
+    edo ./test
+}
+
