@@ -1,0 +1,77 @@
+# Copyright 2015 Julien Durillon <julien.durillon@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=mongodb tag=r${PV} ] flag-o-matic
+
+SUMMARY="MongoDB administration tools"
+DESCRIPTION="
+Contains bsondump, mongoimport/mongoexport, mongodump/mongorestore, mongostat, mongofiles,
+mongooplog, mongotop. These tools used to be included in the main MongoDB dist, but they have be
+put aside, and rewritten in go since 3.0.
+"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    sasl
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
+"
+
+DEPENDENCIES="
+    build:
+        dev-lang/go[>=1.10]
+        dev-libs/libpcap
+        virtual/pkg-config
+    build+run:
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
+        sasl? ( net-libs/cyrus-sasl )
+"
+
+BUGS_TO="julien.durillon@gmail.com"
+
+TOOLS=(
+    bsondump
+    mongodump
+    mongoexport
+    mongofiles
+    mongoimport
+    mongoreplay
+    mongorestore
+    mongostat
+    mongotop
+)
+
+pkg_setup() {
+    filter-ldflags -Wl,-O1 -Wl,--as-needed
+}
+
+src_prepare() {
+    default
+
+    export GOROOT="/usr/$(exhost --target)/lib/go"
+    export GOPATH="/usr/$(exhost --target)/lib/go:${WORK}/vendor"
+
+    edo ln -s "${WORK}"/vendor "${WORK}"/vendor/src
+    edo ln -s "${WORK}"/vendor/src/github.com/mongodb/${PN}-common "${WORK}"/vendor/src/github.com/mongodb/${PN}
+    edo ln -s "${WORK}"/legacy "${WORK}"/vendor/src/github.com/mongodb/${PN}/legacy
+    for t in ${TOOLS[@]}; do
+        edo ln -s "${WORK}"/${t} "${WORK}"/vendor/src/github.com/mongodb/${PN}/${t}
+    done
+}
+
+src_compile() {
+    for t in ${TOOLS[@]}; do
+        edo go build \
+            -o bin/"${t}" \
+            -tags "ssl $(optionq sasl && echo sasl)" \
+            -ldflags "${LDFLAGS} -X main.VersionStr=${PV}" \
+            "${t}"/main/"${t}".go
+    done
+}
+
+src_install() {
+    dobin bin/*
+}
+
