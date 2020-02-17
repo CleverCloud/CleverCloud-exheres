@@ -1,0 +1,50 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ tag="v${PV}" ] 
+require cmake
+require systemd-service
+
+SUMMARY="ArangoDB is a multi-model, open-source database with flexible data models for documents, graphs, and key-values"
+HOMEPAGE="http://www.${PN}.org/"
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+DEPENDENCIES="
+    build:
+        dev-lang/python:*
+    run:
+        dev-libs/openssl:=
+        group/${PN}
+        user/${PN}
+"
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/0001-Systemd-Remove-Prefix.patch
+    "${FILES}"/0002-Systemd-Fix-Legacy-Path-PID.patch
+)
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    -DVERBOSE=On
+    -DUSE_OPTIMIZE_FOR_ARCHITECTURE=Off
+    -DUSE_MAINTAINER_MODE:BOOL=OFF
+    -DCMAKE_INSTALL_SYSCONFDIR:PATH=/etc
+    -DCMAKE_INSTALL_LOCALSTATEDIR:PATH=/var
+    -DCMAKE_INSTALL_PREFIX:PATH=/usr/$(exhost --target)
+    -DCMAKE_INSTALL_SBINDIR:PATH=/usr/$(exhost --target)/bin
+    -DCMAKE_SKIP_RPATH:BOOL=ON
+)
+
+src_install() {
+    default
+
+    keepdir /var/lib/{arangodb3,arangodb3-apps}
+    keepdir /var/log/arangodb3
+}
+
+pkg_postinst() {
+    edo chown -R ${PN}: /var/lib/{arangodb3,arangodb3-apps}
+    edo chown -R ${PN}: /var/log/arangodb3
+
+    ewarn "run 'arango-secure-installation' to set a root password"
+}

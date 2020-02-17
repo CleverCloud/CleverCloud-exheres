@@ -1,0 +1,28 @@
+From 0db07365c73a7d550561ef3d0ec48fed46f2f14e Mon Sep 17 00:00:00 2001
+From: s0dyy <maxime.sorin@clever-cloud.com>
+Date: Fri, 28 Feb 2020 16:49:22 +0100
+Subject: [PATCH] Remove-Prefix
+
+---
+ cmake/ArangoDBInstall.cmake | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/cmake/ArangoDBInstall.cmake b/cmake/ArangoDBInstall.cmake
+index 15eac7d57e..97d9a92aa6 100644
+--- a/cmake/ArangoDBInstall.cmake
++++ b/cmake/ArangoDBInstall.cmake
+@@ -197,11 +197,6 @@ if (UNIX)
+       )
+       set(IS_SYSTEMD_INSTALL 1)
+       
+-      # set prefix
+-      if (CMAKE_INSTALL_PREFIX AND NOT "${CMAKE_INSTALL_PREFIX}" STREQUAL "/")
+-        set(SYSTEMD_UNIT_DIR "${CMAKE_INSTALL_PREFIX}/${SYSTEMD_UNIT_DIR}/")
+-      endif()
+-
+       # configure and install systemd service
+       configure_file (
+         ${ARANGODB_SOURCE_DIR}/Installation/systemd/arangodb3.service.in
+-- 
+2.25.0
+
