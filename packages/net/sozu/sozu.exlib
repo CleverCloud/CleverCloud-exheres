@@ -5,7 +5,7 @@
 require github [ user=sozu-proxy force_git_clone=true ] cargo
 require systemd-service [ systemd_files=[ generated/${PN}.service ] systemd_tmpfiles=[ generated/${PN}.conf ] ]
 
-export_exlib_phases src_compile src_test src_install
+export_exlib_phases pkg_setup src_compile src_test src_install
 
 SUMMARY="sozu HTTP proxy"
 HOMEPAGE="https://www.sozu.io"
@@ -49,6 +49,11 @@ BIN_ECARGO_FEATURE_ENABLES=(
 BUGS_TO="keruspe@exherbo.org"
 
 SOZU_BIN_DIRS=("bin" "ctl")
+
+sozu_pkg_setup() {
+  default
+  export SOZU_CONFIG=/etc/sozu/config.toml
+}
 
 setup_cargo_features() {
     local bin="${1}"
