@@ -27,8 +27,6 @@ MYOPTIONS="
     cups
     headless-awt [[ description = [ Don't install the X backend for AWT, needed by some GUIs ] ]]
     jce [[ description = [ Enable the Java Cryptographic Extension Unlimited Strength Jurisdiction Policy ] ]]
-    native [[ description = [ Creates native launchers for the supported languages and for polyglot ] ]]
-    polyglot [[ description = [ Run code from guest languages in JVM-based host applications ] ]]
 "
 
 DEPENDENCIES="
@@ -62,43 +60,38 @@ src_unpack() {
 }
 
 src_prepare(){
-    # Temporary, waiting for jvm support for openjdk 11
-    export JAVA_HOME=${WORKBASE}/${LABSJDK}-${JVMCI}
-
-    # Create env file
-    touch vm/mx.vm/build-configuration
-
-    # If the flag is activated, add to the array
-    IMPORTS=()
-    optionq native && IMPORTS+=("/substratevm")
-
-    # Check mx imports
-    if [[ -n "${IMPORTS[*]}" ]]; then
-        IMPORTS_WITH_COMMA="$(IFS=","; echo "${IMPORTS[*]}")"
-        echo "DYNAMIC_IMPORTS=${IMPORTS_WITH_COMMA}" >> vm/mx.vm/build-configuration
-    fi
-
-    # Disable polyglot if the flag is not enabled
-    optionq !polyglot && \
-        echo "DISABLE_LIBPOLYGLOT=true" >> vm/mx.vm/build-configuration && \
-        echo "DISABLE_POLYGLOT=true" >> vm/mx.vm/build-configuration
-
-    # Replace hard coded binary / native image
+    # Replace hard coded binary
     edo sed -e s/gcc/${CC}/ -i substratevm/src/com.oracle.svm.hosted/src/com/oracle/svm/hosted/c/codegen/CCompilerInvoker.java
     edo sed -e /compilerCommand/s/cc/${CC}/ -i substratevm/src/com.oracle.svm.hosted/src/com/oracle/svm/hosted/image/CCLinkerInvocation.java
     edo sed -e "s/objdump/$(exhost --tool-prefix)&/" -i substratevm/mx.substratevm/mx_substratevm.py
-
-    # Change the location of the mxbuild folder
-    export MX_ALT_OUTPUT_ROOT=${WORK}/mxbuild
 
     default
 }
 
 src_compile(){
+    export JAVA_HOME=${WORKBASE}/${LABSJDK}-${JVMCI}
+    export MX_ALT_OUTPUT_ROOT=${WORK}/mxbuild
+
+    edo pushd vm
+
     esandbox disable_net
-    edo cd vm
-    edo mx -v --env build-configuration build
+
+    # sforceimports will check and download the right revision of graaljs
+    edo mx --env ce sforceimports
+
+    # fix path in callbacks.cc
+    edo sed -i "s|#include \"../../../../mxbuild/trufflenode/coremodules/node_snapshots.h\"| \
+        #include \"${WORK}/mxbuild/graal-nodejs/trufflenode/coremodules/node_snapshots.h\"|g" \
+            ${WORKBASE}/graaljs/graal-nodejs/deps/v8/src/graal/callbacks.cc
+
+    # GraalVM CE does not include Native Image by default with "ce" build
+    # EXCLUDE_COMPONENTS=nju,nic,ni,nil,llp
+    # We need to modify the EXCLUDE_COMPONENTS variable to exclude only llp
+    edo mx --env ce --exclude-components=llp build 
+
     esandbox enable_net
+
+    edo popd
 }
 
 src_install(){
@@ -128,10 +121,17 @@ src_install(){
 
     # Install the JDK/JRE
     insinto "${java_home}"
-    doins -r bin conf include jmods lib
+    doins -r bin conf include jmods languages lib tools
 
     # Fix the executables' permissions.
     edo chmod 755 "${IMAGE}/${java_home}"/bin/*
+
+    # Remove symbolic links in /usr/$(exhost --target)/bin which could 
+    # be problematic (collision with original binaries: node, npm...)
+    # Maybe find a better solution?
+    for bin in js lli node npm; do
+        edo rm "${IMAGE}/${java_home}"/bin/${bin} 
+    done
 
     # Creating the Class Data Sharing archives
     edo "${IMAGE}/${java_home}"/bin/java -server -Xshare:dump
