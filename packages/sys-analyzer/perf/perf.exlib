@@ -26,6 +26,10 @@ MAKE_PARAMS=(
     CROSS_COMPILE=$(exhost --tool-prefix)
 )
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/0001-make-perf-able-to-build-with-latest-libbfd.patch
+)
+
 DEFAULT_SRC_COMPILE_PARAMS=( "${MAKE_PARAMS[@]}" )
 DEFAULT_SRC_INSTALL_PARAMS=( "${MAKE_PARAMS[@]}" )
 
