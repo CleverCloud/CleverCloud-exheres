@@ -1,0 +1,37 @@
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module ]
+
+SUMMARY="Sqreen Agent for PHP"
+HOMEPAGE="https://www.sqreen.com/"
+DOWNLOADS="https://s3-eu-west-1.amazonaws.com/${PN}-download-public/php/${PN}-php-extension/linux/${PN}-php-extension-${PV}-linux.tar.gz -> ${PNV}.tar.gz"
+LICENCES="all-rights-reserved"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+DEPENDENCIES=""
+
+unpack_prepare_one_multibuild() {
+    # The files are at the root of the archive, create folder and define the easy_multibuild_work
+    # variable to extract the content inside and set the correct path for the following phases
+    edo mkdir -p "${WORKBASE}/${MULTIBUILD_CLASS}/${MULTIBUILD_TARGET}/${PNV}"
+    easy_multibuild_work=${PNV}
+}
+
+php-pecl_prepare_one_multibuild() {
+    # Skip prepare, cannot find config.m4...
+    :
+}
+
+php-pecl_install_one_multibuild() {
+    local abi=$(php-pecl_get_abi)
+    extensionDir=$(php-config-${abi} --extension-dir)
+
+    exeinto ${extensionDir}
+    newexe ${abi}/${PN}.so ${PN}.so
+
+    insinto /etc/php-${abi}
+    newins conf/${PN}.ini ${PN}.ini
+}
+
