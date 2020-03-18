@@ -1,0 +1,44 @@
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service [ systemd_files=[ ${WORKBASE}/systemd/${PN}.service ] ]
+
+SUMMARY="Sqreen agent daemon"
+HOMEPAGE="https://www.sqreen.com/"
+DOWNLOADS="https://s3-eu-west-1.amazonaws.com/sqreen-download-public/php/sqreen-agent/linux/${PNV}-linux.tar.gz"
+LICENCES="all-rights-reserved"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+DEPENDENCIES=""
+RESTRICT="test"
+
+WORK=${WORKBASE}/${PN}
+
+pkg_setup() {
+    exdirectory --allow /opt
+}
+
+src_prepare() {
+    # Fix systemd pid path
+    edo sed -e /PIDFile/s@var/@@ -i ${WORKBASE}/systemd/${PN}.service
+}
+
+src_install() {
+    insinto /opt/${PNVR}
+    for folder in _v8 include lib64 sqreen; do
+        doins -r ${folder}
+    done
+
+    exeinto /opt/${PNVR}
+    for lib in *.so*; do
+        doexe ${lib}
+    done
+    doexe ${PN} 
+
+    dodir /usr/$(exhost --target)/bin
+    dosym /opt/${PNVR}/${PN} /usr/$(exhost --target)/bin/${PN}
+
+    install_systemd_files
+}
+
