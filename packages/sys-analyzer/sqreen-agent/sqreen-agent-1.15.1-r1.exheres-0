@@ -39,6 +39,8 @@ src_install() {
     dodir /usr/$(exhost --target)/bin
     dosym /opt/${PNVR}/${PN} /usr/$(exhost --target)/bin/${PN}
 
+    keepdir /var/log/sqreen
+
     install_systemd_files
 }
 
