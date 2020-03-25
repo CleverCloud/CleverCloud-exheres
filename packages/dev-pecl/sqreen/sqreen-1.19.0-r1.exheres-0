@@ -10,7 +10,10 @@ LICENCES="all-rights-reserved"
 SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""
-DEPENDENCIES=""
+DEPENDENCIES="
+    run:
+        sys-analyzer/sqreen-agent
+"
 
 unpack_prepare_one_multibuild() {
     # The files are at the root of the archive, create folder and define the easy_multibuild_work
