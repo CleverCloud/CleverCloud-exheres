@@ -1,0 +1,18 @@
+# Copyright 2020 Danilo Spinella <danyspin97@protonmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user='XAMPPRocky' tag=v${PV} ] cargo
+
+SUMMARY="Count your code, quickly."
+
+LICENCES="
+    Apache-2.0
+    MIT
+"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
