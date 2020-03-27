@@ -10,7 +10,11 @@ LICENCES="all-rights-reserved"
 SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""
-DEPENDENCIES=""
+DEPENDENCIES="
+    run:
+        group/sqreen
+        user/sqreen
+"
 RESTRICT="test"
 
 WORK=${WORKBASE}/${PN}
@@ -26,8 +30,8 @@ src_prepare() {
 
 src_install() {
     insinto /opt/${PNVR}
-    for folder in _v8 include lib64 sqreen; do
-        doins -r ${folder}
+    for file in _v8 include lib64 sqreen sqreen-agent.pkg; do
+        doins -r ${file}
     done
 
     exeinto /opt/${PNVR}
@@ -42,5 +46,9 @@ src_install() {
     keepdir /var/log/sqreen
 
     install_systemd_files
+}
+
+pkg_postinst() {
+    edo chown sqreen: /var/log/sqreen
 }
 
