@@ -1,0 +1,17 @@
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module ]
+
+SUMMARY="librdkafka binding providing a working client for Kafka"
+
+PLATFORMS="~amd64"
+LICENCES="MIT"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/librdkafka
+"
+
