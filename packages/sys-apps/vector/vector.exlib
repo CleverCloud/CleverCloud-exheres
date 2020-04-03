@@ -1,0 +1,63 @@
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=timberio tag="v${PV}" force_git_clone=true ] 
+require cargo [ disable_default_features=true ]
+require systemd-service [ systemd_files=[ distribution/systemd/${PN}.service ] ]
+
+SUMMARY="Vector is a lightweight, ultra-fast, open-source tool for building observability pipelines"
+HOMEPAGE="https://vector.dev"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+
+MYOPTIONS="
+    examples [[ description = [ Install config examples ] ]]
+"
+DEPENDENCIES="
+    build+run:
+        dev-libs/openssl
+        sys-libs/zlib
+    run:
+        group/${PN}
+        user/${PN}
+"
+
+# Docker test
+RESTRICT="test"
+
+ECARGO_FEATURES=(
+    'unix'
+    'leveldb-plain'
+    'rdkafka-plain'
+)
+
+# Currently, "sources", "transforms" and "sinks" are enabled by default but that will 
+# change in the next release. 
+# We can delete this at the next bump (0.9.0) and create uses flags for the 3 new features.
+if ever at_least scm ; then
+    ECARGO_FEATURES+=(
+        'sources'
+        'transforms'
+        'sinks'
+    )
+fi
+
+src_install() {
+    ecargo_install
+
+    insinto /etc/${PN}
+    doins config/${PN}.toml
+
+    keepdir /var/lib/${PN}
+
+    install_systemd_files
+
+    option examples && dodoc -r config/examples
+    emagicdocs
+}
+
+pkg_postinst() {
+    edo chown ${PN}: /var/lib/${PN}
+}
+
