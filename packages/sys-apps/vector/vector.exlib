@@ -3,7 +3,7 @@
 
 require github [ user=timberio tag="v${PV}" force_git_clone=true ] 
 require cargo [ disable_default_features=true ]
-require systemd-service [ systemd_files=[ distribution/systemd/${PN}.service ] ]
+require systemd-service [ systemd_files=[ distribution/systemd/${PN}.service ] systemd_tmpfiles=[ ${FILES}/${PN}.conf ] ]
 
 SUMMARY="Vector is a lightweight, ultra-fast, open-source tool for building observability pipelines"
 HOMEPAGE="https://vector.dev"
@@ -27,21 +27,13 @@ DEPENDENCIES="
 RESTRICT="test"
 
 ECARGO_FEATURES=(
-    'unix'
     'leveldb-plain'
     'rdkafka-plain'
+    'sinks'
+    'sources'
+    'transforms'
+    'unix'
 )
-
-# Currently, "sources", "transforms" and "sinks" are enabled by default but that will 
-# change in the next release. 
-# We can delete this at the next bump (0.9.0) and create uses flags for the 3 new features.
-if ever at_least scm ; then
-    ECARGO_FEATURES+=(
-        'sources'
-        'transforms'
-        'sinks'
-    )
-fi
 
 src_install() {
     ecargo_install
@@ -59,5 +51,6 @@ src_install() {
 
 pkg_postinst() {
     edo chown ${PN}: /var/lib/${PN}
+    edo chmod 0700 /var/lib/${PN}
 }
 
