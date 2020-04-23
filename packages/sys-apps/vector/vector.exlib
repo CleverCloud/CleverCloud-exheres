@@ -1,7 +1,7 @@
 # Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=timberio tag="v${PV}" force_git_clone=true ] 
+require github [ user=timberio tag="v${PV}" force_git_clone=true ]
 require cargo [ disable_default_features=true ]
 require systemd-service [ systemd_files=[ distribution/systemd/${PN}.service ] systemd_tmpfiles=[ ${FILES}/${PN}.conf ] ]
 
@@ -27,7 +27,6 @@ DEPENDENCIES="
 RESTRICT="test"
 
 ECARGO_FEATURES=(
-    'leveldb-cmake'
     'rdkafka-plain'
     'sinks'
     'sources'
