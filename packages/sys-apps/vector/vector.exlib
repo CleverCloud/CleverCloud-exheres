@@ -27,7 +27,7 @@ DEPENDENCIES="
 RESTRICT="test"
 
 ECARGO_FEATURES=(
-    'leveldb-plain'
+    'leveldb-cmake'
     'rdkafka-plain'
     'sinks'
     'sources'
