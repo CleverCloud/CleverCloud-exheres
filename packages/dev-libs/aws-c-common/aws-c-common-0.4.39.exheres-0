@@ -1,0 +1,27 @@
+# Copyright 2020 Markus Rothe
+# Distributed under the terms of the GNU General Public License v2
+
+require cmake github [ user=awslabs tag=v${PV} ]
+
+SUMMARY="Core C99 package for AWS SDK for C"
+DESCRIPTION="
+Core C99 package for AWS SDK for C. Includes cross-platform primitives,
+configuration, data structures, and error handling.
+"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    '-DBUILD_SHARED_LIBS:BOOL=TRUE'
+)
+
+src_prepare() {
+    default
+    edo sed -e 's/ -Werror//' -i cmake/AwsCFlags.cmake
+}
+
