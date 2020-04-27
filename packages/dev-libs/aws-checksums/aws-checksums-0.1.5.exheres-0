@@ -1,0 +1,23 @@
+# Copyright 2020 Markus Rothe
+# Distributed under the terms of the GNU General Public License v2
+
+require cmake github [ user=awslabs tag=v${PV} ]
+
+SUMMARY="Amazon's CRC32c and CRC32 implementations"
+DESCRIPTION="
+Cross-platform hardware accelerated CRC32c and CRC32 with fallback to efficient
+software implementations. C interface with language bindings for each of
+Amazon's SDKs.
+"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    '-DBUILD_SHARED_LIBS:BOOL=TRUE'
+)
+
