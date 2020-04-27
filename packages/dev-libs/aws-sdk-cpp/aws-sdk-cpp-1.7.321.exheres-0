@@ -1,0 +1,44 @@
+# Copyright 2020 Markus Rothe
+# Distributed under the terms of the GNU General Public License v2
+
+require cmake github [ user=aws tag=${PV} ]
+
+SUMMARY="Amazon Web Services SDK for C++"
+DESCRIPTION="
+The Amazon Web Services (AWS) SDK for C++ provides a modern C++ interface for
+AWS. It is meant to be performant and fully functioning with low- and
+high-level SDKs, while minimizing dependencies and providing platform
+portability (Windows, OSX, Linux, and mobile).
+"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
+"
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/aws-c-common
+        dev-libs/aws-c-event-stream
+        dev-libs/aws-checksums
+        media-sound/pulseaudio
+        net-misc/curl
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
+        sys-libs/zlib
+"
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    '-DBUILD_SHARED_LIBS:BOOL=TRUE'
+    '-DBUILD_DEPS:BOOL=FALSE'
+    '-DAUTORUN_UNIT_TESTS:BOOL=FALSE'
+    '-DCUSTOM_MEMORY_MANAGEMENT:BOOL=FALSE'
+)
+
+src_prepare() {
+    default
+    edo sed -e 's/ "-Werror" "-pedantic"//' cmake/compiler_settings.cmake
+}
+
