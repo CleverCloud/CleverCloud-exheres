@@ -1,0 +1,29 @@
+# Copyright 2020 Markus Rothe
+# Distributed under the terms of the GNU General Public License v2
+
+require cmake github [ user=awslabs tag=v${PV} ]
+
+SUMMARY="C99 implementation of the vnd.amazon.eventstream content-type"
+DESCRIPTION="
+Amazon Web Services use a format called event stream encoding. It encodes
+binary data with header information that describes the contents of each event.
+This data is transmitted over HTTP using the vnd.amazon.eventstream
+content-type. This package implements encoder and decoder functions to work
+with these streams.
+"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/aws-c-common
+        dev-libs/aws-checksums
+"
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    '-DBUILD_SHARED_LIBS:BOOL=TRUE'
+)
+
