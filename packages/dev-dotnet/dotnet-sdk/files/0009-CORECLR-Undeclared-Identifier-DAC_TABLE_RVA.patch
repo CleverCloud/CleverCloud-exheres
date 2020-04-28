@@ -1,0 +1,19 @@
+From 14252971f4300a0e56adac641a8d5acd9346be02 Mon Sep 17 00:00:00 2001
+From: s0dyy <maxime.sorin@clever-cloud.com>
+Date: Tue, 10 Dec 2019 11:11:04 +0100
+Subject: [PATCH] CORECLR-Undeclared-Identifier-DAC_TABLE_RVA
+
+---
+ src/pal/tools/gen-dactable-rva.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/pal/tools/gen-dactable-rva.sh b/src/pal/tools/gen-dactable-rva.sh
+index dd200068..fd4fa76c 100644
+--- a/src/pal/tools/gen-dactable-rva.sh
++++ b/src/pal/tools/gen-dactable-rva.sh
+@@ -1 +1 @@
+-nm $1 | grep g_dacTable | cut -f 1 -d' ' | head -n 1 | awk '{ print "#define DAC_TABLE_RVA 0x" $1}' > $2
++${NM:-nm} $1 | grep g_dacTable | cut -f 1 -d' ' | head -n 1 | awk '{ print "#define DAC_TABLE_RVA 0x" $1}' > $2
+-- 
+2.24.0
+

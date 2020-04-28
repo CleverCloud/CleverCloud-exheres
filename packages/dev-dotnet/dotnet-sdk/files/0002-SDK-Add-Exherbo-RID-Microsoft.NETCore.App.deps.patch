@@ -1,0 +1,45 @@
+From 17c75300ec047a2a5ec1ea1a83b424a5ab48c4e3 Mon Sep 17 00:00:00 2001
+From: s0dyy <maxime.sorin@clever-cloud.com>
+Date: Thu, 5 Dec 2019 10:37:26 +0100
+Subject: [PATCH] SDK-Add-Exherbo-RID-Microsoft.NETCore.App.deps
+
+---
+ .../Microsoft.NETCore.App.deps.json             | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/.dotnet/shared/Microsoft.NETCore.App/3.1.2/Microsoft.NETCore.App.deps.json b/.dotnet/shared/Microsoft.NETCore.App/3.1.2/Microsoft.NETCore.App.deps.json
+index 613de43..ae04c44 100644
+--- a/.dotnet/shared/Microsoft.NETCore.App/3.1.2/Microsoft.NETCore.App.deps.json
++++ b/.dotnet/shared/Microsoft.NETCore.App/3.1.2/Microsoft.NETCore.App.deps.json
+@@ -1465,6 +1465,21 @@
+       "any",
+       "base"
+     ],
++    "exherbo": [
++      "linux",
++      "unix",
++      "any",
++      "base"
++    ],
++    "exherbo-x64": [
++      "exherbo",
++      "linux-x64",
++      "linux",
++      "unix-x64",
++      "unix",
++      "any",
++      "base"
++    ],
+     "fedora": [
+       "linux",
+       "unix",
+@@ -4029,4 +4044,4 @@
+       "base"
+     ]
+   }
+-}
+\ No newline at end of file
++}
+-- 
+2.24.0
+
