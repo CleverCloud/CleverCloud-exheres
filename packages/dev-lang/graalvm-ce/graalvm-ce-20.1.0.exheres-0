@@ -18,9 +18,9 @@ require scm-git java-jdk autotools [ supported_autoconf=[ 2.5 ] supported_automa
 
 # Error: Building images for org.graalvm.nativeimage.Platform$LINUX_AMD64 requires static JDK libraries.
 # Use JDK from https://github.com/graalvm/labs-openjdk-11/releases
-LABSJDK="labsjdk-ce-11.0.6"
-JVMCI="jvmci-20.0-b02"
-DOWNLOADS="https://github.com/graalvm/labs-openjdk-11/releases/download/${JVMCI}/${LABSJDK}+9-${JVMCI}-linux-amd64.tar.gz"
+LABSJDK="labsjdk-ce-11.0.7"
+JVMCI="jvmci-20.1-b02"
+DOWNLOADS="https://github.com/graalvm/labs-openjdk-11/releases/download/${JVMCI}/${LABSJDK}+10-${JVMCI}-linux-amd64.tar.gz"
 
 MYOPTIONS="
     alsa 
@@ -60,8 +60,10 @@ src_unpack() {
 }
 
 src_prepare(){
+    echo 
+
     # Replace hard coded binary
-    edo sed -e s/gcc/${CC}/ -i substratevm/src/com.oracle.svm.hosted/src/com/oracle/svm/hosted/c/codegen/CCompilerInvoker.java
+    edo sed -e /return/s/gcc/${CC}/ -i substratevm/src/com.oracle.svm.hosted/src/com/oracle/svm/hosted/c/codegen/CCompilerInvoker.java
     edo sed -e /compilerCommand/s/cc/${CC}/ -i substratevm/src/com.oracle.svm.hosted/src/com/oracle/svm/hosted/image/CCLinkerInvocation.java
     edo sed -e "s/objdump/$(exhost --tool-prefix)&/" -i substratevm/mx.substratevm/mx_substratevm.py
 
@@ -87,7 +89,7 @@ src_compile(){
     # GraalVM CE does not include Native Image by default with "ce" build
     # EXCLUDE_COMPONENTS=nju,nic,ni,nil,llp
     # We need to modify the EXCLUDE_COMPONENTS variable to exclude only llp
-    edo mx --env ce --exclude-components=llp build 
+    edo mx --env ce --exclude-components=llp build
 
     esandbox enable_net
 
