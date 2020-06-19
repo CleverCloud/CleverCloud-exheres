@@ -5,5 +5,3 @@ require libgeotiff
 
 PLATFORMS="~amd64"
 
-DEFAULT_SRC_PREPARE_PATCHES=(-p0 "${FILES}"/${PNV}-test.patch)
-
