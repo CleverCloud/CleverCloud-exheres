@@ -7,6 +7,8 @@ SUMMARY="Communicate with any AMQP compliant server"
 PLATFORMS="~amd64"
 LICENCES="PHP-3"
 SLOT="0"
+# Tests require running rabbitmq-server
+RESTRICT="test"
 
 DEPENDENCIES="
     build+run:
