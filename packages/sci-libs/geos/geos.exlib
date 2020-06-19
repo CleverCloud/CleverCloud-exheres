@@ -5,6 +5,10 @@ SUMMARY="GEOS (Geometry Engine - Open Source) is a C++ port of the  Java Topolog
 HOMEPAGE="http://trac.osgeo.org/${PN}/"
 DOWNLOADS="http://download.osgeo.org/${PN}/${PNV}.tar.bz2"
 
+#http://trac.osgeo.org/geos/ticket/350
+#https://trac.osgeo.org/geos/ticket/844
+RESTRICT="test"
+
 LICENCES="LGPL-2.1"
 SLOT="0"
 
