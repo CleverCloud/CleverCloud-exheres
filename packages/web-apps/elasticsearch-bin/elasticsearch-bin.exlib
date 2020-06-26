@@ -57,6 +57,11 @@ elasticsearch-bin_src_install() {
     edo cd "${WORKBASE}"
     edo mv ${MY_PNV} "${IMAGE}"/opt/${MY_PN}-${SLOT}
     keepdir /opt/${MY_PN}-${SLOT}/logs
+
+    if ever at_least 7; then
+        keepdir /opt/${MY_PN}-${SLOT}/config/jvm.options.d
+    fi
+
     edo rmdir "${IMAGE}"/opt/${MY_PN}-${SLOT}/plugins
     install_systemd_files
     insinto /usr/$(exhost --target)/lib/sysctl.d
