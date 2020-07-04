@@ -18,6 +18,6 @@ DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'debug debugalloc' 'cpu-profiler' 'heap-p
 
 DEPENDENCIES="
     build+run:
-        dev-libs/libunwind
+        sys-libs/llvm-libunwind
 "
 
