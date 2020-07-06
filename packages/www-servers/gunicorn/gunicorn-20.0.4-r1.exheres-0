@@ -1,0 +1,46 @@
+# Copyright 2016 Arnaud Lefebvre <a.lefebvre@outlook.fr>
+# Distributed under the terms of the GNU General Public License v2
+
+require alternatives pypi setup-py [ import=setuptools test=pytest blacklist="2.7" ]
+
+SUMMARY="gunicorn is a WSGI HTTP Server for UNIX, fast clients and sleepy applications"
+HOMEPAGE="http://www.gunicorn.org/"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64 ~x86"
+
+# Tests are failing with sandbox
+RESTRICT="test"
+
+MYOPTIONS="
+    ( providers:
+        eventlet
+        gevent
+        tornado
+        gthread
+        gaiohttp
+    ) [[
+        *description = [ supported asynchrone workers ]
+    ]]
+"
+DEPENDENCIES="
+    run:
+        providers:eventlet? ( dev-python/eventlet[>=0.22.1][python_abis:*(-)?] )
+        providers:gevent? ( dev-python/gevent[>=20.6.2][python_abis:*(-)?] )
+        providers:tornado? ( dev-python/tornado[>=5.0.2][python_abis:*(-)?] )
+        python_abis:3.5? ( providers:gaiohttp? ( dev-python/aiohttp[>=3.6.2][python_abis:3.5] ) )
+        python_abis:3.6? ( providers:gaiohttp? ( dev-python/aiohttp[>=3.6.2][python_abis:3.6] ) )
+"
+
+GUNICORN_BINS=( "${PN}" "${PN}_paster" "${PN}_django" )
+
+install_one_multibuild(){
+    setup-py_install_one_multibuild
+    alternatives=( "${PN}_python" "${MULTIBUILD_TARGET}" "${MULTIBUILD_TARGET}")
+    for b in "${GUNICORN_BINS[@]}"; do
+        alternatives+=( /usr/$(exhost --target)/bin/"${b}" "${b}"${MULTIBUILD_TARGET})
+    done
+    alternatives_for "${alternatives[@]}"
+}
+
