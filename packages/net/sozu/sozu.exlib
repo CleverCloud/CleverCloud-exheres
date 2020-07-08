@@ -2,6 +2,7 @@
 # Copyright 2018 Arnaud Lefebvre <a.lefebvre@outlook.fr>
 # Distributed under the terms of the GNU General Public License v2
 
+[[ "${SLOT}" == "0" ]] || GITHUB_BRANCH="${SLOT}"
 require github [ user=sozu-proxy force_git_clone=true ] cargo
 require systemd-service [ systemd_files=[ generated/${PN}.service ] systemd_tmpfiles=[ generated/${PN}.conf ] ]
 
@@ -92,4 +93,14 @@ sozu_src_install() {
     insinto /etc/sozu
     doins generated/config.toml
     emagicdocs
+    [[ "${SLOT}" == "0" ]] || slot_sozu
+}
+
+slot_sozu() {
+    local bindir="/usr/$(exhost --target)/bin"
+    edo pushd "${IMAGE}/${bindir}"
+    for b in *; do edo mv "${b}"{,${SLOT}}; done
+    edo popd
+    edo sed -e "s:${bindir}/sozu:&${SLOT}:" -i "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}"/${PN}.service
+    edo mv "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}"/${PN}{,${SLOT}}.service
 }
