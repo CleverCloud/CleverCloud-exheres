@@ -44,7 +44,8 @@ BIN_ECARGO_FEATURE_ENABLES=(
 
 BUGS_TO="keruspe@exherbo.org"
 
-SOZU_BIN_DIRS=("bin" "ctl")
+SOZU_BIN_DIRS=("bin")
+ever at_least 0.12 || SOZU_BIN_DIRS+=("ctl")
 
 sozu_pkg_setup() {
   default

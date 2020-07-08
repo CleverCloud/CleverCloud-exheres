@@ -1,0 +1,9 @@
+# Copyright 2017 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+SLOT="0.12"
+
+require sozu
+
+PLATFORMS="~amd64"
+
