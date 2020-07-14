@@ -5,12 +5,13 @@ require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ]
 
 SUMMARY="IPsec-based VPN solution focused on security and ease of use, supporting IKEv1/IKEv2 and MOBIKE"
 HOMEPAGE="http://www.strongswan.org/"
-DOWNLOADS="http://download.strongswan.org/${PNV}.tar.bz2"
+DOWNLOADS="https://download.strongswan.org/${PNV}.tar.bz2"
 
 LICENCES="GPL-2 RSA DES"
 SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS="
+    botan
     caps
     constraints [[ description = [ Advanced X509 constraint checking plugin. ] ]]
     curl [[ description = [ Fetch files via libcurl ] ]]
@@ -52,17 +53,18 @@ DEPENDENCIES="
     build+run:
         !net-misc/openswan
         sys-kernel/linux-headers
-        gmp? ( dev-libs/gmp:=[>=4.1.5] )
-        gcrypt? ( dev-libs/libgcrypt:0 )
+        botan? ( dev-libs/botan:2 )
         caps? ( sys-libs/libcap )
         curl? ( net-misc/curl )
+        gcrypt? ( dev-libs/libgcrypt:0 )
+        gmp? ( dev-libs/gmp:=[>=4.1.5] )
         ldap? ( net-directory/openldap )
-        providers:libressl? ( dev-libs/libressl:= )
-        providers:openssl? ( dev-libs/openssl:= )
         mysql? ( virtual/mysql )
-        sqlite? ( dev-db/sqlite[>=3.3.1] )
         networkmanager? ( net-apps/NetworkManager )
         pam? ( sys-libs/pam )
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl:= )
+        sqlite? ( dev-db/sqlite[>=3.3.1] )
     run:
         sys-apps/iproute2
         group/ipsec
@@ -73,6 +75,7 @@ BUGS_TO="julien.durillon@gmail.com"
 src_configure() {
     local params=(
         "--disable-static"
+        "--enable-chapoly"
         "--enable-ikev1"
         "--enable-ikev2"
         "--enable-kernel-netlink"
@@ -83,6 +86,7 @@ src_configure() {
         "--with-group=ipsec"
         $(option_with caps capabilities /usr/$(exhost --target))
         $(option_with systemd systemdsystemunitdir /usr/$(exhost --target)/lib/systemd/system)
+        $(option_enable botan)
         $(option_enable constraints)
         $(option_enable curl)
         $(option_enable debug leak-detective)
