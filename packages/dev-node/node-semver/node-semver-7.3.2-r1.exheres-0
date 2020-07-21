@@ -39,5 +39,5 @@ src_install() {
     edo rm "${WORKBASE}/${PNV}"/{node_modules,.gitignore,.travis.yml,test,package-lock.json} -r
     edo mv "${WORKBASE}/${PNV}" "${IMAGE}"/${node_modules}/semver
 
-    dosym ${node_modules}/semver/bin/semver ${target}/semver
+    dosym ${node_modules}/semver/bin/semver.js ${target}/semver
 }
