@@ -16,10 +16,8 @@ SLOT="$(ever range 1-2)"
 # In order to provide a stable code base, MySQL depends on a specific version of Boost.
 # Currently only Boost.Geometry headers are used and boost is just required at build time.
 if ever at_least 8; then
-    SPHINX_PV="3.1.1"
-    BOOST_PV="1.69.0"
+    BOOST_PV="1.70.0"
 else
-    SPHINX_PV="2.2.9"
     BOOST_PV="1.59.0"
 fi
 
@@ -28,7 +26,6 @@ HOMEPAGE="https://www.percona.com/"
 DOWNLOADS="
     ${HOMEPAGE}redir/downloads/${PN}-${MYSQL_MAJOR_VERSION}/${PNV}-$(exparam release)/source/tarball/${PNV,,}-$(exparam release).tar.gz
     mirror://sourceforge/boost/boost_${BOOST_PV//./_}.tar.bz2
-    sphinx? ( http://sphinxsearch.com/files/sphinx-${SPHINX_PV}-release.tar.gz )
 "
 
 LICENCES="GPL-2" # with-exceptions
@@ -36,7 +33,6 @@ MYOPTIONS="
     debug
     embedded-server [[ description = [ The embedded MySQL server library, a full-featured MySQL server that can be run inside a client application ] ]]
     memcached [[ description = [ Enable using memcached for InnoDb tables (don't know it? Don't enable it.) ] ]]
-    sphinx [[ description = [ Add the Sphinx Search Engine with fulltext search support (external engine) ] ]]
     systemd
     ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
@@ -131,8 +127,6 @@ Percona-Server_src_prepare() {
 
     # https://bugs.mysql.com/bug.php?id=72353 (only relevant when using system libevent)
     edo sed -i -e "s:\(LIBEVENT_LIBRAR\)IES:\1Y:" "${CMAKE_SOURCE}"/cmake/libevent.cmake
-
-    option sphinx && edo ln -s "${WORKBASE}"/sphinx-${SPHINX_PV}-release/mysqlse "${CMAKE_SOURCE}"/storage/sphinx
 }
 
 Percona-Server_src_configure() {
@@ -221,12 +215,6 @@ Percona-Server_src_configure() {
         )
     fi
 
-    if option sphinx ; then
-        cmakeargs+=(
-            -DWITH_SPHINX_STORAGE_ENGINE:BOOL=TRUE
-        )
-    fi
-
     if option memcached ; then
         cmakeargs+=(
             # Unfortunately, the InnoDb/memcached interface needs libevent 1.4.x
@@ -308,14 +296,6 @@ EOF
 
 Percona-Server_pkg_postinst() {
     alternatives_pkg_postinst
-
-    if option sphinx ; then
-        elog "In order to finalise your installation of the Sphinx Search Engine, you must install"
-        elog "it in MySQL using the following command as an administrative user:"
-        elog ""
-        elog "mysql> INSTALL PLUGIN SPHINX SONAME 'ha_sphinx.so';"
-        elog ""
-    fi
 
     if option memcached ; then
         elog "In order to finalise your installation of the memcached plugin, you must install"
