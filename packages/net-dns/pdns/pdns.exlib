@@ -24,7 +24,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build:
-        virtual/pkg-config[>=0.9.0]
+        virtual/pkg-config[>=0.29]
     build+run:
         group/pdns
         user/pdns
@@ -39,6 +39,10 @@ DEPENDENCIES="
     suggestion:
         postgres? ( dev-db/postgresql )
 "
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/0001-Replace-boosts-placeholders-with-the-ones-from-the-std-namespace.patch"
+)
 
 pdns_src_configure() {
     local mymodules=(
@@ -59,6 +63,8 @@ pdns_src_configure() {
 
 pdns_src_install() {
     default
+
+    edo rmdir "${IMAGE}"/usr/share/man/man5
 
     edo mv "${IMAGE}"/etc/powerdns/pdns.conf{-dist,}
     # We update pdns.conf with pdns uid, gid and defaul module-dir
