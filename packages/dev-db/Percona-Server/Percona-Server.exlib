@@ -291,6 +291,11 @@ EOF
     edo mv "${IMAGE}"/usr/$(exhost --target)/lib/tmpfiles.d/{mysql,${PN}-${SLOT}}.conf
     edo mv "${IMAGE}"/usr/share/aclocal/{mysql,${PN}-${SLOT}}.m4
 
+    if [[ -d "${IMAGE}"/usr/lib64 ]]; then
+        edo mv "${IMAGE}"/usr/lib64/* "${IMAGE}"/usr/$(exhost --target)/lib
+        edo rmdir "${IMAGE}"/usr/lib64
+    fi
+
     alternatives_for mysql ${PN}-${SLOT} ${SLOT} "${alternatives[@]}"
 }
 
