@@ -37,7 +37,11 @@ MYOPTIONS="
     ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
-if ! ever at_least 8; then
+if ever at_least 8; then
+    MYOPTIONS+="
+        ldap
+    "
+else
     MYOPTIONS+="
         tcpd
     "
@@ -91,6 +95,7 @@ if ever at_least 8; then
             net-libs/cyrus-sasl
             net-libs/libtirpc
             net-misc/curl
+            ldap? ( net-directory/openldap )
     "
 else
     DEPENDENCIES+="
@@ -98,6 +103,10 @@ else
             tcpd? ( sys-apps/tcp-wrappers )
     "
 fi
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/0001-include-rocksdb-make-file-relative-to-the-path.patch"
+)
 
 CMAKE_SOURCE="${WORKBASE}/${PNV,,}-$(exparam release)"
 
@@ -228,7 +237,14 @@ Percona-Server_src_configure() {
     fi
 
     if ever at_least 8; then
+        if option ldap ; then
+            cmakeargs+=(
+                -DWITH_AUTHENTICATION_LDAP=$(cmake_with ldap system OFF)
+            )
+        fi
         cmakeargs+=(
+            -DROUTER_INSTALL_LIBDIR:PATH=$(exhost --target)/lib/${PN}-${SLOT}
+            -DROUTER_INSTALL_PLUGINDIR=:PATH=$(exhost --target)/lib/${PN}-${SLOT}/plugin
             -DWITH_RE2:STRING=system
             -DWITH_RAPIDJSON:STRING=bundled
         )
@@ -248,6 +264,7 @@ Percona-Server_src_install() {
 
     # Remove empty directories
     ! option debug && edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/${PN}-${SLOT}/plugin/debug
+
 
     keepdir /etc/${PN}-${SLOT}
 
@@ -290,11 +307,6 @@ EOF
     edo mv "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}/"{mysqld,${PN}-${SLOT//./}}@.service
     edo mv "${IMAGE}"/usr/$(exhost --target)/lib/tmpfiles.d/{mysql,${PN}-${SLOT}}.conf
     edo mv "${IMAGE}"/usr/share/aclocal/{mysql,${PN}-${SLOT}}.m4
-
-    if [[ -d "${IMAGE}"/usr/lib64 ]]; then
-        edo mv "${IMAGE}"/usr/lib64/* "${IMAGE}"/usr/$(exhost --target)/lib
-        edo rmdir "${IMAGE}"/usr/lib64
-    fi
 
     alternatives_for mysql ${PN}-${SLOT} ${SLOT} "${alternatives[@]}"
 }
