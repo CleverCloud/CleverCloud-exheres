@@ -12,7 +12,7 @@ SLOT="0"
 require github [ user="dotnet" project="source-build" tag="v${PV}-SDK" force_git_clone=true ]
 
 # Dotnet SDK binaries, necessary to bootstrap source-build.
-DOWNLOADS="https://dotnetcli.azureedge.net/dotnet/Sdk/${PV%.*}.106/${PN}-${PV%.*}.106-linux-x64.tar.gz -> ${PN}-bootstrap.tar.gz"
+DOWNLOADS="https://dotnetcli.azureedge.net/dotnet/Sdk/${PV%.*}.106/${PN}-${PV%.*}.106-linux-x64.tar.gz -> ${PNV}-bootstrap.tar.gz"
 
 MYOPTIONS=""
 DEPENDENCIES="
@@ -42,7 +42,7 @@ src_unpack() {
     # The sdk binaries must be placed in a ".dotnet" folder at the root of the project 
     local dotnet="${WORK}/.dotnet"
     edo mkdir ${dotnet}
-    edo tar xf ${FETCHEDDIR}/${PN}-bootstrap.tar.gz -C ${dotnet}
+    edo tar xf ${FETCHEDDIR}/${PNV}-bootstrap.tar.gz -C ${dotnet}
 }
 
 DEFAULT_SRC_PREPARE_PATCHES=(
