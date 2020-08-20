@@ -18,8 +18,8 @@ require scm-git java-jdk autotools [ supported_autoconf=[ 2.5 ] supported_automa
 
 # Error: Building images for org.graalvm.nativeimage.Platform$LINUX_AMD64 requires static JDK libraries.
 # Use JDK from https://github.com/graalvm/labs-openjdk-11/releases
-LABSJDK="labsjdk-ce-11.0.7"
-JVMCI="jvmci-20.1-b02"
+LABSJDK="labsjdk-ce-11.0.8"
+JVMCI="jvmci-20.2-b03"
 DOWNLOADS="https://github.com/graalvm/labs-openjdk-11/releases/download/${JVMCI}/${LABSJDK}+10-${JVMCI}-linux-amd64.tar.gz"
 
 MYOPTIONS="
@@ -31,10 +31,10 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build:
-        dev-java/mx[>=5.247.11]
-        sys-devel/binutils[>=2.29.1]
-        sys-devel/gcc[>=4.9.1]
-        sys-devel/make[>=3.8.3]
+        dev-java/mx[>=5.272.2]
+        sys-devel/binutils[>=2.33.1]
+        sys-devel/gcc[>=6.4.0]
+        sys-devel/make[>=4.2.1]
     build+run:
         app-misc/ca-certificates[>=20170717-r1][ca-trust]
         dev-java/java-env
@@ -64,6 +64,8 @@ src_prepare(){
 
     # Replace hard coded binary
     edo sed -e /return/s/gcc/${CC}/ -i substratevm/src/com.oracle.svm.hosted/src/com/oracle/svm/hosted/c/codegen/CCompilerInvoker.java
+    edo sed -e /return/s/gcc/${CC}/ -i substratevm/src/com.oracle.svm.core.posix/src/com/oracle/svm/core/posix/linux/libc/GLibC.java
+    edo sed -e /return/s/gcc/${CC}/ -i substratevm/src/com.oracle.svm.core.posix/src/com/oracle/svm/core/posix/linux/libc/BionicLibC.java
     edo sed -e /compilerCommand/s/cc/${CC}/ -i substratevm/src/com.oracle.svm.hosted/src/com/oracle/svm/hosted/image/CCLinkerInvocation.java
     edo sed -e "s/objdump/$(exhost --tool-prefix)&/" -i substratevm/mx.substratevm/mx_substratevm.py
 
