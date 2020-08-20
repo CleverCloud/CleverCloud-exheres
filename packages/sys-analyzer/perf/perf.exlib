@@ -42,31 +42,38 @@ RESTRICT="test"
 
 WORK=${WORKBASE}/linux-${PV}/tools/perf/
 
-MAKE_PARAMS=(
-    WERROR=0
-    V=1
-    lib=lib
-    sysconfdir=/etc
-    ETC_PERFCONFIG=/etc/perfconfig
-    DESTDIR="${IMAGE}"/usr/$(exhost --target)
-    HOSTCC=$(exhost --tool-prefix)cc
-    HOSTLD=$(exhost --tool-prefix)ld
-    CROSS_COMPILE=$(exhost --tool-prefix)
-)
+perf_option() {
+    option ${1} "" "1"
+}
+
+perf_make() {
+    local params=(
+        WERROR=0
+        V=1
+        lib=lib
+        sysconfdir=/etc
+        ETC_PERFCONFIG=/etc/perfconfig
+        DESTDIR="${IMAGE}"/usr/$(exhost --target)
+        HOSTCC=$(exhost --tool-prefix)cc
+        HOSTLD=$(exhost --tool-prefix)ld
+        CROSS_COMPILE=$(exhost --tool-prefix)
+
+        PYTHON=python$(python_get_abi)
+        NO_GTK2=$(perf_option gtk2)
+        NO_LIBAUDIT=$(perf_option audit)
+        NO_LIBZSTD=$(perf_option zstd)
+    )
+
+    emake "${params[@]}" "${@}"
+}
 
 perf_src_compile() {
-    emake "${MAKE_PARAMS[@]}" PYTHON=python$(python_get_abi) \
-        NO_GTK2=$(option gtk2 "" 1) \
-        NO_LIBAUDIT=$(option audit "" 1) \
-        NO_LIBZSTD=$(option zstd "" 1)
+    perf_make
 }
 
 perf_src_install() {
-    emake -j1 "${MAKE_PARAMS[@]}" PYTHON=python$(python_get_abi) \
-        NO_GTK2=$(option gtk2 "" 1) \
-        NO_LIBAUDIT=$(option audit "" 1) \
-        NO_LIBZSTD=$(option zstd "" 1) \
-        install
+    perf_make install
+
     emagicdocs
 
     edo mv "${IMAGE}"/usr{/$(exhost --target),}/share/man
