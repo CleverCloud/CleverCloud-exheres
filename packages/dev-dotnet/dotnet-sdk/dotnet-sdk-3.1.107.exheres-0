@@ -43,6 +43,7 @@ src_unpack() {
     local dotnet="${WORK}/.dotnet"
     edo mkdir ${dotnet}
     edo tar xf ${FETCHEDDIR}/${PNV}-bootstrap.tar.gz -C ${dotnet}
+    export PATH="${WORK}/.dotnet:${PATH}"
 }
 
 DEFAULT_SRC_PREPARE_PATCHES=(
