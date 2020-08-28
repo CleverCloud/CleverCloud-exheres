@@ -23,6 +23,8 @@ DEPENDENCIES="
         virtual/jre:=[>=9]
 "
 
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/fix-broken-path-to-jps-jre-symlinks.patch" )
+
 src_compile () {
     # mvn needs to fetch dependencies
     esandbox disable_net
