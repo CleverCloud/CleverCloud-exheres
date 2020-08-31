@@ -22,7 +22,7 @@ DEPENDENCIES="
     build+run:
         app-arch/xz
         dev-libs/expat
-        dev-libs/json-c[>=0.13]
+        dev-libs/json-c:=[>=0.13]
         dev-libs/libxml2:2.0
         media-libs/libpng:=
         media-libs/libwebp:0.6
