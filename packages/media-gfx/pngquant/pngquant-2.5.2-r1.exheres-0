@@ -32,17 +32,13 @@ src_prepare() {
 }
 
 src_configure() {
-    local my_params=( --prefix=/usr/$(exhost --target) )
+    local my_params=(
+        --prefix=/usr/$(exhost --target)
+        $(option openmp --with-openmp '')
+    )
 
-    if option lcms; then
-        my_params=( --with-lcms2 )
-    fi
-
-    if option openmp; then
-        my_params=( --with-openmp )
-    fi
-
-    edo ./configure "${my_params[@]}"
+    # configure in the lib dir doesn't provide a lcms param
+    edo ./configure "${my_params[@]}" $(option_with lcms lcms2)
 
     edo cd lib
 
