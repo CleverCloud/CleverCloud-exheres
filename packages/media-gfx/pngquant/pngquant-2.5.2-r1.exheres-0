@@ -21,7 +21,7 @@ DEPENDENCIES="
     build+run:
         media-libs/libpng:1.6
         sys-libs/zlib
-        lcms? ( media-libs/lcms )
+        lcms? ( media-libs/lcms2 )
         openmp? ( sys-libs/libgomp:= )
 "
 
