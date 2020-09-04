@@ -18,22 +18,6 @@ MYOPTIONS="
     zstd [[ description = [ ZStd based runtime trace compression in record mode ] ]]
 "
 
-WORK=${WORKBASE}/linux-${PV}/tools/perf/
-
-MAKE_PARAMS=(
-    WERROR=0
-    V=1
-    lib=lib
-    sysconfdir=/etc
-    ETC_PERFCONFIG=/etc/perfconfig
-    DESTDIR="${IMAGE}"/usr/$(exhost --target)
-    HOSTCC=$(exhost --tool-prefix)cc
-    HOSTLD=$(exhost --tool-prefix)ld
-    CROSS_COMPILE=$(exhost --tool-prefix)
-)
-
-RESTRICT="test"
-
 DEPENDENCIES="
     build:
         app-doc/asciidoc
@@ -53,6 +37,22 @@ DEPENDENCIES="
         gtk2? ( x11-libs/gtk+:2 )
         zstd? ( app-arch/zstd )
 "
+
+RESTRICT="test"
+
+WORK=${WORKBASE}/linux-${PV}/tools/perf/
+
+MAKE_PARAMS=(
+    WERROR=0
+    V=1
+    lib=lib
+    sysconfdir=/etc
+    ETC_PERFCONFIG=/etc/perfconfig
+    DESTDIR="${IMAGE}"/usr/$(exhost --target)
+    HOSTCC=$(exhost --tool-prefix)cc
+    HOSTLD=$(exhost --tool-prefix)ld
+    CROSS_COMPILE=$(exhost --tool-prefix)
+)
 
 perf_src_compile() {
     emake "${MAKE_PARAMS[@]}" PYTHON=python$(python_get_abi) \
