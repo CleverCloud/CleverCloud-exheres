@@ -1,7 +1,9 @@
 # Copyright 2014 Marc-Antoine Perennou
 # Distributed under the terms of the GNU General Public License v2
 
-require kernel
+require kernel python [ blacklist=2 multibuild=false ]
+
+export_exlib_phases src_compile src_install
 
 DOWNLOADS="mirror://kernel/linux/kernel/v$(ever major).x/linux-${PV}.tar.xz"
 
@@ -10,7 +12,11 @@ HOMEPAGE="https://perf.wiki.kernel.org/"
 
 LICENCES="GPL-2"
 SLOT="0"
-MYOPTIONS=""
+MYOPTIONS="
+    audit [[ description = [ Support for libaudit to interact with the audit kernel subsystem ] ]]
+    gtk2
+    zstd [[ description = [ ZStd based runtime trace compression in record mode ] ]]
+"
 
 WORK=${WORKBASE}/linux-${PV}/tools/perf/
 
@@ -26,29 +32,45 @@ MAKE_PARAMS=(
     CROSS_COMPILE=$(exhost --tool-prefix)
 )
 
-DEFAULT_SRC_COMPILE_PARAMS=( "${MAKE_PARAMS[@]}" )
-DEFAULT_SRC_INSTALL_PARAMS=( "${MAKE_PARAMS[@]}" )
-
 RESTRICT="test"
 
 DEPENDENCIES="
+    build:
+        app-doc/asciidoc
+        app-text/xmlto
+        sys-devel/bison
+        sys-devel/flex
     build+run:
-        app-admin/audit
         dev-lang/perl:=
         dev-lang/python:=
         dev-libs/libunwind
         dev-util/elfutils
         sys-apps/numactl
         sys-devel/binutils
+        sys-libs/libcap
         sys-libs/slang
+        audit? ( app-admin/audit )
+        gtk2? ( x11-libs/gtk+:2 )
+        zstd? ( app-arch/zstd )
 "
 
+perf_src_compile() {
+    emake "${MAKE_PARAMS[@]}" PYTHON=python$(python_get_abi) \
+        NO_GTK2=$(option gtk2 "" 1) \
+        NO_LIBAUDIT=$(option audit "" 1) \
+        NO_LIBZSTD=$(option zstd "" 1)
+}
+
 perf_src_install() {
-    default
+    emake -j1 "${MAKE_PARAMS[@]}" PYTHON=python$(python_get_abi) \
+        NO_GTK2=$(option gtk2 "" 1) \
+        NO_LIBAUDIT=$(option audit "" 1) \
+        NO_LIBZSTD=$(option zstd "" 1) \
+        install
+    emagicdocs
+
     edo mv "${IMAGE}"/usr{/$(exhost --target),}/share/man
     edo mv "${IMAGE}"/usr{/$(exhost --target),}/etc
     edo rm -r "${IMAGE}"/usr/$(exhost --target)/share
 }
-
-export_exlib_phases src_install
 
