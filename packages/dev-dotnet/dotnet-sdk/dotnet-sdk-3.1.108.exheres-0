@@ -88,7 +88,7 @@ src_compile() {
 
 src_install() {
     local rid="exherbo-x64"
-    local runtime="${PV%.*}.7"
+    local runtime="${PV%.*}.8"
 
     dodir /opt/${PNVR}
     edo tar xf ${WORK}/artifacts/x64/Release/${PNV}-${rid}.tar.gz -C "${IMAGE}"/opt/${PNVR}
