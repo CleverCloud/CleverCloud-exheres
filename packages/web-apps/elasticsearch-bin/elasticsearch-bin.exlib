@@ -17,7 +17,6 @@ else
     DOWNLOADS="https://artifacts.elastic.co/downloads/${MY_PN}/${MY_PNV}.tar.gz"
 fi
 
-
 LICENCES="GPL-2"
 MYOPTIONS=""
 
@@ -37,6 +36,17 @@ if ! ever at_least 7; then
         run:
             virtual/jdk:=[>=8]
             virtual/jre:=[>=8]
+    "
+else
+    MYOPTIONS+="
+        bundled-java [[ description = [ Use the bundled java to be able to claim official support ] ]]
+    "
+    DEPENDENCIES+="
+        run:
+            !bundled-java? (
+                virtual/jdk:=[>=8]
+                virtual/jre:=[>=8]
+            )
     "
 fi
 
@@ -60,6 +70,7 @@ elasticsearch-bin_src_install() {
 
     if ever at_least 7; then
         keepdir /opt/${MY_PN}-${SLOT}/config/jvm.options.d
+        ! option bundled-java && edo rm -rf "${IMAGE}"/opt/${MY_PN}-${SLOT}/jdk
     fi
 
     edo rmdir "${IMAGE}"/opt/${MY_PN}-${SLOT}/plugins
@@ -79,3 +90,4 @@ EOF
 elasticsearch-bin_pkg_postinst() {
     edo chown -R ${MY_PN}:${MY_PN} /opt/${MY_PN}-${SLOT}
 }
+
