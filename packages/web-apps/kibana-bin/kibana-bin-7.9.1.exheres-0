@@ -37,7 +37,7 @@ src_install() {
     edo mkdir "${IMAGE}"/opt
     edo cd "${WORKBASE}"
     edo mv "${MY_PNV}-${MY_PLATFORM}" "${IMAGE}"/opt/${MY_PN}
-    edo rmdir "${IMAGE}"/opt/${MY_PN}/{.nodegit_binaries,plugins}
+    edo rmdir "${IMAGE}"/opt/${MY_PN}/plugins
     edo rmdir "${IMAGE}"/opt/${MY_PN}/node/lib
     keepdir /opt/${MY_PN}/data
     edo chown -R ${MY_PN}:${MY_PN} "${IMAGE}"/opt/${MY_PN}
