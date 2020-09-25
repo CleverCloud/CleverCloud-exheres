@@ -1,0 +1,67 @@
+From 5a7d0f595e6bc664177c3893b73fc4282a8610ef Mon Sep 17 00:00:00 2001
+From: s0dyy <msorin@msorin.com>
+Date: Thu, 15 Oct 2020 16:30:50 +0200
+Subject: [PATCH] RUNTIME-clang-banned-by-distribution
+
+---
+ eng/native/build-commons.sh          | 2 +-
+ src/coreclr/build-runtime.sh         | 2 +-
+ src/installer/corehost/build.sh      | 2 +-
+ src/libraries/Native/build-native.sh | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/eng/native/build-commons.sh b/eng/native/build-commons.sh
+index bf2863e15c1..55a4f2f4a81 100755
+--- a/eng/native/build-commons.sh
++++ b/eng/native/build-commons.sh
+@@ -324,7 +324,7 @@ while :; do
+             ;;
+ 
+         clang*|-clang*)
+-                __Compiler=clang
++                __Compiler=${CC}
+                 # clangx.y or clang-x.y
+                 version="$(echo "$lowerI" | tr -d '[:alpha:]-=')"
+                 parts=(${version//./ })
+diff --git a/src/coreclr/build-runtime.sh b/src/coreclr/build-runtime.sh
+index a2e7313f4f3..db20d977647 100755
+--- a/src/coreclr/build-runtime.sh
++++ b/src/coreclr/build-runtime.sh
+@@ -164,7 +164,7 @@ __BuildType=Debug
+ __CodeCoverage=0
+ 
+ # Set the various build properties here so that CMake and MSBuild can pick them up
+-__Compiler=clang
++__Compiler=${CC}
+ __CompilerMajorVersion=
+ __CompilerMinorVersion=
+ __CommonMSBuildArgs=
+diff --git a/src/installer/corehost/build.sh b/src/installer/corehost/build.sh
+index 100808e9c1f..1ff5891cbf9 100755
+--- a/src/installer/corehost/build.sh
++++ b/src/installer/corehost/build.sh
+@@ -15,7 +15,7 @@ __BuildArch=x64
+ __TargetOS=Linux
+ __BuildType=Debug
+ __CMakeArgs=""
+-__Compiler=clang
++__Compiler=${CC}
+ __CompilerMajorVersion=
+ __CompilerMinorVersion=
+ __CrossBuild=0
+diff --git a/src/libraries/Native/build-native.sh b/src/libraries/Native/build-native.sh
+index 2aaa9fe4831..27c309cf4a9 100755
+--- a/src/libraries/Native/build-native.sh
++++ b/src/libraries/Native/build-native.sh
+@@ -30,7 +30,7 @@ __BuildArch=x64
+ __TargetOS=Linux
+ __BuildType=Debug
+ __CMakeArgs=""
+-__Compiler=clang
++__Compiler=${CC}
+ __CompilerMajorVersion=
+ __CompilerMinorVersion=
+ __CrossBuild=0
+-- 
+2.28.0
+

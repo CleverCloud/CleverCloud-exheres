@@ -1,0 +1,25 @@
+From e7cc12a091b4991c050fe5be0028d8a74d209cfa Mon Sep 17 00:00:00 2001
+From: s0dyy <msorin@msorin.com>
+Date: Tue, 22 Dec 2020 12:24:54 +0100
+Subject: [PATCH] RUNTIME-Fix GNU linker detection
+
+---
+ eng/native/configurecompiler.cmake | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/eng/native/configurecompiler.cmake b/eng/native/configurecompiler.cmake
+index 006a180f..0a2ff67f 100644
+--- a/eng/native/configurecompiler.cmake
++++ b/eng/native/configurecompiler.cmake
+@@ -594,7 +594,7 @@ else (CLR_CMAKE_HOST_WIN32)
+         ERROR_QUIET
+         OUTPUT_VARIABLE ldVersionOutput)
+ 
+-    if("${ldVersionOutput}" MATCHES "GNU ld" OR "${ldVersionOutput}" MATCHES "GNU gold")
++    if("${ldVersionOutput}" MATCHES "GNU ld" OR "${ldVersionOutput}" MATCHES "GNU gold" OR "${ldVersionOutput}" MATCHES "GNU linkers")
+         set(LD_GNU 1)
+     elseif("${ldVersionOutput}" MATCHES "Solaris Link")
+         set(LD_SOLARIS 1)
+-- 
+2.29.2
+

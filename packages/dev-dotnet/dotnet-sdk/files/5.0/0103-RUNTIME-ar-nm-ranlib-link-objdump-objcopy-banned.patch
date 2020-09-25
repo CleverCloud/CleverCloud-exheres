@@ -1,0 +1,55 @@
+From 9266e847c78ac24540a21826e539d2d3faaddda5 Mon Sep 17 00:00:00 2001
+From: s0dyy <maxime.sorin@clever-cloud.com>
+Date: Mon, 14 Dec 2020 13:43:39 +0100
+Subject: [PATCH] RUNTIME-ar-nm-ranlib-link-objdump-objcopy-banned
+
+---
+ eng/native/configuretools.cmake | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/eng/native/configuretools.cmake b/eng/native/configuretools.cmake
+index 0edbe2ee..5d9d3531 100644
+--- a/eng/native/configuretools.cmake
++++ b/eng/native/configuretools.cmake
+@@ -11,7 +11,7 @@ if(NOT WIN32 AND NOT CLR_CMAKE_TARGET_BROWSER)
+     if(APPLE)
+       set(TOOLSET_PREFIX "")
+     else()
+-      set(TOOLSET_PREFIX "llvm-")
++      set(TOOLSET_PREFIX "")
+     endif()
+   elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+     if(CMAKE_CROSSCOMPILING)
+@@ -39,17 +39,17 @@ if(NOT WIN32 AND NOT CLR_CMAKE_TARGET_BROWSER)
+     set(${var} ${EXEC_LOCATION_${exec}} PARENT_SCOPE)
+   endfunction()
+ 
+-  locate_toolchain_exec(ar CMAKE_AR)
+-  locate_toolchain_exec(nm CMAKE_NM)
++  locate_toolchain_exec("$ENV{AR}" CMAKE_AR)
++  locate_toolchain_exec("$ENV{NM}" CMAKE_NM)
+ 
+   if(CMAKE_C_COMPILER_ID MATCHES "GNU")
+-    locate_toolchain_exec(ranlib CMAKE_RANLIB)
++    locate_toolchain_exec("$ENV{RANLIB}" CMAKE_RANLIB)
+   else()
+     locate_toolchain_exec(link CMAKE_LINKER)
+   endif()
+ 
+   if(NOT CLR_CMAKE_TARGET_OSX AND NOT CLR_CMAKE_TARGET_IOS AND NOT CLR_CMAKE_TARGET_TVOS AND (NOT CLR_CMAKE_TARGET_ANDROID OR CROSS_ROOTFS))
+-    locate_toolchain_exec(objdump CMAKE_OBJDUMP)
++    locate_toolchain_exec("$ENV{OBJDUMP}" CMAKE_OBJDUMP)
+ 
+     if(CLR_CMAKE_TARGET_ANDROID)
+       set(TOOLSET_PREFIX ${ANDROID_TOOLCHAIN_PREFIX})
+@@ -60,6 +60,6 @@ if(NOT WIN32 AND NOT CLR_CMAKE_TARGET_BROWSER)
+       set(TOOLSET_PREFIX "")
+     endif()
+ 
+-    locate_toolchain_exec(objcopy CMAKE_OBJCOPY)
++    locate_toolchain_exec("$ENV{OBJCOPY}" CMAKE_OBJCOPY)
+   endif()
+ endif()
+-- 
+2.29.2
+

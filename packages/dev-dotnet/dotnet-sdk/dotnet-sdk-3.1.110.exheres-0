@@ -1,55 +1,10 @@
-# Copyright 2019 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-SUMMARY=".NET Core is a cross-platform version of .NET for building websites, services, and console apps."
-HOMEPAGE="https://dotnet.microsoft.com/"
-
-LICENCES="MIT"
 PLATFORMS="~amd64"
-SLOT="0"
 
-# This repository contains a set of scripts for building the .NET Core Runtime and SDK from source.
-require github [ user="dotnet" project="source-build" tag="v${PV}-SDK" force_git_clone=true ]
-
-# Dotnet SDK binaries, necessary to bootstrap source-build.
-DOWNLOADS="https://dotnetcli.azureedge.net/dotnet/Sdk/${PV%.*}.109/${PN}-${PV%.*}.109-linux-x64.tar.gz -> ${PNV}-bootstrap.tar.gz"
-
-MYOPTIONS=""
-DEPENDENCIES="
-    build:
-        sys-devel/cmake 
-    build+run:
-        app-crypt/krb5
-        dev-lang/clang:=
-        dev-lang/llvm:=
-        dev-libs/icu:=
-        sys-libs/llvm-libunwind
-        dev-util/lttng-ust
-        net-misc/curl
-        sys-apps/numactl
-        sys-devel/gettext
-        sys-devel/lldb:=
-        sys-libs/zlib
-"
-
-pkg_setup() {
-    exdirectory --allow /opt
-}
-
-src_unpack() {
-    scm_src_unpack
-
-    # The sdk binaries must be placed in a ".dotnet" folder at the root of the project 
-    local dotnet="${WORK}/.dotnet"
-    edo mkdir ${dotnet}
-    edo tar xf ${FETCHEDDIR}/${PNV}-bootstrap.tar.gz -C ${dotnet}
-    export PATH="${WORK}/.dotnet:${PATH}"
-}
-
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}/0001-SDK-Add-Exherbo-RID-RuntimeIdentifierGraph.patch"
-    "${FILES}/0002-SDK-Add-Exherbo-RID-Microsoft.NETCore.App.deps.patch"
-)
+runtime="${PV%.*}.10"
+bootstrap="3.1.109"
 
 src_prepare() {
     default 
@@ -57,57 +12,17 @@ src_prepare() {
     export CC="$(exhost --tool-prefix)clang"
     export CXX="$(exhost --tool-prefix)clang++"
 
-    # dotnet/coreclr 
-    edo cp "${FILES}"/0008-CORECLR-Clang-Banned-By-Distribution.patch "${WORK}"/patches/coreclr
-    edo cp "${FILES}"/0009-CORECLR-Undeclared-Identifier-DAC_TABLE_RVA.patch "${WORK}"/patches/coreclr
+    # dotnet/coreclr repository
+    edo cp "${FILES}"/${SLOT}/0101-CORECLR-banned-by-distribution.patch "${WORK}"/patches/coreclr
+    edo cp "${FILES}"/${SLOT}/0102-CORECLR-undeclared-identifier-DAC_TABLE_RVA.patch "${WORK}"/patches/coreclr
 
-    # dotnet/corefx
-    edo cp "${FILES}"/0008-COREFX-Add-Exherbo-RID-runtime.compatibility.patch "${WORK}"/patches/corefx
-    edo cp "${FILES}"/0009-COREFX-Add-Exherbo-RID-runtime.patch "${WORK}"/patches/corefx
-    edo cp "${FILES}"/0010-COREFX-Add-Exherbo-Group-RuntimeGroups.patch "${WORK}"/patches/corefx
-    edo cp "${FILES}"/0011-COREFX-Clang-Banned-By-Distribution.patch "${WORK}"/patches/corefx
+    # dotnet/corefx repository
+    edo cp "${FILES}"/${SLOT}/0103-COREFX-banned-by-distribution.patch "${WORK}"/patches/corefx
 
-    # dotnet/coresetup
-    edo cp "${FILES}"/0007-CORESETUP-Clang-Banned-By-Distribution.patch "${WORK}"/patches/core-setup
-    edo cp "${FILES}"/0008-CORESETUP-Fix-Corehost-RID.patch "${WORK}"/patches/core-setup
+    # dotnet/coresetup repository
+    edo cp "${FILES}"/${SLOT}/0104-CORESETUP-banned-by-distribution.patch "${WORK}"/patches/core-setup
+    edo cp "${FILES}"/${SLOT}/0105-CORESETUP-fix-corehost-rid.patch "${WORK}"/patches/core-setup
 }
 
-src_compile() {
-    esandbox disable_net
-
-    export SkipDownloadingReferencePackages=true
-    export SkipDownloadingPreviouslySourceBuiltPackages=true
-    export UseRazorBuildServer=false
-
-    edo bash build.sh
-
-    esandbox enable_net
-}
-
-src_install() {
-    local rid="exherbo-x64"
-    local runtime="${PV%.*}.10"
-
-    dodir /opt/${PNVR}
-    edo tar xf ${WORK}/artifacts/x64/Release/${PNV}-${rid}.tar.gz -C "${IMAGE}"/opt/${PNVR}
-
-    dodir /usr/$(exhost --target)/bin
-    dosym /opt/${PNVR}/dotnet /usr/$(exhost --target)/bin/dotnet
-
-    dodir /usr/$(exhost --target)/lib
-    dosym /opt/${PNVR}/host/fxr/${runtime}/libhostfxr.so /usr/$(exhost --target)/lib/libhostfxr.so
-
-    for libpath in ${IMAGE}/opt/${PNVR}/shared/Microsoft.NETCore.App/${runtime}/{*.a,*.so} ; do
-        lib=${libpath##*/}
-        dosym /opt/${PNVR}/shared/Microsoft.NETCore.App/${runtime}/${lib} \
-            /usr/$(exhost --target)/lib/${lib}
-    done
-
-    dosym /opt/${PNVR}/packs/Microsoft.NETCore.App.Host.${rid}/${runtime}/runtimes/${rid}/native/libnethost.so \
-        /usr/$(exhost --target)/lib/libnethost.so
-
-    hereenvd 99${PN} <<EOF
-DOTNET_ROOT="/opt/${PNV}/"
-EOF
-}
+require dotnet-sdk
 

@@ -1,0 +1,94 @@
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY=".NET Core is a cross-platform version of .NET for building websites, services, and console apps."
+HOMEPAGE="https://dotnet.microsoft.com/"
+
+LICENCES="MIT"
+SLOT="$(ever range 1-2)"
+
+# This repository contains a set of scripts for building the .NET Core Runtime and SDK from source.
+require github [ user="dotnet" project="source-build" tag="v${PV}-SDK" force_git_clone=true ]
+require alternatives
+require providers
+
+# Dotnet SDK binaries, necessary to bootstrap source-build.
+DOWNLOADS="https://dotnetcli.azureedge.net/dotnet/Sdk/${bootstrap}/${PN}-${bootstrap}-linux-x64.tar.gz -> ${PNV}-bootstrap.tar.gz"
+
+MYOPTIONS=""
+DEPENDENCIES="
+    build:
+        sys-devel/cmake 
+    build+run:
+        app-crypt/krb5
+        dev-lang/clang:=
+        dev-lang/llvm:=
+        dev-libs/icu:=
+        sys-libs/llvm-libunwind
+        dev-util/lttng-ust
+        net-misc/curl
+        sys-apps/numactl
+        sys-devel/gettext
+        sys-devel/lldb:=
+        sys-libs/zlib
+"
+
+pkg_setup() {
+    exdirectory --allow /opt
+}
+
+src_unpack() {
+    scm_src_unpack
+
+    # The sdk binaries must be placed in a ".dotnet" folder at the root of the project 
+    local dotnet="${WORK}/.dotnet"
+    edo mkdir ${dotnet}
+    edo tar xf ${FETCHEDDIR}/${PNV}-bootstrap.tar.gz -C ${dotnet}
+    export PATH="${WORK}/.dotnet:${PATH}"
+}
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/${SLOT}/0001-BOOTSTRAP-add-exherbo-rid.patch"
+    "${FILES}/${SLOT}/0002-BOOTSTRAP-add-exherbo-rid.patch"
+)
+
+if ever at_least 5; then
+    # https://github.com/dotnet/source-build/issues/1911
+    DEFAULT_SRC_PREPARE_PATCHES+=( "${FILES}/${SLOT}/0003-SOURCE-BUILD-add-rid-suffix.patch" )
+fi
+
+src_compile() {
+    providers_set 'compiler-tools llvm'
+    providers_set 'ld lld'
+
+    esandbox disable_net
+
+    export SkipDownloadingReferencePackages=true
+    export SkipDownloadingPreviouslySourceBuiltPackages=true
+    export UseRazorBuildServer=false
+
+    edo bash build.sh
+
+    esandbox enable_net
+}
+
+src_install() {
+    local rid="exherbo-x64"
+
+    dodir /opt/${PN}-${SLOT}
+    edo tar xf ${WORK}/artifacts/x64/Release/${PNV}-${rid}.tar.gz -C "${IMAGE}"/opt/${PN}-${SLOT}
+
+    local alternatives=(
+        "/usr/$(exhost --target)/bin/dotnet" "/opt/${PN}-${SLOT}/dotnet"
+        "/usr/$(exhost --target)/lib/libhostfxr.so" "/opt/${PN}-${SLOT}/host/fxr/${runtime}/libhostfxr.so"
+        "/usr/$(exhost --target)/lib/libnethost.so" "/opt/${PN}-${SLOT}/packs/Microsoft.NETCore.App.Host.${rid}/${runtime}/runtimes/${rid}/native/libnethost.so"
+    )
+
+    for libpath in ${IMAGE}/opt/${PN}-${SLOT}/shared/Microsoft.NETCore.App/${runtime}/{*.a,*.so} ; do
+        lib=${libpath##*/}
+        alternatives+=( "/usr/$(exhost --target)/lib/${lib}" "/opt/${PN}-${SLOT}/shared/Microsoft.NETCore.App/${runtime}/${lib}" )
+    done
+
+    alternatives_for dotnet ${PN}-${SLOT} ${SLOT} "${alternatives[@]}"
+}
+

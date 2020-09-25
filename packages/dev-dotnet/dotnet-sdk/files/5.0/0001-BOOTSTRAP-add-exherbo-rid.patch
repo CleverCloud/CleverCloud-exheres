@@ -1,0 +1,41 @@
+From cfa8b01b91c776b3de79b88984856efe5d158db8 Mon Sep 17 00:00:00 2001
+From: s0dyy <maxime.sorin@clever-cloud.com>
+Date: Fri, 7 Feb 2020 12:07:43 +0100
+Subject: [PATCH] SDK-Add-Exherbo-RID-RuntimeIdentifierGraph
+
+---
+ .../RuntimeIdentifierGraph.json                     | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/.dotnet/sdk/5.0.100-rc.1.20452.10/RuntimeIdentifierGraph.json b/.dotnet/sdk/5.0.100-rc.1.20452.10/RuntimeIdentifierGraph.json
+index a6b800b..df0b622 100644
+--- a/.dotnet/sdk/5.0.100-rc.1.20452.10/RuntimeIdentifierGraph.json
++++ b/.dotnet/sdk/5.0.100-rc.1.20452.10/RuntimeIdentifierGraph.json
+@@ -288,6 +288,17 @@
+         "debian-x86"
+       ]
+     },
++    "exherbo": {
++      "#import": [
++        "linux"
++      ]
++    },
++    "exherbo-x64": {
++      "#import": [
++        "exherbo",
++        "linux-x64"
++      ]
++    },
+     "fedora": {
+       "#import": [
+         "linux"
+@@ -2034,4 +2045,4 @@
+       ]
+     }
+   }
+-}
+\ No newline at end of file
++}
+-- 
+2.25.0
+

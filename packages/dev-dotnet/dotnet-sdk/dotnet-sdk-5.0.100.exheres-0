@@ -1,0 +1,24 @@
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+PLATFORMS="~amd64"
+
+runtime="${PV%.*}.0"
+bootstrap="5.0.100-rc.1.20452.10"
+
+src_prepare() {
+    default 
+
+    export CC="$(exhost --tool-prefix)clang"
+    export CXX="$(exhost --tool-prefix)clang++"
+
+    # dotnet/runtime repository
+    edo cp "${FILES}"/${SLOT}/0101-RUNTIME-clang-banned-by-distribution.patch "${WORK}"/patches/runtime
+    edo cp "${FILES}"/${SLOT}/0102-RUNTIME-readelf-banned-by-distribution.patch "${WORK}"/patches/runtime
+    edo cp "${FILES}"/${SLOT}/0103-RUNTIME-ar-nm-ranlib-link-objdump-objcopy-banned.patch "${WORK}"/patches/runtime
+    # fixed upstream, i think the patch will no longer be necessary for the next release
+    edo cp "${FILES}"/${SLOT}/0104-RUNTIME-fix-GNU-linker-detection.patch "${WORK}"/patches/runtime
+}
+
+require dotnet-sdk
+
