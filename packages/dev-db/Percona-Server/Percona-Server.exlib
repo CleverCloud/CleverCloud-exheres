@@ -198,6 +198,7 @@ Percona-Server_src_configure() {
         -DWITH_RAPID:BOOL=FALSE
         -DWITH_TEST_TRACE_PLUGIN:BOOL=FALSE
         -DWITH_UBSAN:BOOL=FALSE
+        -DWITH_COREDUMPER:BOOL=FALSE
         -DUSE_CTAGS:BOOL=FALSE
     )
 
