@@ -1,6 +1,6 @@
 # Copyright 2014 Marc-Antoine Perennou <keruspe@exherbo.org>
 # Distributed under the terms of the GNU General Public License v2
 
-require Percona-Server [ release="33" ]
+require Percona-Server [ release="34" ]
 
 PLATFORMS="~amd64 ~x86"
