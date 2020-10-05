@@ -1,0 +1,67 @@
+# Copyright 2020 Danilo Spinella <oss@danyspin97.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=${PN} tag=v${PV} ] cmake [ api=2 ]
+
+export_exlib_phases src_install
+
+SUMMARY="High performance, open source, general RPC framework"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+MYOPTIONS="
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
+"
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/protobuf
+        dev-libs/re2
+        net-dns/c-ares[>=1.13.0]
+        sys-libs/zlib
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
+    test:
+        dev-libs/gflags
+"
+
+# Tests require benchmark package
+RESTRICT="test"
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    -DgRPC_BUILD_CODEGEN:BOOL=ON
+    -DgRPC_BUILD_CSHARP_EXT:BOOL=OFF
+    -DgRPC_BACKWARDS_COMPATIBILITY_MODE:BOOL=OFF
+
+    # Language plugins
+    -DgRPC_BUILD_GRPC_CPP_PLUGIN:BOOL=ON
+    -DgRPC_BUILD_GRPC_CSHARP_PLUGIN:BOOL=OFF
+    -DgRPC_BUILD_GRPC_NODE_PLUGIN:BOOL=OFF
+    -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN:BOOL=OFF
+    -DgRPC_BUILD_GRPC_PHP_PLUGIN:BOOL=OFF
+    -DgRPC_BUILD_GRPC_PYTHON_PLUGIN:BOOL=OFF
+    -DgRPC_BUILD_GRPC_RUBY_PLUGIN:BOOL=OFF
+
+    # Use system libs
+    -DgRPC_ZLIB_PROVIDER=package
+    -DgRPC_CARES_PROVIDER=package
+    -DgRPC_RE2_PROVIDER=package
+    -DgRPC_SSL_PROVIDER=package
+    -DgRPC_PROTOBUF_PROVIDER=package
+    -DgRPC_GFLAGS_PROVIDER=package
+    # benchmark is unpackaged
+    -DgRPC_BENCHMARK_PROVIDER=module
+    # absl is unpackaged
+    -DgRPC_ABSL_PROVIDER=package
+)
+
+CMAKE_SRC_CONFIGURE_TESTS=(
+    '-DgRPC_BUILD_TESTS:BOOL=ON -DgRPC_BUILD_TESTS:BOOL=OFF'
+)
+
+grpc_src_install() {
+    cmake_src_install
+
+    # absl_dynamic_annotations is inside absl_base
+    edo sed -e 's/ -labsl_dynamic_annotations//' -i "${IMAGE}"/usr/$(exhost --target)/lib/pkgconfig/*.pc
+}
