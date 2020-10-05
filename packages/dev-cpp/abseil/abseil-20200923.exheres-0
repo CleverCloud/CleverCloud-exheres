@@ -1,0 +1,7 @@
+# Copyright 2020 Danilo Spinella <oss@danyspin97.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require abseil
+
+PLATFORMS="~amd64"
+

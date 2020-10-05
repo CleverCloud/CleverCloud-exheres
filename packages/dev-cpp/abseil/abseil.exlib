@@ -1,0 +1,27 @@
+# Copyright 2020 Danilo Spinella <oss@danyspin97.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=${PN} pn=${PN}-cpp ] cmake [ api=2 ]
+
+SUMMARY="A collection of C++ code designed to augment the C++ standard library"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+# Tests need either to download gtest or
+# having the target already imported in CMake
+RESTRICT="test"
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    -DABSL_ENABLE_INSTALL:BOOL=ON
+    -DABSL_USE_EXTERNAL_GOOGLETEST:BOOL=ON
+)
+
+CMAKE_SRC_CONFIGURE_TESTS=(
+    '-DABSL_RUN_TESTS:BOOL=ON -DABSL_RUN_TESTS:BOOL=OFF'
+)
+
