@@ -1,0 +1,27 @@
+Upstream: sent https://github.com/ipmitool/ipmitool/pull/250
+
+From a59f4b1a90fadb6e1903b5495f5996d03367a172 Mon Sep 17 00:00:00 2001
+From: Alexander Kapshuna <kapsh@kap.sh>
+Date: Sun, 25 Oct 2020 17:40:34 +0300
+Subject: [PATCH] make: use correct docdir variable provided by autotools
+
+---
+ Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index ce3267f..a934540 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -28,7 +28,7 @@
+ # LIABILITY, ARISING OUT OF THE USE OF OR INABILITY TO USE THIS SOFTWARE,
+ # EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+-DOCDIR = $(datadir)/doc/$(PACKAGE)
++DOCDIR = $(docdir)
+ DOCLIST = $(top_srcdir)/README $(top_srcdir)/COPYING $(top_srcdir)/AUTHORS $(top_srcdir)/ChangeLog
+
+ EXTRA_DIST = $(DOCLIST) bootstrap
+--
+2.29.0
+

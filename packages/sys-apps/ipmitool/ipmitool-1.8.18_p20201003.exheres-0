@@ -1,0 +1,32 @@
+# Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+GITHUB_REVISION=7fd7c0f2ba39e223868a8d83d81d4074f057d6fc
+require github
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
+
+SUMMARY="Command-line interface to IPMI-enabled devices"
+
+LICENCES="BSD-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
+"
+
+DEPENDENCIES="
+    build+run:
+        sys-libs/readline:=
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl )
+"
+
+# TODO add a systemd service for ipmievd
+# TODO copy contrib graph tools
+# TODO explicit enable/disable for interfaces if needed (lanplus should be enough in 99% cases)
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/make-use-correct-docdir-variable-provided-by-autotoo.patch
+    "${FILES}"/Disable-downloading-of-IANA-PEN-database.patch
+)
+
