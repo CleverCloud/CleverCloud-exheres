@@ -1,12 +1,15 @@
 # Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
 require libmemcached
 
 PLATFORMS="~amd64"
 
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/run-tests-on-localhost.patch" )
-
+DEFAULT_SRC_PREPARE_PATCHES=( 
+    "${FILES}/run-tests-on-localhost.patch" 
+    "${FILES}/libmemcached-1.0.18-gcc.patch" 
+)
 
 src_prepare() {
     default
@@ -14,3 +17,4 @@ src_prepare() {
             -e 's:MEMCACHED_BINARY:"/bin/true":' \
             -i libtest/{memcached,server_container}.cc
 }
+
