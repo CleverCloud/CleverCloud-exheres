@@ -12,7 +12,7 @@ SLOT="0"
 require github [ user="dotnet" project="source-build" tag="v${PV}-SDK" force_git_clone=true ]
 
 # Dotnet SDK binaries, necessary to bootstrap source-build.
-DOWNLOADS="https://dotnetcli.azureedge.net/dotnet/Sdk/${PV%.*}.106/${PN}-${PV%.*}.106-linux-x64.tar.gz -> ${PNV}-bootstrap.tar.gz"
+DOWNLOADS="https://dotnetcli.azureedge.net/dotnet/Sdk/${PV%.*}.108/${PN}-${PV%.*}.108-linux-x64.tar.gz -> ${PNV}-bootstrap.tar.gz"
 
 MYOPTIONS=""
 DEPENDENCIES="
@@ -59,8 +59,6 @@ src_prepare() {
 
     # dotnet/coreclr 
     edo cp "${FILES}"/0008-CORECLR-Clang-Banned-By-Distribution.patch "${WORK}"/patches/coreclr
-    # pull request in progress
-    # https://github.com/dotnet/runtime/pull/32392
     edo cp "${FILES}"/0009-CORECLR-Undeclared-Identifier-DAC_TABLE_RVA.patch "${WORK}"/patches/coreclr
 
     # dotnet/corefx
@@ -88,7 +86,7 @@ src_compile() {
 
 src_install() {
     local rid="exherbo-x64"
-    local runtime="${PV%.*}.8"
+    local runtime="${PV%.*}.9"
 
     dodir /opt/${PNVR}
     edo tar xf ${WORK}/artifacts/x64/Release/${PNV}-${rid}.tar.gz -C "${IMAGE}"/opt/${PNVR}
