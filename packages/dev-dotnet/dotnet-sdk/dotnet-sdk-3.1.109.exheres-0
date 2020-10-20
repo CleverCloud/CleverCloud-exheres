@@ -105,5 +105,9 @@ src_install() {
 
     dosym /opt/${PNVR}/packs/Microsoft.NETCore.App.Host.${rid}/${runtime}/runtimes/${rid}/native/libnethost.so \
         /usr/$(exhost --target)/lib/libnethost.so
+
+    hereenvd 99${PN} <<EOF
+DOTNET_ROOT="/opt/${PNV}/"
+EOF
 }
 
