@@ -246,6 +246,7 @@ Percona-Server_src_configure() {
         cmakeargs+=(
             -DROUTER_INSTALL_LIBDIR:PATH=$(exhost --target)/lib/${PN}-${SLOT}
             -DROUTER_INSTALL_PLUGINDIR=:PATH=$(exhost --target)/lib/${PN}-${SLOT}/plugin
+            -DUSE_LD_LLD:BOOL=FALSE
             -DWITH_RE2:STRING=system
             -DWITH_RAPIDJSON:STRING=bundled
         )
