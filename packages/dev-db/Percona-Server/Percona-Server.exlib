@@ -16,7 +16,7 @@ SLOT="$(ever range 1-2)"
 # In order to provide a stable code base, MySQL depends on a specific version of Boost.
 # Currently only Boost.Geometry headers are used and boost is just required at build time.
 if ever at_least 8; then
-    BOOST_PV="1.70.0"
+    BOOST_PV="1.72.0"
 else
     BOOST_PV="1.59.0"
 fi
