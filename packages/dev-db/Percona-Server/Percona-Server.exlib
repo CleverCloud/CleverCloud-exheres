@@ -135,9 +135,6 @@ Percona-Server_src_prepare() {
     edo sed -i -e '/^install/s/include/${INSTALL_INCLUDEDIR}/' "${CMAKE_SOURCE}"/plugin/tokudb-backup-plugin/Percona-TokuBackup/backup/CMakeLists.txt
 
     edo sed -i -e 's/-Werror//' "${CMAKE_SOURCE}"/storage/tokudb/PerconaFT/cmake_modules/TokuSetupCompiler.cmake
-
-    # https://bugs.mysql.com/bug.php?id=72353 (only relevant when using system libevent)
-    edo sed -i -e "s:\(LIBEVENT_LIBRAR\)IES:\1Y:" "${CMAKE_SOURCE}"/cmake/libevent.cmake
 }
 
 Percona-Server_src_configure() {
