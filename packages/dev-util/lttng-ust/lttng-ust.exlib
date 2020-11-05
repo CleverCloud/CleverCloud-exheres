@@ -4,10 +4,9 @@
 require github [ user=lttng tag=v${PV} ]
 require autotools [ supported_autoconf=[ '2.5' ] supported_automake=[ 1.16 ] ]
 
-export_exlib_phases src_prepare
-
 SUMMARY="The LTTng User Space Tracing (LTTng-UST) library allows any C/C++ application to be instrumented for and traced by LTTng"
 HOMEPAGE="https://lttng.org/"
+
 LICENCES="
     LGPL-2.1
     MIT
@@ -17,17 +16,14 @@ SLOT="0"
 MYOPTIONS="
     numa
 "
+
 DEPENDENCIES="
     build+run:
-        dev-libs/urcu[>=0.8.3]
+        dev-libs/urcu[>=0.11.0]
         numa? ( sys-apps/numactl[>=2.0.12] )
 "
 
-DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(numa)
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
+    numa
+)
 
-lttng-ust_src_prepare() {
-    # Replace hard coded binary
-    edo sed /rc/s/ar/${AR}/ -i doc/examples/hello-static-lib/Makefile
-
-    autotools_src_prepare
-}

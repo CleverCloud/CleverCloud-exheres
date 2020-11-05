@@ -4,3 +4,4 @@
 require lttng-ust
 
 PLATFORMS="~amd64"
+
