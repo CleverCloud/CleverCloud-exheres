@@ -91,7 +91,7 @@ if ever at_least 8; then
     DEPENDENCIES+="
         build+run:
             dev-libs/rapidjson[>=1.1.0]
-            dev-libs/re2
+            dev-libs/re2:=
             net-libs/cyrus-sasl
             net-libs/libtirpc
             net-misc/curl
