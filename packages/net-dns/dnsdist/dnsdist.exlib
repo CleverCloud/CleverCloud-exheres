@@ -27,7 +27,7 @@ DEPENDENCIES="
         dev-libs/libsodium
         dev-libs/openssl
         dev-libs/protobuf:=
-        dev-libs/re2
+        dev-libs/re2:=
         systemd? ( sys-apps/systemd )
 "
 
