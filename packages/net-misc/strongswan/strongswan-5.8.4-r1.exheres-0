@@ -53,7 +53,7 @@ DEPENDENCIES="
     build+run:
         !net-misc/openswan
         sys-kernel/linux-headers
-        botan? ( dev-libs/botan:2 )
+        botan? ( dev-libs/botan:= )
         caps? ( sys-libs/libcap )
         curl? ( net-misc/curl )
         gcrypt? ( dev-libs/libgcrypt:0 )
