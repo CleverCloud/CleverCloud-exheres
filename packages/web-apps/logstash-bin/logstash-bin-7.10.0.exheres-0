@@ -8,12 +8,14 @@ MY_PNV="${MY_PN}-${PV}"
 
 SUMMARY="Server-side data processing pipeline"
 HOMEPAGE="https://www.elastic.co/products/${PN}"
-DOWNLOADS="https://artifacts.elastic.co/downloads/${MY_PN}/${MY_PNV}.tar.gz"
+DOWNLOADS="https://artifacts.elastic.co/downloads/${MY_PN}/${MY_PNV}-linux-x86_64.tar.gz"
 
 LICENCES="GPL-2"
 SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS=""
+MYOPTIONS="
+    bundled-java [[ description = [ Use the bundled java to be able to claim official support ] ]]
+"
 
 RESTRICT="strip"
 
@@ -21,7 +23,7 @@ DEPENDENCIES="
     run:
         group/${MY_PN}
         user/${MY_PN}
-        virtual/jre:=[>=8]
+        !bundled-java? ( virtual/jre:=[>=8] )
 "
 
 WORK=${WORKBASE}/${MY_PNV}
@@ -46,6 +48,9 @@ src_install() {
 
     # remove empty directories
     edo find "${IMAGE}"/opt/${MY_PN}/vendor -type d -empty -delete
+
+    # remove bundled java
+    ! option bundled-java && edo rm -rf "${IMAGE}"/opt/${MY_PN}/jdk
 
     install_systemd_files
 
