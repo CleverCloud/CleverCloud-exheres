@@ -18,8 +18,8 @@ require scm-git java-jdk autotools [ supported_autoconf=[ 2.5 ] supported_automa
 
 # Error: Building images for org.graalvm.nativeimage.Platform$LINUX_AMD64 requires static JDK libraries.
 # Use JDK from https://github.com/graalvm/labs-openjdk-11/releases
-LABSJDK="labsjdk-ce-11.0.8"
-JVMCI="jvmci-20.2-b03"
+LABSJDK="labsjdk-ce-11.0.9"
+JVMCI="jvmci-20.3-b06"
 DOWNLOADS="https://github.com/graalvm/labs-openjdk-11/releases/download/${JVMCI}/${LABSJDK}+10-${JVMCI}-linux-amd64.tar.gz"
 
 MYOPTIONS="
@@ -31,7 +31,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build:
-        dev-java/mx[>=5.272.2]
+        dev-java/mx[>=5.275.6]
         sys-devel/binutils[>=2.33.1]
         sys-devel/gcc[>=6.4.0]
         sys-devel/make[>=4.2.1]
@@ -81,7 +81,7 @@ src_compile(){
     esandbox disable_net
 
     # sforceimports will check and download the right revision of graaljs
-    edo mx --env ce sforceimports
+    edo mx -v --env ce sforceimports
 
     # fix path in callbacks.cc
     edo sed -i "s|#include \"../../../../mxbuild/trufflenode/coremodules/node_snapshots.h\"| \
