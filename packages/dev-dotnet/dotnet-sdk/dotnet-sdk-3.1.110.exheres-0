@@ -12,7 +12,7 @@ SLOT="0"
 require github [ user="dotnet" project="source-build" tag="v${PV}-SDK" force_git_clone=true ]
 
 # Dotnet SDK binaries, necessary to bootstrap source-build.
-DOWNLOADS="https://dotnetcli.azureedge.net/dotnet/Sdk/${PV%.*}.108/${PN}-${PV%.*}.108-linux-x64.tar.gz -> ${PNV}-bootstrap.tar.gz"
+DOWNLOADS="https://dotnetcli.azureedge.net/dotnet/Sdk/${PV%.*}.109/${PN}-${PV%.*}.109-linux-x64.tar.gz -> ${PNV}-bootstrap.tar.gz"
 
 MYOPTIONS=""
 DEPENDENCIES="
@@ -86,7 +86,7 @@ src_compile() {
 
 src_install() {
     local rid="exherbo-x64"
-    local runtime="${PV%.*}.9"
+    local runtime="${PV%.*}.10"
 
     dodir /opt/${PNVR}
     edo tar xf ${WORK}/artifacts/x64/Release/${PNV}-${rid}.tar.gz -C "${IMAGE}"/opt/${PNVR}
