@@ -1,6 +1,8 @@
 # Copyright 2015 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
+require alternatives
+
 export_exlib_phases src_unpack src_install
 
 SUMMARY="Dependency manager for PHP"
@@ -13,13 +15,19 @@ SLOT="0"
 DEPENDENCIES="
     run:
         dev-lang/php:*[php_extensions:filter]
+        !dev-php/composer:0 [[
+            description = [ Slot move ]
+            resolution = uninstall-blocked-before
+        ]]
 "
 
 composer_src_unpack() {
     mkdir -p "${WORK}"
-    edo cp "${FETCHEDDIR}"/${PNV}.phar "${WORK}"/${PN}.phar
+    edo cp "${FETCHEDDIR}"/${PNV}.phar "${WORK}"/${PN}-${SLOT}.phar
 }
 
 composer_src_install() {
-    dobin ${PN}.phar
+    dobin ${PN}-${SLOT}.phar
+    alternatives_for "${PN}" "${SLOT}" "${SLOT}" \
+        /usr/$(exhost --target)/bin/${PN}{,-${SLOT}}.phar
 }
