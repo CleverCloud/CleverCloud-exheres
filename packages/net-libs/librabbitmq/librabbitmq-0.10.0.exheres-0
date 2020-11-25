@@ -28,10 +28,6 @@ BUGS_TO="keruspe@exherbo.org"
 # test_basic requires rabbitmq server up and running
 RESTRICT="test"
 
-DEFAULT_SRC_PREPARE_PATCHES=(
-    ${FILES}/mandir-location.patch
-)
-
 CMAKE_SRC_CONFIGURE_PARAMS=(
     -DBUILD_API_DOCS:BOOL=OFF
     -DBUILD_EXAMPLES:BOOL=OFF
