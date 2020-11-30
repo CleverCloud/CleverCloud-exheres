@@ -1,0 +1,58 @@
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+MY_PV="${PV//./_}"
+
+require github [ user="pgpool" tag="V${MY_PV}" ]
+require postgresql [ work="${PN}-${MY_PV}" ]
+require systemd-service [ systemd_files=[ ${FILES}/systemd/${PN}.service ] ]
+
+DESCRIPTION="Pgpool-II is a middleware that works between PostgreSQL servers and a PostgreSQL database client"
+SUMMARY="Connection pool server for PostgreSQL"
+PLATFORMS="~amd64"
+LICENCES="BSD"
+SLOT="0"
+
+MYOPTIONS="
+    ldap [[ description = [ LDAP Support for client authentication ] ]]
+    memcached [[ description = [ In memory query cache for pgpool2 modes ] ]]
+    pam [[ description = [ Enable PAM access control ] ]]
+    ssl 
+    ssl? ( ( providers: libressl openssl ) [[ number-selected = exactly-one ]] )
+"
+
+DEPENDENCIES="
+    build+run:
+        ldap? ( net-directory/openldap )
+        memcached? ( dev-libs/libmemcached )
+        pam? ( sys-libs/pam )
+        ssl? (
+            providers:libressl? ( dev-libs/libressl:= )
+            providers:openssl? ( dev-libs/openssl )
+        )
+"
+
+prepare_one_multibuild() {
+    default 
+
+    edo sed -e "s:/var/run:/run:g" -i src/sample/pgpool.conf.sample
+}
+
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --disable-rpath 
+    --sysconfdir="/etc/${PN}"
+)
+
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( 
+        'ldap'
+        'memcached memcached=/usr/$(exhost --target)/include/libmemcached'
+        'pam'
+        'ssl openssl'
+)
+
+install_one_multibuild() {
+    default
+
+    install_systemd_files
+}
+

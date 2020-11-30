@@ -1,0 +1,15 @@
+[Unit]
+Description=Pgpool-II
+After=syslog.target network.target
+
+[Service]
+User=postgres
+Group=postgres
+RuntimeDirectory=pgpool
+PIDFile=/run/pgpool/pgpool.pid
+ExecStart=/usr/bin/pgpool -f /etc/pgpool2/pgpool.conf -d -n
+ExecStop=/usr/bin/pgpool -f /etc/pgpool2/pgpool.conf -m fast stop
+ExecReload=/usr/bin/pgpool -f /etc/pgpool2/pgpool.conf reload
+
+[Install]
+WantedBy=multi-user.target
