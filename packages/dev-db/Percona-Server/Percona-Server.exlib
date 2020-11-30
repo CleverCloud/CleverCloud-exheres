@@ -37,11 +37,7 @@ MYOPTIONS="
     ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
-if ever at_least 8; then
-    MYOPTIONS+="
-        ldap
-    "
-else
+if ! ever at_least 8; then
     MYOPTIONS+="
         tcpd
     "
@@ -87,6 +83,7 @@ DEPENDENCIES="
         memcached? ( net/memcached [[ description = [ The option provides the bundled memcached but you might want to use a stand-alone memcached as well ] ]] )
 "
 
+#app-crypt/krb5[ldap]
 if ever at_least 8; then
     DEPENDENCIES+="
         build+run:
@@ -95,7 +92,7 @@ if ever at_least 8; then
             net-libs/cyrus-sasl
             net-libs/libtirpc
             net-misc/curl
-            ldap? ( net-directory/openldap )
+            net-directory/openldap 
     "
 else
     DEPENDENCIES+="
@@ -237,11 +234,6 @@ Percona-Server_src_configure() {
     fi
 
     if ever at_least 8; then
-        if option ldap ; then
-            cmakeargs+=(
-                -DWITH_AUTHENTICATION_LDAP=$(cmake_with ldap system OFF)
-            )
-        fi
         cmakeargs+=(
             -DROUTER_INSTALL_LIBDIR:PATH=$(exhost --target)/lib/${PN}-${SLOT}
             -DROUTER_INSTALL_PLUGINDIR=:PATH=$(exhost --target)/lib/${PN}-${SLOT}/plugin
