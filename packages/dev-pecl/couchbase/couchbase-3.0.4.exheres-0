@@ -1,7 +1,7 @@
 # Copyright 2015 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require php-pecl [ module=module php_abis=[ 5.6 7.0 7.1 7.2 7.3 7.4 ] ]
+require php-pecl [ module=module php_abis=[ 7.2 7.3 7.4 ] ]
 
 SUMMARY="PHP extension for interfacing with Couchbase"
 PLATFORMS="~amd64"
@@ -10,7 +10,6 @@ SLOT="0"
 
 DEPENDENCIES="
     build+run:
-        dev-pecl/pcs[php_abis:*(-)?]
-        dev-libs/libcouchbase[>=2.9.5]
+        dev-libs/libcouchbase[>=3.0.6]
 "
 
