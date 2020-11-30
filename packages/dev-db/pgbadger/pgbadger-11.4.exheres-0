@@ -1,0 +1,18 @@
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="darold" tag="v${PV}" ] perl-module
+
+SUMMARY="A fast PostgreSQL log analysis report"
+HOMEPAGE="https://github.com/darold/${PN}"
+
+LICENCES="|| ( PostgreSQL Artistic-2.0 )"
+SLOT="0"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+    build+run:
+        dev-perl/JSON-XS
+        dev-perl/Text-CSV_XS
+"
+
