@@ -1,0 +1,20 @@
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module php_abis=[ 5.6 7.0 7.1 7.2 7.3 7.4 ] ]
+
+SUMMARY="Wrapper around the gpgme library"
+
+PLATFORMS="~amd64"
+LICENCES="BSD-2"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        app-crypt/gnupg
+        app-crypt/gpgme
+"
+
+RESTRICT="test"
+
