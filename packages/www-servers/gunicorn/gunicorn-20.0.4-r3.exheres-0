@@ -32,14 +32,11 @@ DEPENDENCIES="
         python_abis:3.6? ( providers:gaiohttp? ( dev-python/aiohttp[>=3.6.2][python_abis:3.6] ) )
 "
 
-GUNICORN_BINS=( "${PN}" "${PN}_paster" "${PN}_django" )
-
 install_one_multibuild(){
     setup-py_install_one_multibuild
-    alternatives=( "${PN}_python" "${MULTIBUILD_TARGET}" "${MULTIBUILD_TARGET}")
-    for b in "${GUNICORN_BINS[@]}"; do
-        alternatives+=( /usr/$(exhost --target)/bin/"${b}" "${b}"${MULTIBUILD_TARGET})
-    done
-    alternatives_for "${alternatives[@]}"
+
+    alternatives_for \
+        ${PN}_python ${MULTIBUILD_TARGET} ${MULTIBUILD_TARGET} \
+        /usr/$(exhost --target)/bin/${PN} ${PN}${MULTIBUILD_TARGET}
 }
 
