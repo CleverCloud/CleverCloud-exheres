@@ -1,0 +1,40 @@
+# Copyright 2020 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+PLATFORMS="~amd64"
+
+SUMMARY="Simple shell utility to convert html to pdf using the webkit rendering engine, and qt."
+HOMEPAGE="http://wkhtmltopdf.org/"
+DOWNLOADS="https://github.com/wkhtmltopdf/packaging/releases/download/${PV}-3/wkhtmltox-${PV}-3.archlinux-x86_64.pkg.tar.xz"
+
+LICENCES="LGPL-3"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    run:
+        dev-libs/openssl:0
+        media-libs/fontconfig
+        media-libs/freetype[harfbuzz]
+        media-libs/libjpeg-turbo
+        media-libs/libpng:1.6
+        sys-libs/libgcc:*
+        sys-libs/libstdc++:*
+        x11-libs/libX11
+        x11-libs/libXext
+        x11-libs/libXrender
+        !app-text/wkhtmltopdf [[
+            description = [ Same package ]
+            resolution = uninstall-blocked-before
+        ]]
+"
+
+WORK="${WORKBASE}"
+
+src_install() {
+    doman usr/share/man/*/*
+    dobin usr/bin/*
+    dolib usr/lib/*
+    insinto /usr/$(exhost --target)/include
+    doins -r usr/include/*
+}
