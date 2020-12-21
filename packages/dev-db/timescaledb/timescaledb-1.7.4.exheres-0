@@ -1,0 +1,31 @@
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="timescale" tag="${PV}" ]
+require postgresql
+
+SUMMARY="TimescaleDB is an open-source database designed to make SQL scalable for time-series data"
+
+PLATFORMS="~amd64"
+LICENCES="PostgreSQL"
+SLOT="0"
+
+DEPENDENCIES=""
+
+prepare_one_multibuild() {
+    local old_path="${PATH}"
+    local pg_config="/usr/$(exhost --target)/libexec/postgresql-${MULTIBUILD_TARGET}"
+    
+    export PATH=${pg_config}:${PATH}
+    edo bash bootstrap -DREGRESS_CHECKS="OFF"
+    export PATH="${old_path}"
+}
+
+compile_one_multibuild() {
+    edo cd build && default
+}
+
+install_one_multibuild() {
+    edo cd build && default
+}
+
