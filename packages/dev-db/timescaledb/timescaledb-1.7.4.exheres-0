@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user="timescale" tag="${PV}" ]
-require postgresql
+require postgresql [ max_version=12 ]
 
 SUMMARY="TimescaleDB is an open-source database designed to make SQL scalable for time-series data"
 
@@ -15,7 +15,7 @@ DEPENDENCIES=""
 prepare_one_multibuild() {
     local old_path="${PATH}"
     local pg_config="/usr/$(exhost --target)/libexec/postgresql-${MULTIBUILD_TARGET}"
-    
+
     export PATH=${pg_config}:${PATH}
     edo bash bootstrap -DREGRESS_CHECKS="OFF"
     export PATH="${old_path}"
