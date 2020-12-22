@@ -1,0 +1,13 @@
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="HypoPG" tag="${PV}" ]
+require postgresql
+
+PLATFORMS="~amd64"
+SUMMARY="HypoPG is a PostgreSQL extension adding support for hypothetical indexes"
+LICENCES="PostgreSQL"
+SLOT="0"
+
+DEPENDENCIES=""
+
