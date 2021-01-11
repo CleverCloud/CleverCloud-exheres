@@ -1,24 +1,31 @@
 # Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
+myexparam bootstrap
+myexparam runtime
+
+exparam -v BOOTSTRAP bootstrap
+exparam -v RUNTIME runtime
+
 SUMMARY=".NET Core is a cross-platform version of .NET for building websites, services, and console apps."
 HOMEPAGE="https://dotnet.microsoft.com/"
 
 LICENCES="MIT"
-SLOT="$(ever range 1-2)"
 
 # This repository contains a set of scripts for building the .NET Core Runtime and SDK from source.
 require github [ user="dotnet" project="source-build" tag="v${PV}-SDK" force_git_clone=true ]
-require alternatives
-require providers
+require alternatives providers
+
+export_exlib_phases pkg_setup src_unpack src_prepare src_compile src_install
 
 # Dotnet SDK binaries, necessary to bootstrap source-build.
-DOWNLOADS="https://dotnetcli.azureedge.net/dotnet/Sdk/${bootstrap}/${PN}-${bootstrap}-linux-x64.tar.gz -> ${PNV}-bootstrap.tar.gz"
+DOWNLOADS="https://dotnetcli.azureedge.net/dotnet/Sdk/${BOOTSTRAP}/${PN}-${BOOTSTRAP}-linux-x64.tar.gz -> ${PNV}-bootstrap.tar.gz"
 
 MYOPTIONS=""
 DEPENDENCIES="
     build:
-        sys-devel/cmake 
+        app-admin/eclectic-llvm
+        sys-devel/cmake
     build+run:
         app-crypt/krb5
         dev-lang/clang:=
@@ -29,18 +36,23 @@ DEPENDENCIES="
         net-misc/curl
         sys-apps/numactl
         sys-devel/gettext
+        sys-devel/lld:=
         sys-devel/lldb:=
         sys-libs/zlib
+        !dev-dotnet/dotnet-sdk:0 [[
+            description = [ slot move ]
+            resolution = uninstall-blocked-before
+        ]]
 "
 
-pkg_setup() {
+dotnet-sdk_pkg_setup() {
     exdirectory --allow /opt
 }
 
-src_unpack() {
+dotnet-sdk_src_unpack() {
     scm_src_unpack
 
-    # The sdk binaries must be placed in a ".dotnet" folder at the root of the project 
+    # The sdk binaries must be placed in a ".dotnet" folder at the root of the project
     local dotnet="${WORK}/.dotnet"
     edo mkdir ${dotnet}
     edo tar xf ${FETCHEDDIR}/${PNV}-bootstrap.tar.gz -C ${dotnet}
@@ -57,9 +69,14 @@ if ever at_least 5; then
     DEFAULT_SRC_PREPARE_PATCHES+=( "${FILES}/${SLOT}/0003-SOURCE-BUILD-add-rid-suffix.patch" )
 fi
 
-src_compile() {
-    providers_set 'compiler-tools llvm'
-    providers_set 'ld lld'
+dotnet-sdk_src_prepare() {
+    default
+
+    edo cp -r "${FILES}"/${SLOT}/*/ "${WORK}"/patches/
+}
+
+dotnet-sdk_src_compile() {
+    providers_set 'cc clang' 'c++ clang' 'compiler-tools llvm' 'ld lld'
 
     esandbox disable_net
 
@@ -72,7 +89,7 @@ src_compile() {
     esandbox enable_net
 }
 
-src_install() {
+dotnet-sdk_src_install() {
     local rid="exherbo-x64"
 
     dodir /opt/${PN}-${SLOT}
@@ -80,13 +97,13 @@ src_install() {
 
     local alternatives=(
         "/usr/$(exhost --target)/bin/dotnet" "/opt/${PN}-${SLOT}/dotnet"
-        "/usr/$(exhost --target)/lib/libhostfxr.so" "/opt/${PN}-${SLOT}/host/fxr/${runtime}/libhostfxr.so"
-        "/usr/$(exhost --target)/lib/libnethost.so" "/opt/${PN}-${SLOT}/packs/Microsoft.NETCore.App.Host.${rid}/${runtime}/runtimes/${rid}/native/libnethost.so"
+        "/usr/$(exhost --target)/lib/libhostfxr.so" "/opt/${PN}-${SLOT}/host/fxr/${RUNTIME}/libhostfxr.so"
+        "/usr/$(exhost --target)/lib/libnethost.so" "/opt/${PN}-${SLOT}/packs/Microsoft.NETCore.App.Host.${rid}/${RUNTIME}/runtimes/${rid}/native/libnethost.so"
     )
 
-    for libpath in ${IMAGE}/opt/${PN}-${SLOT}/shared/Microsoft.NETCore.App/${runtime}/{*.a,*.so} ; do
+    for libpath in ${IMAGE}/opt/${PN}-${SLOT}/shared/Microsoft.NETCore.App/${RUNTIME}/{*.a,*.so} ; do
         lib=${libpath##*/}
-        alternatives+=( "/usr/$(exhost --target)/lib/${lib}" "/opt/${PN}-${SLOT}/shared/Microsoft.NETCore.App/${runtime}/${lib}" )
+        alternatives+=( "/usr/$(exhost --target)/lib/${lib}" "/opt/${PN}-${SLOT}/shared/Microsoft.NETCore.App/${RUNTIME}/${lib}" )
     done
 
     alternatives_for dotnet ${PN}-${SLOT} ${SLOT} "${alternatives[@]}"
