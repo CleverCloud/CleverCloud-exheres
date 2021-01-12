@@ -76,7 +76,7 @@ dotnet-sdk_src_prepare() {
 }
 
 dotnet-sdk_src_compile() {
-    providers_set 'cc clang' 'c++ clang' 'compiler-tools llvm' 'ld lld'
+    providers_set 'assembler llvm' 'cc clang' 'c++ clang' 'compiler-tools llvm' 'ld lld'
 
     esandbox disable_net
 
