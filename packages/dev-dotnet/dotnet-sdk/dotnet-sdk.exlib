@@ -67,6 +67,8 @@ DEFAULT_SRC_PREPARE_PATCHES=(
 if ever at_least 5; then
     # https://github.com/dotnet/source-build/issues/1911
     DEFAULT_SRC_PREPARE_PATCHES+=( "${FILES}/${SLOT}/0003-SOURCE-BUILD-add-rid-suffix.patch" )
+else
+    DEFAULT_SRC_PREPARE_PATCHES+=( "${FILES}/${SLOT}/1974.patch" )
 fi
 
 dotnet-sdk_src_prepare() {
