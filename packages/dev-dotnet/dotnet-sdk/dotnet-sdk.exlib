@@ -3,9 +3,11 @@
 
 myexparam bootstrap
 myexparam runtime
+myexparam llvm_slot
 
 exparam -v BOOTSTRAP bootstrap
 exparam -v RUNTIME runtime
+exparam -v LLVM_SLOT llvm_slot
 
 SUMMARY=".NET Core is a cross-platform version of .NET for building websites, services, and console apps."
 HOMEPAGE="https://dotnet.microsoft.com/"
@@ -28,16 +30,16 @@ DEPENDENCIES="
         sys-devel/cmake
     build+run:
         app-crypt/krb5
-        dev-lang/clang:=
-        dev-lang/llvm:=
+        dev-lang/clang:${LLVM_SLOT}
+        dev-lang/llvm:${LLVM_SLOT}
         dev-libs/icu:=
         sys-libs/llvm-libunwind
         dev-util/lttng-ust
         net-misc/curl
         sys-apps/numactl
         sys-devel/gettext
-        sys-devel/lld:=
-        sys-devel/lldb:=
+        sys-devel/lld:${LLVM_SLOT}
+        sys-devel/lldb
         sys-libs/zlib
         !dev-dotnet/dotnet-sdk:0 [[
             description = [ slot move ]
@@ -47,8 +49,8 @@ DEPENDENCIES="
 
 dotnet-sdk_pkg_setup() {
     exdirectory --allow /opt
-    export CC="$(exhost --tool-prefix)clang"
-    export CXX="$(exhost --tool-prefix)clang++"
+    export CC="$(exhost --tool-prefix)clang-${LLVM_SLOT}"
+    export CXX="$(exhost --tool-prefix)clang++-${LLVM_SLOT}"
 }
 
 dotnet-sdk_src_unpack() {
@@ -82,6 +84,7 @@ dotnet-sdk_src_prepare() {
 
 dotnet-sdk_src_compile() {
     providers_set 'assembler llvm' 'cc clang' 'c++ clang' 'compiler-tools llvm' 'ld lld'
+    providers_set "clang ${LLVM_SLOT}" "lld ${LLVM_SLOT}" "llvm ${LLVM_SLOT}"
 
     esandbox disable_net
 
