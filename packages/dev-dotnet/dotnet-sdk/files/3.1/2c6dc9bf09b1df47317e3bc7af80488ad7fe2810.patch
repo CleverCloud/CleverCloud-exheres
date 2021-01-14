@@ -1,18 +1,23 @@
-From 46e6fab148e7e62ed186380efd60b3e28c118de6 Mon Sep 17 00:00:00 2001
-From: Dan Seefeldt <dseefeld@localhost.localdomain>
-Date: Tue, 12 Jan 2021 16:11:23 -0600
-Subject: [PATCH] Update legacy myget feeds
+From 2c6dc9bf09b1df47317e3bc7af80488ad7fe2810 Mon Sep 17 00:00:00 2001
+From: Dan Seefeldt <dseefeld@microsoft.com>
+Date: Wed, 13 Jan 2021 19:02:05 -0600
+Subject: [PATCH] [release/3.1] Replace legacy MyGet feeds (#1974)
 
+* Update legacy myget feeds
+
+* Exclude Arcade from package cache cleanup
+
+Co-authored-by: Dan Seefeldt <dseefeld@localhost.localdomain>
 ---
  NuGet.config                                  |  2 +-
  global.json                                   |  2 +-
- repos/Directory.Build.targets                 | 59 +++++++++++++++++++
+ repos/Directory.Build.targets                 | 67 ++++++++++++++++++-
  repos/aspnetcore.proj                         |  3 +-
- repos/msbuild.proj                            |  7 +--
+ repos/msbuild.proj                            |  7 +-
  repos/websdk.proj                             |  3 +-
  smoke-test.sh                                 |  2 +-
- .../ReplaceFeedsInNuGetConfig.cs              | 54 +++++++++++++++++
- 8 files changed, 121 insertions(+), 11 deletions(-)
+ .../ReplaceFeedsInNuGetConfig.cs              | 54 +++++++++++++++
+ 8 files changed, 128 insertions(+), 12 deletions(-)
  create mode 100644 tools-local/tasks/Microsoft.DotNet.SourceBuild.Tasks.XPlat/ReplaceFeedsInNuGetConfig.cs
 
 diff --git a/NuGet.config b/NuGet.config
@@ -42,7 +47,7 @@ index b755ec2a6b..cdaa0da5a3 100644
    }
  }
 diff --git a/repos/Directory.Build.targets b/repos/Directory.Build.targets
-index 1538866d00..ef631e5014 100644
+index 1538866d00..a22821ab1a 100644
 --- a/repos/Directory.Build.targets
 +++ b/repos/Directory.Build.targets
 @@ -9,6 +9,7 @@
@@ -118,6 +123,21 @@ index 1538866d00..ef631e5014 100644
      <!--
        The internal transport feed is dynamically added by Arcade by a script called directly in the
        official pipeline, so in some cases we need to do the same here.
+@@ -353,7 +412,13 @@
+           Inputs="$(MSBuildProjectFullPath)"
+           Outputs="$(RepoCompletedSemaphorePath)RemoveBuiltPackagesFromCache.complete">
+ 
+-    <ReadNuGetPackageInfos PackagePaths="@(_BuiltPackages)">
++    <ItemGroup>
++        <!-- Excluding Arcade here will keep it in the cache, because that's where we're running from.
++             Subsequent projects will get Arcade from Tools/source-built. -->
++        <PackagePaths Include="@(_BuiltPackages)" Exclude="$(PackagesOutput)/Microsoft.DotNet.Arcade.Sdk.*.nupkg" />
++    </ItemGroup>
++
++    <ReadNuGetPackageInfos PackagePaths="@(PackagePaths)">
+       <Output TaskParameter="PackageInfoItems" ItemName="_BuiltPackageInfos" />
+     </ReadNuGetPackageInfos>
+ 
 diff --git a/repos/aspnetcore.proj b/repos/aspnetcore.proj
 index b4bd5e9e3e..d2c0bb2861 100644
 --- a/repos/aspnetcore.proj
@@ -165,10 +185,10 @@ index 132c99dffc..fa8e8c7b87 100644
      <GlobalJsonFile>$(ProjectDirectory)global.json</GlobalJsonFile>
    </PropertyGroup>
 diff --git a/smoke-test.sh b/smoke-test.sh
-index be36ea0f5d..1b95321629 100755
+index 1588cd8acf..c1ebf2c0c9 100755
 --- a/smoke-test.sh
 +++ b/smoke-test.sh
-@@ -272,7 +272,7 @@ function setupDevCerts() {
+@@ -281,7 +281,7 @@ function setupDevCerts() {
      echo "Setting up dotnet-dev-certs $devCertsVersion to generate dev certificate" | tee -a "$logFile"
      (
          set -x
