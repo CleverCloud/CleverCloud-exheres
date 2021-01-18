@@ -4,5 +4,5 @@
 SLOT="$(ever range 1-2)"
 PLATFORMS="~amd64"
 
-require dotnet-sdk [ bootstrap="${SLOT}.109" runtime="${SLOT}.10" llvm_slot=10 ]
+require dotnet-sdk [ bootstrap="${SLOT}.110" runtime="${SLOT}.11" llvm_slot=10 ]
 
