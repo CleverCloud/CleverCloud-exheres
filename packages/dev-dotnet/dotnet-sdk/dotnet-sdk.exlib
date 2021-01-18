@@ -49,8 +49,8 @@ DEPENDENCIES="
 
 dotnet-sdk_pkg_setup() {
     exdirectory --allow /opt
-    export CC="$(exhost --tool-prefix)clang-${LLVM_SLOT}"
-    export CXX="$(exhost --tool-prefix)clang++-${LLVM_SLOT}"
+    export CC="$(exhost --tool-prefix)clang"
+    export CXX="$(exhost --tool-prefix)clang++"
 }
 
 dotnet-sdk_src_unpack() {
