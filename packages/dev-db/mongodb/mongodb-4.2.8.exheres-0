@@ -30,7 +30,7 @@ DEPENDENCIES="
         dev-python/Cheetah3[python_abis:*(-)?]
         dev-python/psutil[python_abis:*(-)?]
         dev-python/PyYAML[python_abis:*(-)?]
-        sys-devel/scons[>=3.0.4][python_abis:*(-)?]
+        sys-devel/scons[>=3.0.4&<3.1][python_abis:*(-)?]
     build+run:
         group/mongodb
         user/mongodb
