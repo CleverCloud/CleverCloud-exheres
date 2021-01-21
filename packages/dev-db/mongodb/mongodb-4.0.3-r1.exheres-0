@@ -21,15 +21,15 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build:
-        sys-devel/scons[<3.1]
+        sys-devel/scons[<3.1][python_abis:2.7]
     run:
         group/mongodb
         user/mongodb
     build+run:
         dev-libs/openssl
-        dev-python/typing
-        dev-python/Cheetah
-        dev-python/PyYAML
+        dev-python/typing[python_abis:2.7]
+        dev-python/Cheetah[python_abis:2.7]
+        dev-python/PyYAML[python_abis:2.7]
         net-libs/cyrus-sasl
 "
 
