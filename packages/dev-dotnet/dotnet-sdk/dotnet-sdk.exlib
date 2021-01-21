@@ -16,9 +16,9 @@ LICENCES="MIT"
 
 # This repository contains a set of scripts for building the .NET Core Runtime and SDK from source.
 require github [ user="dotnet" project="source-build" tag="v${PV}-SDK" force_git_clone=true ]
-require alternatives providers
+require alternatives providers flag-o-matic
 
-export_exlib_phases pkg_setup src_unpack src_prepare src_compile src_install
+export_exlib_phases pkg_setup src_unpack src_prepare src_configure src_compile src_install
 
 # Dotnet SDK binaries, necessary to bootstrap source-build.
 DOWNLOADS="https://dotnetcli.azureedge.net/dotnet/Sdk/${BOOTSTRAP}/${PN}-${BOOTSTRAP}-linux-x64.tar.gz -> ${PNV}-bootstrap.tar.gz"
@@ -77,6 +77,10 @@ dotnet-sdk_src_prepare() {
     default
 
     edo cp -r "${FILES}"/${SLOT}/*/ "${WORK}"/patches/
+}
+
+dotnet-sdk_src_configure() {
+    append-ldflags "-fuse-ld=lld"
 }
 
 dotnet-sdk_src_compile() {
