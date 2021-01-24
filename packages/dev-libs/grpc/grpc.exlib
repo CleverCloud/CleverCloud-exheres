@@ -14,13 +14,15 @@ MYOPTIONS="
 "
 
 DEPENDENCIES="
+    build:
+        dev-cpp/abseil
     build+run:
-        dev-libs/protobuf
-        dev-libs/re2
+        dev-libs/protobuf:=
+        dev-libs/re2:=
         net-dns/c-ares[>=1.13.0]
         sys-libs/zlib
         providers:libressl? ( dev-libs/libressl:= )
-        providers:openssl? ( dev-libs/openssl )
+        providers:openssl? ( dev-libs/openssl:= )
     test:
         dev-libs/gflags
 "
