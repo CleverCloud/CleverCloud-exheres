@@ -15,8 +15,8 @@ DEPENDENCIES="
     build:
         app-arch/zip
     build+run:
-        dev-lang/elixir:=[>=1.8]
-        dev-lang/erlang[>=22.1]
+        dev-lang/elixir:=[>=1.10]
+        dev-lang/erlang[>=23.2]
     run:
         net-misc/socat
         group/rabbitmq
