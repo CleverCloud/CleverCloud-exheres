@@ -1,0 +1,18 @@
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require go github [ user=streamnative tag="v${PV}" ]
+
+SUMMARY="A CLI tool for the Apache Pulsar project"
+HOMEPAGE="https://github.com/streamnative/pulsarctl"
+
+PLATFORMS="~amd64"
+LICENCES="Apache-2.0"
+SLOT="0"
+
+MYOPTIONS=""
+DEPENDENCIES=""
+
+# TODO: Support go.mod in the Go exlib
+unset GOPATH
+
