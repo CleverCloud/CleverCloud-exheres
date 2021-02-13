@@ -7,10 +7,10 @@ Subject: [PATCH] SDK-Add-Exherbo-RID-Microsoft.NETCore.App.deps
  .../Microsoft.NETCore.App.deps.json             | 17 ++++++++++++++++-
  1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/.dotnet/shared/Microsoft.NETCore.App/5.0.0/Microsoft.NETCore.App.deps.json b/.dotnet/shared/Microsoft.NETCore.App/5.0.0/Microsoft.NETCore.App.deps.json
+diff --git a/.dotnet/shared/Microsoft.NETCore.App/5.0.2/Microsoft.NETCore.App.deps.json b/.dotnet/shared/Microsoft.NETCore.App/5.0.2/Microsoft.NETCore.App.deps.json
 index 613de43..ae04c44 100644
---- a/.dotnet/shared/Microsoft.NETCore.App/5.0.0/Microsoft.NETCore.App.deps.json
-+++ b/.dotnet/shared/Microsoft.NETCore.App/5.0.0/Microsoft.NETCore.App.deps.json
+--- a/.dotnet/shared/Microsoft.NETCore.App/5.0.2/Microsoft.NETCore.App.deps.json
++++ b/.dotnet/shared/Microsoft.NETCore.App/5.0.2/Microsoft.NETCore.App.deps.json
 @@ -1465,6 +1465,21 @@
        "any",
        "base"
