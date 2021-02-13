@@ -19,8 +19,8 @@ require scm-git java-jdk autotools [ supported_autoconf=[ 2.5 ] supported_automa
 # Error: Building images for org.graalvm.nativeimage.Platform$LINUX_AMD64 requires static JDK libraries.
 # Use JDK from https://github.com/graalvm/labs-openjdk-11/releases
 LABSJDK="labsjdk-ce-11.0.10"
-JVMCI="jvmci-21.0-b06"
-DOWNLOADS="https://github.com/graalvm/labs-openjdk-11/releases/download/${JVMCI}/${LABSJDK}+8-${JVMCI}-linux-amd64.tar.gz"
+JVMCI="jvmci-21.1-b01"
+DOWNLOADS="https://github.com/graalvm/labs-openjdk-11/releases/download/${JVMCI}/${LABSJDK}+9-${JVMCI}-linux-amd64.tar.gz"
 
 MYOPTIONS="
     alsa 
@@ -31,7 +31,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build:
-        dev-java/mx[>=5.282.0]
+        dev-java/mx[>=5.285.9]
         dev-lang/python:2.7
         sys-devel/binutils[>=2.33.1]
         sys-devel/gcc[>=6.4.0]
