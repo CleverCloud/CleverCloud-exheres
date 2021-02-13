@@ -1,0 +1,128 @@
+From 94c2ec02284ff754d5ab469b0316688d463d68c9 Mon Sep 17 00:00:00 2001
+From: Mats Kindahl <mats@timescale.com>
+Date: Fri, 29 Jan 2021 13:44:26 +0100
+Subject: [PATCH] Change bootstrap and CMake defaults
+
+In contrast to the default for CMake files, `Release` is used as the
+default in `CMakeFiles.txt` which causes the `bootstrap` script to do a
+release build with development flags, in particular `-Werror`. Since
+warnings are triggered in a release build, this cause the build to
+fail while a debug build works fine.
+
+This commit fixes this by removing the `-Werror` flag (by setting
+`WARNINGS_AS_ERRORS` to `OFF`) on anything that is not a debug build
+and also disable the warnings that (currently) trigger the warnings in
+the release build.
+
+The commit also changes some of the GitHub workflows to run without
+`WARNINGS_AS_ERRORS` since it should always work without this option
+regardless of build type (on release build this should be disabled, on
+debug builds this should be enabled).  But it is set to `ON` for the
+full release and debug builds to ensure that we do not generate any
+warnings, which will capture new surfacing warnings.
+
+Fixes #2770
+---
+ .github/workflows/coverity.yaml |  2 +-
+ CMakeLists.txt                  | 14 +++++++++++---
+ scripts/gh_matrix_builder.py    | 18 ++++++++++++++----
+ 3 files changed, 26 insertions(+), 8 deletions(-)
+
+diff --git a/.github/workflows/coverity.yaml b/.github/workflows/coverity.yaml
+index 7d8dfb338..2cf390a46 100644
+--- a/.github/workflows/coverity.yaml
++++ b/.github/workflows/coverity.yaml
+@@ -55,7 +55,7 @@ jobs:
+     - name: Build TimescaleDB
+       run: |
+         PATH="$GITHUB_WORKSPACE/coverity/bin:$PATH"
+-        ./bootstrap -DCMAKE_BUILD_TYPE=Release -DPG_SOURCE_DIR=~/$PG_SRC_DIR -DPG_PATH=~/$PG_INSTALL_DIR -DWARNINGS_AS_ERRORS=OFF
++        ./bootstrap -DCMAKE_BUILD_TYPE=Release -DPG_SOURCE_DIR=~/$PG_SRC_DIR -DPG_PATH=~/$PG_INSTALL_DIR
+         cov-build --dir cov-int make -C build
+ 
+     - name: Upload report
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ce6e9d48c..42c0747de 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -90,8 +90,15 @@ if (NOT CMAKE_C_COMPILER_ID IN_LIST SUPPORTED_COMPILERS)
+    message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}. Supported compilers are: ${SUPPORTED_COMPILERS}")
+ endif ()
+ 
+-# Option to treat warnings as errors when compiling (default on)
+-option(WARNINGS_AS_ERRORS "Make compiler warnings into errors (default ON)" ON)
++# Option to treat warnings as errors when compiling (default on for
++# debug builds, off for all other build types)
++if (CMAKE_BUILD_TYPE STREQUAL Debug)
++  message(STATUS "CMAKE_BUILD_TYPE matches Debug")
++  option(WARNINGS_AS_ERRORS "Make compiler warnings into errors (default ON)" ON)
++else()
++  message(STATUS "CMAKE_BUILD_TYPE does not match Debug")
++  option(WARNINGS_AS_ERRORS "Make compiler warnings into errors (default ON)" OFF)
++endif()
+ 
+ if (WARNINGS_AS_ERRORS)
+   if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
+@@ -116,7 +123,8 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU|AppleClang|Clang")
+   # These flags are supported on all compilers.
+   add_compile_options(
+     -Wempty-body -Wvla -Wall -Wmissing-prototypes -Wpointer-arith
+-    -Werror=vla -Wendif-labels -fno-strict-aliasing -fno-omit-frame-pointer)
++    -Werror=vla -Wendif-labels -Wno-stringop-truncation
++    -fno-strict-aliasing -fno-omit-frame-pointer)
+ 
+   # These flags are just supported on some of the compilers, so we
+   # check them before adding them.
+diff --git a/scripts/gh_matrix_builder.py b/scripts/gh_matrix_builder.py
+index 625a678b8..7d52a0fcd 100644
+--- a/scripts/gh_matrix_builder.py
++++ b/scripts/gh_matrix_builder.py
+@@ -35,12 +35,18 @@
+ def build_debug_config(overrides):
+   # llvm version and clang versions must match otherwise
+   # there will be build errors this is true even when compiling
+-  # with gcc as clang is used to compile the llvm parts
++  # with gcc as clang is used to compile the llvm parts.
++  #
++  # Strictly speaking, WARNINGS_AS_ERRORS=ON is not needed here, but
++  # we add it as a precation. Intention is to have at least one
++  # release and one debug build with WARNINGS_AS_ERRORS=ON so that we
++  # capture warnings generated due to changes in the code base or the
++  # compiler.
+   base_config = dict({
+     "name": "Debug",
+     "build_type": "Debug",
+     "pg_build_args": "--enable-debug --enable-cassert",
+-    "tsdb_build_args": "-DCODECOVERAGE=ON",
++    "tsdb_build_args": "-DCODECOVERAGE=ON -DWARNINGS_AS_ERRORS=ON",
+     "installcheck_args": "IGNORES='bgw_db_scheduler'",
+     "coverage": True,
+     "llvm_config": "llvm-config-9",
+@@ -52,13 +58,17 @@ def build_debug_config(overrides):
+   base_config.update(overrides)
+   return base_config
+ 
++# We build this release configuration with WARNINGS_AS_ERRORS=ON to
++# make sure that we can build with -Werrors even for release
++# builds. This will capture some cases where warnings are generated
++# for release builds but not for debug builds.
+ def build_release_config(overrides):
+   base_config = build_debug_config({})
+   release_config = dict({
+     "name": "Release",
+     "build_type": "Release",
+     "pg_build_args": "",
+-    "tsdb_build_args": "-DWARNINGS_AS_ERRORS=OFF",
++    "tsdb_build_args": "-DWARNINGS_AS_ERRORS=ON",
+     "coverage": False,
+   })
+   base_config.update(release_config)
+@@ -70,7 +80,7 @@ def build_apache_config(overrides):
+   apache_config = dict({
+     "name": "ApacheOnly",
+     "build_type": "Release",
+-    "tsdb_build_args": "-DAPACHE_ONLY=1 -DWARNINGS_AS_ERRORS=OFF",
++    "tsdb_build_args": "-DAPACHE_ONLY=1",
+     "pg_build_args": "",
+     "coverage": False,
+   })

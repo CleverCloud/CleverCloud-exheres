@@ -2,17 +2,23 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user="timescale" tag="${PV}" ]
-require postgresql [ max_version=12 ]
+require postgresql [ min_version=11 max_version=12 ]
 
 SUMMARY="TimescaleDB is an open-source database designed to make SQL scalable for time-series data"
-
 PLATFORMS="~amd64"
 LICENCES="PostgreSQL"
 SLOT="0"
 
+MYOPTIONS=""
 DEPENDENCIES=""
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/Change-bootstrap-and-CMake-defaults.patch"
+)
+
 prepare_one_multibuild() {
+    default
+
     local old_path="${PATH}"
     local pg_config="/usr/$(exhost --target)/libexec/postgresql-${MULTIBUILD_TARGET}"
 
