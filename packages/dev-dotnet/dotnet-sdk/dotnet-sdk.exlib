@@ -30,16 +30,17 @@ DEPENDENCIES="
         sys-devel/cmake
     build+run:
         app-crypt/krb5
+        app-misc/ca-certificates[>=20210119][ca-trust]
         dev-lang/clang:${LLVM_SLOT}
         dev-lang/llvm:${LLVM_SLOT}
         dev-libs/icu:=
-        sys-libs/llvm-libunwind
         dev-util/lttng-ust
         net-misc/curl
         sys-apps/numactl
         sys-devel/gettext
         sys-devel/lld:${LLVM_SLOT}
         sys-devel/lldb
+        sys-libs/llvm-libunwind
         sys-libs/zlib
         !dev-dotnet/dotnet-sdk:0 [[
             description = [ slot move ]
