@@ -1,7 +1,7 @@
 # Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require php-pecl [ module=module php_abis=[ 5.6 7.0 7.1 7.2 7.3 7.4 ] ]
+require php-pecl [ module=module php_abis=[ 5.6 7.0 7.1 7.2 7.3 7.4 8.0 ] ]
 
 SUMMARY="Sqreen Agent for PHP"
 HOMEPAGE="https://www.sqreen.com/"
@@ -16,14 +16,16 @@ DEPENDENCIES="
 "
 
 unpack_prepare_one_multibuild() {
-    # The files are at the root of the archive, create folder and define the easy_multibuild_work
-    # variable to extract the content inside and set the correct path for the following phases
+    # The files are at the root of the archive, just create the missing PNV folder.
     edo mkdir -p "${WORKBASE}/${MULTIBUILD_CLASS}/${MULTIBUILD_TARGET}/${PNV}"
     easy_multibuild_work=${PNV}
 }
 
 php-pecl_prepare_one_multibuild() {
-    # Skip prepare, cannot find config.m4...
+    :
+}
+
+php-pecl_configure_one_multibuild() {
     :
 }
 

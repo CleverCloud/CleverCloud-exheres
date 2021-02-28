@@ -30,7 +30,7 @@ src_prepare() {
 
 src_install() {
     insinto /opt/${PNVR}
-    for file in _v8 include lib64 sqreen sqreen-agent.pkg; do
+    for file in certifi include lib64 sqreen sqreen-agent.pkg _v8; do
         doins -r ${file}
     done
 
