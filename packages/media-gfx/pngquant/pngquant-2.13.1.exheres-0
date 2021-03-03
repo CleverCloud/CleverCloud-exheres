@@ -1,0 +1,36 @@
+# Copyright 2015 Julien Durillon <julien.durillon@clever-cloud.com>
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="kornelski" tag=${PV} ]
+
+SUMMARY="pngquant is a PNG compressor that significantly reduces file sizes by converting images to a more efficient 8-bit PNG format with alpha channel"
+HOMEPAGE="https://pngquant.org"
+
+LICENCES="GPL-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="debug openmp"
+DEPENDENCIES="
+    build:
+        virtual/pkg-config
+    build+run:
+        media-gfx/libimagequant 
+        media-libs/lcms2
+        media-libs/libpng
+        openmp? ( sys-libs/openmp )
+        sys-libs/zlib
+"
+
+src_configure() {
+    local myconf=(
+        --prefix=/usr/$(exhost --target)
+    )
+
+    option debug && myconf+=( --enable-debug )
+    option openmp && myconf+=( --with-openmp )
+
+    edo ./configure "${myconf[@]}"
+}
+
+
