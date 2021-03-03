@@ -1,0 +1,36 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="ImageOptim" tag=${PV} ]
+
+SUMMARY="Small, portable C library for high-quality conversion of RGBA images to 8-bit indexed-color (palette) images"
+HOMEPAGE="https://pngquant.org/lib/"
+
+LICENCES="GPL-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="debug openmp"
+DEPENDENCIES="
+    build:
+        virtual/pkg-config
+    build+run:
+        openmp? ( sys-libs/openmp )
+"
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/0001-fix-pkg-config.patch" )
+
+src_configure() {
+    local myconf=(
+        --prefix=/usr/$(exhost --target)
+    )
+
+    option debug && myconf+=( --enable-debug )
+    option openmp && myconf+=( --with-openmp )
+
+    edo ./configure "${myconf[@]}"
+}
+
+src_test() {
+    :
+}
+

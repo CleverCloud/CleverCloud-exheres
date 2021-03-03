@@ -1,0 +1,53 @@
+Source: Gentoo, https://gitweb.gentoo.org/repo/gentoo.git/tree/media-gfx/libimagequant/files/libimagequant-2.12.2-fix-pkgconfig.patch
+Upsteam: Unknown
+Reason: Fix pkg-config install
+
+---
+ .gitignore    |  1 -
+ Makefile      |  2 +-
+ imagequant.pc | 10 ++++++++++
+ 3 files changed, 11 insertions(+), 2 deletions(-)
+ create mode 100644 imagequant.pc
+
+diff --git a/.gitignore b/.gitignore
+index 8551194..ade1b8d 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,5 +1,4 @@
+ config.mk
+-imagequant.pc
+ *.lo
+ *.o
+ *.a
+diff --git a/Makefile b/Makefile
+index ae8f896..1441337 100644
+--- a/Makefile
++++ b/Makefile
+@@ -133,7 +133,7 @@ ifeq ($(filter %clean %distclean, $(MAKECMDGOALS)), )
+ endif
+ 
+ $(PKGCONFIG): config.mk
+-	sed 's|PREFIX|$(PREFIX)|;s|VERSION|$(VERSION)|' < imagequant.pc.in > $(PKGCONFIG)
++	sed 's|PREFIX|$(PREFIX)|;s|VERSION|$(VERSION)|;s|LIBDIR|$(LIBDIR)|' < imagequant.pc.in > $(PKGCONFIG)
+ 
+ .PHONY: all static shared clean dist distclean dll java cargo
+ .DELETE_ON_ERROR:
+diff --git a/imagequant.pc b/imagequant.pc
+new file mode 100644
+index 0000000..b3e527f
+--- /dev/null
++++ b/imagequant.pc
+@@ -0,0 +1,10 @@
++prefix=/usr
++includedir=${prefix}/include
++libdir=LIBDIR
++
++Name: imagequant
++Description: Small, portable C library for high-quality conversion of RGBA images to 8-bit indexed-color (palette) images.
++URL: https://pngquant.org/lib/
++Version: 2.13.1
++Libs: -L${libdir} -limagequant
++Cflags: -I${includedir}
+-- 
+2.30.1
+
