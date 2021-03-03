@@ -1,0 +1,62 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=lib${PN} project=lib${PN} release=v${PV} suffix="tar.gz" ]
+
+SUMMARY="libvips is a demand-driven, horizontally threaded image processing library"
+
+LICENCES="LGPL-2.1"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS="fftw fits gsf heif imagemagick jpeg openexr orc png svg tiff webp"
+DEPENDENCIES="
+    build: 
+        virtual/pkg-config
+    build+run:
+        dev-libs/glib
+        dev-libs/libxml2
+        fftw? ( sci-libs/fftw )
+        fits? ( sci-libs/cfitsio )
+        gsf? ( office-libs/libgsf )
+        heif? ( media-libs/libheif )
+        imagemagick? ( media-gfx/ImageMagick )
+        jpeg? ( media-libs/libjpeg-turbo )
+        openexr? ( media-libs/openexr )
+        orc? ( dev-libs/orc )
+        png? ( 
+            media-gfx/libimagequant
+            media-libs/libpng
+        )
+        svg? ( gnome-desktop/librsvg )
+        sys-libs/zlib
+        tiff? ( media-libs/tiff )
+        webp? ( media-libs/libwebp )
+        x11-libs/pango
+"
+
+# All tests are run, even if an option is disabled.
+RESTRICT="test"
+
+# Unpackaged
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --without-matio
+    --without-openslide
+    --without-pdfium
+)
+
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( 
+    'fftw'
+    'fits cfitsio'
+    'gsf'
+    'heif'
+    'imagemagick --with-magickpackage=MagickCore'
+    'jpeg'
+    'openexr OpenEXR'
+    'orc'
+    'png'
+    'svg rsvg'
+    'tiff'
+    'webp libwebp'
+)
+
