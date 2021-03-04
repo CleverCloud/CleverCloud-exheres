@@ -1,0 +1,66 @@
+# Copyright 2015 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="${PN}cache" project="${PN}-cache" tag=${PNV} ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
+require systemd-service
+
+SUMMARY="Varnish Cache, the high-performance HTTP accelerator"
+HOMEPAGE="https://www.varnish-cache.org/"
+
+LICENCES="as-is"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        dev-lang/python:*[>=3]
+        dev-python/Sphinx
+        dev-python/docutils
+        virtual/pkg-config
+    build+run:
+        user/varnish
+        group/varnish
+        dev-libs/libedit
+        dev-libs/pcre
+        sys-libs/readline:=
+"
+
+BUGS_TO="keruspe@exherbo.org"
+
+# Way too much networking
+RESTRICT="test"
+
+src_prepare() {
+    edo sed -i -e 's/-Werror//' ${WORK}/configure.ac
+
+    AT_M4DIR=( m4 )
+    autotools_src_prepare
+}
+
+src_install() {
+    default
+    keepdir /var/lib/varnish
+
+    insinto /etc/varnish
+    newins etc/example.vcl default.vcl
+    doins "${FILES}"/varnish.params
+
+    install_systemd_files
+}
+
+pkg_postinst() {
+    edo chown -R ${PN}:${PN} /var/lib/${PN}
+
+    if [[ ! -f /var/log/${PN}/${PN}.log ]]; then
+        edo mkdir -p /var/log/${PN}
+        edo touch /var/log/${PN}/${PN}.log
+        edo chown -R ${PN}:${PN} /var/log/${PN}
+        edo chmod g+w /var/log/${PN}/${PN}.log
+    fi
+
+    einfo "The default service file requires a /etc/varnish/secret file. You are free to (randomly) generate that file the way you want it."
+}
+
