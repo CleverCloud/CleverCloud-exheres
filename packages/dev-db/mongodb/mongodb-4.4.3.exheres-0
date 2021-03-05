@@ -15,7 +15,7 @@ scalable) and traditional RDBMS systems (which provide structured schemas and po
 HOMEPAGE="https://www.mongodb.org"
 DOWNLOADS="https://downloads.mongodb.org/src/${PN}-src-r${PV}.tar.gz"
 
-LICENCES="Apache-2.0 SSPL-1"
+LICENCES="Apache-2.0 SSPL-1.0"
 SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS="
