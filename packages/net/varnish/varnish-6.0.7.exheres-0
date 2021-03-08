@@ -61,6 +61,9 @@ pkg_postinst() {
         edo chmod g+w /var/log/${PN}/${PN}.log
     fi
 
-    einfo "The default service file requires a /etc/varnish/secret file. You are free to (randomly) generate that file the way you want it."
+    if [[ ! -f /etc/${PN}/secret ]]; then
+        dd if=/dev/random of=/etc/${PN}/secret count=1 bs=4096
+        einfo "A secret file has just been generated in /etc/varnish/secret"
+    fi
 }
 
