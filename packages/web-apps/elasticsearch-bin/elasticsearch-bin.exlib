@@ -17,7 +17,15 @@ else
     DOWNLOADS="https://artifacts.elastic.co/downloads/${MY_PN}/${MY_PNV}.tar.gz"
 fi
 
-LICENCES="GPL-2"
+if ever at_least 7.11 ; then
+    LICENCES="
+        Apache-2.0 [[ note = [ low level rest client ] ]]
+        Elastic-License-2.0
+        SSPL-1.0
+    "
+else
+    LICENCES="GPL-2"
+fi
 MYOPTIONS=""
 
 DEPENDENCIES="
