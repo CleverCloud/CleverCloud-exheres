@@ -1,0 +1,64 @@
+# Copyright 2020-2021 Timo Gurr <tgurr@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+MY_PN=${PN/-bin}
+MY_PNV="${MY_PN}-${PV}"
+
+SUMMARY="Server-side data processing pipeline"
+HOMEPAGE="https://www.elastic.co/products/${PN}"
+DOWNLOADS="https://artifacts.elastic.co/downloads/${MY_PN}/${MY_PNV}-linux-x86_64.tar.gz"
+
+LICENCES="
+    Apache-2.0
+    Elastic-License
+"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    bundled-java [[ description = [ Use the bundled java to be able to claim official support ] ]]
+"
+
+RESTRICT="strip"
+
+DEPENDENCIES="
+    run:
+        group/${MY_PN}
+        user/${MY_PN}
+        !bundled-java? ( virtual/jre:=[>=8] )
+"
+
+WORK=${WORKBASE}/${MY_PNV}
+
+pkg_setup() {
+    exdirectory --allow /opt
+}
+
+src_test() {
+    :
+}
+
+src_install() {
+    emagicdocs
+
+    edo mkdir "${IMAGE}"/opt
+    edo cd ${WORKBASE}
+    edo mv ${MY_PNV} "${IMAGE}"/opt/${MY_PN}
+
+    keepdir /opt/${MY_PN}/data
+    edo chown -R ${MY_PN}:${MY_PN} "${IMAGE}"/opt/${MY_PN}
+
+    # remove empty directories
+    edo find "${IMAGE}"/opt/${MY_PN}/vendor -type d -empty -delete
+
+    # remove bundled java
+    ! option bundled-java && edo rm -rf "${IMAGE}"/opt/${MY_PN}/jdk
+
+    install_systemd_files
+
+    hereenvd 99${MY_PN} <<EOF
+CONFIG_PROTECT="/opt/${MY_PN}/config"
+EOF
+}
+
