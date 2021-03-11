@@ -1,4 +1,4 @@
-# Copyright 2020 Timo Gurr <tgurr@exherbo.org>
+# Copyright 2020-2021 Timo Gurr <tgurr@exherbo.org>
 # Distributed under the terms of the GNU General Public License v2
 
 require systemd-service
@@ -10,7 +10,10 @@ SUMMARY="Server-side data processing pipeline"
 HOMEPAGE="https://www.elastic.co/products/${PN}"
 DOWNLOADS="https://artifacts.elastic.co/downloads/${MY_PN}/${MY_PNV}-linux-x86_64.tar.gz"
 
-LICENCES="GPL-2"
+LICENCES="
+    Apache-2.0
+    Elastic-License
+"
 SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS="
