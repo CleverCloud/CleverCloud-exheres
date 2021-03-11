@@ -1,0 +1,53 @@
+# Copyright 2019 Arnaud Lefebvre <arnaud.lefebvre@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+MY_PN=${PN/-bin}
+MY_PNV="${MY_PN}-${PV}"
+MY_PLATFORM="linux-x86_64"
+
+SUMMARY="Your window into the Elastic Stack"
+HOMEPAGE="https://www.elastic.co/products/${PN}"
+DOWNLOADS="https://artifacts.elastic.co/downloads/${MY_PN}/${MY_PNV}-${MY_PLATFORM}.tar.gz"
+
+LICENCES="
+    Apache-2.0
+    Elastic-License-2.0
+    SSPL-1.0
+"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    run:
+        group/${MY_PN}
+        user/${MY_PN}
+"
+
+BUGS_TO="arnaud.lefebvre@clever-cloud.com"
+
+WORK="${WORKBASE}/${MY_PNV}-${MY_PLATFORM}"
+
+RESTRICT="strip"
+
+pkg_setup() {
+    exdirectory --allow /opt
+}
+
+src_install() {
+    default
+    edo mkdir "${IMAGE}"/opt
+    edo cd "${WORKBASE}"
+    edo mv "${MY_PNV}-${MY_PLATFORM}" "${IMAGE}"/opt/${MY_PN}
+    edo rmdir "${IMAGE}"/opt/${MY_PN}/plugins
+    edo rmdir "${IMAGE}"/opt/${MY_PN}/node/lib
+    keepdir /opt/${MY_PN}/data
+    edo chown -R ${MY_PN}:${MY_PN} "${IMAGE}"/opt/${MY_PN}
+    install_systemd_files
+    hereenvd 99${MY_PN} <<EOF
+CONFIG_PROTECT="/opt/${MY_PN}/config"
+EOF
+}
+
