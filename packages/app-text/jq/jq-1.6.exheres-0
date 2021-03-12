@@ -7,7 +7,7 @@ SUMMARY="Command-line JSON processor"
 HOMEPAGE+=" https://stedolan.github.io/jq/"
 
 LICENCES="jq"
-PLATFORMS="~amd64 ~armv7 ~armv8"
+PLATFORMS="~amd64 ~armv7 ~armv8 ~x86"
 SLOT="0"
 MYOPTIONS=""
 
