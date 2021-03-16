@@ -9,31 +9,32 @@ LICENCES="LGPL-2.1"
 SLOT="0"
 PLATFORMS="~amd64"
 
-MYOPTIONS="exif fftw fits gsf heif imagemagick jpeg openexr orc png svg tiff webp"
+MYOPTIONS="exif fftw fits gsf heif imagemagick jpeg lcms openexr orc png svg tiff webp"
 DEPENDENCIES="
     build: 
         virtual/pkg-config
     build+run:
-        dev-libs/glib
-        dev-libs/libxml2
+        dev-libs/glib:2
+        dev-libs/libxml2:2.0
+        sys-libs/zlib
+        x11-libs/pango
         exif? ( media-libs/libexif )
         fftw? ( sci-libs/fftw )
         fits? ( sci-libs/cfitsio )
         gsf? ( office-libs/libgsf )
         heif? ( media-libs/libheif )
-        imagemagick? ( media-gfx/ImageMagick )
+        imagemagick? ( media-gfx/ImageMagick[fftw?][heif?][lcms?][openexr?][pango][svg?][tiff?] )
         jpeg? ( media-libs/libjpeg-turbo )
+        lcms? ( media-libs/lcms2[tiff?] )
         openexr? ( media-libs/openexr )
-        orc? ( dev-libs/orc )
+        orc? ( dev-libs/orc:0.4 )
         png? ( 
             media-gfx/libimagequant
-            media-libs/libpng
+            media-libs/libpng:=
         )
-        svg? ( gnome-desktop/librsvg )
-        sys-libs/zlib
-        tiff? ( media-libs/tiff )
-        webp? ( media-libs/libwebp )
-        x11-libs/pango
+        svg? ( gnome-desktop/librsvg:2 )
+        tiff? ( media-libs/tiff[webp?] )
+        webp? ( media-libs/libwebp:=[tiff?] )
 "
 
 # All tests are run, even if an option is disabled.
@@ -46,14 +47,18 @@ DEFAULT_SRC_CONFIGURE_PARAMS=(
     --without-pdfium
 )
 
-DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( 
+DEFAULT_SRC_CONFIGURE_OPTIONS=(
+    'imagemagick --with-magickpackage=MagickCore --without-magick'
+)
+
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
     'exif libexif'
     'fftw'
     'fits cfitsio'
     'gsf'
     'heif'
-    'imagemagick imagemagick --with-magickpackage=MagickCore'
     'jpeg'
+    'lcms'
     'openexr OpenEXR'
     'orc'
     'png'
