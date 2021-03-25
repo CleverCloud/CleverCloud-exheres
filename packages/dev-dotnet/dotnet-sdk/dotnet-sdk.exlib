@@ -69,11 +69,6 @@ DEFAULT_SRC_PREPARE_PATCHES=(
     "${FILES}/${SLOT}/0002-BOOTSTRAP-add-exherbo-rid.patch"
 )
 
-if ever at_least 5; then
-    # https://github.com/dotnet/source-build/issues/1911
-    DEFAULT_SRC_PREPARE_PATCHES+=( "${FILES}/${SLOT}/0003-SOURCE-BUILD-add-rid-suffix.patch" )
-fi
-
 dotnet-sdk_src_prepare() {
     default
 
