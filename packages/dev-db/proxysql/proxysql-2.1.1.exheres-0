@@ -4,26 +4,45 @@
 require github [ user="sysown" tag="${PV}" ] systemd-service [ systemd_files=[ "systemd/system/proxysql.service" ] ]
 
 SUMMARY="High-performance MySQL proxy"
+DESCRIPTION="
+ProxySQL is a high performance, high availability, protocol aware proxy for
+MySQL and forks (like Percona Server and MariaDB).
+All the while getting the unlimited freedom that comes with a GPL license.
+"
+HOMEPAGE="https://www.proxysql.com/"
+
 BUGS_TO="arnaud.lefebvre@clever-cloud.com"
 LICENCES="GPL-3"
 SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS="
     systemd
-    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
 DEPENDENCIES="
+    build:
+        dev-lang/python:*[>=3]
+        dev-libs/openssl:=
     build+run:
-        providers:libressl? ( dev-libs/libressl:= )
-        providers:openssl? ( dev-libs/openssl:= )
+        dev-libs/gnutls
     run:
         user/proxysql
         group/proxysql
 "
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/libinjection-ar-cc-ld-python3.patch"
+    "${FILES}/cmake-3.20-syntax-error.patch"
+)
+
+pkg_setup() {
+    edo export GIT_VERSION="${PV}"
+}
+
 src_prepare() {
-    sed "s@/usr/bin@/usr/$(exhost --target)/bin@" -i systemd/proxysql.service
+    default
+
+    sed "s@/usr/bin@/usr/$(exhost --target)/bin@" -i systemd/system/proxysql.service
     sed "s/ar /${AR} /" -i lib/Makefile
 }
 
@@ -46,3 +65,4 @@ pkg_postinst() {
     default
     edo chown proxysql:proxysql -R /var/lib/${PN}
 }
+
