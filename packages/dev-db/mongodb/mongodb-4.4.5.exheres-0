@@ -47,7 +47,7 @@ DEPENDENCIES="
 "
 
 DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/${PN}-4.4.1-no-compass.patch
+    "${FILES}"/${PN}-4.4.5-no-compass.patch
     "${FILES}"/${PN}-4.4.1-boost.patch
 )
 

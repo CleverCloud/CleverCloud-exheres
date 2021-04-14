@@ -2,32 +2,18 @@ Source: Gentoo, https://gitweb.gentoo.org/repo/gentoo.git/tree/dev-db/mongodb/fi
 Upstream: Unknown
 Reason: Do not build compass
 
-diff --git a/src/mongo/SConscript b/src/mongo/SConscript
-index 8acf5469..737c31d4 100644
---- a/src/mongo/SConscript
-+++ b/src/mongo/SConscript
-@@ -834,43 +834,6 @@ for full_dir, archive_dir in list(env["ARCHIVE_ADDITION_DIR_MAP"].items()):
+diff -Naur mongodb-src-r4.4.5/src/mongo/SConscript mongodb-src-r4.4.5.new/src/mongo/SConscript
+--- mongodb-src-r4.4.5/src/mongo/SConscript	2021-03-31 17:15:37.000000000 +0200
++++ mongodb-src-r4.4.5.new/src/mongo/SConscript	2021-04-14 17:02:00.183522577 +0200
+@@ -840,30 +840,6 @@
  for target in env["DIST_BINARIES"]:
      installBinary(env, "db/modules/" + target)
  
--compass_type = 'compass'
--
--compass_script = "install_compass.in"
+-compass_script = "install_compass"
 -if env.TargetOSIs('windows'):
--    compass_script = "Install-Compass.ps1.in"
+-    compass_script = "Install-Compass.ps1"
 -
--compass_python_interpreter = '/usr/bin/env python2'
--if env.TargetOSIs('darwin'):
--    compass_python_interpreter = '/usr/bin/env python'
--
--compass_installer = env.Substfile(
--  target="$BUILD_DIR/mongo/installer/compass/" + compass_script[:-3],
--  source='installer/compass/' + compass_script,
--  SUBST_DICT=[
--    ('@compass_type@', compass_type),
--    ('@python_interpreter@', compass_python_interpreter),
--  ],
--)
+-compass_installer = f"$BUILD_DIR/mongo/installer/compass/{compass_script}"
 -
 -distBinaries.append(compass_installer)
 -
@@ -50,7 +36,7 @@ index 8acf5469..737c31d4 100644
  if not hygienic:
      server_archive = env.Command(
          target='#/${SERVER_ARCHIVE}',
-@@ -884,7 +847,6 @@ if not hygienic:
+@@ -877,7 +853,6 @@
                  '--transform $BUILD_DIR/mongo/stripped/db/modules/enterprise=$SERVER_DIST_BASENAME/bin',
                  '--transform $BUILD_DIR/mongo/stripped=$SERVER_DIST_BASENAME/bin',
                  '--transform $BUILD_DIR/mongo=$SERVER_DIST_BASENAME/bin',
