@@ -7,10 +7,10 @@ Subject: [PATCH] SDK-Add-Exherbo-RID-RuntimeIdentifierGraph
  .../RuntimeIdentifierGraph.json                     | 13 ++++++++++++-
  1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/.dotnet/sdk/5.0.102/RuntimeIdentifierGraph.json b/.dotnet/sdk/5.0.102/RuntimeIdentifierGraph.json
+diff --git a/.dotnet/sdk/5.0.104/RuntimeIdentifierGraph.json b/.dotnet/sdk/5.0.104/RuntimeIdentifierGraph.json
 index a6b800b..df0b622 100644
---- a/.dotnet/sdk/5.0.102/RuntimeIdentifierGraph.json
-+++ b/.dotnet/sdk/5.0.102/RuntimeIdentifierGraph.json
+--- a/.dotnet/sdk/5.0.104/RuntimeIdentifierGraph.json
++++ b/.dotnet/sdk/5.0.104/RuntimeIdentifierGraph.json
 @@ -288,6 +288,17 @@
          "debian-x86"
        ]
