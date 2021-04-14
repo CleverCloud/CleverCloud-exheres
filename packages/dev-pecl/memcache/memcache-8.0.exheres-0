@@ -1,0 +1,17 @@
+# Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module php_abis=[ 8.0 ] ]
+
+SUMMARY="PHP extension for memcached"
+
+LICENCES="PHP-3"
+PLATFORMS="~amd64"
+SLOT="8"
+
+MYOPTIONS=""
+
+# The test suite requires memcached.
+RESTRICT='test'
+
