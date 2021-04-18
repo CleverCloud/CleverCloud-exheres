@@ -12,13 +12,17 @@ DOWNLOADS="http://download.osgeo.org/${PN}/${PV}/${PNV}.tar.gz"
 LICENCES="MIT"
 SLOT="0"
 MYOPTIONS="
+    fits [[ description = [ Support for the F(lexible)I(mage)T(ransport)S(ystem) format ] ]]
     geos
+    openexr
     postgresql
     ( providers: ijg-jpeg jpeg-turbo ) [[ number-selected = exactly-one ]]
     ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
 DEPENDENCIES="
+    build:
+        virtual/pkg-config
     build+run:
         app-arch/xz
         dev-libs/expat
@@ -29,8 +33,14 @@ DEPENDENCIES="
         media-libs/tiff
         net-misc/curl
         sci-libs/libgeotiff
+        sci-libs/proj[>=6]
         sys-libs/zlib
+        fits? ( sci-libs/cfitsio:= )
         geos? ( sci-libs/geos )
+        openexr? (
+            media-libs/ilmbase
+            media-libs/openexr[>=2.2]
+        )
         postgresql? ( dev-db/postgresql-client )
         providers:ijg-jpeg? ( media-libs/jpeg )
         providers:jpeg-turbo? ( media-libs/libjpeg-turbo )
@@ -39,7 +49,9 @@ DEPENDENCIES="
 "
 
 DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
+    'fits cfitsio'
     'geos'
+    'openexr exr'
     'postgresql pg'
 )
 
