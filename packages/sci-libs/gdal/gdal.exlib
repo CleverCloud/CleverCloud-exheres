@@ -42,10 +42,10 @@ DEPENDENCIES="
             media-libs/openexr[>=2.2]
         )
         postgresql? ( dev-db/postgresql-client )
-        providers:ijg-jpeg? ( media-libs/jpeg )
+        providers:ijg-jpeg? ( media-libs/jpeg:= )
         providers:jpeg-turbo? ( media-libs/libjpeg-turbo )
         providers:libressl? ( dev-libs/libressl:= )
-        providers:openssl? ( dev-libs/openssl )
+        providers:openssl? ( dev-libs/openssl:= )
 "
 
 DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
