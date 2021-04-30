@@ -12,7 +12,7 @@ HOMEPAGE="https://www.varnish-cache.org/"
 LICENCES="as-is"
 SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS=""
+MYOPTIONS="modules [[ description = [ A collection of modules (vmods) extending Varnish VCL ] ]]"
 
 DEPENDENCIES="
     build:
@@ -26,6 +26,8 @@ DEPENDENCIES="
         dev-libs/libedit
         dev-libs/pcre
         sys-libs/readline:=
+    post:
+        modules? ( net/varnish-modules ) 
 "
 
 BUGS_TO="keruspe@exherbo.org"
