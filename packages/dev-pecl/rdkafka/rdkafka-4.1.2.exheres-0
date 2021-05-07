@@ -1,0 +1,24 @@
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module php_abis=[ 5.6 ] ]
+
+SUMMARY="librdkafka binding providing a working client for Kafka"
+
+PLATFORMS="~amd64"
+LICENCES="MIT"
+SLOT="5.6"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/librdkafka
+        !dev-pecl/rdkafka:0[<5] [[ 
+            description = [ Removal of php 7 support, version 4.x only supports php 5.6 now ]
+            resolution = upgrade-blocked-before 
+         ]]
+"
+
+# Tests require running kafka
+RESTRICT=test
+
