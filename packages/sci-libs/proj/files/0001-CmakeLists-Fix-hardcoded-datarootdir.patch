@@ -6,32 +6,25 @@ Subject: [PATCH] CmakeLists: Fix hardcoded datarootdir
 Reason: We put dataroot in architecture independent folder.
 Upstream-status: None (exherbo specific)
 ---
- man/CMakeLists.txt | 4 ++--
+ man/CMakeLists.txt | 2 +-
  src/lib_proj.cmake | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/man/CMakeLists.txt b/man/CMakeLists.txt
-index 1526e438..c06b29d4 100644
+index 031cde0..632fbca 100644
 --- a/man/CMakeLists.txt
 +++ b/man/CMakeLists.txt
-@@ -5,10 +5,10 @@ install(FILES
-   man1/cct.1
+@@ -6,4 +6,4 @@ install(FILES
    man1/gie.1
    man1/projinfo.1
+   man1/projsync.1
 -  DESTINATION share/man/man1)
 +  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/man/man1)
- 
- install(FILES
-   man3/pj_init.3
-   man3/geodesic.3
--  DESTINATION share/man/man3)
-+  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/man/man3)
- 
 diff --git a/src/lib_proj.cmake b/src/lib_proj.cmake
-index b16032d2..0989aaec 100644
+index cf30734..9465a99 100644
 --- a/src/lib_proj.cmake
 +++ b/src/lib_proj.cmake
-@@ -317,7 +317,7 @@ source_group("CMake Files" FILES CMakeLists.txt)
+@@ -312,7 +312,7 @@ source_group("CMake Files" FILES CMakeLists.txt)
  
  
  # Embed PROJ_LIB data files location
@@ -39,7 +32,7 @@ index b16032d2..0989aaec 100644
 +add_definitions(-DPROJ_LIB="${DATADIR}")
  
  #################################################
- ## java wrapping with jni
+ ## targets: libproj and proj_config.h
 -- 
-2.23.0
+2.31.1
 
