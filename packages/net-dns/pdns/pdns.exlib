@@ -40,10 +40,6 @@ DEPENDENCIES="
         postgres? ( dev-db/postgresql )
 "
 
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}/0001-Replace-boosts-placeholders-with-the-ones-from-the-std-namespace.patch"
-)
-
 pdns_src_configure() {
     local mymodules=(
         $(option mysql gmysql)
