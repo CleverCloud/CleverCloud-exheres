@@ -1,0 +1,14 @@
+[Unit]
+Description=Powa-collector
+StartLimitIntervalSec=30
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=postgres
+Group=postgres
+ExecStart="/usr/bin/powa-collector.py"
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

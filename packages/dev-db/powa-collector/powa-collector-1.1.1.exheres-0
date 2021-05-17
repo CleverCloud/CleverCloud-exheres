@@ -1,0 +1,30 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require pypi setup-py [ import=setuptools multibuild=false ] systemd-service [ systemd_files=[ ${FILES}/systemd/powa-collector.service ] ]
+
+SUMMARY="A simple multi-threaded python program that performs the snapshots for all the remote servers configured in a powa repository database"
+HOMEPAGE="https://powa.readthedocs.io/en/latest/components/powa-collector/index.html"
+LICENCES="PostgreSQL"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+DEPENDENCIES="
+    build+run:
+        dev-python/psycopg2[python_abis:*(-)?]
+"
+
+setup-py_src_install() {
+    setup-py_run_phase
+
+    insinto /etc
+    doins powa-collector.conf-dist
+
+    install_systemd_files
+}
+
+pkg_postinst() {
+    f="/etc/powa-collector.conf"
+    [[ ! -f ${f} ]] && edo cp ${f}{-dist,}
+}
+
