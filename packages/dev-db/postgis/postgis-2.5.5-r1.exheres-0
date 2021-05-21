@@ -1,0 +1,11 @@
+# Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require postgis
+
+PLATFORMS="~amd64"
+
+DEFAULT_SRC_COMPILE_PARAMS=( -j1 )
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/0001-Fix-arg-with-protobuf.patch" )
+
