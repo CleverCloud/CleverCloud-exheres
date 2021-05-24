@@ -26,6 +26,8 @@ DEPENDENCIES="
             providers:libressl? ( dev-libs/libressl:= )
             providers:openssl? ( dev-libs/openssl )
         )
+        group/postgres
+        user/postgres
 "
 
 prepare_one_multibuild() {
@@ -48,5 +50,12 @@ install_one_multibuild() {
     default
 
     install_systemd_files
+}
+
+pkg_postinst() {
+    if [[ ! -d /var/log/pgpool/oiddir ]]; then
+        edo mkdir -p /var/log/pgpool/oiddir
+        edo chown -R postgres:postgres /var/log/pgpool
+    fi
 }
 
