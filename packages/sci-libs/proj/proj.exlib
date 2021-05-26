@@ -11,9 +11,13 @@ SUMMARY="PROJ.4 - Cartographic Projections Library"
 HOMEPAGE="https://trac.osgeo.org/${PN}/"
 DOWNLOADS="http://download.osgeo.org/${PN}/${PNV}.tar.gz"
 
+MYOPTIONS="tiff"
+
 DEPENDENCIES="
     build+run:
-        dev-db/sqlite:3
+        dev-db/sqlite:3[>=3.11]
+        net-misc/curl
+        tiff? ( media-libs/tiff )
     test:
         dev-cpp/gtest[>=1.8.1]
 "
@@ -22,11 +26,22 @@ LICENCES="MIT"
 SLOT="0"
 
 DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/0001-CmakeLists-Fix-hardcoded-datarootdir.patch )
-CMAKE_SRC_CONFIGURE_PARAMS=("-DUSE_EXTERNAL_GTEST=ON")
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    -DENABLE_CURL=ON
+    -DUSE_EXTERNAL_GTEST=ON
+)
+CMAKE_SRC_CONFIGURE_OPTION_ENABLES=( TIFF )
 
 proj_src_test(){
     # PROJ_LIB is used as searchpath for proj.db
     export PROJ_LIB="${CMAKE_BUILDDIR}/data"
-    default
+
+    local tests_to_skip=""
+    if ! option tiff ; then
+        # 6 tests out of 55 fail without tiff
+        tests_to_skip="(Deformation|geotiff_grids|defmodel|proj_test_cpp_api|gie_self_tests|test_network)"
+    fi
+
+    emake ARGS+="-E '${tests_to_skip}'" test
 }
 
