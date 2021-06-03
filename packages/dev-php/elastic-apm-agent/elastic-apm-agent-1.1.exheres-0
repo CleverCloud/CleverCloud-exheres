@@ -1,0 +1,50 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+MY_PN="apm-agent-php"
+require github [ user="elastic" tag="v${PV}" ] 
+require php-pecl [ module=module soname=elastic_apm work="${MY_PN}-${PV}/src/ext" php_abis=[ 7.2 7.3 7.4 8.0 ] ]
+
+SUMMARY="This is the official PHP agent for Elastic APM"
+HOMEPAGE="https://www.elastic.co/apm"
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS=""
+DEPENDENCIES="
+    build+run:
+        dev-libs/libunistring
+        net-dns/libidn2:=
+        net-libs/libssh
+        net-misc/curl
+        sys-libs/zlib
+"
+
+pkg_setup() {
+    exdirectory --allow /opt
+}
+
+php-pecl_test_one_multibuild() {
+    esandbox allow_net --connect "unix:/dev/log"
+    esandbox allow_net --connect "inet:127.0.0.1@8200"
+
+    export NO_INTERACTION=Yes
+    edo make test
+
+    esandbox disallow_net --connect "unix:/dev/log"
+    esandbox disallow_net --connect "inet:127.0.0.1@8200"
+}
+
+install_one_multibuild() {
+    php-pecl_install_one_multibuild
+
+    local abi=$(php-pecl_get_abi)
+
+    edo echo "elastic_apm.bootstrap_php_part_file=/opt/${PN}/php-${abi}/src/bootstrap_php_part.php" >> "${IMAGE}"/etc/php-${abi}/${PN}.ini
+
+    insinto /opt/${PN}/php-${abi}/src
+    doins -r ../../src/ElasticApm
+    doins ../../src/bootstrap_php_part.php
+}
+
