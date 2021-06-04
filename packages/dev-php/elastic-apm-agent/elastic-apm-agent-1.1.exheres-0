@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 MY_PN="apm-agent-php"
-require github [ user="elastic" tag="v${PV}" ] 
+require github [ user="elastic" tag="v${PV}" ]
 require php-pecl [ module=module soname=elastic_apm work="${MY_PN}-${PV}/src/ext" php_abis=[ 7.2 7.3 7.4 8.0 ] ]
 
 SUMMARY="This is the official PHP agent for Elastic APM"
@@ -15,10 +15,7 @@ MYOPTIONS=""
 DEPENDENCIES="
     build+run:
         dev-libs/libunistring
-        net-dns/libidn2:=
-        net-libs/libssh
         net-misc/curl
-        sys-libs/zlib
 "
 
 pkg_setup() {
