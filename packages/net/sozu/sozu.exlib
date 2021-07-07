@@ -2,7 +2,11 @@
 # Copyright 2018 Arnaud Lefebvre <a.lefebvre@outlook.fr>
 # Distributed under the terms of the GNU General Public License v2
 
-[[ "${SLOT}" == "0" ]] || GITHUB_BRANCH="${SLOT}"
+if [[ "${SLOT}" == "0" ]]; then
+    GITHUB_BRANCH="main"
+else
+    GITHUB_BRANCH="${SLOT}"
+fi
 require github [ user=sozu-proxy force_git_clone=true ] cargo
 require systemd-service [ systemd_files=[ generated/${PN}.service ] systemd_tmpfiles=[ generated/${PN}.conf ] ]
 
