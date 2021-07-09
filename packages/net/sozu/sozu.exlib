@@ -8,7 +8,7 @@ else
     GITHUB_BRANCH="${SLOT}"
 fi
 require github [ user=sozu-proxy force_git_clone=true ] cargo
-require systemd-service [ systemd_files=[ generated/${PN}.service ] systemd_tmpfiles=[ generated/${PN}.conf ] ]
+require systemd-service [ systemd_files=[ generated/${PN}.service ] ]
 
 export_exlib_phases pkg_setup src_compile src_test src_install
 
