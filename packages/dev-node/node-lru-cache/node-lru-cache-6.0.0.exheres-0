@@ -1,0 +1,48 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="isaacs" tag="v${PV}" ]
+
+SUMMARY="A cache object that deletes the least-recently-used items"
+PLATFORMS="~amd64"
+SLOT="0"
+LICENCES="ISC"
+DEPENDENCIES="
+    run:
+	dev-node/yallist
+        dev-lang/node
+"
+
+src_unpack() {
+    default
+
+    esandbox disable_net
+
+    # Fix npm test with treport < 2.0.1 and node 16
+    # https://github.com/tapjs/node-tap/issues/746
+    edo cd "${WORK}"
+    edo sed -e /tap/s/14.10.7/15.0.4/ -i package.json
+    edo npm install
+
+    esandbox enable_net
+}
+
+src_test() {
+    edo npm test
+
+    # Clean up tests reports
+    edo rm -r .nyc_output
+}
+
+src_install() {
+    local node_modules=/usr/$(exhost --target)/lib/node_modules
+    local target=/usr/$(exhost --target)/bin
+
+    edo mkdir -p "${IMAGE}"/${node_modules}
+    edo mkdir -p "${IMAGE}"/${target}
+    edo rm "${WORKBASE}/${PNV}"/{node_modules,.gitignore,.travis.yml,test,package-lock.json} -r
+    edo mv "${WORKBASE}/${PNV}" "${IMAGE}"/${node_modules}/lru-cache
+
+    dosym ${node_modules}/lru-cache/bin/lru-cache.js ${target}/lru-cache
+}
+
