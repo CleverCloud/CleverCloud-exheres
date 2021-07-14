@@ -1,0 +1,44 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="isaacs" tag="v${PV}" ]
+
+SUMMARY="Yet Another Linked List"
+PLATFORMS="~amd64"
+SLOT="0"
+LICENCES="ISC"
+DEPENDENCIES="
+    run:
+        dev-lang/node
+"
+
+src_unpack() {
+    default
+
+    esandbox disable_net
+
+    edo cd "${WORK}"
+    edo npm install
+
+    esandbox enable_net
+}
+
+src_test() {
+    edo npm test
+
+    # Clean up tests reports
+    edo rm -r .nyc_output
+}
+
+src_install() {
+    local node_modules=/usr/$(exhost --target)/lib/node_modules
+    local target=/usr/$(exhost --target)/bin
+
+    edo mkdir -p "${IMAGE}"/${node_modules}
+    edo mkdir -p "${IMAGE}"/${target}
+    edo rm "${WORKBASE}/${PNV}"/{node_modules,.gitignore,.travis.yml,test,package-lock.json} -r
+    edo mv "${WORKBASE}/${PNV}" "${IMAGE}"/${node_modules}/yallist
+
+    dosym ${node_modules}/yallist/bin/yallist.js ${target}/yallist
+}
+
