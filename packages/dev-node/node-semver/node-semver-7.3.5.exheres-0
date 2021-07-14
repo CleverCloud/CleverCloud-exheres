@@ -1,31 +1,33 @@
 # Copyright 2018 Arnaud Lefebvre <a.lefebvre@outlook.fr>
 # Distributed under the terms of the GNU General Public License v2
 
+require github [ user="npm" tag="v${PV}" ]
+
 SUMMARY="The semver parser for node (the one npm uses)"
-
-require github [ user="npm" project="node-semver" tag="v${PV}" ]
-
 PLATFORMS="~amd64 ~x86"
 SLOT="0"
 LICENCES="ISC"
-
 DEPENDENCIES="
     run:
+	dev-node/node-lru-cache
         dev-lang/node
 "
 
 src_unpack() {
     default
 
-    # We need dependencies for tests to run
     esandbox disable_net
+
+    # We need dependencies for tests to run
     edo cd "${WORK}"
     edo npm install
+
     esandbox enable_net
 }
 
 src_test() {
     edo npm test
+
     # Clean up tests reports
     edo rm -r .nyc_output
 }
@@ -41,3 +43,4 @@ src_install() {
 
     dosym ${node_modules}/semver/bin/semver.js ${target}/semver
 }
+
