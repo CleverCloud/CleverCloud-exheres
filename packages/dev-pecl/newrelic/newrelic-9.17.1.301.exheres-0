@@ -1,24 +1,26 @@
 # Copyright 2015 Julien Durillon <julien.durillon@gmail.com>
 # Distributed under the terms of the GNU General Public License v2
 
+BASE_FILENAME="${PN}-php5-${PV}-linux"
+require php-pecl [ module=module work=${BASE_FILENAME} php_abis=[ 5.6 7.0 7.1 7.2 7.3 7.4 8.0 ] ]
+
 SUMMARY="Newrelic Agent for PHP"
 HOMEPAGE="http://www.newrelic.com/"
-
-BASE_FILENAME="${PN}-php5-${PV}-linux"
 DOWNLOADS="https://download.newrelic.com/php_agent/release/${BASE_FILENAME}.tar.gz"
-
 LICENCES="Apache-2.0 BSD-2 BSD-3 BSD-4 MIT PHP-3 newrelic"
 SLOT="0"
 PLATFORMS="~amd64"
+
 MYOPTIONS=""
-
-require php-pecl [ module=module work=${BASE_FILENAME} php_abis=[ 5.6 7.0 7.1 7.2 7.3 7.4 ] ]
-
 DEPENDENCIES=""
 
 BUGS_TO="julien.durillon@gmail.com"
 
 php-pecl_prepare_one_multibuild() {
+    :
+}
+
+php-pecl_configure_one_multibuild() {
     :
 }
 
