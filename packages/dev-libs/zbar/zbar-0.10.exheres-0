@@ -5,7 +5,7 @@ require autotools [ supported_autoconf=[ 2.5 ]  supported_automake=[ 1.10 ] ]
 
 SUMMARY="ZBar is an open source software suite for reading bar codes from various sources, such as video streams, image files and raw intensity sensors."
 
-DOWNLOADS="https://vorboss.dl.sourceforge.net/project/${PN}/${PN}/${PV}/${PNV}.tar.bz2"
+DOWNLOADS="mirror://sourceforge/project/${PN}/${PN}/${PV}/${PNV}.tar.bz2"
 
 LICENCES="LGPL-2.1"
 SLOT="0"
