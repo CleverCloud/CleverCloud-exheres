@@ -1,0 +1,12 @@
+[Unit]
+Description=pganalyze-collector
+StartLimitIntervalSec=30
+StartLimitBurst=3
+
+[Service]
+Type=simple
+ExecStart="/usr/bin/pganalyze-collector"
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

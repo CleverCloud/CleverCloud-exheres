@@ -1,0 +1,39 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user='pganalyze' project='collector' tag=v${PV} ] 
+require go
+require systemd-service [ systemd_files=[ ${FILES}/systemd/pganalyze-collector.service ] ]
+
+SUMMARY="This is a Go-based daemon which collects various information about Postgres databases as well as queries run on it"
+HOMEPAGE="https://pganalyze.com/"
+LICENCES="|| ( PostgreSQL BSD-3 )"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+DEPENDENCIES=""
+
+# Tests need Docker
+RESTRICT=test
+
+# TODO: Support go.mod in the Go exlib
+unset GOPATH
+
+src_unpack() {
+    default
+
+    esandbox disable_net
+    pushd ${WORK}
+    edo go mod download
+    esandbox enable_net
+}
+
+src_install() {
+    go_src_install
+
+    insinto /etc
+    doins contrib/pganalyze-collector.conf
+
+    install_systemd_files
+}
+
