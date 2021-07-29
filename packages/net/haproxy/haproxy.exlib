@@ -1,19 +1,31 @@
 # Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require systemd-service [ systemd_files=[ contrib/systemd/${PN}.service ] ]
+if ever at_least 2.4; then
+    SYSTEMD_FILES_DIRECTORY="admin"
+else
+    SYSTEMD_FILES_DIRECTORY="contrib"
+fi
+
+require systemd-service [ systemd_files=[ ${SYSTEMD_FILES_DIRECTORY}/systemd/${PN}.service ] ]
 require lua [ multibuild=false with_opt=true whitelist="5.3" ]
 
 export_exlib_phases src_compile src_install
 
 SUMMARY="The Reliable, High Performance TCP/HTTP Load Balancer"
-HOMEPAGE="http://www.haproxy.org"
-DOWNLOADS="http://www.haproxy.org/download/$(ever range 1-2)/src/${PNV}.tar.gz"
+HOMEPAGE="https://www.haproxy.org"
+DOWNLOADS="https://www.haproxy.org/download/$(ever range 1-2)/src/${PNV}.tar.gz"
 
 LICENCES="GPL-2"
 SLOT="0"
 MYOPTIONS="
 "
+
+if ever at_least 2.4; then
+    MYOPTIONS+="
+        promex [[ description = [ Build the Prometheus exporter ] ]]
+    "
+fi
 
 DEPENDENCIES="
     build+run:
@@ -58,9 +70,10 @@ DEFAULT_SRC_INSTALL_PARAMS=( "${DEFAULT_SRC_COMPILE_PARAMS[@]}" DOCDIR=/usr/shar
 
 haproxy_src_compile() {
     emake "${DEFAULT_SRC_COMPILE_PARAMS[@]}" \
-        $(option lua "USE_LUA=1 LUA_INC=/usr/$(exhost --target)/include/lua$(lua_get_abi)")
+        $(option lua "USE_LUA=1 LUA_INC=/usr/$(exhost --target)/include/lua$(lua_get_abi)") \
+        $(ever at_least 2.4 && option promex "USE_PROMEX=1")
 
-    emake -C contrib/systemd "${DEFAULT_SRC_COMPILE_PARAMS[@]}"
+    emake -C ${SYSTEMD_FILES_DIRECTORY}/systemd "${DEFAULT_SRC_COMPILE_PARAMS[@]}"
 }
 
 haproxy_src_install() {
