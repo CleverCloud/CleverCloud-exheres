@@ -1,0 +1,12 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="theory" tag="v${PV}" ] postgresql
+
+SUMMARY="pgTAP is a unit testing framework for PostgreSQL written in PL/pgSQL and PL/SQL"
+LICENCES="PostgreSQL"
+PLATFORMS="~amd64"
+SLOT="0"
+OPTIONS=""
+DEPENDENCIES=""
+
