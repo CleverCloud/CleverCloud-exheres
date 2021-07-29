@@ -83,7 +83,6 @@ DEPENDENCIES="
         memcached? ( net/memcached [[ description = [ The option provides the bundled memcached but you might want to use a stand-alone memcached as well ] ]] )
 "
 
-#app-crypt/krb5[ldap]
 if ever at_least 8; then
     DEPENDENCIES+="
         build+run:
@@ -102,9 +101,15 @@ else
     "
 fi
 
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}/0001-include-rocksdb-make-file-relative-to-the-path.patch"
-)
+if ever at_least 8; then
+    DEFAULT_SRC_PREPARE_PATCHES=(
+        "${FILES}/0001-ldap_r-no-longer-exists-since-openldap-2.5.patch"
+    )
+else
+    DEFAULT_SRC_PREPARE_PATCHES=(
+        "${FILES}/0001-include-rocksdb-make-file-relative-to-the-path.patch"
+    )
+fi
 
 CMAKE_SOURCE="${WORKBASE}/${PNV,,}-$(exparam release)"
 

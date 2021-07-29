@@ -1,0 +1,50 @@
+Upstream: no
+Reason: Since version 2.5 of openldap, libldap_r has been merged with libldap
+From 8e7673ae1fa2d5f93c3616097f4f2917c6997b8d Mon Sep 17 00:00:00 2001
+From: s0dyy <msorin@msorin.com>
+Date: Mon, 16 Aug 2021 17:53:34 +0200
+Subject: [PATCH] ldap_r no longer exists since openldap 2.5
+
+---
+ cmake/ldap.cmake                | 4 ++--
+ plugin/auth_ldap/CMakeLists.txt | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/cmake/ldap.cmake b/cmake/ldap.cmake
+index 043126a203c..9ecd0dfe0ec 100644
+--- a/cmake/ldap.cmake
++++ b/cmake/ldap.cmake
+@@ -51,7 +51,7 @@ MACRO(FIND_SYSTEM_LDAP)
+       )
+   ELSE()
+     FIND_LIBRARY(LDAP_SYSTEM_LIBRARY
+-      NAMES ldap_r ldap
++      NAMES ldap
+       )
+     FIND_LIBRARY(LBER_SYSTEM_LIBRARY
+       NAMES lber
+@@ -92,7 +92,7 @@ MACRO(FIND_CUSTOM_LDAP)
+     )
+ 
+   FIND_LIBRARY(LDAP_CUSTOM_LIBRARY
+-    NAMES ldap_r ldap
++    NAMES ldap
+     PATHS ${WITH_LDAP_PATH}/lib
+     NO_DEFAULT_PATH
+     NO_CMAKE_ENVIRONMENT_PATH
+diff --git a/plugin/auth_ldap/CMakeLists.txt b/plugin/auth_ldap/CMakeLists.txt
+index d9649b30f3f..111251fe99c 100644
+--- a/plugin/auth_ldap/CMakeLists.txt
++++ b/plugin/auth_ldap/CMakeLists.txt
+@@ -36,7 +36,7 @@ IF(WITH_LDAP)
+ 
+   # libler?
+   MYSQL_ADD_PLUGIN(authentication_ldap_simple ${ALP_SOURCES_SIMPLE}
+-    LINK_LIBRARIES ldap_r MODULE_ONLY MODULE_OUTPUT_NAME "authentication_ldap_simple")
++    LINK_LIBRARIES ldap MODULE_ONLY MODULE_OUTPUT_NAME "authentication_ldap_simple")
+ 
+   IF(UNIX)
+     IF(INSTALL_MYSQLTESTDIR)
+-- 
+2.32.0
+
