@@ -13,6 +13,10 @@ PLATFORMS="~amd64"
 MYOPTIONS="doc"
 DEPENDENCIES=""
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/8aac320ae8445c5434ab3be1761414a5247e5d42.patch
+)
+
 src_configure() {
     edo ./configure \
     --prefix=/usr/$(exhost --target) \
