@@ -7,6 +7,6 @@ SUMMARY="pgTAP is a unit testing framework for PostgreSQL written in PL/pgSQL an
 LICENCES="PostgreSQL"
 PLATFORMS="~amd64"
 SLOT="0"
-OPTIONS=""
+MYOPTIONS=""
 DEPENDENCIES=""
 
