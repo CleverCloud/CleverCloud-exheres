@@ -14,9 +14,13 @@ DEPENDENCIES="
     build: 
         virtual/pkg-config
     build+run:
+        app-text/poppler
+        dev-libs/expat
         dev-libs/glib:2
         dev-libs/libxml2:2.0
+        media-libs/fontconfig
         sys-libs/zlib
+        x11-libs/cairo
         x11-libs/pango
         exif? ( media-libs/libexif )
         fftw? ( sci-libs/fftw )
@@ -24,7 +28,10 @@ DEPENDENCIES="
         gsf? ( office-libs/libgsf )
         heif? ( media-libs/libheif )
         imagemagick? ( media-gfx/ImageMagick[fftw?][heif?][lcms?][openexr?][pango][svg?][tiff?] )
-        jpeg? ( media-libs/libjpeg-turbo )
+        jpeg? ( 
+            media-libs/libjpeg-turbo 
+            media-libs/OpenJPEG
+        )
         lcms? ( media-libs/lcms2[tiff?] )
         openexr? ( media-libs/openexr )
         orc? ( dev-libs/orc:0.4 )
