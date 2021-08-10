@@ -1,0 +1,15 @@
+# Copyright 2021 Maxime Sorin <msorin@msorin.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="ToruNiina" tag="v${PV}" ] cmake
+
+SUMMARY="toml11 is a C++11 (or later) header-only toml parser/encoder depending only on C++ standard library"
+HOMEPAGE="https://github.com/ToruNiina/toml11"
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+DEPENDENCIES=""
+
+CMAKE_SRC_CONFIGURE_PARAMS=( -Dtoml11_BUILD_TEST:BOOL=FALSE )
+
