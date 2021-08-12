@@ -1,0 +1,14 @@
+# Copyright 2021 Quentin ADAM <quentin.adam@waxzce.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require cargo github [ tag=v${PV} user=volta-cli ]
+
+SUMMARY=" Volta: JS Toolchains as Code. "
+
+LICENCES="|| ( BSD-2.0 )"
+SLOT="0"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+"
+
