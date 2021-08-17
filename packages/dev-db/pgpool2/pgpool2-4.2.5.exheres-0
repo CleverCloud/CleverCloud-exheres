@@ -21,6 +21,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build+run:
+        dev-db/postgresql-client
         pam? ( sys-libs/pam )
         ssl? (
             providers:libressl? ( dev-libs/libressl:= )
