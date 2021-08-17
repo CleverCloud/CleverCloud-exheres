@@ -8,7 +8,7 @@ MY_PNV="${MY_PN}-${PV}"
 MY_PLATFORM="linux-x86_64"
 
 SUMMARY="Your window into the Elastic Stack"
-HOMEPAGE="https://www.elastic.co/products/${PN}"
+HOMEPAGE="https://www.elastic.co/${MY_PN}"
 DOWNLOADS="https://artifacts.elastic.co/downloads/${MY_PN}/${MY_PNV}-${MY_PLATFORM}.tar.gz"
 
 LICENCES="
