@@ -7,7 +7,7 @@ MY_PN=${PN/-bin}
 MY_PNV="${MY_PN}-${PV}"
 
 SUMMARY="Server-side data processing pipeline"
-HOMEPAGE="https://www.elastic.co/products/${PN}"
+HOMEPAGE="https://www.elastic.co/${MY_PN}"
 DOWNLOADS="https://artifacts.elastic.co/downloads/${MY_PN}/${MY_PNV}-linux-x86_64.tar.gz"
 
 LICENCES="
