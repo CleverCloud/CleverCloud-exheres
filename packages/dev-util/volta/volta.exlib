@@ -7,7 +7,6 @@ SUMMARY="JS Toolchains as Code."
 
 LICENCES="BSD-2"
 SLOT="0"
-PLATFORMS="~amd64"
 
 MYOPTIONS=""
 DEPENDENCIES=""
