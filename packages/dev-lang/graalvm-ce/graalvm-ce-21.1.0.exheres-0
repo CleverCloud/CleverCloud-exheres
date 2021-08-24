@@ -34,7 +34,7 @@ DEPENDENCIES="
         dev-java/mx[>=5.294.0]
         dev-lang/python:2.7
         sys-devel/binutils[>=2.33.1]
-        sys-devel/gcc[>=6.4.0]
+        sys-devel/gcc:*[>=6.4.0]
         sys-devel/make[>=4.2.1]
     build+run:
         app-misc/ca-certificates[>=20170717-r1][ca-trust]
