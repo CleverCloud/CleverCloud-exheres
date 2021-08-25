@@ -3,7 +3,7 @@
 # Based upon 'net-security/stunnel-4.53-r1:pipping' which is
 #   Copyright 2011 Elias Pipping <pipping@exherbo.org>
 
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.15 ] ] systemd-service
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 1.15 ] ] systemd-service
 
 export_exlib_phases src_prepare src_configure src_install
 
