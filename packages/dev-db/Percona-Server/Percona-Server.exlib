@@ -202,6 +202,9 @@ Percona-Server_src_configure() {
         -DWITH_UBSAN:BOOL=FALSE
         -DWITH_COREDUMPER:BOOL=FALSE
         -DUSE_CTAGS:BOOL=FALSE
+        -DUSE_ETAGS:BOOL=FALSE
+        -DUSE_GTAGS:BOOL=FALSE
+        -DUSE_CSCOPE:BOOL=FALSE
     )
 
     if option systemd ; then
