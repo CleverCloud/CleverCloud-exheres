@@ -13,7 +13,7 @@ SLOT="0"
 DEPENDENCIES="
     build+run:
         dev-libs/icu:*
-        dev-libs/v8[>=6.4.388.40]
+        dev-libs/v8[>=8.6.405]
 "
 
 prepare_one_multibuild() {
