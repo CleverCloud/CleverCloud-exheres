@@ -1,0 +1,13 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="omniti-labs" tag="v${PV}" ]
+require postgresql
+
+SUMMARY="pg_jobmon is a PostgreSQL extension designed to add autonomous logging capabilities to transactions and functions"
+LICENCES="PostgreSQL"
+PLATFORMS="~amd64"
+SLOT="0"
+
+DEPENDENCIES=""
+
