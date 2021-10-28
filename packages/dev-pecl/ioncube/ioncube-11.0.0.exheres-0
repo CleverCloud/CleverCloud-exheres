@@ -21,6 +21,10 @@ src_prepare() {
     :
 }
 
+src_configure() {
+    :
+}
+
 php-pecl_install_one_multibuild() {
     local abi=$(php-pecl_get_abi)
     local extensionDir extensionFilename
