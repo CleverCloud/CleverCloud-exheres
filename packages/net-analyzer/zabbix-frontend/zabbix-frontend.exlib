@@ -18,7 +18,8 @@ MYOPTIONS="
 
 DEPENDENCIES="
     run:
-        postgresql? ( dev-lang/php[php_extensions:pgsql] )
+        dev-lang/php:*[<8]
+        postgresql? ( dev-lang/php:*[<8][php_extensions:pgsql] )
 "
 
 zabbix-frontend_src_configure() {
