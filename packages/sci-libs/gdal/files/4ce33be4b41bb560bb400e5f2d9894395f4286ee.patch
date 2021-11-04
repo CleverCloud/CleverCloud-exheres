@@ -1,0 +1,77 @@
+Source/Upstream: Yes, fixed in git master and release >= 3.3.1
+Reason: Fix build with OpenEXR >= 3
+
+From 4ce33be4b41bb560bb400e5f2d9894395f4286ee Mon Sep 17 00:00:00 2001
+From: Even Rouault <even.rouault@spatialys.com>
+Date: Sat, 1 May 2021 22:47:53 +0200
+Subject: [PATCH] =?UTF-8?q?EXR:=20fix=20build=20against=20OpenEXR=203.0.1?=
+ =?UTF-8?q?=20(fixes=C2=A0#3770)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ frmts/exr/exrdataset.cpp    | 20 +++++++++++++-------
+ frmts/exr/openexr_headers.h |  1 +
+ 2 files changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/frmts/exr/exrdataset.cpp b/frmts/exr/exrdataset.cpp
+index 5063594f202..c394b685463 100644
+--- a/frmts/exr/exrdataset.cpp
++++ b/frmts/exr/exrdataset.cpp
+@@ -449,6 +449,12 @@ class GDALEXRIOStreamException final: public std::exception
+         const char* what() const noexcept override { return m_msg.c_str(); }
+ };
+ 
++#if OPENEXR_VERSION_MAJOR < 3
++typedef Int64 IoInt64Type;
++#else
++typedef uint64_t IoInt64Type;
++#endif
++
+ class GDALEXRIOStream final: public IStream, public OStream
+ {
+   public:
+@@ -459,10 +465,10 @@ class GDALEXRIOStream final: public IStream, public OStream
+ 
+     virtual bool        read (char c[/*n*/], int n) override;
+     virtual void        write (const char c[/*n*/], int n) override;
+-    virtual Int64       tellg () override;
+-    virtual Int64       tellp () override { return tellg(); }
+-    virtual void        seekg (Int64 pos) override;
+-    virtual void        seekp (Int64 pos) override { return seekg(pos); }
++    virtual IoInt64Type tellg () override;
++    virtual IoInt64Type tellp () override { return tellg(); }
++    virtual void        seekg (IoInt64Type pos) override;
++    virtual void        seekp (IoInt64Type pos) override { return seekg(pos); }
+ 
+   private:
+     VSILFILE* m_fp;
+@@ -492,12 +498,12 @@ void GDALEXRIOStream::write (const char c[/*n*/], int n)
+     }
+ }
+ 
+-Int64 GDALEXRIOStream::tellg ()
++IoInt64Type GDALEXRIOStream::tellg ()
+ {
+-    return static_cast<Int64>(VSIFTellL(m_fp));
++    return static_cast<IoInt64Type>(VSIFTellL(m_fp));
+ }
+ 
+-void GDALEXRIOStream::seekg (Int64 pos)
++void GDALEXRIOStream::seekg (IoInt64Type pos)
+ {
+     VSIFSeekL(m_fp, static_cast<vsi_l_offset>(pos), SEEK_SET);
+ }
+diff --git a/frmts/exr/openexr_headers.h b/frmts/exr/openexr_headers.h
+index d1e4ef061fc..ca646d4a909 100644
+--- a/frmts/exr/openexr_headers.h
++++ b/frmts/exr/openexr_headers.h
+@@ -39,6 +39,7 @@
+ #include "ImfChannelList.h"
+ #include "ImfFloatAttribute.h"
+ #include "ImfInputPart.h"
++#include "ImfOutputPart.h"
+ #include "ImfMatrixAttribute.h"
+ #include "ImfMultiPartInputFile.h"
+ #include "ImfMultiPartOutputFile.h"

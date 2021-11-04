@@ -3,6 +3,8 @@
 # Based in part upon 'gdal-1.10.1.ebuild' from Gentoo, which is:
 #     Copyright 1999-2014 Gentoo Foundation
 
+require autotools [ supported_autoconf=[ 2.7 ] supported_automake=[ 1.16 ] ]
+
 export_exlib_phases src_prepare src_install
 
 SUMMARY="Geospatial Data Abstraction Library"
@@ -24,6 +26,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build:
+        sys-devel/gettext
         virtual/pkg-config
     build+run:
         app-arch/xz
@@ -42,8 +45,8 @@ DEPENDENCIES="
         geos? ( sci-libs/geos )
         heif? ( media-libs/libheif[>=1.1] )
         openexr? (
-            media-libs/ilmbase
-            media-libs/openexr[>=2.2]
+            media-libs/imath
+            media-libs/openexr[>=3]
         )
         postgresql? ( dev-db/postgresql-client )
         providers:ijg-jpeg? ( media-libs/jpeg:= )
@@ -80,9 +83,19 @@ DEFAULT_SRC_CONFIGURE_PARAMS=(
     --without-zstd
 )
 
-gdal_src_prepare(){
+gdal_src_prepare() {
     edo sed -i "s/pkg-config/$(exhost --target)-pkg-config/g" scripts/GNUmakefile
-    default
+
+    # search for the correct library
+    # https://github.com/OSGeo/gdal/issues/4766
+    edo sed \
+        -e 's:IlmImf:OpenEXR:g' \
+        -i configure.ac
+
+    # workaround autoconf 2.7 failure
+    edo cp /usr/share/gettext/config.rpath .
+
+    autotools_src_prepare
 }
 
 gdal_src_install() {
