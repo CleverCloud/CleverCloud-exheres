@@ -13,21 +13,18 @@ SLOT="0"
 DEPENDENCIES="
     build+run:
         dev-libs/icu:*
-        dev-libs/v8[>=8.6.405]
+        dev-libs/v8[>=8.6.405-r1]
 "
 
 prepare_one_multibuild() {
-    sed -i 's/^PG_CONFIG\s*=.*/PG_CONFIG ?= pg_config/g' Makefile.shared
-    cat >> Makefile.shared << EOF
-
-%.bc: %.cc
-	\$(COMPILE.cxx.bc) \$(CCFLAGS) \$(CPPFLAGS) -fPIC -c -o \$@ \$<
-
-EOF
+    default
+    sed -e 's/^PG_CONFIG\s*=.*/PG_CONFIG ?= pg_config/g' \
+        -e 's/-lv8/-lv8_monolith/' \
+        -i Makefile.shared
 }
 
 compile_one_multibuild() {
-    emake -f ./Makefile.shared CUSTOM_CC=$(exhost --tool-prefix)g++ all
+    emake -f ./Makefile.shared CUSTOM_CC=$(exhost --tool-prefix)g++ V8_OUTDIR=/usr/host/lib all
 }
 
 install_one_multibuild() {
