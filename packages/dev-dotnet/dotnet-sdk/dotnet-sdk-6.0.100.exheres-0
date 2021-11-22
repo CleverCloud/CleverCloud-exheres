@@ -1,0 +1,13 @@
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SLOT="$(ever range 1-2)"
+PLATFORMS="~amd64"
+
+require dotnet-sdk [ dotnet_project="installer" \
+    dotnet_tag="v${PV}" \
+    dotnet_patches="${WORK}/src/SourceBuild/tarball/patches/" \
+    dotnet_tarball="${WORKBASE}/dotnet-sources/artifacts/x64/Release/${PNV}-exherbo-x64.tar.gz" \
+    runtime="${SLOT}.0" \
+    llvm_slot=12 ]
+

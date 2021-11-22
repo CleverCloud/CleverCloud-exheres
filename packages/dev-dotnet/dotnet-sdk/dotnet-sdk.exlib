@@ -1,27 +1,31 @@
 # Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-myexparam bootstrap
+myexparam dotnet_project
+myexparam dotnet_tag
+myexparam dotnet_patches
+myexparam dotnet_tarball
 myexparam runtime
 myexparam llvm_slot
 
-exparam -v BOOTSTRAP bootstrap
+exparam -v DOTNET_PROJECT dotnet_project
+exparam -v DOTNET_TAG dotnet_tag
+exparam -v DOTNET_PATCHES dotnet_patches
+exparam -v DOTNET_TARBALL dotnet_tarball
 exparam -v RUNTIME runtime
 exparam -v LLVM_SLOT llvm_slot
 
-SUMMARY=".NET Core is a cross-platform version of .NET for building websites, services, and console apps."
-HOMEPAGE="https://dotnet.microsoft.com/"
-
-LICENCES="MIT"
-
-# This repository contains a set of scripts for building the .NET Core Runtime and SDK from source.
-require github [ user="dotnet" project="source-build" tag="v${PV}-SDK" force_git_clone=true ]
-require alternatives providers flag-o-matic
+require github [ user="dotnet" project="${DOTNET_PROJECT}" tag="${DOTNET_TAG}" force_git_clone=true ] alternatives providers flag-o-matic
 
 export_exlib_phases pkg_setup src_unpack src_prepare src_configure src_compile src_install
 
-# Dotnet SDK binaries, necessary to bootstrap source-build.
-DOWNLOADS="https://dotnetcli.azureedge.net/dotnet/Sdk/${BOOTSTRAP}/${PN}-${BOOTSTRAP}-linux-x64.tar.gz -> ${PNV}-bootstrap.tar.gz"
+SUMMARY=".NET Core is a cross-platform version of .NET for building websites, services, and console apps."
+HOMEPAGE="https://dotnet.microsoft.com/"
+LICENCES="MIT"
+
+if ! ever at_least 6; then
+    DOWNLOADS="https://dotnetcli.azureedge.net/dotnet/Sdk/${SLOT}.208/${PN}-${SLOT}.208-linux-x64.tar.gz -> ${PNV}-bootstrap.tar.gz"
+fi
 
 MYOPTIONS=""
 DEPENDENCIES="
@@ -34,7 +38,7 @@ DEPENDENCIES="
         dev-lang/clang:${LLVM_SLOT}
         dev-lang/llvm:${LLVM_SLOT}
         dev-libs/icu:=
-        dev-util/lttng-ust
+        dev-util/lttng-ust[<2.13]
         net-misc/curl
         sys-apps/numactl
         sys-devel/gettext
@@ -48,6 +52,13 @@ DEPENDENCIES="
         ]]
 "
 
+if ! ever at_least 6; then
+    DEFAULT_SRC_PREPARE_PATCHES=(
+        "${FILES}/${SLOT}/0001-BOOTSTRAP-add-exherbo-rid.patch"
+        "${FILES}/${SLOT}/0002-BOOTSTRAP-add-exherbo-rid.patch"
+    )
+fi
+
 dotnet-sdk_pkg_setup() {
     exdirectory --allow /opt
     export CC="$(exhost --tool-prefix)clang"
@@ -57,22 +68,18 @@ dotnet-sdk_pkg_setup() {
 dotnet-sdk_src_unpack() {
     scm_src_unpack
 
-    # The sdk binaries must be placed in a ".dotnet" folder at the root of the project
-    local dotnet="${WORK}/.dotnet"
-    edo mkdir ${dotnet}
-    edo tar xf ${FETCHEDDIR}/${PNV}-bootstrap.tar.gz -C ${dotnet}
-    export PATH="${WORK}/.dotnet:${PATH}"
+    if ! ever at_least 6; then
+        local dotnet="${WORK}/.dotnet"
+        edo mkdir ${dotnet}
+        edo tar xf ${FETCHEDDIR}/${PNV}-bootstrap.tar.gz -C ${dotnet}
+        export PATH="${WORK}/.dotnet:${PATH}"
+    fi
 }
-
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}/${SLOT}/0001-BOOTSTRAP-add-exherbo-rid.patch"
-    "${FILES}/${SLOT}/0002-BOOTSTRAP-add-exherbo-rid.patch"
-)
 
 dotnet-sdk_src_prepare() {
     default
 
-    edo cp -r "${FILES}"/${SLOT}/*/ "${WORK}"/patches/
+    edo cp -r "${FILES}"/${SLOT}/*/ "${DOTNET_PATCHES}"
 }
 
 dotnet-sdk_src_configure() {
@@ -89,8 +96,32 @@ dotnet-sdk_src_compile() {
     export SkipDownloadingPreviouslySourceBuiltPackages=true
     export UseRazorBuildServer=false
 
-    edo bash build.sh
+    if ever at_least 6; then
+        # error : Unable to locate repository with working directory that contains directory '/var/cache/paludis/distfiles/scm/dotnet-sdk'
+        edo git remote set-url origin https://github.com/dotnet/installer.git
 
+        # Create a .NET source tarball
+        edo bash build.sh /p:ArcadeBuildTarball=true /p:TarballDir=${WORKBASE}/dotnet-sources
+
+        # Prep the source to build on your distro
+        pushd ${WORKBASE}/dotnet-sources
+        edo bash prep.sh
+
+        # Additional bootstrapping, https://github.com/dotnet/source-build/issues/2599
+        edo mkdir privateSourceBuiltArtifacts
+        edo pushd privateSourceBuiltArtifacts
+        edo tar xf ../packages/archive/Private.SourceBuilt.Artifacts.*.tar.gz
+        edo sed -i -E 's|<MicrosoftNETHostModelPackageVersion>6.0.0-rtm.21521.1</|<MicrosoftNETHostModelPackageVersion>6.0.0-rtm.21521.4</|' PackageVersions.props
+        edo sed -i -E 's|<MicrosoftNETHostModelVersion>6.0.0-rtm.21521.1</|<MicrosoftNETHostModelVersion>6.0.0-rtm.21521.4</|' PackageVersions.props
+        edo tar czf ../packages/archive/Private.SourceBuilt.Artifacts.*.tar.gz *
+        edo popd
+        edo rm -rf privateSourceBuiltArtifacts
+        edo bash prep.sh --bootstrap
+    fi
+
+    # Build the .NET SDK
+    edo bash build.sh
+    
     esandbox enable_net
 }
 
@@ -98,7 +129,7 @@ dotnet-sdk_src_install() {
     local rid="exherbo-x64"
 
     dodir /opt/${PN}-${SLOT}
-    edo tar xf ${WORK}/artifacts/x64/Release/${PNV}-${rid}.tar.gz -C "${IMAGE}"/opt/${PN}-${SLOT}
+    edo tar xf ${DOTNET_TARBALL} -C "${IMAGE}"/opt/${PN}-${SLOT}
 
     local alternatives=(
         "/usr/$(exhost --target)/bin/dotnet" "/opt/${PN}-${SLOT}/dotnet"

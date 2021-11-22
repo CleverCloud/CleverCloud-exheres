@@ -1,0 +1,25 @@
+From f795028cc8814179d18a5c086dc4bb900c55389d Mon Sep 17 00:00:00 2001
+From: s0dyy <msorin@msorin.com>
+Date: Wed, 24 Nov 2021 15:15:26 +0100
+Subject: [PATCH] RUNTIME-readelf-banned-by-distribution
+
+---
+ eng/native/genmoduleindex.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/eng/native/genmoduleindex.sh b/eng/native/genmoduleindex.sh
+index 399a972d71d..15ff7d7454d 100755
+--- a/eng/native/genmoduleindex.sh
++++ b/eng/native/genmoduleindex.sh
+@@ -28,7 +28,7 @@ Darwin)
+   cmd="dwarfdump -u $1"
+   pattern='^UUID: ([0-9A-Fa-f\-]+)';;
+ *)
+-  cmd="readelf -n $1"
++  cmd="${READELF:-readelf} -n $1"
+   pattern='^[[:space:]]*Build ID: ([0-9A-Fa-f\-]+)';;
+ esac
+ 
+-- 
+2.33.1
+
