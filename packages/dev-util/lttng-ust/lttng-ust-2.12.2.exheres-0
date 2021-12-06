@@ -1,0 +1,7 @@
+# Copyright 2019 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require lttng-ust
+
+PLATFORMS="~amd64"
+
