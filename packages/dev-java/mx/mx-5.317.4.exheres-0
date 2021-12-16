@@ -9,16 +9,18 @@ SUMMARY="Command line based tool for managing the development of (primarily) Jav
 
 require github [ user=graalvm project=mx tag=${PV} ]
 
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/190.patch
-)
-
 DEPENDENCIES="
     run:
         dev-lang/python:*
 "
 
-src_install(){
+src_prepare() {
+    edo sed -e /CC/s/gcc/${CC}/ -i ninja-toolchains/gcc.ninja
+    edo sed -e /CXX/s/g++/${CXX}/ -i ninja-toolchains/gcc.ninja
+    edo sed -e /AR/s/ar/${AR}/ -i ninja-toolchains/gcc.ninja
+}
+
+src_install() {
     insinto /usr/share/${PNV}
     doins -r */
     exeinto /usr/share/${PNV}
@@ -26,3 +28,8 @@ src_install(){
     dodir /usr/$(exhost --target)/bin
     dosym /usr/share/${PNV}/mx /usr/$(exhost --target)/bin/mx
 }
+
+pkg_postinst() {
+    edo mkdir -p /usr/share/${PNV}/java/com.oracle.jvmtiasmagent/include
+}
+
