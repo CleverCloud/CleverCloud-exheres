@@ -18,6 +18,7 @@ src_prepare() {
     edo sed -e /CC/s/gcc/${CC}/ -i ninja-toolchains/gcc.ninja
     edo sed -e /CXX/s/g++/${CXX}/ -i ninja-toolchains/gcc.ninja
     edo sed -e /AR/s/ar/${AR}/ -i ninja-toolchains/gcc.ninja
+    edo sed -e '/add_debug_prefix(self.suite.vc_dir)/d' -i mx_native.py
 }
 
 src_install() {
