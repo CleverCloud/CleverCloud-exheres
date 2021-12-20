@@ -1,0 +1,66 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_REPOSITORY="https://github.com/${PN}/${PN}.git"
+SCM_TAG="oss-v${PV}"
+SCM_SECONDARY_REPOSITORIES="EventStoreUI"
+SCM_EventStoreUI_REPOSITORY="https://github.com/${PN}/${PN}.UI"
+SCM_EXTERNAL_REFS="src/${PN}.UI:EventStoreUI"
+
+require scm-git systemd-service [ systemd_files=[ ${FILES}/systemd/${PN,,}.service ] ]
+
+SUMMARY="The open-source, functional database with Complex Event Processing in JavaScript"
+PLATFORMS="~amd64"
+LICENCES="BSD-3"
+SLOT="0"
+
+MYOPTIONS=""
+DEPENDENCIES="
+    build+run:
+        dev-dotnet/dotnet-sdk:=
+    run:
+        group/${PN,,}
+        user/${PN,,}
+"
+
+RESTRICT=strip
+
+pkg_setup() {
+    exdirectory --allow /opt
+}
+
+src_unpack() {
+    scm_src_unpack
+
+    edo dotnet restore /nodeReuse:false ${WORK}/src
+}
+
+src_compile() {
+    esandbox allow_net --connect "unix:"
+    esandbox allow_net --bind "unix:"
+
+    edo dotnet build --no-restore -c Release src
+    edo dotnet build-server shutdown
+
+    esandbox disallow_net --connect "unix:"
+    esandbox disallow_net --bind "unix:"
+}
+
+src_install() {
+    insinto /etc/${PN,,}
+    doins ${FILES}/${PN,,}.conf
+
+    dodir /opt/${PN}
+    edo mv ${WORK}/src/${PN}.ClusterNode/bin/x64/Release/net5.0/* ${IMAGE}/opt/${PN}
+
+    keepdir /var/{lib,log}/${PN,,}
+    edo chown ${PN,,}: ${IMAGE}/var/{lib,log}/${PN,,}
+
+    install_systemd_files
+}
+
+pkg_postinst(){
+    elog "EventStore starts by default in unsecured mode, you can find the security options here:"
+    elog "https://developers.eventstore.com/server/v20.10/security/configuration.html"
+}
+
