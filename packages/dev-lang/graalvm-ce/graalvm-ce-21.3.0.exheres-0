@@ -128,6 +128,7 @@ src_install(){
 
     # Fix the executables' permissions.
     edo chmod 755 "${IMAGE}/${java_home}"/bin/*
+    edo chmod 755 "${IMAGE}/${java_home}"/lib/{jexec,jspawnhelper}
 
     # Remove symbolic links in /usr/$(exhost --target)/bin which could 
     # be problematic (collision with original binaries: node, npm...)
