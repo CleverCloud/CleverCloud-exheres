@@ -1,0 +1,21 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=anrieff tag=v${PV} ]
+require autotools [ supported_autoconf=[ 2.7 ] supported_automake=[ 1.16 ] ]
+
+SUMMARY="libcpuid provides CPU identification"
+LICENCES="BSD-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+DEPENDENCIES=""
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( '--disable-static' )
+
+src_install() {
+    default
+
+    edo find "${IMAGE}" -name '*.la' -delete
+}
+
