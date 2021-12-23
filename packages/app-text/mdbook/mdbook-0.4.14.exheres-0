@@ -1,0 +1,14 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cargo
+
+SUMMARY="mdBook is a utility to create modern online books from Markdown files"
+PLATFORMS="~amd64"
+LICENCES="MPL-2.0"
+SLOT="0"
+MYOPTIONS=""
+DEPENDENCIES=""
+
+# FIXME: Couldn't open SUMMARY.md
+RESTRICT=test
