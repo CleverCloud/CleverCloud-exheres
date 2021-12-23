@@ -1,0 +1,25 @@
+From 28510bf5b26d99945cbfec0c9552738b8ccb1454 Mon Sep 17 00:00:00 2001
+From: s0dyy <msorin@msorin.com>
+Date: Tue, 19 Apr 2022 18:20:09 +0200
+Subject: [PATCH] liblowdown: add a symlink for the install phase
+Upstream: Yes, PR pending https://github.com/kristapsdz/lowdown/pull/91
+
+---
+ Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Makefile b/Makefile
+index f3df51b..33f093d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -214,6 +214,7 @@ install_lib_common: lowdown.pc
+ 
+ install_shared: liblowdown.so install_lib_common
+ 	$(INSTALL_LIB) liblowdown.so.$(LIBVER) $(DESTDIR)$(LIBDIR)
++	( cd $(DESTDIR)$(LIBDIR) ; ln -sf liblowdown.so.$(LIBVER) liblowdown.so )
+ 
+ install_static: liblowdown.a install_lib_common
+ 	$(INSTALL_LIB) liblowdown.a $(DESTDIR)$(LIBDIR)
+-- 
+2.35.1
+
