@@ -1,0 +1,42 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=NixOS tag=${PV} force_git_clone=true ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
+
+SUMMARY="Nix is a powerful package manager for Linux and other Unix systems that makes package management reliable and reproducible"
+LICENCES="LGPL-2.1"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS="
+    cpuid [[ description = [ Determine microarchitecture levels with libcpuid ] ]]
+    seccomp [[ description = [ Enable experimental seccomp support ] ]]
+"
+DEPENDENCIES="
+    build:
+        app-text/lowdown
+        app-text/mdbook
+        dev-cpp/gtest[googlemock]
+        dev-libs/boost
+    build+run:
+        app-arch/brotli
+        app-arch/libarchive
+        dev-db/sqlite
+        dev-libs/editline
+        dev-libs/libsodium
+        dev-libs/openssl:=
+        dev-util/bdwgc
+        cpuid? ( sys-libs/libcpuid )
+        seccomp? ( sys-libs/libseccomp )
+"
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/use-nix-from-build-phase-in-build-phase.patch
+)
+
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 
+    'cpuid'
+    'seccomp seccomp-sandboxing'
+)
+

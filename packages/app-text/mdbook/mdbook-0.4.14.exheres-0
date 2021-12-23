@@ -12,3 +12,4 @@ DEPENDENCIES=""
 
 # FIXME: Couldn't open SUMMARY.md
 RESTRICT=test
+
