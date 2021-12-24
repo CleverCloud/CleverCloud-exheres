@@ -15,10 +15,13 @@ DEPENDENCIES="
     build:
         dev-cpp/gtest[googlemock]
     build+run:
+        app-arch/snappy
+        app-arch/zstd
         dev-cpp/log4cplus
         dev-libs/boost
         dev-libs/jsoncpp:=
-        dev-libs/protobuf:=
+        dev-libs/openssl:=
+        dev-libs/protobuf:=[>=3.15.0]
         net-misc/curl
 "
 
