@@ -1,7 +1,7 @@
 # Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require go github [ user=streamnative tag="v${PV}" ]
+require go github [ user=streamnative tag="v${PV}" force_git_clone=true ]
 
 SUMMARY="A CLI tool for the Apache Pulsar project"
 HOMEPAGE="https://github.com/streamnative/pulsarctl"
@@ -11,15 +11,30 @@ LICENCES="Apache-2.0"
 SLOT="0"
 
 MYOPTIONS=""
-DEPENDENCIES=""
+DEPENDENCIES="
+    build:
+        sys-devel/make
+"
 
 # TODO: Support go.mod in the Go exlib
 unset GOPATH
 
 src_unpack() {
-    default
+    scm_src_unpack
+
     edo cd "${WORK}"
+
     esandbox disable_net
     edo go mod download
     esandbox enable_net
 }
+
+src_compile() {
+    LDFLAGS="" edo make ${PN}
+}
+
+src_install() {
+    dobin bin/${PN}
+    emagicdocs
+}
+
