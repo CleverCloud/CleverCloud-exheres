@@ -17,7 +17,7 @@ SLOT="0"
 MYOPTIONS=""
 DEPENDENCIES="
     build+run:
-        dev-dotnet/dotnet-sdk:=
+        dev-dotnet/dotnet-sdk:5.0
     run:
         group/${PN,,}
         user/${PN,,}
