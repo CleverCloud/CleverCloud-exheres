@@ -1,0 +1,25 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require go github [ user=EventStore tag="${PV}" ]
+
+SUMMARY="The command line interface to ease the generation of a certificate authority and node certificates for EventStoreDB"
+PLATFORMS="~amd64"
+LICENCES="BSD-3"
+SLOT="0"
+
+MYOPTIONS=""
+DEPENDENCIES=""
+
+# TODO: Support go.mod in the Go exlib
+unset GOPATH
+
+src_unpack() {
+    default
+
+    edo cd "${WORK}"
+    esandbox disable_net
+    edo go mod download
+    esandbox enable_net
+}
+
