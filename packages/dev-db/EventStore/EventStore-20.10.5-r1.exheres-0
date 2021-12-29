@@ -21,6 +21,8 @@ DEPENDENCIES="
     run:
         group/${PN,,}
         user/${PN,,}
+    suggestion:
+        dev-db/es-gencert-cli [[ description = [ The command line interface to ease the generation of a certificate authority ] ]]
 "
 
 RESTRICT=strip
