@@ -29,7 +29,6 @@ DEPENDENCIES="
         providers:eventlet? ( dev-python/eventlet[>=0.22.1][python_abis:*(-)?] )
         providers:gevent? ( dev-python/gevent[>=20.6.2][python_abis:*(-)?] )
         providers:tornado? ( dev-python/tornado[>=5.0.2][python_abis:*(-)?] )
-        python_abis:3.6? ( providers:gaiohttp? ( dev-python/aiohttp[>=3.6.2][python_abis:3.6] ) )
 "
 
 install_one_multibuild(){
