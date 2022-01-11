@@ -26,6 +26,7 @@ DEPENDENCIES="
         user/ftp [[ description = [ Anonymous FTP, required to start ${PN} ] ]]
         group/${PN}
         dev-libs/libsodium
+        dev-libs/libxcrypt
         sys-libs/libcap
         sys-libs/pam
         ldap? ( net-directory/openldap )
