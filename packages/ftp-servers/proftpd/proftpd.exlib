@@ -30,6 +30,7 @@ DEFAULT_SRC_CONFIGURE_OPTIONS=(
 DEPENDENCIES="
     build+run:
         dev-libs/libsodium
+        dev-libs/libxcrypt
         caps? ( sys-libs/libcap )
         openssl? ( dev-libs/openssl )
         pam? ( sys-libs/pam )
