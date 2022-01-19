@@ -1,0 +1,32 @@
+# Copyright 2022 Arnaud Lefebvre <a.lefebvre@outlook.fr>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="PagerDuty" pn="pdagent-integrations" tag="v${PV}" ]
+
+SUMMARY="PagerDuty integration tool for PagerDuty Zabbix agent"
+HOMEPAGE="https://www.pagerduty.com/"
+
+PLATFORMS="~amd64"
+LICENCES="pagerduty"
+SLOT="0"
+MYOPTIONS=""
+
+# Tests are broken
+RESTRICT="test"
+
+DEPENDENCIES="
+    run:
+        dev-lang/python:2.7
+        net-analyzer/pdagent
+        net-analyzer/zabbix
+"
+
+src_compile() {
+    : do nothing
+}
+
+src_install() {
+    exeinto /usr/share/zabbix/alertscripts/
+    doexe bin/pd-zabbix
+}
+
