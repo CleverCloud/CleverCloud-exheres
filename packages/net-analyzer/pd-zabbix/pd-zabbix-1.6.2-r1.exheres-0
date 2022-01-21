@@ -21,6 +21,11 @@ DEPENDENCIES="
         net-analyzer/zabbix
 "
 
+src_prepare() {
+    default
+    sed -E '1s/(python)/\12/' -i bin/pd-zabbix
+}
+
 src_compile() {
     : do nothing
 }
