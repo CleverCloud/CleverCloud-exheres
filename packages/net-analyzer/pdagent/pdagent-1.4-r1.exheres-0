@@ -19,6 +19,11 @@ DEPENDENCIES="
 
 WORK="${WORKBASE}"/pdagent-${PV}
 
+src_prepare() {
+  default
+  edo sed -E '1s/(python)/\12/' -i bin/*
+}
+
 src_install() {
   dobin bin/pd-*
 
