@@ -3,14 +3,18 @@
 
 require php-pecl [ module=module ]
 
-SUMMARY="Provides a wrapper to the ImageMagick library."
+SUMMARY="Provides a wrapper to the ImageMagick library"
 
 LICENCES="PHP-3"
 SLOT="0"
+MYOPTIONS="
+    openmp [[ description = [ Support for Open Multi-Processing ] ]]
+"
 
 DEPENDENCIES="
     build+run:
-        media-gfx/ImageMagick
+        media-gfx/ImageMagick[openmp=]
+        openmp? ( sys-libs/libgomp:= )
 "
 
 DEFAULT_SRC_PREPARE_PATCHES=(

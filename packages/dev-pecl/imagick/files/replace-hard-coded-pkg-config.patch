@@ -8,7 +8,7 @@ Reason: hard-coded pkg-config
    IM_EXTRA_SEARCH_PREFIX=$2
  
 -  AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
-+  AC_PATH_PROG(PKG_CONFIG, ${PKG_CONFIG}, no)
++  AC_PATH_TOOL(PKG_CONFIG, pkg-config, no)
    if test "x$PKG_CONFIG" = "xno"; then
      AC_MSG_RESULT([pkg-config not found])
      AC_MSG_ERROR([Please reinstall the pkg-config distribution])
