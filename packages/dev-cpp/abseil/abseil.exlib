@@ -2,6 +2,9 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user=${PN} pn=${PN}-cpp ] cmake [ api=2 ]
+require flag-o-matic
+
+export_exlib_phases pkg_setup
 
 SUMMARY="A collection of C++ code designed to augment the C++ standard library"
 
@@ -24,4 +27,11 @@ CMAKE_SRC_CONFIGURE_PARAMS=(
 CMAKE_SRC_CONFIGURE_TESTS=(
     '-DABSL_RUN_TESTS:BOOL=ON -DABSL_RUN_TESTS:BOOL=OFF'
 )
+
+abseil_pkg_setup() {
+    # Dynamic libraries linking to abseil need it to be compiled with -fPIC
+    # https://github.com/abseil/abseil-cpp/issues/225
+    append-flags -fPIC
+}
+
 
