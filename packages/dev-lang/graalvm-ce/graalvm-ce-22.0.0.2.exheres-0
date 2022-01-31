@@ -8,8 +8,8 @@ SLOT="17"
 
 SCM_REPOSITORY="https://github.com/oracle/graal.git"
 SCM_TAG="vm-${PV}"
-LABSJDK="labsjdk-ce-${SLOT}.0.1"
-JVMCI="jvmci-21.3-b05"
+LABSJDK="labsjdk-ce-${SLOT}.0.2"
+JVMCI="jvmci-21.3-b09"
 
 require scm-git java-jdk autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
 
@@ -20,7 +20,7 @@ HOMEPAGE="https://www.graalvm.org/"
 LICENCES="GPL-2-with-classpath-exception"
 PLATFORMS="~amd64"
 
-DOWNLOADS="https://github.com/graalvm/labs-openjdk-${SLOT}/releases/download/${JVMCI}/${LABSJDK}+12-${JVMCI}-linux-amd64.tar.gz"
+DOWNLOADS="https://github.com/graalvm/labs-openjdk-${SLOT}/releases/download/${JVMCI}/${LABSJDK}+8-${JVMCI}-linux-amd64.tar.gz"
 MYOPTIONS="
     alsa 
     cups
@@ -29,7 +29,7 @@ MYOPTIONS="
 "
 DEPENDENCIES="
     build:
-        dev-java/mx[>=5.317.4]
+        dev-java/mx[>=5.317.15]
         dev-lang/python:2.7
         sys-devel/binutils[>=2.33.1]
         sys-devel/gcc:*[>=6.4.0]
