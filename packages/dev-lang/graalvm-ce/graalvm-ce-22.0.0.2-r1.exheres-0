@@ -82,15 +82,10 @@ src_compile(){
     # sforceimports will check and download the right revision of graaljs
     edo mx -v --env ce sforceimports
 
-    # fix path in callbacks.cc
-    edo sed -i "s|#include \"../../../../mxbuild/trufflenode/coremodules/node_snapshots.h\"| \
-        #include \"${WORK}/mxbuild/graal-nodejs/trufflenode/coremodules/node_snapshots.h\"|g" \
-            ${WORKBASE}/graaljs/graal-nodejs/deps/v8/src/graal/callbacks.cc
-
     # GraalVM CE does not include Native Image by default with "ce" build
     # EXCLUDE_COMPONENTS=nju,nic,ni,nil,llp
     # We need to modify the EXCLUDE_COMPONENTS variable to exclude only llp
-    edo mx --env ce --exclude-components=llp build
+    edo mx --dynamicimports /substratevm,/tools,/sulong --exclude-components=llp --force-bash-launchers=polyglot build
 
     esandbox enable_net
 
@@ -133,8 +128,8 @@ src_install(){
     # Remove symbolic links in /usr/$(exhost --target)/bin which could 
     # be problematic (collision with original binaries: node, npm...)
     # Maybe find a better solution?
-    for bin in js lli; do
-        edo rm "${IMAGE}/${java_home}"/bin/${bin} 
+    for bin in lli; do
+        edo rm "${IMAGE}/${java_home}"/bin/${bin}
     done
 
     # Creating the Class Data Sharing archives
