@@ -4,7 +4,7 @@
 SUMMARY="An alternative to ping, which is better to ping multiple hosts"
 HOMEPAGE="https://fping.org"
 DOWNLOADS="https://fping.org/dist/${PNV}.tar.gz"
-PLATFORMS="~amd64"
+PLATFORMS="~amd64 ~x86"
 
 DEPENDENCIES="
     build:
