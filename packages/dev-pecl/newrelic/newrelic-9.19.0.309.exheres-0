@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 BASE_FILENAME="${PN}-php5-${PV}-linux"
-require php-pecl [ module=module work=${BASE_FILENAME} php_abis=[ 5.6 7.0 7.1 7.2 7.3 7.4 8.0 ] ]
+require php-pecl [ module=module work=${BASE_FILENAME} php_abis=[ 5.6 7.0 7.1 7.2 7.3 7.4 8.0 8.1 ] ]
 
 SUMMARY="Newrelic Agent for PHP"
 HOMEPAGE="http://www.newrelic.com/"
