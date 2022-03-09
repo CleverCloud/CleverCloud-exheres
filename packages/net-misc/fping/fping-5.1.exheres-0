@@ -1,0 +1,31 @@
+# Copyright 2022 Dolan Dolan
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="An alternative to ping, which is better to ping multiple hosts"
+HOMEPAGE="https://fping.org"
+DOWNLOADS="https://fping.org/dist/${PNV}.tar.gz"
+PLATFORMS="~amd64 ~x86"
+
+DEPENDENCIES="
+    build:
+        dev-lang/perl:* [[ note = [ pod2man required for manpage generation ] ]]
+"
+
+SLOT="0"
+
+DEFAULT_SRC_CONFIGURE_PARAMS() {
+    --disable-dependency-tracking
+    --disable-maintainer-mode
+    --disable-safe-limits
+    --disable-silent-rules
+    --enable-ipv4
+    --enable-ipv6
+    --enable-option-checking
+    --enable-timestamp
+}
+
+src_install() {
+    default
+
+    edo chmod u+s ${IMAGE}/usr/$(exhost --target)/bin/fping
+}
