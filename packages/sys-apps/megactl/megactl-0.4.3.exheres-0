@@ -1,0 +1,21 @@
+# Copyright 2022 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=hmage tag="v${PV}-hmage" ]
+
+SUMMARY="LSI Megaraid Control and Monitoring Tools"
+PLATFORMS="~amd64 x86"
+LICENCES="GPL-2"
+SLOT="0"
+
+MYOPTIONS=""
+DEPENDENCIES=""
+
+[[ $(exhost --target) == x86_64-* ]] && DEFAULT_SRC_COMPILE_PARAMS=( ARCH=-m64 )
+[[ $(exhost --target) == i686-* ]] && DEFAULT_SRC_COMPILE_PARAMS=( ARCH=-m32 )
+
+src_install() {
+    dobin megactl megarpt megasasctl megasasrpt
+    emagicdocs
+}
+
