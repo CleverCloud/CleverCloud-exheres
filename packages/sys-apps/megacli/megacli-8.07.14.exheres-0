@@ -1,0 +1,62 @@
+# Copyright 2022 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="MegaCli is LSI's command line interface to their MegaRAID controller family"
+HOMEPAGE="https://www.broadcom.com/site-search?q=megacli"
+LICENCES="LSI"
+SLOT="0"
+PLATFORMS="~amd64 ~x86"
+DOWNLOADS="https://docs.broadcom.com/docs-and-downloads/raid-controllers/raid-controllers-common-files/${PV//./-}_MegaCLI.zip"
+
+MYOPTIONS=""
+DEPENDENCIES="
+    build:
+        app-arch/rpm2targz
+    run:
+        sys-libs/ncurses[compat-libs]
+"
+
+WORK=${WORKBASE}/Linux
+
+pkg_setup() {
+    exdirectory --allow /opt
+}
+
+src_unpack() {
+    default
+
+    pushd "${WORK}"
+    edo /usr/$(exhost --build)/bin/rpmunpack MegaCli-${PV//-/.}-1.noarch.rpm
+    popd
+}
+
+src_install() {
+    local binaries="MegaCli-${PV//-/.}-1.noarch/opt/MegaRAID/MegaCli"
+
+    case "$(exhost --target)" in
+        x86_64-*)
+            MegaCli=MegaCli64
+            ;;
+        i686-*)
+            MegaCli=MegaCli
+            ;;
+        *)
+            die "Unsupported ARCH"
+            ;;
+    esac
+
+    exeinto /opt/${PN}
+    doexe ${binaries}/${MegaCli}
+    doexe ${binaries}/libstorelibir-*
+
+    dodir /usr/$(exhost --target)/bin
+    dosym /opt/${PN}/${MegaCli} /usr/$(exhost --target)/bin/${PN}
+
+    newdoc "${WORKBASE}/${PV}_MegaCLI.txt" RELEASE.txt
+    emagicdoc
+}
+
+pkg_postinst() {
+    elog "See /usr/share/doc/${PNV}/RELEASE.txt for a list of supported controllers"
+}
+
