@@ -3,5 +3,5 @@
 
 require perf
 
-PLATFORMS="~amd64"
+PLATFORMS="~amd64 ~armv8"
 
