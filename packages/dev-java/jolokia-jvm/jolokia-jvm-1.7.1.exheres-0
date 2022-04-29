@@ -1,0 +1,51 @@
+# Copyright 2022 Arnaud Lefebvre <arnaud.lefebvre@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="rhuss" project="jolokia" tag="v${PV}" ]
+
+SUMMARY="Java agent to access JMX metrics remotely"
+DESCRIPTION="
+Jolokia is a fresh way to access JMX MBeans remotely.
+It is different from JSR-160 connectors in that it is an agent-based approach
+which uses JSON over HTTP for its communication in a REST-stylish way.
+"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+
+BUGS_TO="arnaud.lefebvre@clever-cloud.com"
+
+DEPENDENCIES="
+    build:
+        dev-java/maven
+    build+run:
+        virtual/jdk:=[>=8]
+        virtual/jre:=[>=8]
+"
+
+M2_REPOSITORY="${WORKBASE}/repository"
+
+emvn() {
+    edo mvn "-Dmaven.repo.local=${M2_REPOSITORY}" "${@}"
+}
+
+src_compile () {
+    # mvn needs to fetch dependencies
+    esandbox disable_net
+    emvn package --projects "agent/jvm/" -DskipTests=true -Dmaven.javadoc.skip=true
+    esandbox enable_net
+}
+
+src_test () {
+    # mvn needs to fetch dependencies
+    esandbox disable_net
+    emvn test --projects "agent/jvm/"
+    esandbox enable_net
+}
+
+src_install () {
+    insinto /usr/share/"${PN}"
+    newins agent/jvm/target/"${PNV}".jar "${PN}".jar
+}
+
