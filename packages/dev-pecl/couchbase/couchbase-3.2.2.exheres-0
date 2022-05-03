@@ -10,7 +10,7 @@ SLOT="0"
 
 DEPENDENCIES="
     build+run:
-        dev-libs/libcouchbase[>=3.2.2]
+        dev-libs/libcouchbase[>=3.2.4]
 "
 
 prepare_one_multibuild() {
