@@ -14,6 +14,7 @@ MYOPTIONS="doc ssl sasl"
 DEPENDENCIES="
     build+run:
         app-arch/lz4
+        app-arch/zstd
         sys-libs/zlib
         doc? (
             app-doc/doxygen
