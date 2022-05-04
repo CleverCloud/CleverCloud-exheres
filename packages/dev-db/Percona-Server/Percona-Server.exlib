@@ -7,7 +7,7 @@ myexparam release
 
 require alternatives cmake [ api=2 ] systemd-service
 
-export_exlib_phases pkg_pretend src_prepare src_configure src_install pkg_postinst
+export_exlib_phases pkg_pretend src_prepare src_configure src_test src_install pkg_postinst
 
 MYSQL_MAJOR_VERSION=$(ever range 1-2)
 
@@ -86,6 +86,8 @@ DEPENDENCIES="
 if ever at_least 8; then
     DEPENDENCIES+="
         build+run:
+            app-crypt/krb5
+            dev-libs/libfido2[>=1.4.0]
             dev-libs/rapidjson[>=1.1.0]
             dev-libs/re2:=
             net-directory/openldap 
@@ -132,12 +134,20 @@ Percona-Server_pkg_pretend() {
 Percona-Server_src_prepare() {
     cmake_src_prepare
 
-    edo sed -i -e 's:"gcc-ar":'$(exhost --tool-prefix)gcc-ar: "${CMAKE_SOURCE}"/storage/tokudb/PerconaFT/CMakeLists.txt
-    edo sed -i -e 's:"gcc-ranlib":'$(exhost --tool-prefix)gcc-ranlib: "${CMAKE_SOURCE}"/storage/tokudb/PerconaFT/CMakeLists.txt
-    edo sed -i -e '/^install/s/bin/${INSTALL_BINDIR}/' "${CMAKE_SOURCE}"/storage/tokudb/PerconaFT/tools/CMakeLists.txt
-    edo sed -i -e '/^install/s/include/${INSTALL_INCLUDEDIR}/' "${CMAKE_SOURCE}"/plugin/tokudb-backup-plugin/Percona-TokuBackup/backup/CMakeLists.txt
+    if ever at_least 8; then
+        edo sed -e /FIND_PROGRAM/s/pkg-config/$(exhost --tool-prefix)pkg-config/ -i cmake/pkg-config.cmake
 
-    edo sed -i -e 's/-Werror//' "${CMAKE_SOURCE}"/storage/tokudb/PerconaFT/cmake_modules/TokuSetupCompiler.cmake
+        # Failed tests
+        edo sed -e "/mysys_pathfuncs/d" -i unittest/gunit/CMakeLists.txt
+        # External request to example.org, not allowed by the sandbox.
+        edo sed -e "/test_routing.cc/d" -i router/tests/component/CMakeLists.txt
+    else
+        edo sed -i -e 's:"gcc-ar":'$(exhost --tool-prefix)gcc-ar: "${CMAKE_SOURCE}"/storage/tokudb/PerconaFT/CMakeLists.txt
+        edo sed -i -e 's:"gcc-ranlib":'$(exhost --tool-prefix)gcc-ranlib: "${CMAKE_SOURCE}"/storage/tokudb/PerconaFT/CMakeLists.txt
+        edo sed -i -e '/^install/s/bin/${INSTALL_BINDIR}/' "${CMAKE_SOURCE}"/storage/tokudb/PerconaFT/tools/CMakeLists.txt
+        edo sed -i -e '/^install/s/include/${INSTALL_INCLUDEDIR}/' "${CMAKE_SOURCE}"/plugin/tokudb-backup-plugin/Percona-TokuBackup/backup/CMakeLists.txt
+        edo sed -i -e 's/-Werror//' "${CMAKE_SOURCE}"/storage/tokudb/PerconaFT/cmake_modules/TokuSetupCompiler.cmake
+    fi
 }
 
 Percona-Server_src_configure() {
@@ -245,10 +255,12 @@ Percona-Server_src_configure() {
     if ever at_least 8; then
         cmakeargs+=(
             -DROUTER_INSTALL_LIBDIR:PATH=$(exhost --target)/lib/${PN}-${SLOT}
-            -DROUTER_INSTALL_PLUGINDIR=:PATH=$(exhost --target)/lib/${PN}-${SLOT}/plugin
+            -DROUTER_INSTALL_PLUGINDIR:PATH=$(exhost --target)/lib/${PN}-${SLOT}/plugin
             -DUSE_LD_LLD:BOOL=FALSE
-            -DWITH_RE2:STRING=system
+            -DWITH_FIDO=system
+            -DWITH_ICU=system
             -DWITH_RAPIDJSON:STRING=bundled
+            -DWITH_RE2:STRING=system
         )
     else
         cmakeargs+=( $(cmake_with tcpd LIBWRAP) )
@@ -260,13 +272,51 @@ Percona-Server_src_configure() {
         $(cmake_with embedded-server EMBEDDED_SERVER)
 }
 
+Percona-Server_src_test() {
+    esandbox allow_net --bind "inet:0.0.0.0@0-65535"
+    esandbox allow_net --connect "inet:0.0.0.0@0-65535"
+
+    esandbox allow_net --connect "inet:127.0.0.1@0-65535"
+
+    esandbox allow_net --bind 'unix:/tmp/router-*/*'
+    esandbox allow_net --connect 'unix:/tmp/router-*/*'
+
+    esandbox allow_net --bind 'unix:/this/path/does/not/exist/socket'
+    esandbox allow_net --connect 'unix:/this/path/does/not/exist/socket'
+
+    esandbox allow_net --bind 'unix:${WORK}/router/tests/component/*'
+    esandbox allow_net --connect 'unix:${WORK}/router/tests/component/*'
+
+    default
+
+    esandbox disallow_net --bind "inet:0.0.0.0@0-65535"
+    esandbox disallow_net --connect "inet:0.0.0.0@0-65535"
+
+    esandbox disallow_net --connect "inet:127.0.0.1@0-65535"
+
+    esandbox disallow_net --bind 'unix:/tmp/router-*/*'
+    esandbox disallow_net --connect 'unix:/tmp/router-*/*'
+
+    esandbox disallow_net --bind 'unix:/this/path/does/not/exist/socket'
+    esandbox disallow_net --connect 'unix:/this/path/does/not/exist/socket'
+
+    esandbox disallow_net --bind 'unix:${WORK}/router/tests/component/*'
+    esandbox disallow_net --connect 'unix:${WORK}/router/tests/component/*'
+}
+
 Percona-Server_src_install() {
     local alternatives=()
     cmake_src_install
 
+    if ever at_least 8; then
+        # Remove files pages we explicitly do not want to package 
+        # https://github.com/percona/percona-server/blob/8.0/build-ps/percona-server.spec#L639
+        # TODO: Maybe find a better way
+        edo rm -r "${IMAGE}"/usr/{include,lib}
+    fi
+
     # Remove empty directories
     ! option debug && edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/${PN}-${SLOT}/plugin/debug
-
 
     keepdir /etc/${PN}-${SLOT}
 
@@ -280,7 +330,9 @@ EOF
     keepdir /var/lib/mysql-files
     edo chown mysql:mysql "${IMAGE}"/var/lib/mysql-files
     edo chmod 0750 "${IMAGE}"/var/lib/mysql-files
-    edo rm "${IMAGE}"/usr/{README.md,COPYING.*,PATENTS}
+    if ! ever at_least 8; then
+        edo rm "${IMAGE}"/usr/{README.md,COPYING.*,PATENTS}
+    fi
 
     for bin in mysql mysqldump mysqladmin mysql_config; do
         alternatives+=(
