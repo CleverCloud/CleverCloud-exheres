@@ -1,0 +1,8 @@
+# Copyright 2022 Arnaud Lefebvre <arnaud.lefebvre@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require elasticsearch-bin
+
+SLOT="8"
+PLATFORMS="~amd64"
+

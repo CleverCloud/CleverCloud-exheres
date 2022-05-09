@@ -36,13 +36,24 @@ DEPENDENCIES="
 MYOPTIONS+="
     bundled-java [[ description = [ Use the bundled java to be able to claim official support ] ]]
 "
+
+if ever at_least 8; then
+    DEPENDENCIES+="
+        run:
+            !bundled-java? (
+                virtual/jdk:=[>=17]
+                virtual/jre:=[>=17]
+            )
+    "
+else
 DEPENDENCIES+="
-    run:
-        !bundled-java? (
-            virtual/jdk:=[>=8]
-            virtual/jre:=[>=8]
-        )
-"
+        run:
+            !bundled-java? (
+                virtual/jdk:=[>=8]
+                virtual/jre:=[>=8]
+            )
+    "
+fi
 
 BUGS_TO="arnaud.lefebvre@clever-cloud.com"
 
@@ -63,7 +74,6 @@ elasticsearch-bin_src_install() {
     keepdir /opt/${MY_PN}-${SLOT}/logs
 
     keepdir /opt/${MY_PN}-${SLOT}/config/jvm.options.d
-    ! option bundled-java && edo rm -rf "${IMAGE}"/opt/${MY_PN}-${SLOT}/jdk
 
     edo rmdir "${IMAGE}"/opt/${MY_PN}-${SLOT}/plugins
     install_systemd_files
@@ -75,8 +85,16 @@ elasticsearch-bin_src_install() {
 CONFIG_PROTECT="/opt/${MY_PN}-${SLOT}/config"
 EOF
 
-    sed -e "s@#JAVA_HOME=@JAVA_HOME=/usr/$(exhost --target)/lib/jdk@" \
-        -i "${IMAGE}/etc/sysconfig/${MY_PN}-${SLOT}"
+    if ! option bundled-java; then
+        if ever at_least 8; then
+            edo sed -e "s@#ES_JAVA_HOME=@ES_JAVA_HOME=/usr/$(exhost --target)/lib/jdk@" \
+                -i "${IMAGE}/etc/sysconfig/${MY_PN}-${SLOT}"
+        else
+            edo sed -e "s@#JAVA_HOME=@JAVA_HOME=/usr/$(exhost --target)/lib/jdk@" \
+                -i "${IMAGE}/etc/sysconfig/${MY_PN}-${SLOT}"
+        fi
+        edo rm -rf "${IMAGE}"/opt/${MY_PN}-${SLOT}/jdk
+    fi
 }
 
 elasticsearch-bin_pkg_postinst() {
