@@ -1,8 +1,0 @@
-# Copyright 2020 Arnaud Lefebvre <arnaud.lefebvre@clever-cloud.com>
-# Distributed under the terms of the GNU General Public License v2
-
-
-require elasticsearch-bin
-
-SLOT="6"
-PLATFORMS="~amd64"

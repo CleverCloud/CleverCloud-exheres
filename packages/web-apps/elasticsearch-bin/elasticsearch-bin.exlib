@@ -1,4 +1,5 @@
 # Copyright 2019 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Copyright 2022 Arnaud Lefebvre <a.lefebvre@outlook.fr>
 # Distributed under the terms of the GNU General Public License v2
 
 MY_PN=${PN/-bin}
@@ -11,21 +12,14 @@ export_exlib_phases pkg_setup src_install pkg_postinst
 SUMMARY="Store, search, analyze"
 HOMEPAGE="https://www.elastic.co/products/elastic-stack"
 
-if ever at_least 7; then
-    DOWNLOADS="https://artifacts.elastic.co/downloads/${MY_PN}/${MY_PNV}-linux-x86_64.tar.gz"
-else
-    DOWNLOADS="https://artifacts.elastic.co/downloads/${MY_PN}/${MY_PNV}.tar.gz"
-fi
+DOWNLOADS="https://artifacts.elastic.co/downloads/${MY_PN}/${MY_PNV}-linux-x86_64.tar.gz"
 
-if ever at_least 7.11 ; then
-    LICENCES="
-        Apache-2.0 [[ note = [ low level rest client ] ]]
-        Elastic-License-2.0
-        SSPL-1.0
-    "
-else
-    LICENCES="GPL-2"
-fi
+LICENCES="
+    Apache-2.0 [[ note = [ low level rest client ] ]]
+    Elastic-License-2.0
+    SSPL-1.0
+"
+
 MYOPTIONS=""
 
 DEPENDENCIES="
@@ -39,26 +33,18 @@ DEPENDENCIES="
         ]]
 "
 
-if ! ever at_least 7; then
-    DEPENDENCIES+="
-        run:
+MYOPTIONS+="
+    bundled-java [[ description = [ Use the bundled java to be able to claim official support ] ]]
+"
+DEPENDENCIES+="
+    run:
+        !bundled-java? (
             virtual/jdk:=[>=8]
             virtual/jre:=[>=8]
-    "
-else
-    MYOPTIONS+="
-        bundled-java [[ description = [ Use the bundled java to be able to claim official support ] ]]
-    "
-    DEPENDENCIES+="
-        run:
-            !bundled-java? (
-                virtual/jdk:=[>=8]
-                virtual/jre:=[>=8]
-            )
-    "
-fi
+        )
+"
 
-BUGS_TO="marc-antoine.perennou@clever-cloud.com"
+BUGS_TO="arnaud.lefebvre@clever-cloud.com"
 
 WORK="${WORKBASE}/${MY_PNV}"
 
@@ -76,10 +62,8 @@ elasticsearch-bin_src_install() {
     edo mv ${MY_PNV} "${IMAGE}"/opt/${MY_PN}-${SLOT}
     keepdir /opt/${MY_PN}-${SLOT}/logs
 
-    if ever at_least 7; then
-        keepdir /opt/${MY_PN}-${SLOT}/config/jvm.options.d
-        ! option bundled-java && edo rm -rf "${IMAGE}"/opt/${MY_PN}-${SLOT}/jdk
-    fi
+    keepdir /opt/${MY_PN}-${SLOT}/config/jvm.options.d
+    ! option bundled-java && edo rm -rf "${IMAGE}"/opt/${MY_PN}-${SLOT}/jdk
 
     edo rmdir "${IMAGE}"/opt/${MY_PN}-${SLOT}/plugins
     install_systemd_files
