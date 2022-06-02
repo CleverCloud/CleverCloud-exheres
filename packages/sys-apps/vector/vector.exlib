@@ -26,12 +26,18 @@ DEPENDENCIES="
 # Docker test
 RESTRICT="test"
 
+# feature 'rdkafka/gssapi-vendored' needs libsasl/libsasl2
 ECARGO_FEATURES=(
-    'rdkafka-plain'
+    'api'
+    'api-client'
+    'enrichment-tables'
     'sinks'
     'sources'
+    'sources-dnstap'
     'transforms'
     'unix'
+    'vrl-cli'
+    'enterprise'
 )
 
 src_install() {
