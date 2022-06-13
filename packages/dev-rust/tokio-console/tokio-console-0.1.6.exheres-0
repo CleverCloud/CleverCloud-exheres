@@ -1,0 +1,19 @@
+# Copyright 2022 Arnaud Lefebvre <a.lefebvre@outlook.fr>
+# Distributed under the terms of the GNU General Public License v2
+
+require cargo github [ user="tokio-rs" project="console" tag="${PN}-v${PV}" ]
+
+SUMMARY="The Tokio console: a debugger for asynchronous Rust programs"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+"
+
+# Tests are not passing for now
+RESTRICT="test"
+
+WORK="${WORKBASE}/console-${PN}-v${PV}/${PN}"
+
