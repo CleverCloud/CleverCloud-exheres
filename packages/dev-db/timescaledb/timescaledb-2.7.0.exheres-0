@@ -19,7 +19,12 @@ prepare_one_multibuild() {
     local pg_config="/usr/$(exhost --target)/libexec/postgresql-${MULTIBUILD_TARGET}"
 
     export PATH=${pg_config}:${PATH}
-    edo bash bootstrap -DREGRESS_CHECKS="OFF"
+    local options=(
+        -DREGRESS_CHECKS=OFF
+        -DSEND_TELEMETRY_DEFAULT=ON
+        -DUSE_TELEMETRY=ON
+    )
+    edo bash bootstrap "${options[@]}"
     export PATH="${old_path}"
 }
 
