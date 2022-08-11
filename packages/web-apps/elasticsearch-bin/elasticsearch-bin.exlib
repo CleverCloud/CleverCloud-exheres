@@ -98,6 +98,10 @@ EOF
 }
 
 elasticsearch-bin_pkg_postinst() {
+    if [[ ! -d "${ROOT}/opt/${MY_PN}-${SLOT}/plugins" ]]; then
+        edo mkdir -p "${ROOT}/opt/${MY_PN}-${SLOT}/plugins"
+    fi
+
     edo chown -R ${MY_PN}:${MY_PN} /opt/${MY_PN}-${SLOT}
 }
 
