@@ -26,7 +26,7 @@ DEPENDENCIES="
         group/mongodb
         user/mongodb
     build+run:
-        dev-libs/openssl
+        dev-libs/openssl:=
         dev-python/typing[python_abis:2.7]
         dev-python/Cheetah[python_abis:2.7]
         dev-python/PyYAML[python_abis:2.7]

@@ -38,7 +38,7 @@ DEPENDENCIES="
         app-arch/zstd
         dev-libs/boost[>=1.49]
         dev-libs/pcre
-        dev-libs/yaml-cpp
+        dev-libs/yaml-cpp:=
         net-misc/curl
         sys-libs/zlib
         providers:libressl? ( dev-libs/libressl:= )
