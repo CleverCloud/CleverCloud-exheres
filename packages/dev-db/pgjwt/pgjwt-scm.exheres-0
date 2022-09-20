@@ -1,0 +1,13 @@
+# Copyright 2022 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require postgresql
+require github [ user="michelp" ]
+
+SUMMARY="PostgreSQL implementation of JSON Web Tokens"
+LICENCES="MIT"
+PLATFORMS="~amd64"
+SLOT="0"
+
+DEPENDENCIES=""
+
