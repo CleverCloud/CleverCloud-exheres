@@ -1,0 +1,13 @@
+# Copyright 2022 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require uopz
+require php-pecl [ module=module php_abis=[ 8.0 8.1 ] ]
+
+PLATFORMS="~amd64"
+SLOT="7"
+
+# FAIL uopz_add_function (php 8.1 only) 
+# https://github.com/krakjoe/uopz/issues/160  
+RESTRICT=test
+
