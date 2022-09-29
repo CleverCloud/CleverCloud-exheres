@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user=timberio tag="v${PV}" force_git_clone=true ]
-require cargo [ disable_default_features=true ]
+require cargo [ disable_default_features=true rust_minimum_version="1.63.0" ]
 require systemd-service [ systemd_files=[ distribution/systemd/${PN}.service ] systemd_tmpfiles=[ ${FILES}/${PN}.conf ] ]
 
 SUMMARY="Vector is a lightweight, ultra-fast, open-source tool for building observability pipelines"
