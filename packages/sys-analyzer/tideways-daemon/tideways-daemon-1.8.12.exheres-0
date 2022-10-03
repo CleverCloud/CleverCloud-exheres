@@ -1,0 +1,29 @@
+# Copyright 2022 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+SUMMARY="tideways daemon"
+HOMEPAGE="https://www.tideways.com/"
+DOWNLOADS="https://s3-eu-west-1.amazonaws.com/tideways/daemon/${PV}/${PN}_linux_amd64-${PV}.tar.gz"
+LICENCES="all-rights-reserved"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+DEPENDENCIES="
+    build+run:
+        group/tideways
+        user/tideways
+"
+
+WORK=${WORKBASE}/${PN}_${PV}
+
+src_install() {
+    dobin ${PN}
+
+    edo install -o tideways -g tideways -d ${IMAGE}/var/log/tideways
+    keepdir /var/log/tideways
+
+    install_systemd_files
+}
+

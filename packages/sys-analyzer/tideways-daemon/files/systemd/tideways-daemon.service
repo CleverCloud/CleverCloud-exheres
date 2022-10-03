@@ -1,0 +1,16 @@
+[Unit]
+Description=tideways daemon
+After=network.target
+
+[Service]
+Type=simple
+User=tideways
+Group=tideways
+PIDFile=/run/tideways/tideways-daemon.pid
+RuntimeDirectory=tideways
+ExecStart=/usr/host/bin/tideways-daemon --pidfile /run/tideways/tideways-daemon.pid
+Restart=always
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
