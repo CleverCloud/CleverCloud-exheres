@@ -11,7 +11,10 @@ SLOT="0"
 PLATFORMS="~amd64"
 
 MYOPTIONS=""
-DEPENDENCIES=""
+DEPENDENCIES="
+    run:
+        sys-analyzer/tideways-daemon
+"
 
 php-pecl_prepare_one_multibuild() {
     :
