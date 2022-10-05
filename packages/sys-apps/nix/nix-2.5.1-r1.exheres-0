@@ -17,7 +17,7 @@ DEPENDENCIES="
     build:
         app-text/lowdown
         app-text/mdbook
-        dev-cpp/gtest[googlemock]
+        dev-cpp/gtest[googlemock(+)]
         dev-libs/boost
     build+run:
         app-arch/brotli

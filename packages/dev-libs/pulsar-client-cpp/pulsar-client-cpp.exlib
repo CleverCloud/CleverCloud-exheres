@@ -13,7 +13,7 @@ SLOT="0"
 MYOPTIONS=""
 DEPENDENCIES="
     build:
-        dev-cpp/gtest[googlemock]
+        dev-cpp/gtest[googlemock(+)]
     build+run:
         app-arch/snappy
         app-arch/zstd
