@@ -26,7 +26,7 @@ src_test() {
 
 src_install() {
     emake DESTDIR="${IMAGE}" LIBDIR="/usr/$(exhost --target)/lib" install install_shared
-    
-    edo chmod 0755 ${IMAGE}/usr/$(exhost --target)/lib/lib${PN}.so.1
+
+    edo chmod 0755 "${IMAGE}"/usr/$(exhost --target)/lib/lib${PN}.so.1
 }
 
