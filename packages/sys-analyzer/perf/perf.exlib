@@ -4,7 +4,7 @@
 require kernel python [ blacklist=2 multibuild=false ]
 require bash-completion
 
-export_exlib_phases src_compile src_install
+export_exlib_phases src_prepare src_compile src_install
 
 DOWNLOADS="mirror://kernel/linux/kernel/v$(ever major).x/linux-${PV}.tar.xz"
 
@@ -18,6 +18,8 @@ MYOPTIONS="
     debuginfod [[ description = [ Support fetching debug information from a debuginfod server ] ]]
     gtk2
     zstd [[ description = [ ZStd based runtime trace compression in record mode ] ]]
+
+    ( providers: libunwind llvm-libunwind ) [[ number-selected = exactly-one ]]
 "
 
 DEPENDENCIES="
@@ -30,7 +32,6 @@ DEPENDENCIES="
         app-arch/xz
         dev-lang/perl:=
         dev-lang/python:=
-        dev-libs/libunwind
         dev-util/elfutils[debuginfod?]
         sys-apps/numactl
         sys-devel/binutils
@@ -40,6 +41,8 @@ DEPENDENCIES="
         audit? ( app-admin/audit )
         gtk2? ( x11-libs/gtk+:2 )
         zstd? ( app-arch/zstd )
+        providers:libunwind? ( dev-libs/libunwind )
+        providers:llvm-libunwind? ( sys-libs/llvm-libunwind )
 "
 
 RESTRICT="test"
@@ -67,11 +70,20 @@ perf_make() {
         PYTHON=python$(python_get_abi)
         GTK2=$(option gtk2 "1" "")
         NO_LIBAUDIT=$(perf_option audit)
+        NO_LIBBPF=1
         NO_LIBDEBUGINFOD=$(perf_option debuginfod)
         NO_LIBZSTD=$(perf_option zstd)
     )
 
     emake "${params[@]}" "${@}"
+}
+
+perf_src_prepare() {
+    default
+    # Even though WERROR=0 is set there are still some places that force -Werror
+    # During feature detect of libperl, the compilation of the test will fail because of
+    # unused imported function (-Werror=unused-function)
+    edo sed 's/-Werror//' -i "${WORKBASE}"/linux-${PV}/tools/build/feature/Makefile
 }
 
 perf_src_compile() {
