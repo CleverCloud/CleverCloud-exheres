@@ -1,7 +1,7 @@
 # Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require cargo
+require cargo [ rust_minimum_version=1.54.0 ]
 
 SUMMARY="mdBook is a utility to create modern online books from Markdown files"
 PLATFORMS="~amd64"
@@ -10,6 +10,6 @@ SLOT="0"
 MYOPTIONS=""
 DEPENDENCIES=""
 
-# FIXME: Couldn't open SUMMARY.md
+# FIXME: test preprocess::cmd::tests::round_trip_write_and_parse_input fails
 RESTRICT=test
 
