@@ -15,20 +15,26 @@ MYOPTIONS="
 "
 DEPENDENCIES="
     build:
-        app-text/lowdown
         app-text/mdbook
         dev-cpp/gtest[googlemock(+)]
-        dev-libs/boost
+        dev-libs/boost[>=1.66]
+        sys-devel/bison
+        sys-devel/flex
+        virtual/pkg-config
     build+run:
         app-arch/brotli
-        app-arch/libarchive
-        dev-db/sqlite
+        app-arch/libarchive[>=3.1.2]
+        app-text/lowdown[>=0.8.0]
+        dev-db/sqlite:3[>=3.6.19]
         dev-libs/boehm-gc
         dev-libs/editline
         dev-libs/libsodium
         dev-libs/openssl:=
+        net-misc/curl
         cpuid? ( sys-libs/libcpuid )
         seccomp? ( sys-libs/libseccomp )
+    run:
+        app-text/jq
 "
 
 DEFAULT_SRC_PREPARE_PATCHES=(
