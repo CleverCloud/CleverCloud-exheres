@@ -23,10 +23,10 @@ DEPENDENCIES="
         app-arch/brotli
         app-arch/libarchive
         dev-db/sqlite
+        dev-libs/boehm-gc
         dev-libs/editline
         dev-libs/libsodium
         dev-libs/openssl:=
-        dev-util/bdwgc
         cpuid? ( sys-libs/libcpuid )
         seccomp? ( sys-libs/libseccomp )
 "
