@@ -106,17 +106,6 @@ dotnet-sdk_src_compile() {
         # Prep the source to build on your distro
         pushd ${WORKBASE}/dotnet-sources
         edo bash prep.sh
-
-        # Additional bootstrapping, https://github.com/dotnet/source-build/issues/2599
-        edo mkdir privateSourceBuiltArtifacts
-        edo pushd privateSourceBuiltArtifacts
-        edo tar xf ../packages/archive/Private.SourceBuilt.Artifacts.*.tar.gz
-        edo sed -i -E 's|<MicrosoftNETHostModelPackageVersion>6.0.0-rtm.21521.1</|<MicrosoftNETHostModelPackageVersion>6.0.0-rtm.21521.4</|' PackageVersions.props
-        edo sed -i -E 's|<MicrosoftNETHostModelVersion>6.0.0-rtm.21521.1</|<MicrosoftNETHostModelVersion>6.0.0-rtm.21521.4</|' PackageVersions.props
-        edo tar czf ../packages/archive/Private.SourceBuilt.Artifacts.*.tar.gz *
-        edo popd
-        edo rm -rf privateSourceBuiltArtifacts
-        edo bash prep.sh --bootstrap
     fi
 
     # Build the .NET SDK

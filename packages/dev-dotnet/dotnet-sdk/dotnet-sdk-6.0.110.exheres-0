@@ -9,5 +9,5 @@ require dotnet-sdk [ dotnet_project="installer" \
     dotnet_patches="${WORK}/src/SourceBuild/tarball/patches/" \
     dotnet_tarball="${WORKBASE}/dotnet-sources/artifacts/x64/Release/${PNV}-exherbo-x64.tar.gz" \
     runtime="${SLOT}.0" \
-    llvm_slot=12 ]
+    llvm_slot=14 ]
 
