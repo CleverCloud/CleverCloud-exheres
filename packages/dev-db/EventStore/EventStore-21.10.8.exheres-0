@@ -17,7 +17,7 @@ SLOT="0"
 MYOPTIONS=""
 DEPENDENCIES="
     build+run:
-        dev-dotnet/dotnet-sdk:5.0
+        dev-dotnet/dotnet-sdk:6.0
     run:
         group/${PN,,}
         user/${PN,,}
@@ -34,14 +34,14 @@ pkg_setup() {
 src_unpack() {
     scm_src_unpack
 
-    edo dotnet restore /nodeReuse:false ${WORK}/src
+    edo dotnet restore --verbosity normal --use-lock-file ${WORK}/src
 }
 
 src_compile() {
     esandbox allow_net --connect "unix:"
     esandbox allow_net --bind "unix:"
 
-    edo dotnet build --no-restore -c Release src
+    edo dotnet build --verbosity normal --no-restore --configuration Release src
     edo dotnet build-server shutdown
 
     esandbox disallow_net --connect "unix:"
