@@ -1,9 +1,8 @@
 # Copyright 2017 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-SLOT="0.12"
-
-require sozu
-
+SLOT="0.14"
 PLATFORMS="~amd64"
 
+require sozu

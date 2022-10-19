@@ -1,20 +1,16 @@
 # Copyright 2017 Marc-Antoine Perennou <keruspe@exherbo.org>
 # Copyright 2018 Arnaud Lefebvre <a.lefebvre@outlook.fr>
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-if [[ "${SLOT}" == "0" ]]; then
-    GITHUB_BRANCH="main"
-else
-    GITHUB_BRANCH="${SLOT}"
-fi
-require github [ user=sozu-proxy force_git_clone=true ] cargo
+require github [ user=sozu-proxy force_git_clone=true tag="${PN}" ] cargo
 require systemd-service [ systemd_files=[ generated/${PN}.service ] ]
 
 export_exlib_phases pkg_setup src_compile src_test src_install
 
 SUMMARY="sozu HTTP proxy"
 HOMEPAGE="https://www.sozu.io"
-
+BUGS_TO="florentin.dubois@clever-cloud.com"
 LICENCES="AGPL-3.0"
 
 MYOPTIONS="
@@ -39,14 +35,13 @@ COMMON_ECARGO_FEATURE_ENABLES=(
     'logs-debug logs-debug'
     'logs-trace logs-trace'
 )
-# rustls is the default SSL backend for now and doesn't
-# have an option
+
+# rustls is the default SSL backend for now and doesn't have an option
 BIN_ECARGO_FEATURE_ENABLES=(
     'tolerant-http1-parser tolerant-http1-parser'
     'providers:openssl use-openssl'
 )
 
-BUGS_TO="keruspe@exherbo.org"
 
 SOZU_BIN_DIRS=("bin")
 ever at_least 0.14 || SOZU_BIN_DIRS+=("ctl")
