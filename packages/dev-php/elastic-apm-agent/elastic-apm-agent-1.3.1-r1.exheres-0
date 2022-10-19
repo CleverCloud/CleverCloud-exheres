@@ -14,7 +14,7 @@ PLATFORMS="~amd64"
 MYOPTIONS=""
 DEPENDENCIES="
     build+run:
-        dev-libs/libunistring
+        dev-libs/libunistring:=
         net-misc/curl
 "
 
