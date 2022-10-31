@@ -7,7 +7,7 @@ SUMMARY="MongoDB database driver"
 
 PLATFORMS="~amd64"
 LICENCES="PHP-3"
-SLOT="1.8"
+SLOT="1.14"
 MYOPTIONS="( providers: libressl openssl ) [[ number-selected = exactly-one ]]"
 
 # Lots of sandbox error

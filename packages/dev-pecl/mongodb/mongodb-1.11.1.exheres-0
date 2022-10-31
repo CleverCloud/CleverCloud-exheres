@@ -1,13 +1,13 @@
 # Copyright 2016 Marc-Antoine Perennou
 # Distributed under the terms of the GNU General Public License v2
 
-require php-pecl [ module=module php_abis=[ 5.6 7.0 7.1 ] ]
+require php-pecl [ module=module php_abis=[ 7.2 7.3 7.4 8.0 8.1 ] ]
 
 SUMMARY="MongoDB database driver"
 
 PLATFORMS="~amd64"
 LICENCES="PHP-3"
-SLOT="1.7"
+SLOT="1.11"
 MYOPTIONS="( providers: libressl openssl ) [[ number-selected = exactly-one ]]"
 
 # Lots of sandbox error
