@@ -1,0 +1,12 @@
+# Copyright 2022 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Sipcalc is an advanced ip calculator supporting both IPv4 and IPv6"
+LICENCES="BSD-0"
+SLOT="0"
+PLATFORMS="~amd64"
+DOWNLOADS="http://www.routemeister.net/projects/${PN}/files/${PNV}.tar.gz"
+
+MYOPTIONS=""
+DEPENDENCIES=""
+
