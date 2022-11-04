@@ -1,0 +1,24 @@
+# Copyright 2016 Marc-Antoine Perennou
+# Distributed under the terms of the GNU General Public License v2
+
+myexparam php_abis=[ 7.2 7.3 7.4 8.0 8.1 ]
+
+require php-slotted-module [ php_abis=[ $(exparam php_abis[@]) ] ]
+
+SUMMARY="MongoDB database driver"
+
+LICENCES="PHP-3"
+SLOT="$(ever range 1-2)"
+MYOPTIONS="( providers: libressl openssl ) [[ number-selected = exactly-one ]]"
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/icu:=
+        net-libs/cyrus-sasl
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl:= )
+"
+
+# Lots of sandbox error
+RESTRICT="test"
+

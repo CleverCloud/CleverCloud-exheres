@@ -1,0 +1,23 @@
+# Copyright 2022 Quentin “Sardem FF7” Glidic <sardemff7@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+myexparam php_abis[]
+
+require php-pecl [ module=module php_abis=[ $(exparam php_abis[@]) ] ]
+require alternatives
+
+php-slotted-module_install_one_multibuild() {
+    php-pecl_install_one_multibuild
+
+    local abi=$(php-pecl_get_abi)
+
+    local abi_version=$(ls "${IMAGE}"/usr/share/php-${abi})
+    [[ -d "${IMAGE}"/usr/share/php-${abi}/${abi_version} ]] || die "Could not find ABI version for ${abi} (guessed '${abi_version}')"
+    alternatives_for php-${abi}-${PN} ${SLOT} 1000 \
+        /etc/php-${abi}/${PN}.ini ${PN}.ini.${SLOT} \
+        /usr/share/php-${abi}/${abi_version}/${PN}.so ${PN}-${SLOT}.so
+}
+
+install_one_multibuild() {
+    php-slotted-module_install_one_multibuild
+}

@@ -1,22 +1,6 @@
 # Copyright 2016 Marc-Antoine Perennou
 # Distributed under the terms of the GNU General Public License v2
 
-require php-pecl [ module=module php_abis=[ 5.6 7.0 7.1 ] ]
-
-SUMMARY="MongoDB database driver"
+require mongodb [ php_abis=[ 5.6 7.0 7.1 ] ]
 
 PLATFORMS="~amd64"
-LICENCES="PHP-3"
-SLOT="1.7"
-MYOPTIONS="( providers: libressl openssl ) [[ number-selected = exactly-one ]]"
-
-# Lots of sandbox error
-RESTRICT="test"
-
-DEPENDENCIES="
-    build+run:
-        net-libs/cyrus-sasl
-        providers:libressl? ( dev-libs/libressl:= )
-        providers:openssl? ( dev-libs/openssl )
-"
-
