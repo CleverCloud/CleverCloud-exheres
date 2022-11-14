@@ -8,7 +8,7 @@ SCM_CHECKOUT_TO="${MY_PN}"
 require github [ tag="v${PV}" ]
 
 LICENCES="Apache-2.0"
-SLOT="0"
+SLOT=$(ever range 1-2)
 DEPENDENCIES="
     build:
         dev-lang/go
@@ -24,7 +24,7 @@ kubernetes_src_unpack() {
 
     esandbox disable_net
 
-    edo pushd "${WORK}" 
+    edo pushd "${WORK}"
     edo go mod download -x
     edo popd
 
