@@ -9,7 +9,7 @@ LICENCES="LGPL-2.1"
 SLOT="0"
 PLATFORMS="~amd64"
 
-MYOPTIONS="exif fftw fits gsf heif imagemagick jpeg lcms openexr orc png svg tiff webp"
+MYOPTIONS="exif fftw fits gif gsf heif imagemagick jpeg lcms openexr orc png svg tiff webp"
 DEPENDENCIES="
     build: 
         virtual/pkg-config
@@ -25,6 +25,7 @@ DEPENDENCIES="
         exif? ( media-libs/libexif )
         fftw? ( sci-libs/fftw )
         fits? ( sci-libs/cfitsio )
+	gif? ( media-libs/cgif )
         gsf? ( office-libs/libgsf )
         heif? ( media-libs/libheif )
         imagemagick? ( media-gfx/ImageMagick[fftw?][heif?][lcms?][openexr?][pango][svg?][tiff?] )
@@ -62,6 +63,7 @@ DEFAULT_SRC_CONFIGURE_OPTIONS=(
 )
 
 DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
+    'gif cgif'
     'exif libexif'
     'fftw'
     'fits cfitsio'
