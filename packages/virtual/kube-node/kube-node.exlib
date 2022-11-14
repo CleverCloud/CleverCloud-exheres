@@ -1,0 +1,18 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Kubernetes node"
+DESCRIPTION="Install softwares for running a kubernetes node and container interfaces"
+SLOT=$(ever range 1-2)
+BUGS_TO="florentin.dubois@clever-cloud.com"
+LICENCES="MIT"
+
+MYOPTIONS=""
+
+DEPENDENCIES="
+    run:
+        kubernetes/kube-proxy:${SLOT}
+        kubernetes/kubelet:${SLOT}
+        kubernetes/kubectl:${SLOT}
+        kubernetes/kubectl-convert:${SLOT}
+"
