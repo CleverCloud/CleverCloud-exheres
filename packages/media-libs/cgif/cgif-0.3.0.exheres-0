@@ -1,0 +1,13 @@
+# Copyright 2022 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require meson github [ user="dloebl" tag="V${PV}" ]
+
+SUMMARY="GIF encoder written in C"
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS=""
+DEPENDENCIES=""
+
