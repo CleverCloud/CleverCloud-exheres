@@ -1,0 +1,47 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="etcd-io" tag="v${PV}" ]
+
+SUMMARY="A distributed, reliable key-value store for the most critical data of a distributed system"
+PLATFORMS="~amd64"
+LICENCES="Apache-2.0"
+SLOT="0"
+DEPENDENCIES="
+    build:
+        dev-lang/go
+"
+
+RESTRICT=test
+
+src_unpack() {
+    default
+
+    export GOMODCACHE="${FETCHEDDIR}/go/pkg/mod"
+
+    esandbox disable_net
+
+    edo pushd "${WORK}" 
+    edo go mod download -x
+    edo popd
+
+    esandbox enable_net
+}
+
+src_compile() {
+    edo mkdir bin
+    edo cd server
+    edo go build -v -installsuffix cgo -ldflags="-X=go.etcd.io/etcd/api/v3/version.GitSHA=v${PV}" -o "../bin/${PN}" .
+
+    edo cd ../etcdctl
+    edo go build -v -installsuffix cgo -ldflags="-X=go.etcd.io/etcd/api/v3/version.GitSHA=v${PV}" -o "../bin/${PN}ctl" .
+
+    edo cd ../etcdutl
+    edo go build -v -installsuffix cgo -ldflags="-X=go.etcd.io/etcd/api/v3/version.GitSHA=v${PV}" -o "../bin/${PN}utl" .
+}
+
+src_install() {
+    dobin "bin/${PN}"
+    dobin "bin/${PN}ctl"
+    dobin "bin/${PN}utl"
+}
