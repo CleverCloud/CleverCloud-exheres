@@ -5,6 +5,8 @@ export_exlib_phases src_unpack src_compile src_install
 
 MY_PN="kubernetes"
 SCM_CHECKOUT_TO="${MY_PN}"
+
+require alternatives
 require github [ tag="v${PV}" ]
 
 LICENCES="Apache-2.0"
@@ -36,6 +38,9 @@ kubernetes_src_compile() {
 }
 
 kubernetes_src_install() {
-    dobin ${PN}
+    edo mkdir -p "${IMAGE}usr/$(exhost --target)/bin"
+    edo mv ${PN} "${IMAGE}usr/$(exhost --target)/bin/${PN}.${SLOT}"
+
+    alternatives_for "${PN}" "${SLOT}" "50" "/usr/$(exhost --target)/bin/${PN}.${SLOT}" "${PN}"
 }
 
