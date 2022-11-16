@@ -1,0 +1,7 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cni [ kind="meta" ]
+
+DESCRIPTION="This plugin creates a VRF in the network namespace and assigns it the interface passed in the arguments. If the VRF is already present in the namespace, it only adds the interface to it. The table id is mandatory for VRF but optional in the CNI configuration. If not specified, the plugin generates a new one for each different VRF that is added to the namespace. It does not create any network interfaces and therefore does not bring connectivity by itself. It is only useful when used in addition to other plugins."
+PLATFORMS="~amd64"

@@ -1,0 +1,51 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+export_exlib_phases src_unpack src_compile src_install
+
+MY_PN="plugins"
+SCM_CHECKOUT_TO="plugins"
+
+require github [ user="containernetworking" tag="v${PV}" ]
+
+# Kind of the container network interface (a.k.a "ipam", "meta" or "main")
+myexparam kind
+
+kind="$(exparam kind)"
+kinds=("meta" "main" "ipam")
+if [[ ! "${kinds[*]}" =~ "${kind}" ]]; then
+    die "Unsupported kind for kubernetes cni, possible values are 'main', 'meta' or 'ipam', got '${kind}'"
+fi
+
+SUMMARY="Kubernetes - Container network interface - ${PN} plugin"
+HOMEPAGE="https://github.com/containernetworking/plugins https://www.cni.dev/plugins/current/${kind}/${PN}/"
+LICENCES="Apache-2.0"
+SLOT="0"
+DEPENDENCIES="
+    build:
+        dev-lang/go
+"
+
+RESTRICT=test
+
+cni_src_unpack() {
+    default
+
+    export GOMODCACHE="${FETCHEDDIR}/go/pkg/mod"
+
+    esandbox disable_net
+
+    edo pushd "${WORK}" 
+    edo go mod download -x
+    edo popd
+
+    esandbox enable_net
+}
+
+cni_src_compile() {
+    edo go build -v "./plugins/${kind}/${PN}"
+}
+
+cni_src_install() {
+    dobin "${PN}"
+}

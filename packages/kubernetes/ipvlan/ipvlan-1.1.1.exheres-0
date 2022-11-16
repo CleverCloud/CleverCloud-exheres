@@ -1,0 +1,7 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cni [ kind="main" ]
+
+DESCRIPTION="ipvlan is a new addition to the Linux kernel. Like its cousin macvlan, it virtualizes the host interface. However unlike macvlan which generates a new MAC address for each interface, ipvlan devices all share the same MAC. The kernel driver inspects the IP address of each packet when making a decision about which virtual interface should process the packet. Because all ipvlan interfaces share the MAC address with the host interface, DHCP can only be used in conjunction with ClientID (currently not supported by DHCP plugin)."
+PLATFORMS="~amd64"

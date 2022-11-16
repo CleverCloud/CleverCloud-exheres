@@ -1,0 +1,7 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cni [ kind="meta" ]
+
+DESCRIPTION="This plugin creates firewall rules to allow traffic to/from container IP address via the host network. It does not create any network interfaces and therefore does not set up connectivity by itself. It is intended to be used as a chained plugins."
+PLATFORMS="~amd64"

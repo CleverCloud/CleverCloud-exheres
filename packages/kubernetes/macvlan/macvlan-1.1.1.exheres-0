@@ -1,0 +1,7 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cni [ kind="main" ]
+
+DESCRIPTION="macvlan functions like a switch that is already connected to the host interface. A host interface gets “enslaved” with the virtual interfaces sharing the physical device but having distinct MAC addresses. Since each macvlan interface has its own MAC address, it makes it easy to use with existing DHCP servers already present on the network."
+PLATFORMS="~amd64"

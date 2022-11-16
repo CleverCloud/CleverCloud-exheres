@@ -1,0 +1,7 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cni [ kind="meta" ]
+
+DESCRIPTION="This plugin provides a way to use and configure Linux’s Traffic control (tc) subsystem. tc encompasses the sets of mechanisms and operations by which packets are queued for transmission/reception on a network interface."
+PLATFORMS="~amd64"

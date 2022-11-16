@@ -1,0 +1,7 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cni [ kind="meta" ]
+
+DESCRIPTION="This plugin will forward traffic from one or more ports on the host to the container. It expects to be run as a chained plugin."
+PLATFORMS="~amd64"

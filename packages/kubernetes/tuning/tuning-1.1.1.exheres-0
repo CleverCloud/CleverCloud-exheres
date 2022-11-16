@@ -1,0 +1,7 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cni [ kind="meta" ]
+
+DESCRIPTION="This plugin can change some system controls (sysctls) and several interface attributes (promiscuous mode, all-multicast mode, MTU and MAC address) in the network namespace. It does not create any network interfaces and therefore does not bring connectivity by itself. It is only useful when used in addition to other plugins."
+PLATFORMS="~amd64"

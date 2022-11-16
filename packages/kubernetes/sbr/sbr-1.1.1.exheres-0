@@ -1,0 +1,7 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cni [ kind="meta" ]
+
+DESCRIPTION="This plugin performs Source Based Routing (SBR). The most common and standard way to perform routing is to base it purely on the destination. However, in some applications which are using network separation for traffic management and security, there is no way to tell a priori which interface should be used, but the application is capable of making the decision."
+PLATFORMS="~amd64"
