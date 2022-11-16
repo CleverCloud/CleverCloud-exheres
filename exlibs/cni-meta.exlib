@@ -1,0 +1,41 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+export_exlib_phases src_unpack src_compile src_install
+
+MY_PN="plugins"
+SCM_CHECKOUT_TO="plugins"
+
+require github [ user="containernetworking" tag="v${PV}" ]
+
+SUMMARY="Some reference and example networking plugins, maintained by the CNI team"
+LICENCES="Apache-2.0"
+SLOT="0"
+DEPENDENCIES="
+    build:
+        dev-lang/go
+"
+
+RESTRICT=test
+
+cni-meta_src_unpack() {
+    default
+
+    export GOMODCACHE="${FETCHEDDIR}/go/pkg/mod"
+
+    esandbox disable_net
+
+    edo pushd "${WORK}" 
+    edo go mod download -x
+    edo popd
+
+    esandbox enable_net
+}
+
+cni-meta_src_compile() {
+    edo go build -v ./plugins/meta/${PN}
+}
+
+cni-meta_src_install() {
+    dobin "${PN}"
+}
