@@ -1,0 +1,41 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+export_exlib_phases src_unpack src_compile src_install
+
+MY_PN="multus-cni"
+SCM_CHECKOUT_TO="multus-cni"
+
+require github [ user="k8snetworkplumbingwg" tag="v${PV}" ]
+
+SUMMARY="A CNI meta-plugin for multi-homed pods in Kubernetes"
+LICENCES="Apache-2.0"
+SLOT="0"
+DEPENDENCIES="
+    build:
+        dev-lang/go
+"
+
+RESTRICT=test
+
+multus_src_unpack() {
+    default
+
+    export GOMODCACHE="${FETCHEDDIR}/go/pkg/mod"
+
+    esandbox disable_net
+
+    edo pushd "${WORK}" 
+    edo go mod download -x
+    edo popd
+
+    esandbox enable_net
+}
+
+multus_src_compile() {
+    edo go build -v ./cmd/${PN}
+}
+
+multus_src_install() {
+    dobin "${PN}"
+}
