@@ -1,0 +1,6 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require multus
+
+PLATFORMS="~amd64"
