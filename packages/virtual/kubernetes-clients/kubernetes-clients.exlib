@@ -1,0 +1,13 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Meta-package to provides kubernetes clients command lines"
+
+SLOT="$(ever range 1-2)"
+DEPENDENCIES="
+    run:
+        kubernetes/kubeadm:${SLOT}
+        kubernetes/kubectl:${SLOT}
+        kubernetes/kubectl-convert:${SLOT}
+        kubernetes/kubemark:${SLOT}
+"

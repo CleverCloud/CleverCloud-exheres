@@ -1,0 +1,31 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Meta-package to provides container network interfaces and kubernetes components for a node"
+
+SLOT="$(ever range 1-2)"
+DEPENDENCIES="
+    run:
+        kubernetes/bandwidth
+        kubernetes/bridge
+        kubernetes/dhcp
+        kubernetes/firewall
+        kubernetes/host-device
+        kubernetes/host-local
+        kubernetes/ipvlan
+        kubernetes/kube-proxy:${SLOT}
+        kubernetes/kubelet:${SLOT}
+        kubernetes/loopback
+        kubernetes/macvlan
+        kubernetes/multus-daemon
+        kubernetes/multus-shim
+        kubernetes/multus
+        kubernetes/portmap
+        kubernetes/ptp
+        kubernetes/sbr
+        kubernetes/static
+        kubernetes/tuning
+        kubernetes/vlan
+        kubernetes/vrf
+        virtual/kubernetes-clients:${SLOT}
+"
