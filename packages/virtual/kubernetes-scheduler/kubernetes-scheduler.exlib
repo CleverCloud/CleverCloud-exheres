@@ -1,0 +1,11 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Meta-package to provides kubernetes components for a scheduler node"
+
+SLOT="$(ever range 1-2)"
+DEPENDENCIES="
+    run:
+        kubernetes/kube-scheduler:${SLOT}
+        virtual/kubernetes-clients:${SLOT}
+"

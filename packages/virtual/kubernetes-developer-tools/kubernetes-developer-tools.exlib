@@ -1,0 +1,21 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Meta-package to provides kubernetes developer tools"
+
+SLOT="$(ever range 1-2)"
+DEPENDENCIES="
+    run:
+        kubernetes/clicheck:${SLOT}
+        kubernetes/dependencycheck:${SLOT}
+        kubernetes/dependencyverifier:${SLOT}
+        kubernetes/gendocs:${SLOT}
+        kubernetes/genkubedocs:${SLOT}
+        kubernetes/genman:${SLOT}
+        kubernetes/genswaggertypedocs:${SLOT}
+        kubernetes/genyaml:${SLOT}
+        kubernetes/importverifier:${SLOT}
+        kubernetes/preferredimports:${SLOT}
+        kubernetes/prune-junit-xml:${SLOT}
+        kubernetes/yamlfmt:${SLOT}
+"
