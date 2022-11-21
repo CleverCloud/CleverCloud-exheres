@@ -1,0 +1,26 @@
+From b88e8250314f6cf8e05ac6fc677cb8432fed19f0 Mon Sep 17 00:00:00 2001
+From: Florentin Dubois <florentin.dubois@clever-cloud.com>
+Date: Mon, 21 Nov 2022 15:51:00 +0100
+Subject: [PATCH] Update systemd service to change etcd binary path
+
+Signed-off-by: Florentin Dubois <florentin.dubois@clever-cloud.com>
+---
+ contrib/systemd/etcd.service | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/contrib/systemd/etcd.service b/contrib/systemd/etcd.service
+index 8fc0570c6..8729c2134 100644
+--- a/contrib/systemd/etcd.service
++++ b/contrib/systemd/etcd.service
+@@ -9,7 +9,7 @@ User=etcd
+ Type=notify
+ Environment=ETCD_DATA_DIR=/var/lib/etcd
+ Environment=ETCD_NAME=%m
+-ExecStart=/usr/bin/etcd
++ExecStart=/usr/host/bin/etcd
+ Restart=always
+ RestartSec=10s
+ LimitNOFILE=40000
+-- 
+2.38.1
+
