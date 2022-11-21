@@ -1,6 +1,7 @@
 # Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
+require systemd-service [ systemd_files=[ "contrib/systemd/etcd.service" ] ]
 require github [ user="etcd-io" tag="v${PV}" ]
 
 SUMMARY="A distributed, reliable key-value store for the most critical data of a distributed system"
@@ -10,6 +11,9 @@ SLOT="0"
 DEPENDENCIES="
     build:
         dev-lang/go
+    build+run:
+        group/${PN}
+        user/${PN}
 "
 
 RESTRICT=test
@@ -41,7 +45,16 @@ src_compile() {
 }
 
 src_install() {
+    install_systemd_files
+
     dobin "bin/${PN}"
     dobin "bin/${PN}ctl"
     dobin "bin/${PN}utl"
+
+    diropts -m 0700 -o "${PN}" -g "${PN}"
+    keepdir "/var/lib/${PN}"
+
+    edo mv etcd.conf.yml.sample conf.yml
+    insinto "/etc/${PN}"
+    doins conf.yml
 }
