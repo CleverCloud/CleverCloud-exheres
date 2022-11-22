@@ -1,0 +1,11 @@
+[Unit]
+Description = Trigger defragmentation of etcd's key space
+Documentation = https://etcd.io/docs/v3.5/op-guide/maintenance/
+
+[Timer]
+OnCalendar = 00/3:30:00
+Persistent = true
+
+[Install]
+WantedBy = timers.target
+

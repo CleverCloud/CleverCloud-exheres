@@ -1,0 +1,15 @@
+[Unit]
+Description = Snapshot etcd's key-space
+Documentation = https://etcd.io/docs/v3.5/op-guide/maintenance/
+After = etcd.service
+Wants = etcd.service
+
+[Service]
+User = etcd
+Type = oneshot
+ExecStart = /usr/bin/etcdctl compact 5
+Restart = on-failure
+RestartSec = 60s
+
+[Install]
+WantedBy = multi-user.target

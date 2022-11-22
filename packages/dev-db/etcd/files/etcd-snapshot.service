@@ -1,0 +1,15 @@
+[Unit]
+Description = Snapshot etcd's key-space
+Documentation = https://etcd.io/docs/v3.5/op-guide/maintenance/
+After = etcd.service
+Wants = etcd.service
+
+[Service]
+User = etcd
+Type = oneshot
+ExecStart = /bin/bash -c '/usr/bin/etcdctl snapshot save "/var/lib/etcd/snapshots/snapshot-$(/usr/bin/date +%%s).db"'
+Restart = on-failure
+RestartSec = 60s
+
+[Install]
+WantedBy = multi-user.target
