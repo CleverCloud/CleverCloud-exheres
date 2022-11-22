@@ -1,0 +1,24 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="CleverCloud" tag="v${PV}" force_git_clone=true ]
+require cargo
+
+SUMMARY="A kubernetes operator that expose clever cloud's resources through custom resource definition"
+HOMEPAGE="https://github.com/CleverCloud/clever-operator"
+SLOT="0"
+LICENCES="MIT"
+PLATFORMS="~amd64"
+
+MYOPTIONS="
+    logging [[ description = [ Enable logs from dependencies crates using the rust stardard logging facade ] ]]
+"
+
+DEPENDENCIES="
+    dev-libs/openssl
+    sys-libs/libgcc
+"
+
+BIN_ECARGO_FEATURE_ENABLES=(
+    'logging logging'
+)
