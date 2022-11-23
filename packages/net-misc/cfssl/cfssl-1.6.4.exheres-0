@@ -1,0 +1,26 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="cloudflare" tag="v${PV}" force_git_clone=true ]
+
+SUMMARY="Cloudflare's PKI and TLS toolkit"
+HOMEPAGE="https://github.com/cloudflare/cfssl"
+SLOT="0"
+LICENSCES="BSD-2"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+    build:
+        dev-lang/go
+"
+
+src_install() {
+    dobin bin/cfssl
+    dobin bin/cfssl-bundle
+    dobin bin/cfssl-certinfo
+    dobin bin/cfssl-newkey
+    dobin bin/cfssl-scan
+    dobin bin/cfssljson
+    dobin bin/mkbundle
+    dobin bin/multirootca
+}
