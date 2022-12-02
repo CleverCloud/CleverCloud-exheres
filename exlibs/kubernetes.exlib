@@ -14,6 +14,9 @@ SLOT=$(ever range 1-2)
 DEPENDENCIES="
     build:
         dev-lang/go
+    build+run:
+        group/${MY_PN}
+        user/${MY_PN}
 "
 
 RESTRICT=test
