@@ -2,7 +2,23 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require kubernetes
+require systemd-service [ systemd_files=[ "${FILES}/systemd" ] ]
 
 SUMMARY="Kubernetes - the API server validates and configures data for the api objects"
 PLATFORMS="~amd64"
 
+src_install() {
+    kubernetes_src_install
+
+    install_systemd_files
+
+    insinto "/etc/kubernetes"
+    doins "${FILES}/config.apiserver.env"
+
+    insinto "/etc/kubernetes/secrets"
+    doins "${FILES}/encryption-provider.yml"
+
+    keepdir "/etc/kubernetes/pki/etcd"
+    keepdir "/etc/kubernetes/pki/cluster"
+    keepdir "/etc/kubernetes/pki/clients"
+}
