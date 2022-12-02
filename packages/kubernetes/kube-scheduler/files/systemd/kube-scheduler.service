@@ -1,0 +1,28 @@
+[Unit]
+Description = Kubernetes - the API server validates and configures data for the api objects
+Documentation = https://github.com/kubernetes/kubernetes
+Wants = network-online.target local-fs.target remote-fs.target time-sync.target etcd.service
+After = network-online.target local-fs.target remote-fs.target time-sync.target etcd.service
+
+[Service]
+User = kubernetes
+LimitNOFILE=65536
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+Restart = on-failure
+RestartSec = 10s
+EnvironmentFile = /etc/kubernetes/config.scheduler.env
+ExecStart = /usr/bin/kube-scheduler \
+	--bind-address="${KUBERNETES_BIND_ADDRESS}" \
+	--secure-port="${KUBERNETES_SECURE_PORT}" \
+	--permit-address-sharing=true \
+	--permit-port-sharing=true \
+	--kubeconfig=/etc/kubernetes/pki/cluster/scheduler-kubeconfig.yml \
+	--client-ca-file=/etc/kubernetes/pki/cluster/ca.pem \
+	--requestheader-client-ca-file=/etc/kubernetes/pki/cluster/ca.pem \
+	--tls-cert-file=/etc/kubernetes/pki/cluster/scheduler/scheduler.pem \
+	--tls-private-key-file=/etc/kubernetes/pki/cluster/scheduler/scheduler-key.pem \
+	--tls-cipher-suites=TLS_AES_256_GCM_SHA384,TLS_CHACHA20_POLY1305_SHA256,TLS_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305 \
+	--tls-min-version=VersionTLS12
+	
+[Install]
+WantedBy = multi-user.target
