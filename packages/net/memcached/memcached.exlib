@@ -2,7 +2,6 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require systemd-service [ systemd_files=[ memcached.service ] ]
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
 
 export_exlib_phases src_install
 
@@ -23,6 +22,10 @@ DEPENDENCIES="
         user/memcached
 "
 
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --disable-proxy
+    --disable-proxy-uring
+)
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'sasl' 'platform:amd64 64bit' )
 
 memcached_src_install() {
