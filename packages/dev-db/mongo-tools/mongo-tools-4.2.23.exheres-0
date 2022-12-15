@@ -50,6 +50,7 @@ pkg_setup() {
 src_prepare() {
     default
 
+    export GO111MODULE="off"
     export GOROOT="/usr/$(exhost --target)/lib/go"
     export GOPATH="/usr/$(exhost --target)/lib/go:${WORK}/vendor"
 
