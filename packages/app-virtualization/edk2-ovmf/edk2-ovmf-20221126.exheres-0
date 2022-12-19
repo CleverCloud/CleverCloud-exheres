@@ -3,12 +3,16 @@
 
 require github [ user=tianocore project=edk2 tag=edk2-stable${PV:0:6} ]
 
-SUMMARY="iA modern, feature-rich, cross-platform firmware development environment for the UEFI"
+SUMMARY="A modern, feature-rich, cross-platform firmware development environment for the UEFI"
 HOMEPAGE="http://www.tianocore.org/edk2/"
 
 # See openssl submodule in https://github.com/tianocore/edk2/tree/master/CryptoPkg/Library/OpensslLib
-OPENSSL_VERSION="1.1.0h"
-DOWNLOADS+=" https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz"
+OPENSSL_VERSION="1.1.1n"
+BROTLI_COMMIT=f4153a09f87cbb9c826d8fc12c74642bb2d879ea
+DOWNLOADS+="
+    https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz
+    https://github.com/google/brotli/archive/${BROTLI_COMMIT}.tar.gz
+"
 
 LICENCES="BSD-2"
 SLOT="0"
@@ -17,27 +21,29 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build:
-        dev-lang/python:2.7
+        dev-lang/python:*[>=3.0]
         dev-lang/nasm
         sys-power/iasl
 "
 
-BUGS_TO="keurspe@exherbo.org"
-
 OVMF_ARCH="X64"
 OVMF_BUILD="RELEASE"
 
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/0001-Revert-readonly-pagetables-introduced-by-2ac1730-and.patch
-    "${FILES}"/0002-Add-more-16-10-HiDPI-2x-resolution-modes.patch
-)
-
 src_prepare() {
     local openssl_dir=CryptoPkg/Library/OpensslLib/openssl
+    local brotli_dir
+    local brotli_dirs=(
+        BaseTools/Source/C/BrotliCompress/brotli
+        MdeModulePkg/Library/BrotliCustomDecompressLib/brotli
+    )
 
     default
     edo rmdir ${openssl_dir}
     edo ln -s "${WORKBASE}"/openssl-${OPENSSL_VERSION} ${openssl_dir}
+    for brotli_dir in "${brotli_dirs[@]}"; do
+        edo rmdir ${brotli_dir}
+        edo ln -s "${WORKBASE}"/brotli-${BROTLI_COMMIT} ${brotli_dir}
+    done
 
     local dir="${WORKBASE}"/symlinked-build-tools
     local tool
