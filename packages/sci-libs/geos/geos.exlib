@@ -6,7 +6,7 @@ require cmake
 export_exlib_phases src_compile src_install
 
 SUMMARY="GEOS (Geometry Engine - Open Source) is a C++ port of the  Java Topology Suite (JTS)"
-HOMEPAGE="https://trac.osgeo.org/${PN}/"
+HOMEPAGE="https://libgeos.org/"
 DOWNLOADS="https://download.osgeo.org/${PN}/${PNV}.tar.bz2"
 
 LICENCES="LGPL-2.1"
@@ -21,6 +21,7 @@ DEPENDENCIES="
 CMAKE_SRC_CONFIGURE_PARAMS=(
     -DBUILD_BENCHMARKS:BOOL=OFF
     -DBUILD_SHARED_LIBS:BOOL=ON
+    -DUSE_CCACHE:BOOL=OFF
 )
 CMAKE_SRC_CONFIGURE_OPTION_BUILDS=(
     'doc DOCUMENTATION'
@@ -37,9 +38,6 @@ geos_src_compile() {
 
 geos_src_install() {
     cmake_src_install
-
-    # Remove empty dir
-    edo rmdir "${IMAGE}"/usr/$(exhost --target)/include/${PN}/vend
 
     if option doc ; then
         edo pushd "${WORK}"/doc/doxygen_docs
