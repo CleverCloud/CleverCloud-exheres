@@ -1,13 +1,13 @@
 # Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require alternatives setup-py [ import=setuptools blacklist=none ] pypi
+require github [ user=unbit ]
+require alternatives setup-py [ import=setuptools blacklist=none ]
 
 export_exlib_phases src_unpack src_compile src_install
 
 SUMMARY="Full stack for building (and hosting) network applications"
 HOMEPAGE="http://projects.unbit.it/uwsgi/"
-DOWNLOADS="http://projects.unbit.it/downloads/${PNV}.tar.gz"
 
 MYOPTIONS="
     apache [[ description = [ Build the apache modules ] ]]
