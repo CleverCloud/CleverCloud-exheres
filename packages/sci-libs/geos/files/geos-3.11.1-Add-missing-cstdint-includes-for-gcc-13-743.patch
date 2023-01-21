@@ -1,0 +1,97 @@
+Upstream: yes
+
+From 0e8d4368b8bd72a7d361286e8523ebce5cff6146 Mon Sep 17 00:00:00 2001
+From: Sergei Trofimovich <slyich@gmail.com>
+Date: Tue, 29 Nov 2022 23:10:22 +0000
+Subject: [PATCH] Add missing <cstdint> includes for gcc-13 (#743)
+
+Without the change build on `gcc-13` fails as:
+
+    geos/include/geos/geomgraph/TopologyLocation.h:143:52: error: 'uint32_t' has not been declared
+      143 |     bool isEqualOnSide(const TopologyLocation& le, uint32_t locIndex) const
+          |                                                    ^~~~~~~~
+---
+ include/geos/geomgraph/Depth.h                  | 1 +
+ include/geos/geomgraph/TopologyLocation.h       | 1 +
+ include/geos/io/WKTWriter.h                     | 1 +
+ include/geos/operation/overlayng/OverlayLabel.h | 2 ++
+ include/geos/shape/fractal/HilbertCode.h        | 1 +
+ include/geos/shape/fractal/MortonCode.h         | 1 +
+ 6 files changed, 7 insertions(+)
+
+diff --git a/include/geos/geomgraph/Depth.h b/include/geos/geomgraph/Depth.h
+index 368ab1f7d..6a533b7ca 100644
+--- a/include/geos/geomgraph/Depth.h
++++ b/include/geos/geomgraph/Depth.h
+@@ -24,6 +24,7 @@
+ #include <geos/geom/Location.h>
+ #include <geos/geom/Position.h>
+ #include <string>
++#include <cstdint>
+ 
+ // Forward declarations
+ namespace geos {
+diff --git a/include/geos/geomgraph/TopologyLocation.h b/include/geos/geomgraph/TopologyLocation.h
+index 21044f1fd..7c37159ed 100644
+--- a/include/geos/geomgraph/TopologyLocation.h
++++ b/include/geos/geomgraph/TopologyLocation.h
+@@ -27,6 +27,7 @@
+ #include <array>
+ #include <string>
+ #include <cassert>
++#include <cstdint>
+ 
+ #ifdef _MSC_VER
+ #pragma warning(push)
+diff --git a/include/geos/io/WKTWriter.h b/include/geos/io/WKTWriter.h
+index 439ab70ba..97c3468c4 100644
+--- a/include/geos/io/WKTWriter.h
++++ b/include/geos/io/WKTWriter.h
+@@ -24,6 +24,7 @@
+ 
+ #include <string>
+ #include <cctype>
++#include <cstdint>
+ 
+ #ifdef _MSC_VER
+ #pragma warning(push)
+diff --git a/include/geos/operation/overlayng/OverlayLabel.h b/include/geos/operation/overlayng/OverlayLabel.h
+index e13a3235b..59dab3684 100644
+--- a/include/geos/operation/overlayng/OverlayLabel.h
++++ b/include/geos/operation/overlayng/OverlayLabel.h
+@@ -14,6 +14,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <geos/geom/Location.h>
+ #include <geos/geom/Position.h>
+ #include <geos/export.h>
+diff --git a/include/geos/shape/fractal/HilbertCode.h b/include/geos/shape/fractal/HilbertCode.h
+index 76defbc52..d7e8d274c 100644
+--- a/include/geos/shape/fractal/HilbertCode.h
++++ b/include/geos/shape/fractal/HilbertCode.h
+@@ -17,6 +17,7 @@
+ 
+ #include <geos/export.h>
+ #include <string>
++#include <cstdint>
+ 
+ // Forward declarations
+ namespace geos {
+diff --git a/include/geos/shape/fractal/MortonCode.h b/include/geos/shape/fractal/MortonCode.h
+index 6743f87cf..ad4a42e7d 100644
+--- a/include/geos/shape/fractal/MortonCode.h
++++ b/include/geos/shape/fractal/MortonCode.h
+@@ -17,6 +17,7 @@
+ 
+ #include <geos/export.h>
+ #include <string>
++#include <cstdint>
+ 
+ // Forward declarations
+ namespace geos {
+-- 
+2.39.1
+
