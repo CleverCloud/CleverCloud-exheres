@@ -35,7 +35,7 @@ DEPENDENCIES="
         dev-libs/libxml2:2.0
         media-libs/libpng:=
         media-libs/libwebp:0.6
-        media-libs/tiff[>=4.0]
+        media-libs/tiff:=[>=4.0]
         net-misc/curl
         sci-libs/libgeotiff
         sci-libs/proj[>=6]

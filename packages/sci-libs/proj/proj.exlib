@@ -17,7 +17,7 @@ DEPENDENCIES="
     build+run:
         dev-db/sqlite:3[>=3.11]
         net-misc/curl
-        tiff? ( media-libs/tiff )
+        tiff? ( media-libs/tiff:= )
     test:
         dev-cpp/gtest[>=1.8.1]
 "

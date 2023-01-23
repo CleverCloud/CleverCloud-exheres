@@ -13,7 +13,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build+run:
-        media-libs/tiff
+        media-libs/tiff:=
         sci-libs/proj
         sys-libs/zlib
         providers:ijg-jpeg? ( media-libs/jpeg:= )

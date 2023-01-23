@@ -44,7 +44,7 @@ DEPENDENCIES="
             media-libs/libpng:=
         )
         svg? ( gnome-desktop/librsvg:2 )
-        tiff? ( media-libs/tiff[webp?] )
+        tiff? ( media-libs/tiff:=[webp?] )
         webp? ( media-libs/libwebp:=[tiff?] )
 "
 
