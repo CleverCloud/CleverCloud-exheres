@@ -3,9 +3,7 @@
 # Based in part upon 'gdal-1.10.1.ebuild' from Gentoo, which is:
 #     Copyright 1999-2014 Gentoo Foundation
 
-require autotools [ supported_autoconf=[ 2.7 ] supported_automake=[ 1.16 ] ]
-
-export_exlib_phases src_prepare src_install
+require cmake
 
 SUMMARY="Geospatial Data Abstraction Library"
 HOMEPAGE="https://gdal.org/"
@@ -18,17 +16,21 @@ MYOPTIONS="
     fits [[ description = [ Support for the F(lexible)I(mage)T(ransport)S(ystem) format ] ]]
     geos
     heif [[ description = [ Support for the H(igh) E(fficiency) I(mage) F(ile) F(ormat) ] ]]
+    jpegxl
+    lz4
     openexr
+    pdf
     postgresql
+    zstd
     ( providers: ijg-jpeg jpeg-turbo ) [[ number-selected = exactly-one ]]
     ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
 DEPENDENCIES="
     build:
-        sys-devel/gettext
         virtual/pkg-config
     build+run:
+        app-arch/libarchive
         app-arch/xz
         dev-libs/expat
         dev-libs/json-c:=[>=0.13]
@@ -37,69 +39,92 @@ DEPENDENCIES="
         media-libs/libwebp:0.6
         media-libs/tiff:=[>=4.0]
         net-misc/curl
+        sci-libs/geos
         sci-libs/libgeotiff
         sci-libs/proj[>=6]
+        sci-libs/qhull
         sys-libs/zlib
         deflate? ( app-arch/libdeflate )
         fits? ( sci-libs/cfitsio:= )
-        geos? ( sci-libs/geos )
         heif? ( media-libs/libheif[>=1.1] )
+        jpegxl? ( media-libs/libjxl:= )
+        lz4? ( app-arch/lz4 )
         openexr? (
             media-libs/imath
             media-libs/openexr[>=3]
         )
+        pdf? ( app-text/poppler )
         postgresql? ( dev-db/postgresql-client )
         providers:ijg-jpeg? ( media-libs/jpeg:= )
         providers:jpeg-turbo? ( media-libs/libjpeg-turbo )
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl:= )
+        zstd? ( app-arch/zstd )
 "
 
-DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
-    'deflate libdeflate'
-    'fits cfitsio'
-    'geos'
-    heif
-    'openexr exr'
-    'postgresql pg'
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    -DBASH_COMPLETIONS_DIR:PATH=""
+    # Would need python and swig
+    -DBUILD_PYTHON_BINDINGS:BOOL=FALSE
+    -DCMAKE_DISABLE_FIND_PACKAGE_CSharp:BOOL=TRUE
+    -DCMAKE_DISABLE_FIND_PACKAGE_Java:BOOL=TRUE
+    -DCMAKE_DISABLE_FIND_PACKAGE_JNI:BOOL=TRUE
+    -DCMAKE_DISABLE_FIND_PACKAGE_Python:BOOL=TRUE
+    -DCMAKE_DISABLE_FIND_PACKAGE_SWIG:BOOL=TRUE
+    -DGDAL_USE_EXTERNAL_LIBS:BOOL=TRUE
+    -DGDAL_USE_ARROW:BOOL=FALSE
+    -DGDAL_USE_BRUNSLI:BOOL=FALSE
+    -DGDAL_USE_CRYPTOPP:BOOL=FALSE
+    -DGDAL_USE_CURL:BOOL=TRUE
+    -DGDAL_USE_EXPAT:BOOL=TRUE
+    -DGDAL_USE_GEOS:BOOL=TRUE
+    -DGDAL_USE_GEOTIFF:BOOL=TRUE
+    -DGDAL_USE_GIF:BOOL=FALSE
+    -DGDAL_USE_HDF5:BOOL=FALSE
+    -DGDAL_USE_JPEG:BOOL=TRUE
+    -DGDAL_USE_JSONC:BOOL=TRUE
+    # "proprietary libraries KAKADU"
+    -DGDAL_USE_KDU:BOOL=FALSE
+    -DGDAL_USE_KEA:BOOL=FALSE
+    -DGDAL_USE_LERC:BOOL=FALSE
+    -DGDAL_USE_LIBLZMA:BOOL=TRUE
+    -DGDAL_USE_LURATECH:BOOL=FALSE
+    -DGDAL_USE_MONGOCXX:BOOL=FALSE
+    -DGDAL_USE_MSSQL_ODBC:BOOL=FALSE
+    -DGDAL_USE_MYSQL:BOOL=FALSE
+    -DGDAL_USE_ODBC:BOOL=FALSE
+    -DGDAL_USE_ODBCCPP:BOOL=FALSE
+    -DGDAL_USE_OPENCAD:BOOL=FALSE
+    -DGDAL_USE_OPENCL:BOOL=FALSE
+    -DGDAL_USE_OPENJPEG:BOOL=FALSE
+    -DGDAL_USE_PCRE2:BOOL=FALSE
+    -DGDAL_USE_PDFIUM:BOOL=FALSE
+    -DGDAL_USE_PNG:BOOL=TRUE
+    -DGDAL_USE_PODOFO:BOOL=FALSE
+    -DGDAL_USE_QHULL:BOOL=TRUE
+    -DGDAL_USE_SFCGAL:BOOL=FALSE
+    -DGDAL_USE_RASTERLITE2:BOOL=FALSE
+    -DGDAL_USE_SPATIALITE:BOOL=FALSE
+    -DGDAL_USE_SQLITE3:BOOL=FALSE
+    -DGDAL_USE_TIFF:BOOL=TRUE
+    -DGDAL_USE_XERCESC:BOOL=FALSE
+    # Bundles an ancient flatbuffers versions and thus fails to build
+    -DOGR_ENABLE_DRIVER_FLATGEOBUF:BOOL=FALSE
+    -DUSE_CCACHE:BOOL=FALSE
+
 )
-
-# gdal directly installs its files in /usr/share instead of
-# creating its own folder
-DEFAULT_SRC_CONFIGURE_PARAMS=(
-    --datarootdir=/usr/share/${PN}
-    --datadir=/usr/share/${PN}
-    --without-charls
-    --without-cryptopp
-    --without-gif
-    --without-hdf5
-    --without-jasper
-    --without-openjpeg
-    --without-pcre
-    --without-rasterlite2
-    --without-spatialite
-    --without-sqlite3
-    --without-xerces
-    --without-zstd
+CMAKE_SRC_CONFIGURE_OPTIONS=(
+    'fits GDAL_USE_CFITSIO'
+    'deflate GDAL_USE_DEFLATE'
+    'heif GDAL_USE_HEIF'
+    'jpegxl GDAL_USE_JXL'
+    'lz4 GDAL_USE_LZ4'
+    'openexr GDAL_USE_OPENEXR'
+    'pdf GDAL_USE_POPPLER'
+    'postgresql GDAL_USE_POSTGRESQL'
+    'zstd GDAL_USE_ZSTD'
 )
-
-gdal_src_prepare() {
-    edo sed -i "s/pkg-config/$(exhost --target)-pkg-config/g" scripts/GNUmakefile
-
-    # search for the correct library
-    # https://github.com/OSGeo/gdal/issues/4766
-    edo sed \
-        -e 's:IlmImf:OpenEXR:g' \
-        -i configure.ac
-
-    # workaround autoconf 2.7 failure
-    edo cp /usr/share/gettext/config.rpath .
-
-    autotools_src_prepare
-}
-
-gdal_src_install() {
-    default
-    edo rmdir "${IMAGE}"/usr/$(exhost --target)/lib/gdalplugins
-}
+CMAKE_SRC_CONFIGURE_TESTS=(
+    '-DBUILD_TESTING:BOOL=TRUE -DBUILD_TESTING:BOOL=FALSE'
+)
 
