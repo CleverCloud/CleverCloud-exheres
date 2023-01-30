@@ -8,14 +8,15 @@ require cmake
 export_exlib_phases src_test
 
 SUMMARY="PROJ.4 - Cartographic Projections Library"
-HOMEPAGE="https://trac.osgeo.org/${PN}/"
-DOWNLOADS="http://download.osgeo.org/${PN}/${PNV}.tar.gz"
+HOMEPAGE="https://proj.org/"
+DOWNLOADS="https://download.osgeo.org/${PN}/${PNV}.tar.gz"
 
 MYOPTIONS="tiff"
 
 DEPENDENCIES="
     build+run:
         dev-db/sqlite:3[>=3.11]
+        dev-libs/json[>=3.7.0]
         net-misc/curl
         tiff? ( media-libs/tiff:= )
     test:
@@ -25,12 +26,18 @@ DEPENDENCIES="
 LICENCES="MIT"
 SLOT="0"
 
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/0001-CmakeLists-Fix-hardcoded-datarootdir.patch )
 CMAKE_SRC_CONFIGURE_PARAMS=(
+    -DCMAKE_INSTALL_DOCDIR="/usr/share/doc/${PNVR}"
     -DENABLE_CURL=ON
+    -DNLOHMANN_JSON_ORIGIN=external
+    -DRUN_NETWORK_DEPENDENT_TESTS=OFF
     -DUSE_EXTERNAL_GTEST=ON
+    -DUSE_CCACHE=OFF
 )
 CMAKE_SRC_CONFIGURE_OPTION_ENABLES=( TIFF )
+CMAKE_SRC_CONFIGURE_TESTS=(
+    '-DBUILD_TESTING:BOOL=TRUE -DBUILD_TESTING:BOOL=FALSE'
+)
 
 proj_src_test(){
     # PROJ_LIB is used as searchpath for proj.db
@@ -42,6 +49,6 @@ proj_src_test(){
         tests_to_skip="(Deformation|geotiff_grids|defmodel|proj_test_cpp_api|gie_self_tests|test_network)"
     fi
 
-    emake ARGS+="-E '${tests_to_skip}'" test
+    ctest ARGS+="-E '${tests_to_skip}'" test
 }
 
