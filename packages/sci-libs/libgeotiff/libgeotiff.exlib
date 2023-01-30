@@ -2,10 +2,10 @@
 # Distributed under the terms of the GNU General Public License v2
 
 SUMMARY="A TIFF based interchange format for georeferenced raster imagery"
-HOMEPAGE="http://trac.osgeo.org/geotiff/"
-DOWNLOADS="http://download.osgeo.org/geotiff/${PN}/${PNV}.tar.gz"
+HOMEPAGE="https://trac.osgeo.org/geotiff/"
+DOWNLOADS="https://download.osgeo.org/geotiff/${PN}/${PNV}.tar.gz"
 
-LICENCES="GPL-2"
+LICENCES="MIT"
 SLOT="0"
 MYOPTIONS="
      ( providers: ijg-jpeg jpeg-turbo ) [[ number-selected = exactly-one ]]
