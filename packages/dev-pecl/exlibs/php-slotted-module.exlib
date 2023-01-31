@@ -13,7 +13,7 @@ php-slotted-module_install_one_multibuild() {
 
     local abi_version=$(ls "${IMAGE}"/usr/share/php-${abi})
     [[ -d "${IMAGE}"/usr/share/php-${abi}/${abi_version} ]] || die "Could not find ABI version for ${abi} (guessed '${abi_version}')"
-    alternatives_for php-${abi}-${PN} ${SLOT} 1000 \
+    alternatives_for php-${abi}-${PN} ${SLOT} ${SLOT} \
         /etc/php-${abi}/${PN}.ini ${PN}.ini.${SLOT} \
         /usr/share/php-${abi}/${abi_version}/${PN}.so ${PN}-${SLOT}.so
 }
