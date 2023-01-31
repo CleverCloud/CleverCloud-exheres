@@ -1,6 +1,6 @@
 # Copyright 2016 Marc-Antoine Perennou
 # Distributed under the terms of the GNU General Public License v2
 
-require mongodb [ php_abis=[ 5.6 7.0 7.1 ] ]
+require mongodb [ php_abis=[ 5.6 7.0 7.1 7.2 7.3 7.4 ] ]
 
 PLATFORMS="~amd64"
