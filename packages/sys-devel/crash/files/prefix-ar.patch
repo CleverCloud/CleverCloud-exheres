@@ -1,0 +1,23 @@
+Upstream: no
+Reason: we forbid non-prefixed tool in exheres env
+
+--- a/Makefile	2023-02-21 17:21:07.836523830 +0100
++++ b/Makefile	2023-02-21 17:21:33.356786220 +0100
+@@ -245,6 +245,8 @@
+ CONF_TARGET_FLAG += -x valgrind
+ endif
+ 
++AR ?= ar
++
+ # To build the extensions library by default, uncomment the third command
+ # line below.  Otherwise they can be built by entering "make extensions".
+ 
+@@ -294,7 +296,7 @@
+ 		patch -p0 < ${GDB}.patch; cp ${GDB}.patch ${GDB}; fi
+ 
+ library: ${OBJECT_FILES}
+-	ar -rs ${PROGRAM}lib.a ${OBJECT_FILES}
++	$(AR) -rs ${PROGRAM}lib.a ${OBJECT_FILES}
+ 
+ gdb: force
+ 	rm -f ${GDB_OFILES}

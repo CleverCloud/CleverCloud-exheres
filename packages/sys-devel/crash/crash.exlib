@@ -1,0 +1,92 @@
+# Copyright 2023 Quentin “Sardem FF7” Glidic <sardemff7@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+myexparam gdb
+
+require github [ user=crash-utility tag=${PV} ]
+
+exparam -v GDB_VERSION gdb
+
+SUMMARY="Linux kernel crash utility"
+DOWNLOADS+="
+    mirror://sourceware/gdb/releases/gdb-${GDB_VERSION}.tar.xz
+"
+
+LICENCES="GPL-3 LGPL-3"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        sys-apps/texinfo[>=6.3]
+        sys-devel/gettext
+    build+run:
+        app-arch/xz
+        dev-libs/mpfr:=[>=2.4.2]
+        dev-libs/xxHash [[ note = [ Optional, but tiny and apparently fast ] ]]
+        sys-libs/ncurses[>=5.2]
+        sys-libs/readline:=[>=7.0]
+        sys-libs/zlib
+"
+
+RESTRICT="test"
+
+export_exlib_phases pkg_setup src_prepare src_configure src_compile src_install
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/prefix-ar.patch
+    "${FILES}"/1add37b567a7dee39d99f37b37802034c3fce9c4.patch
+)
+EMAKE_OPTS=(
+    GDB=gdb-${GDB_VERSION}
+    pkg_config_prog_path=/usr/$(exhost --build)/bin/$(exhost --tool-prefix)pkg-config
+)
+
+crash_pkg_setup() {
+    local target=$(exhost --target)
+    target=${target%%-*}
+    target=${target^^}
+    export CRASH_TARGET=${target}
+}
+
+crash_src_prepare() {
+    edo mv "${WORKBASE}"/gdb-${GDB_VERSION} gdb-${GDB_VERSION}
+    echo "../../${PN} ../../${PN}lib.a" | edo tee gdb-${GDB_VERSION}/gdb/mergeobj
+    emake gdb_patch "${EMAKE_OPTS[@]}"
+    default
+}
+
+crash_src_configure() {
+    edo pushd gdb-${GDB_VERSION}
+    local econf_params=(
+        --disable-gold
+        --disable-gprofng
+        --disable-libbacktrace
+        --disable-objc-gc
+        --disable-pgo-build
+        --disable-sim
+        --disable-werror
+        --with-curses
+        --with-system-readline
+        --with-system-zlib
+        --without-expat
+        --without-guile
+        --without-python
+    )
+    econf "${econf_params[@]}"
+    emake configure-gdb "${EMAKE_OPTS[@]}"
+    edo popd
+
+    emake make_configure "${EMAKE_OPTS[@]}"
+    edo ./configure -b -t${CRASH_TARGET}
+}
+
+crash_src_compile() {
+    edo pushd gdb-${GDB_VERSION}
+    emake CRASH_TARGET=${CRASH_TARGET}
+    edo popd
+}
+
+crash_src_install() {
+    dobin ${PN}
+}
