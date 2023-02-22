@@ -1,0 +1,29 @@
+# Copyright 2023 Quentin “Sardem FF7” Glidic <sardemff7@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ release=${PV} suffix=tar.gz ]
+
+SUMMARY="Make Linux crash dump small by filtering and compressing pages"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        (
+            app-arch/bz2
+            app-arch/xz
+            dev-util/elfutils
+            sys-libs/zlib
+        ) [[ *note = [ Static linking ] ]]
+"
+
+export_exlib_phases src_prepare
+
+makedumpfile_src_prepare() {
+    default
+    sed -i \
+        -e "s:usr/sbin:usr/$(exhost --target)/bin:" \
+        Makefile
+}
