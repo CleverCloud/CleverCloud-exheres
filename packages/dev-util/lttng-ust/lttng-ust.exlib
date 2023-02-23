@@ -19,7 +19,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build+run:
-        dev-libs/urcu[>=0.11.0]
+        dev-libs/userspace-rcu[>=0.11.0]
         numa? ( sys-apps/numactl[>=2.0.12] )
 "
 
