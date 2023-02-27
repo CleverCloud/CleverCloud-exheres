@@ -10,6 +10,7 @@ PIDFile=/run/pgpool/pgpool.pid
 ExecStart=/usr/bin/pgpool -f /etc/pgpool2/pgpool.conf -n
 ExecStop=/usr/bin/pgpool -f /etc/pgpool2/pgpool.conf -m fast stop
 ExecReload=/usr/bin/pgpool -f /etc/pgpool2/pgpool.conf reload
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
