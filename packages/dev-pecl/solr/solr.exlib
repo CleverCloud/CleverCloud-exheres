@@ -7,7 +7,10 @@ LICENCES="PHP-3"
 
 DEPENDENCIES="
     build+run:
-        dev-libs/libxml2
+        dev-libs/libxml2:2.0
         net-misc/curl
 "
+
+# need Apache Solr server
+RESTRICT=test
 
