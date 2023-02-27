@@ -8,3 +8,6 @@ PLATFORMS="~amd64"
 LICENCES="PHP-3"
 SLOT="0"
 
+# reason: PHP 8 only
+RESTRICT=test
+
