@@ -3,7 +3,7 @@
 
 MY_PN="apm-agent-php"
 require github [ user="elastic" tag="v${PV}" ]
-require php-pecl [ module=module soname=elastic_apm work="${MY_PN}-${PV}/src/ext" php_abis=[ 7.2 7.3 7.4 8.0 8.1 ] ]
+require php-pecl [ module=module soname=elastic_apm work="${MY_PN}-${PV}/src/ext" php_abis=[ 7.2 7.3 7.4 8.0 8.1 8.2 ] ]
 
 SUMMARY="This is the official PHP agent for Elastic APM"
 HOMEPAGE="https://www.elastic.co/apm"
