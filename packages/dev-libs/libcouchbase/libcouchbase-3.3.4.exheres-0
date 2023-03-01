@@ -14,6 +14,8 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build+run:
+	dev-libs/libuv
+	dev-libs/openssl:=
         dev-libs/libev
         dev-libs/libevent:=
 "
