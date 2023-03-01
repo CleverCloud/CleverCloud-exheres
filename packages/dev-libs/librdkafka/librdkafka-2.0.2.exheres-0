@@ -15,6 +15,7 @@ DEPENDENCIES="
     build+run:
         app-arch/lz4
         app-arch/zstd
+    	net-misc/curl
         sys-libs/zlib
         doc? (
             app-doc/doxygen
