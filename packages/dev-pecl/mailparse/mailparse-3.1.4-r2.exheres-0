@@ -4,4 +4,5 @@
 require php-pecl [ module=module php_abis=[ 7.3 7.4 8.0 8.1 8.2 ] ]
 
 PLATFORMS="~amd64"
+SLOT="${PV}"
 
