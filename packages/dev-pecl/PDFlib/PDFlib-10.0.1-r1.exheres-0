@@ -26,9 +26,11 @@ php-pecl_install_one_multibuild() {
     local abi=$(php-pecl_get_abi)
 
     exeinto $(php-config-${abi} --extension-dir)
-    newexe bind/php/php-"${abi//./}0"/php_pdflib.so ${PN}.so
+    newexe bind/php/php-"${abi//./}0"-nts/php_pdflib.so ${PN}.so
 
-    edo mkdir -p "${IMAGE}"/etc/php-${abi}
-    echo "extension = ${PN}.so" > "${IMAGE}"/etc/php-${abi}/${PN}.ini
+    insinto /etc/php-${abi}
+    hereins ${PN}.ini <<INI
+extension = ${PN}.so
+INI
 }
 
