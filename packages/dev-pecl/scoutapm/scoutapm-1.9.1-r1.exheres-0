@@ -1,7 +1,7 @@
 # Copyright 2022 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require php-pecl [ module=module php_abis=[ 7.1 7.2 7.3 7.4 8.0 8.1 8.2 ] ]
+require php-pecl [ module=zend php_abis=[ 7.1 7.2 7.3 7.4 8.0 8.1 8.2 ] ]
 
 SUMMARY="Native Extension Component for ScoutAPM's PHP Agent"
 PLATFORMS="~amd64"
