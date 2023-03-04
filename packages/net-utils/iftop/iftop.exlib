@@ -1,5 +1,7 @@
-# Copyright 2012 Kevin Decherf <kevin@kdecherf.com> 
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
+
+require flag-o-matic
 
 SUMMARY="display bandwidth usage on an interface"
 HOMEPAGE="http://www.ex-parrot.com/pdw/${PN}"
@@ -14,3 +16,9 @@ DEPENDENCIES="
         sys-libs/ncurses
 "
 
+export_exlib_phases src_configure
+
+iftop_src_configure() {
+    append-flags -fcommon
+    default
+}
