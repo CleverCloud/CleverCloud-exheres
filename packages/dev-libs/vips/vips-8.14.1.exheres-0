@@ -1,7 +1,7 @@
 # Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=lib${PN} project=lib${PN} release=v${PV} suffix="tar.gz" ]
+require github [ user=lib${PN} project=lib${PN} release=v${PV} suffix="tar.xz" ] meson
 
 SUMMARY="libvips is a demand-driven, horizontally threaded image processing library"
 
@@ -9,9 +9,28 @@ LICENCES="LGPL-2.1"
 SLOT="0"
 PLATFORMS="~amd64"
 
-MYOPTIONS="exif fftw fits gif gsf heif imagemagick jpeg lcms openexr orc png svg tiff webp"
+MYOPTIONS="
+    exif
+    fftw
+    fits [[ description = [ Support for F(lexible) I(mage) T(ransport) S(ystem) format ] ]]
+    gif
+    gobject-introspection
+    gsf [[ description = [ Support for GNOME Structured File format ] ]]
+    heif
+    imagemagick
+    jpeg
+    jpeg-xl
+    lcms
+    openexr
+    orc [[ description = [ Runtime compiler support to accelerate some operations ] ]]
+    png
+    svg
+    tiff
+    webp
+"
+
 DEPENDENCIES="
-    build: 
+    build:
         virtual/pkg-config
     build+run:
         app-text/poppler
@@ -25,21 +44,23 @@ DEPENDENCIES="
         exif? ( media-libs/libexif )
         fftw? ( sci-libs/fftw )
         fits? ( sci-libs/cfitsio )
-	gif? ( media-libs/cgif )
+        gif? ( media-libs/cgif )
+        gobject-introspection? ( gnome-desktop/gobject-introspection:1 )
         gsf? ( office-libs/libgsf )
         heif? ( media-libs/libheif )
         imagemagick? ( media-gfx/ImageMagick[fftw?][heif?][lcms?][openexr?][pango][svg?][tiff?] )
-        jpeg? ( 
-            media-libs/libjpeg-turbo 
+        jpeg? (
+            media-libs/libjpeg-turbo
             media-libs/OpenJPEG
         )
+        jpeg-xl? ( media-libs/libjxl:= )
         lcms? ( media-libs/lcms2[tiff?] )
         openexr? (
             media-libs/imath
             media-libs/openexr[>=3]
         )
         orc? ( dev-libs/orc:0.4 )
-        png? ( 
+        png? (
             media-gfx/libimagequant
             media-libs/libpng:=
         )
@@ -51,31 +72,34 @@ DEPENDENCIES="
 # All tests are run, even if an option is disabled.
 RESTRICT="test"
 
-# Unpackaged
-DEFAULT_SRC_CONFIGURE_PARAMS=(
-    --without-matio
-    --without-openslide
-    --without-pdfium
+MESON_SRC_CONFIGURE_PARAMS=(
+    -Djpeg-xl=disabled
+    -Dmatio=disabled
+    -Dopenslide=disabled
+    -Dpdfium=disabled
+    -Dmagick-package=MagickCore
 )
 
-DEFAULT_SRC_CONFIGURE_OPTIONS=(
-    'imagemagick --with-magickpackage=MagickCore --without-magick'
+MESON_SRC_CONFIGURE_OPTION_SWITCHES=(
+    'gobject-introspection introspection'
 )
 
-DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
+MESON_SRC_CONFIGURE_OPTION_FEATURES=(
     'gif cgif'
-    'exif libexif'
-    'fftw'
+    exif
+    fftw
     'fits cfitsio'
-    'gsf'
-    'heif'
-    'jpeg'
-    'lcms'
-    'openexr OpenEXR'
-    'orc'
-    'png'
+    gsf
+    heif
+    'imagemagick magick'
+    jpeg
+    jpeg-xl
+    lcms
+    openexr
+    orc
+    png
     'svg rsvg'
-    'tiff'
-    'webp libwebp'
+    tiff
+    webp
 )
 
