@@ -17,6 +17,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build+run:
+        dev-libs/libxcrypt:=
         apache? ( www-servers/apache )
         ruby? ( dev-lang/ruby:= )
 "
