@@ -1,0 +1,14 @@
+# Copyright 2023 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require gitlab [ user=dalibo new_download_scheme=true ]
+require postgresql [ min_version=11 max_version=15 ]
+
+SUMMARY="postgresql_anonymizer is an extension to mask or replace personally identifiable information (PII) or commercially sensitive data from a PostgreSQL database"
+PLATFORMS="~amd64"
+LICENCES="PostgreSQL"
+SLOT="0"
+
+MYOPTIONS=""
+DEPENDENCIES=""
+
