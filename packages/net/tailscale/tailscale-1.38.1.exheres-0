@@ -1,0 +1,48 @@
+# Copyright 2023 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ tag=v${PV} force_git_clone=true ]
+require systemd-service [ systemd_files=[ cmd/${PN}d/${PN}d.service ] ]
+
+SUMMARY="Tailscale lets you easily manage access to private resources, quickly SSH into devices on your network, and work securely from anywhere in the world"
+LICENCES="BSD-3"
+PLATFORMS="~amd64"
+SLOT="0"
+DEPENDENCIES="
+    build:
+        dev-lang/go[>=1.20]
+"
+
+RESTRICT=test
+
+# TODO(s0dyy): Support go.mod in the Go exlib
+src_unpack() {
+    scm_src_unpack
+
+    export GOMODCACHE="${FETCHEDDIR}/go/pkg/mod"
+
+    esandbox disable_net
+
+    edo pushd "${WORK}"
+    edo go mod download -x
+    edo popd
+
+    esandbox enable_net
+}
+
+src_compile() {
+    flags="-X ${PN}.com/version.longStamp=${PV}-$(git rev-parse --short HEAD) -X ${PN}.com/version.shortStamp=${PV}"
+
+    edo go build -v -ldflags "${flags}" ${PN}.com/cmd/${PN}
+    edo go build -v -ldflags "${flags}" ${PN}.com/cmd/${PN}d
+}
+
+src_install() {
+    dobin ${PN}{,d}
+
+    insinto /etc/default
+    insopts -m0600 ; doins cmd/${PN}d/${PN}d.defaults
+
+    install_systemd_files
+}
+
