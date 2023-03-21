@@ -41,6 +41,10 @@ ECARGO_FEATURES=(
     'enterprise'
 )
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/0001-enhancement-service-systemd-service-restart-always-1.patch
+)
+
 src_install() {
     ecargo_install
 
