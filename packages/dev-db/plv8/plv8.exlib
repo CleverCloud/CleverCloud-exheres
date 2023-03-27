@@ -20,9 +20,8 @@ prepare_one_multibuild() {
     default
     edo sed \
         -e 's/^PG_CONFIG\s*=.*/PG_CONFIG ?= pg_config/g' \
+        -e '/Makefile.linux/d' \
         -i Makefile
-    edo mkdir -p build/v8/include build/gn/out/gn
-    edo touch libv8_monolith.a
 }
 
 compile_one_multibuild() {
