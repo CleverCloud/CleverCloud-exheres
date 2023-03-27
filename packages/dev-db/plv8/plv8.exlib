@@ -18,16 +18,18 @@ DEPENDENCIES="
 
 prepare_one_multibuild() {
     default
-    sed -e 's/^PG_CONFIG\s*=.*/PG_CONFIG ?= pg_config/g' \
-        -e 's/-lv8/-lv8_monolith/' \
-        -i Makefile.shared
+    edo sed \
+        -e 's/^PG_CONFIG\s*=.*/PG_CONFIG ?= pg_config/g' \
+        -i Makefile
+    edo mkdir -p build/v8/include build/gn/out/gn
+    edo touch libv8_monolith.a
 }
 
 compile_one_multibuild() {
-    emake -f ./Makefile.shared CUSTOM_CC=$(exhost --tool-prefix)g++ V8_OUTDIR=/usr/host/lib all
+    emake CUSTOM_CC=$(exhost --tool-prefix)g++ V8_OUTDIR=/usr/$(exhost --target)/lib AUTOV8_STATIC_LIBS=-lv8_monolith all
 }
 
 install_one_multibuild() {
-    emake -f ./Makefile.shared CUSTOM_CC=$(exhost --tool-prefix)g++ DESTDIR=${IMAGE} install
+    emake CUSTOM_CC=$(exhost --tool-prefix)g++ DESTDIR=${IMAGE} install
 }
 
