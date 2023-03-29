@@ -29,6 +29,8 @@ DEPENDENCIES="
         user/zabbix
         java? ( virtual/jre )
         snmp? ( net/net-snmp )
+    run:
+        net-misc/fping
     suggestion:
         net-analyzer/zabbix-agent
         net-analyzer/zabbix-frontend
