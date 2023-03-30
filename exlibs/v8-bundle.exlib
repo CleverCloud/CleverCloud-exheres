@@ -1,0 +1,213 @@
+# Copyright 2012 Michael Thomas <aelmalinka@gmail.com>
+# Copyright 2016 Arnaud Lefebvre <a.lefebvre@outlook.fr>
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public Licesnse v2
+
+myexparam v8_work
+
+exparam -v V8_WORK v8_work
+
+LICENCES+="BSD-3 [[ note = [ v8 ] ]]"
+
+# SCM dependencies
+scm_deps=(
+    "gn"
+    "build"
+    "buildtools"
+    "script"
+    "depot_tools"
+    "icu"
+    "libc"
+    "libcabi"
+    "trace_event"
+    "zlib"
+    "googletest"
+    "google_benchmark"
+    "jinja2"
+    "markupsafe"
+)
+
+scm_deps_repositories=(
+    "https://gn.googlesource.com/gn"
+    "https://chromium.googlesource.com/chromium/src/build"
+    "https://chromium.googlesource.com/chromium/src/buildtools"
+    "https://chromium.googlesource.com/chromium/llvm-project/cfe/tools/clang-format"
+    "https://chromium.googlesource.com/chromium/tools/depot_tools"
+    "https://chromium.googlesource.com/chromium/deps/icu"
+    "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libcxx"
+    "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libcxxabi"
+    "https://chromium.googlesource.com/chromium/src/base/trace_event/common"
+    "https://chromium.googlesource.com/chromium/src/third_party/zlib"
+    "https://chromium.googlesource.com/external/github.com/google/googletest"
+    "https://chromium.googlesource.com/external/github.com/google/benchmark"
+    "https://chromium.googlesource.com/chromium/src/third_party/jinja2"
+    "https://chromium.googlesource.com/chromium/src/third_party/markupsafe"
+)
+
+scm_deps_unpack_to=(
+    "gn"
+    "build"
+    "buildtools"
+    "buildtools/clang_format/script"
+    "third_party/depot_tools"
+    "third_party/icu"
+    "buildtools/third_party/libc++/trunk"
+    "buildtools/third_party/libc++abi/trunk"
+    "base/trace_event/common"
+    "third_party/zlib"
+    "third_party/googletest/src"
+    "third_party/google_benchmark/src"
+    "third_party/jinja2"
+    "third_party/markupsafe"
+)
+
+SCM_NO_AUTOMATIC_FINALISE=1
+SCM_SECONDARY_REPOSITORIES="${scm_deps[@]}"
+
+require scm-git providers
+
+# We need to set that for submodules to be put in the correct place
+SCM_REPOSITORY=https://github.com/v8/v8
+SCM_REVISION=${v8_revision}
+SCM_UNPACK_TO=${V8_WORK}
+SCM_CHECKOUT_TO=v8
+
+for (( i=0; i<${#scm_deps[@]}; i++ )); do
+    SCM_THIS=${scm_deps[$i]}
+    scm_dep_revision=${SCM_THIS}_revision
+    scm_set_var REPOSITORY "${scm_deps_repositories[$i]}.git"
+    scm_set_var REVISION ${!scm_dep_revision}
+    scm_set_var UNPACK_TO "${V8_WORK}/${scm_deps_unpack_to[$i]}"
+done
+
+scm_finalise
+
+MYOPTIONS="
+    platform:
+        x86
+        amd64
+"
+
+DEPENDENCIES="
+    build:
+        dev-lang/python:*
+"
+
+RESTRICT="test"
+
+v8_platform() {
+    if option "platform:amd64" ; then
+        echo "x64"
+    elif option "platform:x86" ; then
+        echo "ia32"
+    fi
+}
+
+export_exlib_phases src_unpack src_prepare src_compile src_test
+
+scm_multiunpack_hook() {
+    scm_multiunpack "${1}"
+}
+
+v8-bundle_unpack() {
+    scm_src_unpack
+
+    pushd "${V8_WORK}"
+    esandbox disable_net
+    edo third_party/depot_tools/vpython -vpython-tool install
+    esandbox enable_net
+    popd
+}
+
+v8-bundle_src_unpack() {
+    default
+    v8-bundle_unpack
+}
+
+v8-bundle_prepare() {
+    pushd "${V8_WORK}"
+    edo sed -i \
+        -e "/default='pkg-config'/s:'pkg-config':os.environ['PKG_CONFIG']:" \
+        build/config/linux/pkg-config.py
+    edo sed -i \
+        -e '/gcc_toolchain("x86")/,/}/s:"gcc":"i686-pc-linux-gnu-cc":' \
+        -e '/gcc_toolchain("x86")/,/}/s:"g++":"i686-pc-linux-gnu-c++":' \
+        -e '/gcc_toolchain("x86")/,/}/s:"readelf":"i686-pc-linux-gnu-readelf":' \
+        -e '/gcc_toolchain("x86")/,/}/s:"nm":"i686-pc-linux-gnu-nm":' \
+        -e '/gcc_toolchain("x86")/,/}/s:"ar":"i686-pc-linux-gnu-ar":' \
+        -e '/gcc_toolchain("x64")/,/}/s:"gcc":"x86_64-pc-linux-gnu-cc":' \
+        -e '/gcc_toolchain("x64")/,/}/s:"g++":"x86_64-pc-linux-gnu-c++":' \
+        -e '/gcc_toolchain("x64")/,/}/s:"readelf":"x86_64-pc-linux-gnu-readelf":' \
+        -e '/gcc_toolchain("x64")/,/}/s:"nm":"x86_64-pc-linux-gnu-nm":' \
+        -e '/gcc_toolchain("x64")/,/}/s:"ar":"x86_64-pc-linux-gnu-ar":' \
+        build/toolchain/linux/BUILD.gn
+
+    if [[ -d "${FILES}"/v8-bundle ]]; then
+        expatch "${FILES}"/v8-bundle
+    fi
+
+    popd
+}
+
+v8-bundle_src_prepare() {
+    default
+    v8-bundle_prepare
+}
+
+v8-bundle_compile() {
+    export PATH="${V8_WORK}/third_party/depot_tools:${PATH}"
+
+    pushd "${V8_WORK}"
+    pushd gn
+    python build/gen.py
+    ninja -C out
+    edo cp out/gn "${V8_WORK}"/buildtools/linux64
+    popd
+
+    edo tee build/config/gclient_args.gni <<EOF
+checkout_fuchsia_for_amd64_host = false
+checkout_google_benchmark = false
+EOF
+
+    edo mkdir -p out/$(v8_platform).release
+    edo tee out/$(v8_platform).release/args.gn <<EOF
+is_component_build = false
+is_debug = false
+target_cpu = "$(v8_platform)"
+v8_target_cpu = "$(v8_platform)"
+v8_enable_backtrace = true
+v8_enable_disassembler = true
+v8_enable_object_print = true
+v8_enable_verify_heap = true
+v8_enable_i18n_support = true
+v8_monolithic=true
+v8_use_external_startup_data=false
+v8_enable_pointer_compression=true
+is_clang = false
+use_sysroot = false
+use_custom_libcxx=false
+use_goma = false
+goma_dir = "None"
+EOF
+
+    edo gn gen out/$(v8_platform).release
+
+    esandbox disable_net
+    edo autoninja -C out/$(v8_platform).release v8_monolith
+    esandbox enable_net
+
+    popd
+}
+
+v8-bundle_src_compile() {
+    v8-bundle_compile
+}
+
+v8-bundle_test() {
+    providers_set 'python 2'
+    edo tools/dev/gm.py $(v8_platform).release.check
+}
+
+v8-bundle_src_test() {
+    v8-bundle_test
+}

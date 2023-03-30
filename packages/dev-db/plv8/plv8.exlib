@@ -2,8 +2,27 @@
 # Copyright 2018 Arnaud Lefebvre <a.lefebvre@outlook.fr>
 # Distributed under the terms of the GNU General Public License v2
 
+# Revisions for SCM dependencies
+# These deps can be found in the DEPS file at the root of the v8 project
+v8_revision="6ababec33dea8a86e3477a727a5ecaaa310708ab"
+gn_revision="eea3906f0e2a8d3622080127d2005ff214d51383"
+build_revision="bbf7f0ed65548c4df862d2a2748e3a9b908a3217"
+buildtools_revision="b00ad0af636401e5eb4b5d0ab01b65164dca1914"
+script_revision="96636aa0e9f047f17447f2d45a094d0b59ed7917"
+depot_tools_revision="25f1303ed83e97fe62c5365be597cef269612c65"
+icu_revision="75e34bcccea0be165c31fdb278b3712c516c5876"
+libc_revision="d9040c75cfea5928c804ab7c235fed06a63f743a"
+libcabi_revision="196ba1aaa8ac285d94f4ea8d9836390a45360533"
+trace_event_revision="3da1e2fcf66acd5c7194497b4285ac163f32e239"
+zlib_revision="563140dd9c24f84bf40919196e9e7666d351cc0d"
+googletest_revision="47f819c3ca54fb602f432904443e00a0a1fe2f42"
+google_benchmark_revision="7f27afe83b82f3a98baf58ef595814b9d42a5b2b"
+jinja2_revision="ee69aa00ee8536f61db6a451f3858745cf587de6"
+markupsafe_revision="1b882ef6372b58bfd55a3285f37ed801be9137cd"
+
 require github [ tag=v${PV} ]
 require postgresql
+require v8-bundle [ v8_work=${WORKBASE}/v8 ]
 
 SUMMARY="V8 Engine Javascript Procedural Language add-on for PostgreSQL"
 
@@ -13,19 +32,35 @@ SLOT="0"
 DEPENDENCIES="
     build+run:
         dev-libs/icu:*
-        dev-libs/v8[>=8.6.405-r1]
 "
+
+export_exlib_phases src_unpack src_prepare src_compile
+
+plv8_src_unpack() {
+    v8-bundle_unpack
+    easy-multibuild_src_unpack
+}
+
+plv8_src_prepare() {
+    v8-bundle_prepare
+    easy-multibuild_src_prepare
+}
 
 prepare_one_multibuild() {
     default
+    postgresql_prepare_one_multilib
     edo sed \
-        -e 's/^PG_CONFIG\s*=.*/PG_CONFIG ?= pg_config/g' \
         -e '/Makefile.linux/d' \
         -i Makefile
 }
 
+plv8_src_compile() {
+    v8-bundle_compile
+    easy-multibuild_src_compile
+}
+
 compile_one_multibuild() {
-    emake CUSTOM_CC=$(exhost --tool-prefix)g++ V8_OUTDIR=/usr/$(exhost --target)/lib AUTOV8_STATIC_LIBS=-lv8_monolith all
+    emake CUSTOM_CC=$(exhost --tool-prefix)g++ V8_OUTDIR="${V8_WORK}/out/$(v8_platform).release/obj" AUTOV8_OUT="${V8_WORK}/out/$(v8_platform).release/obj" AUTOV8_DIR="${V8_WORK}" AUTOV8_STATIC_LIBS=-lv8_monolith all
 }
 
 install_one_multibuild() {
