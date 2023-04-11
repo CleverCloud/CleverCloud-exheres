@@ -3,9 +3,12 @@
 
 require github [ user=${PN} tag=v${PV} ] cmake [ api=2 ]
 
-export_exlib_phases src_install
+OPENCENSUS_VERSION=0.3.0
+
+export_exlib_phases src_unpack src_install
 
 SUMMARY="High performance, open source, general RPC framework"
+DOWNLOADS+=" https://github.com/census-instrumentation/opencensus-proto/archive/v${OPENCENSUS_VERSION}.tar.gz -> opencensus-proto-${OPENCENSUS_VERSION}.tar.gz"
 
 LICENCES="Apache-2.0"
 SLOT="0"
@@ -29,6 +32,12 @@ DEPENDENCIES="
 
 # Tests require benchmark package
 RESTRICT="test"
+
+grpc_src_unpack() {
+    cmake_src_unpack
+    edo rmdir "${CMAKE_SOURCE}"/third_party/opencensus-proto
+    edo ln -sTf "${WORKBASE}"/opencensus-proto-${OPENCENSUS_VERSION} "${CMAKE_SOURCE}"/third_party/opencensus-proto
+}
 
 CMAKE_SRC_CONFIGURE_PARAMS=(
     -DgRPC_BUILD_CODEGEN:BOOL=ON
