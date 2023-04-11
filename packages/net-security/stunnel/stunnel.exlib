@@ -3,9 +3,9 @@
 # Based upon 'net-security/stunnel-4.53-r1:pipping' which is
 #   Copyright 2011 Elias Pipping <pipping@exherbo.org>
 
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 1.15 ] ] systemd-service
+require bash-completion systemd-service
 
-export_exlib_phases src_prepare src_configure src_install
+export_exlib_phases src_install src_test
 
 SUMMARY="SSL encryption wrapper between remote client and local or remote server"
 HOMEPAGE="https://www.${PN}.org/"
@@ -15,29 +15,44 @@ LICENCES="GPL-2"
 SLOT="0"
 MYOPTIONS="
     systemd [[ description = [ support activation through systemd socket ] ]]
-    ( providers: openssl ) [[ number-selected = exactly-one ]]
+    tcpd
 "
 
 DEPENDENCIES="
     build+run:
+        dev-libs/openssl:=
         systemd? ( sys-apps/systemd )
-        providers:openssl? ( dev-libs/openssl )
+        tcpd? ( sys-apps/tcp-wrappers )
 "
 
-stunnel_src_prepare() {
-    edo sed -e '/^install-data-local:/,/^$/d' -i tools/Makefile.am
-    autotools_src_prepare
-}
-
-stunnel_src_configure(){
-    econf $(option_enable systemd)
-}
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
+    systemd
+    "tcpd libwrap"
+)
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
+    "bash-completion bashcompdir ${BASHCOMPLETIONDIR}"
+)
 
 stunnel_src_install() {
     default
 
+    # Remove empty state dir installed to wrong location
+    edo pushd "${IMAGE}"
+    edo rmdir -p var/lib/lib/stunnel
+    edo popd
+
     # Copy systemd unit from examples
     insinto ${SYSTEMDSYSTEMUNITDIR}
     doins "${IMAGE}"/usr/share/doc/${PN}/examples/${PN}.service
+}
+
+stunnel_src_test() {
+    esandbox allow_net unix:"${TEMP}/stunnel_tests.*/unix.sock"
+    esandbox allow_net --connect unix:"${TEMP}/stunnel_tests.*/unix.sock"
+
+    default
+
+    esandbox disallow_net unix:"${TEMP}/stunnel_tests.*/unix.sock"
+    esandbox disallow_net --connect unix:"${TEMP}/stunnel_tests.*/unix.sock"
 }
 
