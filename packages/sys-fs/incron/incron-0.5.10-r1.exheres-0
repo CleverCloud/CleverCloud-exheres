@@ -6,6 +6,8 @@ require incron
 PLATFORMS="~amd64"
 
 DEFAULT_SRC_PREPARE_PATCHES=(
+        "${FILES}"/exherbo-layout.patch
         "${FILES}"/gcc-4.7-fix.patch
+        "${FILES}"/gcc-10-fix.patch
 )
 
