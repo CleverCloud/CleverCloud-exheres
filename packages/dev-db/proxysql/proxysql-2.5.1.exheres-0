@@ -32,7 +32,6 @@ DEPENDENCIES="
 
 DEFAULT_SRC_PREPARE_PATCHES=(
     "${FILES}/libinjection-ar-cc-ld-python3.patch"
-    "${FILES}/cmake-3.20-syntax-error.patch"
 )
 
 pkg_setup() {
