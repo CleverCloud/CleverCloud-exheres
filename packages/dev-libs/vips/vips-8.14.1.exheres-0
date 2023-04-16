@@ -43,7 +43,7 @@ DEPENDENCIES="
         x11-libs/pango
         exif? ( media-libs/libexif )
         fftw? ( sci-libs/fftw )
-        fits? ( sci-libs/cfitsio )
+        fits? ( sci-libs/cfitsio:= )
         gif? ( media-libs/cgif )
         gobject-introspection? ( gnome-desktop/gobject-introspection:1 )
         gsf? ( office-libs/libgsf )
