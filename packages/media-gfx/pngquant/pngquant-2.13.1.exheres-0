@@ -17,7 +17,7 @@ DEPENDENCIES="
     build+run:
         media-gfx/libimagequant 
         media-libs/lcms2
-        media-libs/libpng
+        media-libs/libpng:=
         openmp? ( sys-libs/openmp )
         sys-libs/zlib
 "
