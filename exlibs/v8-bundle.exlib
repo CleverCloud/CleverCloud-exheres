@@ -64,7 +64,7 @@ scm_deps_unpack_to=(
 SCM_NO_AUTOMATIC_FINALISE=1
 SCM_SECONDARY_REPOSITORIES="${scm_deps[@]}"
 
-require scm-git providers ninja
+require scm-git providers
 
 # We need to set that for submodules to be put in the correct place
 SCM_REPOSITORY=https://github.com/v8/v8
@@ -162,7 +162,7 @@ v8-bundle_compile() {
     pushd "${V8_WORK}"
     pushd gn
     python build/gen.py
-    eninja -C out
+    edo ninja -v -j${EXJOBS:-1} -C out
     edo cp out/gn "${V8_WORK}"/buildtools/linux64
     popd
 
