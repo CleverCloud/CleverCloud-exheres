@@ -64,7 +64,7 @@ scm_deps_unpack_to=(
 SCM_NO_AUTOMATIC_FINALISE=1
 SCM_SECONDARY_REPOSITORIES="${scm_deps[@]}"
 
-require scm-git providers
+require scm-git providers ninja
 
 # We need to set that for submodules to be put in the correct place
 SCM_REPOSITORY=https://github.com/v8/v8
@@ -90,7 +90,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build:
-        dev-lang/python:*
+        dev-lang/python:*[<3]
 "
 
 RESTRICT="test"
@@ -155,12 +155,14 @@ v8-bundle_src_prepare() {
 }
 
 v8-bundle_compile() {
+(
+    providers_set 'python 2'
     export PATH="${V8_WORK}/third_party/depot_tools:${PATH}"
 
     pushd "${V8_WORK}"
     pushd gn
     python build/gen.py
-    ninja -C out
+    eninja -C out
     edo cp out/gn "${V8_WORK}"/buildtools/linux64
     popd
 
@@ -197,6 +199,7 @@ EOF
     esandbox enable_net
 
     popd
+)
 }
 
 v8-bundle_src_compile() {
@@ -204,8 +207,10 @@ v8-bundle_src_compile() {
 }
 
 v8-bundle_test() {
+(
     providers_set 'python 2'
     edo tools/dev/gm.py $(v8_platform).release.check
+)
 }
 
 v8-bundle_src_test() {
