@@ -41,7 +41,9 @@ src_install() {
     dobin ${PN}{,d}
 
     insinto /etc/default
-    insopts -m0600 ; doins cmd/${PN}d/${PN}d.defaults
+    insopts -m0600
+    doins cmd/${PN}d/${PN}d.defaults
+    mv ${IMAGE}/etc/default/${PN}d{.defaults,}
 
     install_systemd_files
 }
