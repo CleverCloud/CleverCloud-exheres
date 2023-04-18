@@ -1,0 +1,18 @@
+# Copyright 2023 Alexandre DUVAL <kannarfr@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require jetbrains-ide
+
+SUMMARY="Java IDE for Professional Developers"
+HOMEPAGE="https://www.jetbrains.com/idea/"
+DOWNLOADS="https://download.jetbrains.com/idea/ideaIU-${PV}.tar.gz"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+src_unpack() {
+    default
+    edo mv idea-IU-* ${PNV}
+}
