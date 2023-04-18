@@ -3,7 +3,7 @@
 
 require github [ user=vectordotdev tag="v${PV}" force_git_clone=true ]
 require cargo [ disable_default_features=true rust_minimum_version="1.66.0" ]
-require systemd-service [ systemd_files=[ distribution/systemd/${PN}.service ] systemd_tmpfiles=[ ${FILES}/${PN}.conf ] ]
+require systemd-service [ systemd_files=[ distribution/systemd/${PN}.service ${FILES}/${PN}@.service ] systemd_tmpfiles=[ ${FILES}/${PN}.conf ] ]
 
 SUMMARY="Vector is a lightweight, ultra-fast, open-source tool for building observability pipelines"
 HOMEPAGE="https://vector.dev"
@@ -14,6 +14,7 @@ SLOT="0"
 MYOPTIONS="
     examples [[ description = [ Install config examples ] ]]
 "
+
 DEPENDENCIES="
     build+run:
         dev-libs/openssl
@@ -39,10 +40,6 @@ ECARGO_FEATURES=(
     'unix'
     'vrl-cli'
     'enterprise'
-)
-
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/0001-enhancement-service-systemd-service-restart-always-1.patch
 )
 
 src_install() {
