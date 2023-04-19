@@ -2,8 +2,6 @@
 # Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 1.15 ] ]
-require postgresql
 require alternatives
 
 SUMMARY="Spatial and Geographic objects for PostgreSQL"
@@ -35,20 +33,21 @@ DEPENDENCIES="
 
 RESTRICT="test"
 
-DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( 
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    CPPBIN=/usr/host/bin/$(exhost --tool-prefix)cpp
+)
+
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
     'address-standardizer'
     'protobuf'
     'topology'
 )
 
 prepare_one_multibuild() {
-    edo sed -e "s/ar rs/${AR} rs/" -i libpgcommon/Makefile.in -i raster/rt_core/Makefile.in
-    if ever at_least 3; then
-        edo sed -e "s/ar rs/${AR} rs/"  -i deps/wagyu/Makefile.in
+    if ! ever at_least 3; then
+        edo sed -e "s/ar rs/${AR} rs/" -i libpgcommon/Makefile.in -i raster/rt_core/Makefile.in
     fi
-    edo sed -e "/AC_PATH_PROG.*cpp/s/cpp/${CPP}/" -i configure.ac
-
-    autotools_src_prepare
+    default
 }
 
 install_one_multibuild() {
