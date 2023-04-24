@@ -1,8 +1,6 @@
 # Copyright 2017 Julien Durillon <julien.durillon@gmail.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 1.15 ] ]
-
 SUMMARY="IPsec-based VPN solution focused on security and ease of use, supporting IKEv1/IKEv2 and MOBIKE"
 HOMEPAGE="http://www.strongswan.org/"
 DOWNLOADS="https://download.strongswan.org/${PNV}.tar.bz2"
@@ -53,6 +51,7 @@ DEPENDENCIES="
     build+run:
         !net-misc/openswan
         sys-kernel/linux-headers
+        sys-libs/pam
         botan? ( dev-libs/botan:= )
         caps? ( sys-libs/libcap )
         curl? ( net-misc/curl )
@@ -61,7 +60,6 @@ DEPENDENCIES="
         ldap? ( net-directory/openldap )
         mysql? ( virtual/mysql )
         networkmanager? ( net-apps/NetworkManager )
-        pam? ( sys-libs/pam )
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl:= )
         sqlite? ( dev-db/sqlite[>=3.3.1] )
@@ -72,79 +70,77 @@ DEPENDENCIES="
 
 BUGS_TO="julien.durillon@gmail.com"
 
-src_configure() {
-    local params=(
-        "--disable-static"
-        "--enable-chapoly"
-        "--enable-ikev1"
-        "--enable-ikev2"
-        "--enable-kernel-netlink"
-        "--enable-socket-dynamic"
-        "--enable-swanctl"
-        "--enable-systemd"
-        "--enable-vici"
-        "--with-group=ipsec"
-        $(option_with caps capabilities /usr/$(exhost --target))
-        $(option_with systemd systemdsystemunitdir /usr/$(exhost --target)/lib/systemd/system)
-        $(option_enable botan)
-        $(option_enable constraints)
-        $(option_enable curl)
-        $(option_enable debug leak-detective)
-        $(option_enable dhcp)
-        $(option_enable eap)
-        $(option_enable eap eap-sim)
-        $(option_enable eap eap-sim-file)
-        $(option_enable eap eap-simaka-sql)
-        $(option_enable eap eap-simaka-pseudonym)
-        $(option_enable eap eap-simaka-reauth)
-        $(option_enable eap eap-identity)
-        $(option_enable eap eap-md5)
-        $(option_enable eap eap-aka)
-        $(option_enable eap eap-aka-3gpp2)
-        $(option_enable eap md4)
-        $(option_enable eap eap-mschapv2)
-        $(option_enable eap eap-radius)
-        $(option_enable eap eap-tls)
-        $(option_enable eap xauth-eap)
-        $(option_enable farp)
-        $(option_enable gcrypt)
-        $(option_enable gmp)
-        $(option_enable kernel-libipsec)
-        $(option_enable kernel-pfkey)
-        $(option_enable ldap)
-        $(option_enable mysql)
-        $(option_enable mysql attr-sql)
-        $(option_enable mysql sql)
-        $(option_enable networkmanager nm)
-        $(option_enable pam xauth-pam)
-        $(option_enable pkcs11)
-        $(option_enable sqlite)
-        $(option_enable sqlite attr-sql)
-        $(option_enable sqlite sql)
-        $(option_enable plugins:led         led)
-        $(option_enable plugins:lookip      lookip)
-        $(option_enable plugins:systime-fix systime-fix)
-        $(option_enable plugins:unity       unity)
-        $(option_enable plugins:blowfish    blowfish)
-        $(option_enable plugins:ccm         ccm)
-        $(option_enable plugins:ctr         ctr)
-        $(option_enable plugins:gcm         gcm)
-        $(option_enable plugins:ha          ha)
-        $(option_enable plugins:ipseckey    ipseckey)
-        $(option_enable plugins:ntru        ntru)
-        $(option_enable plugins:padlock     padlock)
-        $(option_enable plugins:rdrand      rdrand)
-        $(option_enable plugins:whitelist   whitelist)
-        $(option_enable providers:openssl   openssl)
-        $(option_enable providers:libressl  openssl)
-    )
-    if option pam && option eap; then
-        params+=( '--enable-eap-gtc' )
-    else
-        params+=( '--disable-eap-gtc' )
-    fi
-    econf ${params[@]}
-}
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --disable-static
+    --enable-chapoly
+    --enable-ikev1
+    --enable-ikev2
+    --enable-kernel-netlink
+    --enable-socket-dynamic
+    --enable-swanctl
+    --enable-systemd
+    --enable-vici
+    --enable-xauth-pam
+    --with-group=ipsec
+)
+
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
+        "caps capabilities /usr/$(exhost --target)"
+        "systemd systemdsystemunitdir /usr/$(exhost --target)/lib/systemd/system"
+)
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
+    botan
+    constraints
+    curl
+    'debug leak-detective'
+    dhcp
+    eap
+    'eap eap-gtc'
+    'eap eap-sim'
+    'eap eap-sim-file'
+    'eap eap-simaka-sql'
+    'eap eap-simaka-pseudonym'
+    'eap eap-simaka-reauth'
+    'eap eap-identity'
+    'eap eap-md5'
+    'eap eap-aka'
+    'eap eap-aka-3gpp2'
+    'eap md4'
+    'eap eap-mschapv2'
+    'eap eap-radius'
+    'eap eap-tls'
+    'eap xauth-eap'
+    farp
+    gcrypt
+    gmp
+    kernel-libipsec
+    kernel-pfkey
+    ldap
+    mysql
+    'mysql attr-sql'
+    'mysql sql'
+    'networkmanager nm'
+    pkcs11
+    sqlite
+    'sqlite attr-sql'
+    'sqlite sql'
+    plugins:led
+    plugins:lookip
+    plugins:systime-fix
+    plugins:unity
+    plugins:blowfish
+    plugins:ccm
+    plugins:ctr
+    plugins:gcm
+    plugins:ha
+    plugins:ipseckey
+    plugins:ntru
+    plugins:padlock
+    plugins:rdrand
+    plugins:whitelist
+    providers:openssl
+    'providers:libressl openssl'
+)
 
 src_install() {
     default
