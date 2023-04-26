@@ -1,0 +1,15 @@
+# Copyright 2023 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module php_abis=[ 8.0 8.1 ] ]
+
+SUMMARY="Functions to write XML-RPC servers and clients"
+LICENCES="PHP-3"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS=""
+DEPENDENCIES="
+    dev-lang/php:=[xml]
+"
+
