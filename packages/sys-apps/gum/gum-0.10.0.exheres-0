@@ -1,0 +1,36 @@
+# Copyright 2023 Yannick Guern <yannick.guern@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=charmbracelet tag=v${PV} force_git_clone=true ]
+
+SUMMARY="A tool for glamorous shell scripts. Leverage the power of Bubbles and Lip Gloss in your scripts and aliases without writing any Go code!"
+LICENCES="MIT"
+PLATFORMS="~amd64"
+SLOT="0"
+DEPENDENCIES="
+    build:
+        dev-lang/go[>=1.20]
+"
+
+src_unpack() {
+    scm_src_unpack
+
+    export GOMODCACHE="${FETCHEDDIR}/go/pkg/mod"
+
+    esandbox disable_net
+
+    edo pushd "${WORK}"
+    edo go mod download -x
+    edo popd
+
+    esandbox enable_net
+}
+
+src_compile() {
+    edo go build -v -o ${PN}
+}
+
+src_install() {
+    dobin ${PN}
+}
+
