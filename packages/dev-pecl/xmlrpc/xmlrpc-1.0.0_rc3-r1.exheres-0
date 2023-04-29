@@ -10,6 +10,6 @@ PLATFORMS="~amd64"
 
 MYOPTIONS=""
 DEPENDENCIES="
-    dev-lang/php:=[xml]
+    dev-lang/php:*[php_extensions:xml]
 "
 
