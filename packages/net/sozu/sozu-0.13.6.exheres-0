@@ -2,6 +2,93 @@
 # Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-PLATFORMS="~amd64"
+require alternatives
+require github [ user=sozu-proxy force_git_clone=true tag="${PV}" ]
+require systemd-service [ systemd_files=[ "${FILES}/systemd/${PN}-${SLOT}.service" "${FILES}/systemd/${PN}-${SLOT}@.service" ] ]
+require cargo
 
-require sozu
+PLATFORMS="~amd64"
+SUMMARY="Sōzu reverse proxy"
+DESCRIPTION="Sōzu is a lightweight, fast, always-up reverse proxy server."
+HOMEPAGE="https://www.sozu.io"
+SLOT=$(ever range 1-2)
+BUGS_TO="Florentin Dubois <florentin.dubois@clever-cloud.com>"
+LICENCES="AGPL-3.0"
+
+MYOPTIONS="
+    logs-debug [[ description = [ Add support for DEBUG logs level ] ]]
+    logs-trace [[
+        description = [ Add support for TRACE logs level ]
+        requires = logs-debug
+    ]]
+    tolerant-http1-parser [[ description = [ Enable a more tolerant parser for HTTP1 requests ] ]]
+    (
+        providers:
+            openssl [[ description = [ Add support for OpenSSL as a SSL provider ] ]]
+    )
+"
+
+DEPENDENCIES="
+    build+run:
+        providers:openssl? ( dev-libs/openssl )
+"
+
+setup_cargo_features() {
+    if [[ "bin" == "${1}" ]]; then
+        ECARGO_FEATURE_ENABLES=('logs-debug logs-debug' 'logs-trace logs-trace' 'tolerant-http1-parser tolerant-http1-parser' 'providers:openssl use-openssl')
+    else 
+        ECARGO_FEATURE_ENABLES=('logs-debug logs-debug' 'logs-trace logs-trace')
+    fi
+}
+
+pkg_setup() {
+  default
+  export SOZU_CONFIG=/etc/sozu/config.toml
+}
+
+src_compile() {
+    local dirs=("bin" "ctl")
+
+    for dir in "${dirs[@]}"; do
+        pushd "${dir}"
+            setup_cargo_features "${dir}"
+            cargo_src_compile
+        popd
+    done
+}
+
+src_test() {
+    local dirs=("bin" "ctl")
+
+    for dir in "${dirs[@]}"; do
+        pushd "${dir}"
+            setup_cargo_features "${dir}"
+            cargo_src_test
+        popd
+    done
+}
+
+src_install() {
+    local dirs=("bin" "ctl")
+
+    for dir in "${dirs[@]}"; do
+        pushd "${dir}"
+            setup_cargo_features "${dir}"
+            ecargo_install
+        popd
+    done
+
+    edo env BINDIR="/usr/$(exhost --target)/bin" SYSCONFDIR="/etc" DATADIR="/usr/share" RUNDIR="/run" os-build/exherbo/generate.sh
+   
+    insinto "/etc/${PN}"
+    doins generated/config.toml
+
+    install_systemd_files
+    emagicdocs
+
+    alternatives_for "${PN}" "${SLOT}" "50" \
+        "/usr/$(exhost --target)/bin/${PN}" "${PN}.${SLOT}" \
+        "/usr/$(exhost --target)/bin/${PN}ctl" "${PN}ctl.${SLOT}" \
+        "/etc/systemd/system/${PN}.service" "${PN}-${SLOT}.service" \
+        "/etc/systemd/system/${PN}@.service" "${PN}-${SLOT}@.service"
+}

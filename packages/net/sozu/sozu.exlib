@@ -1,18 +1,20 @@
 # Copyright 2017 Marc-Antoine Perennou <keruspe@exherbo.org>
-# Copyright 2018 Arnaud Lefebvre <a.lefebvre@outlook.fr>
 # Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=sozu-proxy force_git_clone=true tag="${PV}" ] cargo
-require systemd-service [ systemd_files=[ generated/${PN}.service ] ]
+require alternatives
+require github [ user=sozu-proxy force_git_clone=true tag="${PV}" ]
+require systemd-service [ systemd_files=[ "${FILES}/systemd/${PN}-${SLOT}.service" "${FILES}/systemd/${PN}-${SLOT}@.service" ] ]
+require cargo
 
-export_exlib_phases pkg_setup src_compile src_test src_install
+export_exlib_phases src_compile src_install
 
+PLATFORMS="~amd64"
 SUMMARY="Sōzu reverse proxy"
 DESCRIPTION="Sōzu is a lightweight, fast, always-up reverse proxy server."
 HOMEPAGE="https://www.sozu.io"
 SLOT=$(ever range 1-2)
-BUGS_TO="florentin.dubois@clever-cloud.com"
+BUGS_TO="Florentin Dubois <florentin.dubois@clever-cloud.com>"
 LICENCES="AGPL-3.0"
 
 MYOPTIONS="
@@ -22,87 +24,38 @@ MYOPTIONS="
         requires = logs-debug
     ]]
     tolerant-http1-parser [[ description = [ Enable a more tolerant parser for HTTP1 requests ] ]]
-    (
-        providers:
-            openssl [[ description = [ Add support for OpenSSL as a SSL provider ] ]]
-    )
 "
 
 DEPENDENCIES="
-    build+run:
-        providers:openssl? ( dev-libs/openssl )
 "
 
-COMMON_ECARGO_FEATURE_ENABLES=(
-    'logs-debug logs-debug'
-    'logs-trace logs-trace'
-)
-
-# rustls is the default SSL backend for now and doesn't have an option
-BIN_ECARGO_FEATURE_ENABLES=(
+ECARGO_FEATURE_ENABLES=(
+    'logs-debug logs-debug' 
+    'logs-trace logs-trace' 
     'tolerant-http1-parser tolerant-http1-parser'
-    'providers:openssl use-openssl'
 )
-
-
-SOZU_BIN_DIRS=("bin")
-ever at_least 0.14 || SOZU_BIN_DIRS+=("ctl")
-
-sozu_pkg_setup() {
-  default
-  export SOZU_CONFIG=/etc/sozu/config.toml
-}
-
-setup_cargo_features() {
-    local bin="${1}"
-    if [[ "${bin}" == "bin" ]]; then
-        ECARGO_FEATURE_ENABLES=( "${COMMON_ECARGO_FEATURE_ENABLES[@]}" "${BIN_ECARGO_FEATURE_ENABLES[@]}" )
-    else
-        ECARGO_FEATURE_ENABLES=( "${COMMON_ECARGO_FEATURE_ENABLES[@]}" )
-    fi
-}
 
 sozu_src_compile() {
-    local bin
-    for bin in "${SOZU_BIN_DIRS[@]}"; do
-        edo pushd "${bin}"
-        setup_cargo_features "${bin}"
-        cargo_src_compile
-        edo popd
-    done
-}
-
-sozu_src_test() {
-    local bin
-    for bin in "${SOZU_BIN_DIRS[@]}"; do
-        edo pushd "${bin}"
-        setup_cargo_features "${bin}"
-        cargo_src_test
-        edo popd
-    done
+    pushd bin
+        ecargo_build
+    popd
 }
 
 sozu_src_install() {
-    local bin
-    for bin in "${SOZU_BIN_DIRS[@]}"; do
-        edo pushd "${bin}"
-        setup_cargo_features "${bin}"
-        ecargo_install
-        edo popd
-    done
-    edo env BINDIR="/usr/$(exhost --target)/bin" SYSCONFDIR="/etc" DATADIR="/usr/share" RUNDIR="/run" os-build/exherbo/generate.sh
-    install_systemd_files
-    insinto /etc/sozu
-    doins generated/config.toml
-    emagicdocs
-    [[ "${SLOT}" == "0" ]] || slot_sozu
-}
+    local dirs=("bin" "ctl")
 
-slot_sozu() {
-    local bindir="/usr/$(exhost --target)/bin"
-    edo pushd "${IMAGE}/${bindir}"
-    for b in *; do edo mv "${b}"{,${SLOT}}; done
-    edo popd
-    edo sed -e "s:${bindir}/sozu:&${SLOT}:" -i "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}"/${PN}.service
-    edo mv "${IMAGE}/${SYSTEMDSYSTEMUNITDIR}"/${PN}{,${SLOT}}.service
+    pushd bin
+        ecargo_install
+    popd
+
+    insinto "/etc/${PN}"
+    doins bin/config.toml
+
+    install_systemd_files
+    emagicdocs
+
+    alternatives_for "${PN}" "${SLOT}" "50" \
+        "/usr/$(exhost --target)/bin/${PN}" "${PN}.${SLOT}" \
+        "/etc/systemd/system/${PN}.service" "${PN}-${SLOT}.service" \
+        "/etc/systemd/system/${PN}@.service" "${PN}-${SLOT}@.service"
 }
