@@ -1,4 +1,5 @@
 # Copyright 2017 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Copyright 2018 Arnaud Lefebvre <a.lefebvre@outlook.fr>
 # Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
@@ -22,21 +23,19 @@ MYOPTIONS="
         requires = logs-debug
     ]]
     tolerant-http1-parser [[ description = [ Enable a more tolerant parser for HTTP1 requests ] ]]
-    (
-        providers:
-            openssl [[ description = [ Add support for OpenSSL as a SSL provider ] ]]
-    )
 "
 
 DEPENDENCIES="
     build+run:
-        providers:openssl? ( dev-libs/openssl )
+        dev-libs/openssl:=
 "
 
 setup_cargo_features() {
     if [[ "bin" == "${1}" ]]; then
-        ECARGO_FEATURE_ENABLES=('logs-debug logs-debug' 'logs-trace logs-trace' 'tolerant-http1-parser tolerant-http1-parser' 'providers:openssl use-openssl')
-    else 
+        ECARGO_FEATURES=('use-openssl')
+        ECARGO_FEATURE_ENABLES=('logs-debug logs-debug' 'logs-trace logs-trace' 'tolerant-http1-parser tolerant-http1-parser')
+    else
+        ECARGO_FEATURES=() 
         ECARGO_FEATURE_ENABLES=('logs-debug logs-debug' 'logs-trace logs-trace')
     fi
 }
@@ -89,6 +88,7 @@ src_install() {
     alternatives_for "${PN}" "${SLOT}" "50" \
         "/usr/$(exhost --target)/bin/${PN}" "${PN}.${SLOT}" \
         "/usr/$(exhost --target)/bin/${PN}ctl" "${PN}ctl.${SLOT}" \
-        "/etc/systemd/system/${PN}.service" "${PN}-${SLOT}.service" \
-        "/etc/systemd/system/${PN}@.service" "${PN}-${SLOT}@.service"
+        "/usr/$(exhost --target)/lib/systemd/system/${PN}.service" "${PN}-${SLOT}.service" \
+        "/usr/$(exhost --target)/lib/systemd/system/${PN}@.service" "${PN}-${SLOT}@.service"
 }
+

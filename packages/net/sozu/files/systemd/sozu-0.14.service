@@ -5,13 +5,13 @@ After=network-online.target local-fs.target remote-fs.target time-sync.target
 Wants=network-online.target local-fs.target remote-fs.target time-sync.target
 
 [Service]
-RuntimeDirectory=sozu
-Type=forking
-PIDFile=/run/sozu/sozu.pid
-ExecStartPre=/usr/bin/sozu config check --config /etc/sozu/config.toml
-ExecStart=/usr/bin/sozu start --config /etc/sozu/config.toml
-ExecReloadPre=/usr/bin/sozu config check --config /etc/sozu/config.toml
-ExecReload=/usr/bin/sozu reload --config /etc/sozu/config.toml
+RuntimeDirectory=sozu.0.14
+Type=simple
+PIDFile=/run/sozu/sozu.0.14.pid
+ExecStartPre=/usr/bin/sozu.0.14 config check --config /etc/sozu/config.toml
+ExecStart=/usr/bin/sozu.0.14 start --config /etc/sozu/config.toml
+ExecReloadPre=/usr/bin/sozu.0.14 config check --config /etc/sozu/config.toml
+ExecReload=/usr/bin/sozu.0.14 reload --config /etc/sozu/config.toml
 Restart=on-failure
 LimitNOFILE=65536
 
