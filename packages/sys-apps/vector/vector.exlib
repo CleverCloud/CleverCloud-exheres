@@ -38,8 +38,8 @@ ECARGO_FEATURES=(
     'sources-dnstap'
     'transforms'
     'unix'
-    'vrl-cli'
     'enterprise'
+    'component-validation-runner'
 )
 
 src_install() {
