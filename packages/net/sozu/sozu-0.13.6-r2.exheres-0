@@ -79,8 +79,12 @@ src_install() {
 
     edo env BINDIR="/usr/$(exhost --target)/bin" SYSCONFDIR="/etc" DATADIR="/usr/share" RUNDIR="/run" os-build/exherbo/generate.sh
    
-    insinto "/etc/${PN}"
+    insinto "/etc/${PN}/${SLOT}"
     doins generated/config.toml
+
+    insinto "/etc/${PN}/${SLOT}/html"
+    doins lib/assets/404.html
+    doins lib/assets/503.html
 
     install_systemd_files
     emagicdocs

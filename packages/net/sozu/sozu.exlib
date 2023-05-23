@@ -51,8 +51,12 @@ sozu_src_install() {
         ecargo_install
     popd
 
-    insinto "/etc/${PN}"
+    insinto "/etc/${PN}/${SLOT}"
     doins bin/config.toml
+    
+    insinto "/etc/${PN}/${SLOT}/html"
+    doins lib/assets/404.html
+    doins lib/assets/503.html
 
     install_systemd_files
     emagicdocs

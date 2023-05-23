@@ -8,10 +8,10 @@ Wants=network-online.target local-fs.target remote-fs.target time-sync.target
 RuntimeDirectory=sozu.0.14
 Type=simple
 PIDFile=/run/sozu/sozu.0.14.pid
-ExecStartPre=/usr/bin/sozu.0.14 config check --config /etc/sozu/config.toml
-ExecStart=/usr/bin/sozu.0.14 start --config /etc/sozu/config.toml
-ExecReloadPre=/usr/bin/sozu.0.14 config check --config /etc/sozu/config.toml
-ExecReload=/usr/bin/sozu.0.14 reload --config /etc/sozu/config.toml
+ExecStartPre=/usr/bin/sozu.0.14 config check --config /etc/sozu/0.14/config.toml
+ExecStart=/usr/bin/sozu.0.14 start --config /etc/sozu/0.14/config.toml
+ExecReloadPre=/usr/bin/sozu.0.14 config check --config /etc/sozu/0.14/config.toml
+ExecReload=/usr/bin/sozu.0.14 reload --config /etc/sozu/0.14/config.toml
 Restart=on-failure
 LimitNOFILE=65536
 
