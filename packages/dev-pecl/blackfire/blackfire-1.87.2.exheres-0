@@ -1,0 +1,45 @@
+# Copyright 2023 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+# .deb content is not extracted into a folder, I used a / for the work as a workaround
+require php-pecl [ module=module php_abis=[ 7.4 8.0 8.1 8.2 ] work="/" ]
+
+SUMMARY="Profile, Test, and Continuously Optimize PHP Code Performance"
+HOMEPAGE="https://www.blackfire.io"
+DOWNLOADS="https://packages.${PN}.io/debian/pool/any/main/b/${PN}-php/${PN}-php_${PV}_amd64.deb"
+LICENCES="all-rights-reserved"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS=""
+DEPENDENCIES="
+    run:
+        sys-analyzer/blackfire-agent
+"
+
+prepare_one_multibuild() {
+    unpack ./data.tar.gz
+}
+
+php-pecl_prepare_one_multibuild() {
+    :
+}
+
+php-pecl_configure_one_multibuild() {
+    :
+}
+
+php-pecl_install_one_multibuild() {
+    local abi=$(php-pecl_get_abi)
+    local extensionDir modver
+
+    edo mkdir -p "${IMAGE}"/etc/php-${abi}
+    extensionDir=$(php-config-${abi} --extension-dir)
+    modver=$(basename ${extensionDir})
+
+    exeinto ${extensionDir}
+    newexe usr/lib/${PN}-php/amd64/${PN}-${modver}.so ${PN}.so
+
+    insinto /etc/php-${abi}
+    newins usr/lib/${PN}-php/${PN}.ini.dist ${PN}.ini
+}
