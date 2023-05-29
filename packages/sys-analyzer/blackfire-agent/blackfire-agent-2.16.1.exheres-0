@@ -1,0 +1,38 @@
+# Copyright 2023 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service [ systemd_files=[ lib/systemd/system/${PN}.service ] ]
+
+SUMMARY="An agent to communicate with Blackfire's servers"
+HOMEPAGE="https://www.blackfire.io"
+DOWNLOADS="https://packages.blackfire.io/debian/pool/any/main/b/blackfire/blackfire_${PV}_amd64.deb"
+LICENCES="all-rights-reserved"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS=""
+DEPENDENCIES="
+    run:
+        group/blackfire
+        user/blackfire
+"
+
+WORK=${WORKBASE}
+
+src_unpack() {
+    default
+
+    unpack ./data.tar.gz
+}
+
+src_install() {
+    dobin usr/bin/blackfire
+
+    insinto /etc/blackfire
+    doins etc/blackfire/agent
+
+    install_systemd_files
+
+    keepdir /var/log/blackfire
+    edo chown -R blackfire:blackfire "${IMAGE}"/var/log/blackfire
+}
