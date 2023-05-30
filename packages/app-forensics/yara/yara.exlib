@@ -1,0 +1,20 @@
+# Copyright 2023 Stanislav SAUVIN <stanislav.sauvin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=VirusTotal tag="v${PV}" ]
+require autotools [ supported_autoconf=[ 2.7 ] supported_automake=[ 1.16 ] ]
+
+SUMMARY="The pattern matching swiss knife"
+
+LICENCES="BSD-3"
+SLOT="0"
+MYOPTIONS=""
+DEPENDENCIES="
+    build+run:
+        sys-apps/file
+"
+
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --enable-magic
+)
+
