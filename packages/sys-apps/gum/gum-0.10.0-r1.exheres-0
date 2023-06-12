@@ -1,7 +1,7 @@
 # Copyright 2023 Yannick Guern <yannick.guern@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=charmbracelet tag=v${PV} force_git_clone=true ]
+require github [ user=charmbracelet tag=v${PV} ]
 
 SUMMARY="A tool for glamorous shell scripts. Leverage the power of Bubbles and Lip Gloss in your scripts and aliases without writing any Go code!"
 LICENCES="MIT"
@@ -13,7 +13,7 @@ DEPENDENCIES="
 "
 
 src_unpack() {
-    scm_src_unpack
+    default
 
     export GOMODCACHE="${FETCHEDDIR}/go/pkg/mod"
 
