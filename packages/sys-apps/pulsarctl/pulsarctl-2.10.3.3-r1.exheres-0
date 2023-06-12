@@ -1,7 +1,7 @@
 # Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require go github [ user=streamnative tag="v${PV}" force_git_clone=true ]
+require go github [ user=streamnative tag="v${PV}" ]
 
 SUMMARY="A CLI tool for the Apache Pulsar project"
 HOMEPAGE="https://github.com/streamnative/pulsarctl"
@@ -20,12 +20,16 @@ DEPENDENCIES="
 unset GOPATH
 
 src_unpack() {
-    scm_src_unpack
+    default
 
-    edo cd "${WORK}"
+    export GOMODCACHE="${FETCHEDDIR}/go/pkg/mod"
 
     esandbox disable_net
-    edo go mod download
+
+    edo pushd "${WORK}"
+    edo go mod download -x
+    edo popd
+
     esandbox enable_net
 }
 
