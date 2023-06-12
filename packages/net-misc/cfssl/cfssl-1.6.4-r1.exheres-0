@@ -1,7 +1,7 @@
 # Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user="cloudflare" tag="v${PV}" force_git_clone=true ]
+require github [ user="cloudflare" tag="v${PV}" ]
 
 SUMMARY="Cloudflare's PKI and TLS toolkit"
 HOMEPAGE="https://github.com/cloudflare/cfssl"
@@ -13,6 +13,20 @@ DEPENDENCIES="
     build:
         dev-lang/go
 "
+
+src_unpack() {
+    default
+
+    export GOMODCACHE="${FETCHEDDIR}/go/pkg/mod"
+
+    esandbox disable_net
+
+    edo pushd "${WORK}"
+    edo go mod download -x
+    edo popd
+
+    esandbox enable_net
+}
 
 src_install() {
     local bins=(
@@ -33,3 +47,4 @@ src_install() {
 
     emagicdocs
 }
+
