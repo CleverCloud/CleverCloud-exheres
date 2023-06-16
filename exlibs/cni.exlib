@@ -28,6 +28,9 @@ DEPENDENCIES="
 
 RESTRICT=test
 
+# TODO: Support go.mod in the Go exlib
+unset GOPATH
+
 cni_src_unpack() {
     default
 
