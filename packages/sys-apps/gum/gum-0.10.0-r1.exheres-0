@@ -12,6 +12,9 @@ DEPENDENCIES="
         dev-lang/go[>=1.20]
 "
 
+# TODO: Support go.mod in the Go exlib
+unset GOPATH
+
 src_unpack() {
     default
 
