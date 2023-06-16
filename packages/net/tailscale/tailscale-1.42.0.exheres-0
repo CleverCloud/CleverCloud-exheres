@@ -15,7 +15,9 @@ DEPENDENCIES="
 
 RESTRICT=test
 
-# TODO(s0dyy): Support go.mod in the Go exlib
+# TODO: Support go.mod in the Go exlib
+unset GOPATH
+
 src_unpack() {
     default
 
