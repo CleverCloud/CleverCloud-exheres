@@ -18,7 +18,9 @@ DEPENDENCIES="
 
 RESTRICT=test
 
-# TODO(s0dyy): Support go.mod in the Go exlib
+# TODO: Support go.mod in the Go exlib
+unset GOPATH
+
 kubernetes_src_unpack() {
     default
 
