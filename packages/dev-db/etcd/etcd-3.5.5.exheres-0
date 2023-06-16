@@ -18,6 +18,9 @@ DEPENDENCIES="
 
 RESTRICT=test
 
+# TODO: Support go.mod in the Go exlib
+unset GOPATH
+
 src_unpack() {
     default
 
