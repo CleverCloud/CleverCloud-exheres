@@ -93,6 +93,8 @@ src_install() {
         "/usr/$(exhost --target)/bin/${PN}" "${PN}.${SLOT}" \
         "/usr/$(exhost --target)/bin/${PN}ctl" "${PN}ctl.${SLOT}" \
         "/usr/$(exhost --target)/lib/systemd/system/${PN}.service" "${PN}-${SLOT}.service" \
-        "/usr/$(exhost --target)/lib/systemd/system/${PN}@.service" "${PN}-${SLOT}@.service"
+        "/usr/$(exhost --target)/lib/systemd/system/${PN}@.service" "${PN}-${SLOT}@.service" \
+        "/etc/sozu/html/404.html" "/etc/sozu/${SLOT}/html/404.html" \
+        "/etc/sozu/html/503.html" "/etc/sozu/${SLOT}/html/503.html"
 }
 
