@@ -1,0 +1,19 @@
+[Unit]
+Description=Sozu - A HTTP reverse proxy, configurable at runtime, fast and safe, built in Rust.
+Documentation=https://docs.rs/sozu/
+After=network-online.target local-fs.target remote-fs.target time-sync.target
+Wants=network-online.target local-fs.target remote-fs.target time-sync.target
+
+[Service]
+RuntimeDirectory=sozu.0.15
+Type=simple
+PIDFile=/run/sozu.0.15/sozu.pid
+ExecStartPre=/usr/bin/sozu.0.15 config check --config /etc/sozu/0.15/config.toml
+ExecStart=/usr/bin/sozu.0.15 start --config /etc/sozu/0.15/config.toml
+ExecReloadPre=/usr/bin/sozu.0.15 config check --config /etc/sozu/0.15/config.toml
+ExecReload=/usr/bin/sozu.0.15 reload --config /etc/sozu/0.15/config.toml
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
