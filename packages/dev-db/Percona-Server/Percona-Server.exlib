@@ -17,7 +17,7 @@ MY_PNV=${PN,,}-${MY_PV}
 # In order to provide a stable code base, MySQL depends on a specific version of Boost.
 # Currently only Boost.Geometry headers are used and boost is just required at build time.
 if ever at_least 8; then
-    BOOST_PV="1.73.0"
+    BOOST_PV="1.77.0"
 else
     BOOST_PV="1.59.0"
 fi
@@ -64,7 +64,6 @@ DEPENDENCIES="
         dev-libs/libaio
         dev-libs/libedit
         dev-libs/protobuf:=[>=2.6.1]
-        sys-libs/zlib[>=1.2.3]
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl )
         !dev-db/mariadb [[
@@ -96,21 +95,23 @@ if ever at_least 8; then
             net-libs/libtirpc
             net-libs/rpcsvc-proto
             net-misc/curl
+            sys-libs/zlib[>=1.2.13]
     "
 else
     DEPENDENCIES+="
         build+run:
+            sys-libs/zlib[>=1.2.3]
             tcpd? ( sys-apps/tcp-wrappers )
     "
 fi
 
 if ever at_least 8; then
     DEFAULT_SRC_PREPARE_PATCHES=(
-        "${FILES}/0001-ldap_r-no-longer-exists-since-openldap-2.5.patch"
+        "${FILES}/${SLOT}-cmake-zlib-fix.patch"
     )
 else
     DEFAULT_SRC_PREPARE_PATCHES=(
-        "${FILES}/0001-include-rocksdb-make-file-relative-to-the-path.patch"
+        "${FILES}/${SLOT}-recent-gcc-fixes.patch"
     )
 fi
 
