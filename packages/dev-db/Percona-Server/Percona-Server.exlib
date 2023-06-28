@@ -5,7 +5,7 @@
 
 require alternatives cmake [ api=2 ] systemd-service
 
-export_exlib_phases pkg_pretend src_prepare src_configure src_test src_install pkg_postinst
+export_exlib_phases pkg_pretend src_prepare src_test src_install pkg_postinst
 
 MYSQL_MAJOR_VERSION=$(ever range 1-2)
 
@@ -88,15 +88,16 @@ if ever at_least 8; then
         build+run:
             app-crypt/krb5
             dev-libs/libfido2[>=1.4.0]
-            dev-libs/rapidjson[>=1.1.0]
             dev-libs/re2:=
-            net-directory/openldap 
+            net-directory/openldap
             net-libs/cyrus-sasl
             net-libs/libtirpc
             net-libs/rpcsvc-proto
             net-misc/curl
             sys-libs/zlib[>=1.2.13]
     "
+    # Bundled:
+    #   dev-libs/rapidjson[>=1.1.0]
 else
     DEPENDENCIES+="
         build+run:
@@ -152,127 +153,108 @@ Percona-Server_src_prepare() {
     fi
 }
 
-Percona-Server_src_configure() {
-    local cmakeargs=(
-        -DBUILD_CONFIG:STRING=mysql_release
-        # The default layout STANDALONE breaks all the scripts.
-        -DINSTALL_LAYOUT:STRING="RPM"
-        -DCMAKE_INSTALL_PREFIX:PATH=/usr
-        -DCOMPILATION_COMMENT:STRING="Exherbo"
-        -DDEFAULT_CHARSET:STRING=utf8
-        -DDEFAULT_COLLATION:STRING=utf8_general_ci
-        -DFEATURE_SET:STRING=community
-        -DINSTALL_BINDIR:PATH=$(exhost --target)/libexec/${PN}-${SLOT}
-        -DINSTALL_DOCDIR:PATH=share/doc/${PNVR}-${SLOT}
-        -DINSTALL_DOCREADMEDIR:PATH=share/doc/${PNVR}-${SLOT}
-        -DINSTALL_INCLUDEDIR:PATH=$(exhost --target)/include/${PN}-${SLOT}
-        -DINSTALL_INFODIR:PATH=share/${PN}-${SLOT}/info
-        -DINSTALL_LIBDIR:PATH=$(exhost --target)/lib/${PN}-${SLOT}
-        -DINSTALL_MANDIR:PATH=share/man/${PN}-${SLOT}
-        -DINSTALL_MYSQLSHAREDIR:PATH=share/${PN}-${SLOT}
-        # Empty value to not install the mysql-test directory
-        -DINSTALL_MYSQLTESTDIR:STRING=
-        -DINSTALL_PLUGINDIR:PATH=$(exhost --target)/lib/${PN}-${SLOT}/plugin
-        -DINSTALL_SBINDIR:PATH=$(exhost --target)/libexec/${PN}-${SLOT}
-        -DINSTALL_SCRIPTDIR:PATH=$(exhost --target)/libexec/${PN}-${SLOT}
-        -DINSTALL_SHAREDIR:PATH=share
-        -DINSTALL_SUPPORTFILESDIR:PATH=share/${PN}-${SLOT}
-        -DMYSQL_DATADIR:PATH=/var/lib/${PN}/${SLOT}
-        -DMYSQL_UNIX_ADDR:PATH=/run/${PN}-${SLOT}/mysqld.sock
-        -DSYSCONFDIR:PATH=/etc/${PN}-${SLOT}
-        -DENABLED_PROFILING:BOOL=TRUE
-        -DWITH_ASAN:BOOL=FALSE
-        -DWITH_EXTRA_CHARSETS:STRING=all
-        # Default ENGINES for MySQL 5.6 community build (currently == xlarge) minus embedded
-        -DWITH_ARCHIVE_STORAGE_ENGINE:BOOL=TRUE
-        -DWITH_BLACKHOLE_STORAGE_ENGINE:BOOL=TRUE
-        -DWITH_FEDERATED_STORAGE_ENGINE:BOOL=TRUE
-        -DWITH_INNOBASE_STORAGE_ENGINE:BOOL=TRUE
-        -DWITH_PARTITION_STORAGE_ENGINE:BOOL=TRUE
-        -DWITH_UNIT_TESTS:BOOL=TRUE
-        -DWITH_VALGRIND:BOOL=FALSE
-        -DWITH_ZLIB:STRING=system
-        -DCMAKE_DISABLE_FIND_PACKAGE_Git:BOOL=TRUE
-        -DENABLE_DTRACE:BOOL=FALSE
-        -DENABLE_GCOV:BOOL=FALSE
-        -DENABLE_GPROF:BOOL=FALSE
-        -DENABLED_LOCAL_INFILE:BOOL=TRUE
-        -DWITH_EDITLINE:STRING=system
-        # Compilation fails because of undefined symbols when using system libevent
-        -DWITH_LIBEVENT:STRING=bundled
-        -DWITH_NUMA:BOOL=FALSE
-        -DWITH_SSL:STRING=system
-        -DBOOST_INCLUDE_DIR:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
-        -DLOCAL_BOOST_DIR:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
-        -DWITH_BOOST:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
-        -DWITH_CLIENT_PROTOCOL_TRACING:BOOL=FALSE
-        -DWITH_LZ4:STRING=system
-        -DWITH_MSAN:BOOL=FALSE
-        -DWITH_PROTOBUF=system
-        -DWITH_RAPID:BOOL=FALSE
-        -DWITH_TEST_TRACE_PLUGIN:BOOL=FALSE
-        -DWITH_UBSAN:BOOL=FALSE
-        -DWITH_COREDUMPER:BOOL=FALSE
-        -DUSE_CTAGS:BOOL=FALSE
-        -DUSE_ETAGS:BOOL=FALSE
-        -DUSE_GTAGS:BOOL=FALSE
-        -DUSE_CSCOPE:BOOL=FALSE
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    --hates=CMAKE_BUILD_TYPE
+    -DBUILD_CONFIG:STRING=mysql_release
+    # The default layout STANDALONE breaks all the scripts.
+    -DINSTALL_LAYOUT:STRING="RPM"
+    -DCMAKE_INSTALL_PREFIX:PATH=/usr
+    -DCOMPILATION_COMMENT:STRING="Exherbo"
+    -DDEFAULT_CHARSET:STRING=utf8
+    -DDEFAULT_COLLATION:STRING=utf8_general_ci
+    -DFEATURE_SET:STRING=community
+    -DINSTALL_BINDIR:PATH=$(exhost --target)/libexec/${PN}-${SLOT}
+    -DINSTALL_DOCDIR:PATH=share/doc/${PNVR}-${SLOT}
+    -DINSTALL_DOCREADMEDIR:PATH=share/doc/${PNVR}-${SLOT}
+    -DINSTALL_INCLUDEDIR:PATH=$(exhost --target)/include/${PN}-${SLOT}
+    -DINSTALL_INFODIR:PATH=share/${PN}-${SLOT}/info
+    -DINSTALL_LIBDIR:PATH=$(exhost --target)/lib/${PN}-${SLOT}
+    -DINSTALL_MANDIR:PATH=share/man/${PN}-${SLOT}
+    -DINSTALL_MYSQLSHAREDIR:PATH=share/${PN}-${SLOT}
+    # Empty value to not install the mysql-test directory
+    -DINSTALL_MYSQLTESTDIR:STRING=
+    -DINSTALL_PLUGINDIR:PATH=$(exhost --target)/lib/${PN}-${SLOT}/plugin
+    -DINSTALL_SBINDIR:PATH=$(exhost --target)/libexec/${PN}-${SLOT}
+    -DINSTALL_SCRIPTDIR:PATH=$(exhost --target)/libexec/${PN}-${SLOT}
+    -DINSTALL_SHAREDIR:PATH=share
+    -DINSTALL_SUPPORTFILESDIR:PATH=share/${PN}-${SLOT}
+    -DMYSQL_DATADIR:PATH=/var/lib/${PN}/${SLOT}
+    -DMYSQL_UNIX_ADDR:PATH=/run/${PN}-${SLOT}/mysqld.sock
+    -DSYSCONFDIR:PATH=/etc/${PN}-${SLOT}
+    -DSYSTEMD_PID_DIR:PATH=/run/${PN}-${SLOT}
+    -DSYSTEMD_SERVICES_DIR:PATH=${SYSTEMDSYSTEMUNITDIR}
+    -DSYSTEMD_TMPFILES_DIR:PATH=/usr/$(exhost --target)/lib/tmpfiles.d
+    -DENABLED_PROFILING:BOOL=TRUE
+    -DWITH_ASAN:BOOL=FALSE
+    -DWITH_EXTRA_CHARSETS:STRING=all
+    # Default ENGINES for MySQL 5.6 community build (currently == xlarge) minus embedded
+    -DWITH_ARCHIVE_STORAGE_ENGINE:BOOL=TRUE
+    -DWITH_BLACKHOLE_STORAGE_ENGINE:BOOL=TRUE
+    -DWITH_FEDERATED_STORAGE_ENGINE:BOOL=TRUE
+    -DWITH_INNOBASE_STORAGE_ENGINE:BOOL=TRUE
+    -DWITH_PARTITION_STORAGE_ENGINE:BOOL=TRUE
+    -DWITH_UNIT_TESTS:BOOL=TRUE
+    -DWITH_VALGRIND:BOOL=FALSE
+    -DWITH_ZLIB:STRING=system
+    -DCMAKE_DISABLE_FIND_PACKAGE_Git:BOOL=TRUE
+    -DENABLE_DTRACE:BOOL=FALSE
+    -DENABLE_GCOV:BOOL=FALSE
+    -DENABLE_GPROF:BOOL=FALSE
+    -DENABLED_LOCAL_INFILE:BOOL=TRUE
+    -DWITH_EDITLINE:STRING=system
+    # Compilation fails because of undefined symbols when using system libevent
+    -DWITH_LIBEVENT:STRING=bundled
+    -DWITH_NUMA:BOOL=FALSE
+    -DWITH_SSL:STRING=system
+    -DBOOST_INCLUDE_DIR:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
+    -DLOCAL_BOOST_DIR:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
+    -DWITH_BOOST:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
+    -DWITH_CLIENT_PROTOCOL_TRACING:BOOL=FALSE
+    -DWITH_LZ4:STRING=system
+    -DWITH_MSAN:BOOL=FALSE
+    -DWITH_PROTOBUF=system
+    -DWITH_RAPID:BOOL=FALSE
+    -DWITH_TEST_TRACE_PLUGIN:BOOL=FALSE
+    -DWITH_UBSAN:BOOL=FALSE
+    -DWITH_COREDUMPER:BOOL=FALSE
+    -DUSE_CTAGS:BOOL=FALSE
+    -DUSE_ETAGS:BOOL=FALSE
+    -DUSE_GTAGS:BOOL=FALSE
+    -DUSE_CSCOPE:BOOL=FALSE
+)
+
+CMAKE_SRC_CONFIGURE_OPTIONS_CUSTOM=(
+    'debug -DCMAKE_BUILD_TYPE:STRING=Debug -DCMAKE_BUILD_TYPE:STRING=Release'
+    # Unfortunately, the InnoDb/memcached interface needs libevent 1.4.x
+    # as bundled with MySQL or trying to use memcached WILL make MySQL
+    # segfault immediately.
+    # (Keeping this comment even though the bundled lib is used anyway in
+    # order to remember *why* I changed it.)
+    'memcached -DWITH_LIBEVENT:STRING=bundled'
+)
+
+CMAKE_SRC_CONFIGURE_OPTION_WITHS=(
+    'debug DEBUG'
+    'embedded-server EMBEDDED_SERVER'
+    'memcached INNODB_MEMCACHED'
+    'systemd SYSTEMD'
+)
+
+if ever at_least 8; then
+    CMAKE_SRC_CONFIGURE_PARAMS+=(
+        -DROUTER_INSTALL_LIBDIR:PATH=$(exhost --target)/lib/${PN}-${SLOT}
+        -DROUTER_INSTALL_PLUGINDIR:PATH=$(exhost --target)/lib/${PN}-${SLOT}/plugin
+        -DUSE_LD_LLD:BOOL=FALSE
+        -DWITH_FIDO=system
+        -DWITH_ICU=system
+        -DWITH_RAPIDJSON:STRING=bundled
+        -DWITH_RE2:STRING=system
     )
-
-    if option systemd ; then
-        cmakeargs+=(
-            -DWITH_SYSTEMD:BOOL=TRUE
-            -DSYSTEMD_PID_DIR:PATH=/run/${PN}-${SLOT}
-            -DSYSTEMD_SERVICES_DIR:PATH=${SYSTEMDSYSTEMUNITDIR}
-            -DSYSTEMD_TMPFILES_DIR:PATH=/usr/$(exhost --target)/lib/tmpfiles.d
-        )
-    else
-        cmakeargs+=(
-            -DWITH_SYSTEMD:BOOL=FALSE
-        )
-    fi
-
-    if option debug ; then
-        cmakeargs+=(
-            -DCMAKE_BUILD_TYPE:STRING=Debug
-        )
-    else
-        cmakeargs+=(
-            -DCMAKE_BUILD_TYPE:STRING=Release
-        )
-    fi
-
-    if option memcached ; then
-        cmakeargs+=(
-            # Unfortunately, the InnoDb/memcached interface needs libevent 1.4.x
-            # as bundled with MySQL or trying to use memcached WILL make MySQL
-            # segfault immediately.
-            # (Keeping this comment even though the bundled lib is used anyway in
-            # order to remember *why* I changed it.)
-            -DWITH_LIBEVENT:STRING=bundled
-            -DWITH_INNODB_MEMCACHED:BOOL=TRUE
-        )
-    fi
-
-    if ever at_least 8; then
-        cmakeargs+=(
-            -DROUTER_INSTALL_LIBDIR:PATH=$(exhost --target)/lib/${PN}-${SLOT}
-            -DROUTER_INSTALL_PLUGINDIR:PATH=$(exhost --target)/lib/${PN}-${SLOT}/plugin
-            -DUSE_LD_LLD:BOOL=FALSE
-            -DWITH_FIDO=system
-            -DWITH_ICU=system
-            -DWITH_RAPIDJSON:STRING=bundled
-            -DWITH_RE2:STRING=system
-        )
-    else
-        cmakeargs+=( $(cmake_with tcpd LIBWRAP) )
-    fi
-
-    ecmake \
-        "${cmakeargs[@]}" \
-        $(cmake_with debug DEBUG)\
-        $(cmake_with embedded-server EMBEDDED_SERVER)
-}
+else
+    CMAKE_SRC_CONFIGURE_OPTION_WITHS+=(
+        'tcpd LIBWRAP'
+    )
+fi
 
 Percona-Server_src_test() {
     esandbox allow_net --bind "inet:0.0.0.0@0-65535"
@@ -289,7 +271,7 @@ Percona-Server_src_test() {
     esandbox allow_net --bind 'unix:${WORK}/router/tests/component/*'
     esandbox allow_net --connect 'unix:${WORK}/router/tests/component/*'
 
-    default
+    cmake_src_test
 
     esandbox disallow_net --bind "inet:0.0.0.0@0-65535"
     esandbox disallow_net --connect "inet:0.0.0.0@0-65535"
@@ -311,7 +293,7 @@ Percona-Server_src_install() {
     cmake_src_install
 
     if ever at_least 8; then
-        # Remove files pages we explicitly do not want to package 
+        # Remove files pages we explicitly do not want to package
         # https://github.com/percona/percona-server/blob/8.0/build-ps/percona-server.spec#L639
         # TODO: Maybe find a better way
         edo rm -r "${IMAGE}"/usr/{include,lib}
