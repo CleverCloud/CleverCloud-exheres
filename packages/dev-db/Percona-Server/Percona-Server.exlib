@@ -3,8 +3,6 @@
 # Copyright 2011-2016 Marc-Antoine Perennou <keruspe@exherbo.org>
 # Distributed under the terms of the GNU General Public License v2
 
-myexparam release
-
 require alternatives cmake [ api=2 ] systemd-service
 
 export_exlib_phases pkg_pretend src_prepare src_configure src_test src_install pkg_postinst
@@ -12,6 +10,9 @@ export_exlib_phases pkg_pretend src_prepare src_configure src_test src_install p
 MYSQL_MAJOR_VERSION=$(ever range 1-2)
 
 SLOT="$(ever range 1-2)"
+
+MY_PV=${PV/_/-}
+MY_PNV=${PN,,}-${MY_PV}
 
 # In order to provide a stable code base, MySQL depends on a specific version of Boost.
 # Currently only Boost.Geometry headers are used and boost is just required at build time.
@@ -24,7 +25,7 @@ fi
 SUMMARY="A relational database management system (RDBMS)"
 HOMEPAGE="https://www.percona.com/"
 DOWNLOADS="
-    ${HOMEPAGE}redir/downloads/${PN}-${MYSQL_MAJOR_VERSION}/${PNV}-$(exparam release)/source/tarball/${PNV,,}-$(exparam release).tar.gz
+    https://downloads.percona.com/downloads/${PN}-${MYSQL_MAJOR_VERSION}/${PN}-${MY_PV}/source/tarball/${MY_PNV}.tar.gz
     mirror://sourceforge/boost/boost_${BOOST_PV//./_}.tar.bz2
 "
 
@@ -113,7 +114,7 @@ else
     )
 fi
 
-CMAKE_SOURCE="${WORKBASE}/${PNV,,}-$(exparam release)"
+CMAKE_SOURCE="${WORKBASE}/${MY_PNV}"
 
 Percona-Server_pkg_pretend() {
     # Sanity check when upgrading to a different x.y version of mysql
