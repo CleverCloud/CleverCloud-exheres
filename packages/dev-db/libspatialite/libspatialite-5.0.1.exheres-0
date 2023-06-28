@@ -22,8 +22,6 @@ DEPENDENCIES="
         sys-libs/zlib
 "
 
-BUGS_TO="keruspe@exherbo.org"
-
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     --enable-epsg
     --enable-gcp
@@ -44,8 +42,4 @@ DEFAULT_SRC_CONFIGURE_PARAMS=(
     --disable-gcov
     --disable-rttopo
 )
-
-pkg_setup() {
-    append-flags -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-}
 
