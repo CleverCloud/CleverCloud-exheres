@@ -1,0 +1,28 @@
+# Copyright 2023 Lucas Ransan <lucas@ransan.fr>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=emil-e ] cmake
+
+SUMMARY="QuickCheck clone for C++ with the goal of being simple to use with as little boilerplate as possible"
+LICENCES="BSD-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+    build+run:
+"
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=TRUE
+    -DRC_ENABLE_EXAMPLES:BOOL=FALSE
+    -DRC_ENABLE_TESTS:BOOL=FALSE
+    -DRC_INSTALL_ALL_EXTRAS:BOOL=TRUE
+)
+
+# We don't need the submodules
+scm-git_do_resolve_externals() {
+    :
+}
+
