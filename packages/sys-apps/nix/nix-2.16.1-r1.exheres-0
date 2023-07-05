@@ -1,0 +1,82 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=NixOS tag=${PV} force_git_clone=true ]
+require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
+
+SUMMARY="Nix is a powerful package manager for Linux and other Unix systems that makes package management reliable and reproducible"
+LICENCES="LGPL-2.1"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS="
+    cpuid [[ description = [ Determine microarchitecture levels with libcpuid ] ]]
+    doc
+    gc [[ description = [ Enable garbage collection in the Nix expression evaluator ] ]]
+    s3 [[ description = [ Enable S3 support ] ]]
+    seccomp [[ description = [ Enable experimental seccomp support ] ]]
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
+"
+DEPENDENCIES="
+    build:
+        app-text/jq
+        sys-devel/bison
+        sys-devel/flex
+        virtual/pkg-config[>=0.9.0]
+    build+run:
+        user/nixbld01
+        user/nixbld02
+        user/nixbld03
+        user/nixbld04
+        user/nixbld05
+        user/nixbld06
+        user/nixbld07
+        user/nixbld08
+        user/nixbld09
+        user/nixbld10
+        group/nixbld
+        group/nix-users
+
+        app-arch/brotli
+        app-arch/libarchive[>=3.1.2]
+        app-text/lowdown[>=0.9.0]
+        dev-cpp/gtest[googlemock(+)]
+        dev-cpp/rapidcheck
+        dev-db/sqlite:3[>=3.6.19]
+        dev-libs/boost[>=1.66]
+        dev-libs/editline
+        dev-libs/json[>=3.9]
+        gc? ( dev-libs/boehm-gc )
+        net-misc/curl
+        s3? ( dev-libs/aws-sdk-cpp )
+        cpuid? ( sys-libs/libcpuid )
+        seccomp? ( sys-libs/libseccomp )
+        doc? ( app-text/mdbook )
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl:=[>=1.1.1] )
+    run:
+"
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/use-nix-from-build-phase-in-build-phase.patch
+    "${FILES}"/mk-prefert-inplace-library-paths-to-system-ones-take.patch
+    "${FILES}"/make-mdbook-linkcheck-optional.patch
+)
+
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --disable-tests
+)
+
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
+    'cpuid'
+    'seccomp seccomp-sandboxing'
+    'gc'
+    'doc doc-gen'
+)
+
+# default_src_install calls make -n install, which is broken with nix makefiles.
+src_install() {
+    emake -j1 DESTDIR="${IMAGE}" "${DEFAULT_SRC_INSTALL_PARAMS[@]}" install
+    emagicdocs
+}
+
