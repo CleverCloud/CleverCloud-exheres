@@ -1,4 +1,5 @@
 # Copyright 2020 Markus Rothe
+# Copyright 2023 Lucas Ransan <lucas.ransan@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
 require cmake github [ user=aws tag=${PV} ]
@@ -20,25 +21,17 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build+run:
-        dev-libs/aws-c-common
-        dev-libs/aws-c-event-stream
-        dev-libs/aws-checksums
         media-sound/pulseaudio
         net-misc/curl
         providers:libressl? ( dev-libs/libressl:= )
-        providers:openssl? ( dev-libs/openssl )
+        providers:openssl? ( dev-libs/openssl:= )
         sys-libs/zlib
 "
 
 CMAKE_SRC_CONFIGURE_PARAMS=(
+    '-DLEGACY_BUILD:BOOL=TRUE'
     '-DBUILD_SHARED_LIBS:BOOL=TRUE'
     '-DBUILD_DEPS:BOOL=FALSE'
     '-DAUTORUN_UNIT_TESTS:BOOL=FALSE'
-    '-DCUSTOM_MEMORY_MANAGEMENT:BOOL=FALSE'
 )
-
-src_prepare() {
-    default
-    edo sed -e 's/ "-Werror" "-pedantic"//' cmake/compiler_settings.cmake
-}
 
