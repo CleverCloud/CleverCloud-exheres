@@ -26,11 +26,13 @@ MYOPTIONS="
 "
 
 DEPENDENCIES="
+    build:
+        dev-libs/protobuf
 "
 
 ECARGO_FEATURE_ENABLES=(
-    'logs-debug logs-debug' 
-    'logs-trace logs-trace' 
+    'logs-debug logs-debug'
+    'logs-trace logs-trace'
     'tolerant-http1-parser tolerant-http1-parser'
 )
 
