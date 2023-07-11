@@ -1,4 +1,5 @@
 # Copyright 2020 Markus Rothe
+# Copyright 2023 Lucas Ransan <lucas.ransan@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
 require cmake github [ user=awslabs tag=v${PV} ]
@@ -20,6 +21,7 @@ MYOPTIONS=""
 DEPENDENCIES="
     build+run:
         dev-libs/aws-c-common
+        dev-libs/aws-c-io
         dev-libs/aws-checksums
 "
 
