@@ -1,0 +1,26 @@
+# Copyright 2023 Lucas Ransan <lucas.ransan@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cmake github [ user=awslabs tag=v${PV} ]
+
+SUMMARY="C99 library implementation for communicating with the S3 service"
+DESCRIPTION="
+C99 library implementation for communicating with the S3 service, designed for maximizing
+throughput on high bandwidth EC2 instances.
+"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/aws-c-auth
+        dev-libs/aws-checksums
+"
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    '-DBUILD_SHARED_LIBS:BOOL=TRUE'
+)
+
