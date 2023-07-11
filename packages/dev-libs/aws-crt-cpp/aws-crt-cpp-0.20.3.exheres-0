@@ -1,0 +1,36 @@
+# Copyright 2023 Lucas Ransan <lucas.ransan@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cmake github [ user=awslabs tag=v${PV} ]
+
+SUMMARY="C++ wrapper around the aws-c-* libraries"
+DESCRIPTION="
+C++ wrapper around the aws-c-* libraries. Provides Cross-Platform Transport Protocols and SSL/TLS
+implementations for C++.
+"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
+"
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/aws-c-auth
+        dev-libs/aws-c-cal
+        dev-libs/aws-c-common
+        dev-libs/aws-c-event-stream
+        dev-libs/aws-c-http
+        dev-libs/aws-c-io
+        dev-libs/aws-c-mqtt
+        dev-libs/aws-c-s3
+        dev-libs/aws-checksums
+"
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    '-DBUILD_DEPS:BOOL=FALSE'
+    '-DBUILD_SHARED_LIBS:BOOL=TRUE'
+)
+
