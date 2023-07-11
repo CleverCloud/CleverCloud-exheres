@@ -1,0 +1,25 @@
+# Copyright 2023 Lucas Ransan <lucas.ransan@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cmake github [ user=awslabs tag=v${PV} ]
+
+SUMMARY="C99 library implementing AWS SDK specific utilities"
+DESCRIPTION="
+C99 library implementing AWS SDK specific utilities. Includes utilities for ARN parsing, reading
+AWS profiles, etc...
+"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/aws-c-common
+"
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    '-DBUILD_SHARED_LIBS:BOOL=TRUE'
+)
+
