@@ -25,7 +25,7 @@ DEPENDENCIES="
         pam? ( sys-libs/pam )
         ssl? (
             providers:libressl? ( dev-libs/libressl:= )
-            providers:openssl? ( dev-libs/openssl )
+            providers:openssl? ( dev-libs/openssl:= )
         )
         group/postgres
         user/postgres

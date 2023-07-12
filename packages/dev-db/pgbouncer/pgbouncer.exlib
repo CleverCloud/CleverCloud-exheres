@@ -21,7 +21,7 @@ DEPENDENCIES="
         dev-libs/libevent:=
         net-dns/c-ares
         providers:libressl? ( dev-libs/libressl:= )
-        providers:openssl? ( dev-libs/openssl )
+        providers:openssl? ( dev-libs/openssl:= )
 "
 
 

@@ -36,7 +36,7 @@ DEPENDENCIES="
         dev-libs/boost
         postgresql? ( dev-db/postgresql-client )
         providers:libressl? ( dev-libs/libressl:= )
-        providers:openssl? ( dev-libs/openssl )
+        providers:openssl? ( dev-libs/openssl:= )
         mysql? ( dev-db/mysql )
     suggestion:
         postgresql? ( dev-db/postgresql )

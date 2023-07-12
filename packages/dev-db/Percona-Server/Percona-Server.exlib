@@ -65,7 +65,7 @@ DEPENDENCIES="
         dev-libs/libedit
         dev-libs/protobuf:=[>=2.6.1]
         providers:libressl? ( dev-libs/libressl:= )
-        providers:openssl? ( dev-libs/openssl )
+        providers:openssl? ( dev-libs/openssl:= )
         !dev-db/mariadb [[
             description = [ MariaDB is a drop-in replacement for MySQL with same binary names ]
             resolution = manual

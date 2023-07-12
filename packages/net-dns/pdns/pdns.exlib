@@ -31,7 +31,7 @@ DEPENDENCIES="
         dev-lang/lua:=
         dev-libs/boost[>=1.35.0]
         dev-libs/libsodium
-        dev-libs/openssl
+        dev-libs/openssl:=
         dev-libs/protobuf:=
         mysql? ( virtual/mysql )
         postgres? ( dev-db/postgresql-client )

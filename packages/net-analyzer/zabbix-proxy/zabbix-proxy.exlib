@@ -21,7 +21,7 @@ DEPENDENCIES="
     build+run:
         dev-db/sqlite:3
         providers:libressl? ( dev-libs/libressl:= )
-        providers:openssl? ( dev-libs/openssl )
+        providers:openssl? ( dev-libs/openssl:= )
         group/zabbix
         user/zabbix
         snmp? ( net/net-snmp )

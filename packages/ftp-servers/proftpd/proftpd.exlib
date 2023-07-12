@@ -32,7 +32,7 @@ DEPENDENCIES="
         dev-libs/libsodium
         dev-libs/libxcrypt
         caps? ( sys-libs/libcap )
-        openssl? ( dev-libs/openssl )
+        openssl? ( dev-libs/openssl:= )
         pam? ( sys-libs/pam )
         xattr? ( sys-apps/attr )
     run:

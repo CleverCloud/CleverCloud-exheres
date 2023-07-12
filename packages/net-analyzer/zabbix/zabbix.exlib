@@ -24,7 +24,7 @@ DEPENDENCIES="
         dev-libs/libevent:=
         net-misc/curl
         providers:libressl? ( dev-libs/libressl:= )
-        providers:openssl? ( dev-libs/openssl )
+        providers:openssl? ( dev-libs/openssl:= )
         group/zabbix
         user/zabbix
         java? ( virtual/jre )

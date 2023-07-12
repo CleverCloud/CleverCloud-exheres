@@ -18,7 +18,7 @@ DEPENDENCIES="
     build+run:
         sys-libs/readline:=
         providers:libressl? ( dev-libs/libressl:= )
-        providers:openssl? ( dev-libs/openssl )
+        providers:openssl? ( dev-libs/openssl:= )
 "
 
 # TODO add a systemd service for ipmievd

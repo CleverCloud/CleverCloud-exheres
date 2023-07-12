@@ -17,7 +17,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build+run:
-        dev-libs/openssl
+        dev-libs/openssl:=
         dev-libs/protobuf:=[>=3.19]
         sys-libs/zlib
     run:

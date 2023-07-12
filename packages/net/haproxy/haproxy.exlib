@@ -29,7 +29,7 @@ fi
 
 DEPENDENCIES="
     build+run:
-        dev-libs/openssl
+        dev-libs/openssl:=
         dev-libs/pcre[>=8.32]
         sys-libs/zlib
     run:

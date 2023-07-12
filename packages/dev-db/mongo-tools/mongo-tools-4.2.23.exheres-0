@@ -25,7 +25,7 @@ DEPENDENCIES="
         virtual/pkg-config
     build+run:
         providers:libressl? ( dev-libs/libressl:= )
-        providers:openssl? ( dev-libs/openssl )
+        providers:openssl? ( dev-libs/openssl:= )
         sasl? ( net-libs/cyrus-sasl )
 "
 

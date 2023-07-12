@@ -19,7 +19,7 @@ DEPENDENCIES="
         virtual/pkg-config
     build+run:
         dev-libs/popt  [[ note = [ for tools ] ]]
-        providers:openssl? ( dev-libs/openssl[>=0.9.8] )
+        providers:openssl? ( dev-libs/openssl:=[>=0.9.8] )
         providers:libressl? ( dev-libs/libressl:= )
 "
 

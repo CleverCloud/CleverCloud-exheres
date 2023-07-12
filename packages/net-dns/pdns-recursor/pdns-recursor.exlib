@@ -22,7 +22,7 @@ DEPENDENCIES="
         dev-lang/lua:=
         dev-libs/boost
         dev-libs/libsodium
-        dev-libs/openssl
+        dev-libs/openssl:=
         dev-libs/protobuf:=
         systemd? ( sys-apps/systemd )
 "

@@ -25,7 +25,7 @@ DEPENDENCIES="
         dev-libs/boost[>=1.35.0]
         dev-libs/libedit
         dev-libs/libsodium
-        dev-libs/openssl
+        dev-libs/openssl:=
         dev-libs/protobuf:=
         dev-libs/re2:=
         systemd? ( sys-apps/systemd )

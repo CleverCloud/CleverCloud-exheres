@@ -31,7 +31,7 @@ DEPENDENCIES="
         sys-libs/pam
         ldap? ( net-directory/openldap )
         providers:libressl? ( dev-libs/libressl:= )
-        providers:openssl? ( dev-libs/openssl )
+        providers:openssl? ( dev-libs/openssl:= )
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(

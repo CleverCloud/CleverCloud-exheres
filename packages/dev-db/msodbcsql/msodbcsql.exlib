@@ -19,7 +19,7 @@ DEPENDENCIES="
     run:
         app-crypt/krb5[>=1.17]
         dev-db/unixODBC[>=2.3.7]
-        dev-libs/openssl[>=1.1.1b]
+        dev-libs/openssl:=[>=1.1.1b]
         sys-fs/e2fsprogs[>=1.45.0]
         sys-libs/glibc[>=2.27-r2]
 "

@@ -22,7 +22,7 @@ DEPENDENCIES="
             media-gfx/graphviz
         )
         sasl? ( net-libs/gsasl )
-        ssl? ( dev-libs/openssl )
+        ssl? ( dev-libs/openssl:= )
 "
 
 src_configure(){
