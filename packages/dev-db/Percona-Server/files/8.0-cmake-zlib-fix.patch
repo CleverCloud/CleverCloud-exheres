@@ -25,12 +25,13 @@ diff --git a/cmake/zlib.cmake b/cmake/zlib.cmake
 index 460d87ac61d6..633ca494d3ac 100644
 --- a/cmake/zlib.cmake
 +++ b/cmake/zlib.cmake
-@@ -60,6 +60,8 @@ FUNCTION(FIND_SYSTEM_ZLIB)
+@@ -60,6 +60,9 @@ FUNCTION(FIND_SYSTEM_ZLIB)
        TARGET_INCLUDE_DIRECTORIES(zlib_interface SYSTEM INTERFACE
          ${ZLIB_INCLUDE_DIR})
      ENDIF()
 +    SET(ZLIB_FOUND ${ZLIB_FOUND} PARENT_SCOPE)
 +    SET(ZLIB_VERSION ${ZLIB_VERSION} PARENT_SCOPE)
++    SET(ZLIB_LIBRARY ${ZLIB_LIBRARY} PARENT_SCOPE)
    ENDIF()
  ENDFUNCTION(FIND_SYSTEM_ZLIB)
  
