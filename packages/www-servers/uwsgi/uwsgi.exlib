@@ -4,7 +4,7 @@
 require github [ user=unbit ]
 require alternatives setup-py [ import=setuptools blacklist=none ]
 
-export_exlib_phases src_unpack src_compile src_install
+export_exlib_phases src_unpack src_configure src_compile src_install
 
 SUMMARY="Full stack for building (and hosting) network applications"
 HOMEPAGE="http://projects.unbit.it/uwsgi/"
@@ -57,20 +57,17 @@ prepare_one_multibuild() {
     edo sed -e '/uwsgi_compiled/s/False/True/' -i setup.py
 }
 
-configure_one_multibuild() {
+uwsgi_src_configure() {
     edo tee buildconf/exherbo.ini <<CONFIG
 [uwsgi]
-inherit = nolang
+main_plugin =
+inherit = base
 xml = libxml2
 yaml = true
 json = jansson
 ssl = true
 pcre = true
 CONFIG
-}
-
-src_configure() {
-    configure_one_multibuild
     setup-py_src_configure
 }
 
