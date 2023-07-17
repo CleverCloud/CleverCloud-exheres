@@ -17,7 +17,11 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build+run:
+        dev-libs/jansson
         dev-libs/libxcrypt:=
+        dev-libs/libxml2:2.0
+        dev-libs/openssl:=
+        dev-libs/pcre
         apache? ( www-servers/apache )
         ruby? ( dev-lang/ruby:= )
 "
@@ -53,6 +57,23 @@ prepare_one_multibuild() {
     edo sed -e '/uwsgi_compiled/s/False/True/' -i setup.py
 }
 
+configure_one_multibuild() {
+    edo tee buildconf/exherbo.ini <<CONFIG
+[uwsgi]
+inherit = nolang
+xml = libxml2
+yaml = true
+json = jansson
+ssl = true
+pcre = true
+CONFIG
+}
+
+src_configure() {
+    configure_one_multibuild
+    setup-py_src_configure
+}
+
 compile_one_multibuild () {
     setup-py_compile_one_multibuild
     option python && euwsgiplugins "${PYTHON_PLUGINS[@]}"
@@ -68,7 +89,7 @@ test_one_multibuild() {
 }
 
 uwsgi_src_compile() {
-    emake PROFILE=nolang
+    emake PROFILE=exherbo
     option ruby && euwsgiplugins "${RUBY_PLUGINS[@]}"
     setup-py_src_compile
     euwsgiplugins "${OTHER_PLUGINS[@]}"
