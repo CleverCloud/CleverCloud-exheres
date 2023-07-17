@@ -10,7 +10,10 @@ LICENCES="PostgreSQL"
 SLOT="0"
 
 MYOPTIONS=""
-DEPENDENCIES=""
+DEPENDENCIES="
+    build+run:
+        dev-libs/openssl:=
+"
 
 prepare_one_multibuild() {
     default
