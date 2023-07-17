@@ -11,6 +11,7 @@ SLOT="0"
 MYOPTIONS=""
 DEPENDENCIES="
     build+run:
+        dev-libs/openssl:= [[ note = [ for libcrypto ] ]]
         sys-apps/file
 "
 
