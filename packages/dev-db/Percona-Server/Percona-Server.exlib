@@ -292,6 +292,12 @@ Percona-Server_src_install() {
     local alternatives=()
     cmake_src_install
 
+    # TODO(sardemff7): check if in the future, this is fixed upstream somehow
+    edo sed -i \
+        -e 's:-lzlib:-lz:g' \
+        "${IMAGE}"/usr/$(exhost --target)/libexec/${PN}-${SLOT}/mysql_config \
+        "${IMAGE}"/usr/$(exhost --target)/lib/${PN}-${SLOT}/pkgconfig/perconaserverclient.pc
+
     if ever at_least 8; then
         # Remove files pages we explicitly do not want to package
         # https://github.com/percona/percona-server/blob/8.0/build-ps/percona-server.spec#L639
