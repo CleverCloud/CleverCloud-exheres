@@ -51,6 +51,7 @@ else
 fi
 
 DEFAULT_SRC_COMPILE_PARAMS=(
+    V=1
     PREFIX=/usr
     SBINDIR=/usr/$(exhost --target)/bin
     TARGET=${_target}
