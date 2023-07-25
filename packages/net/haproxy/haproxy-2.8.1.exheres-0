@@ -1,0 +1,6 @@
+# Copyright 2021 Arnaud Lefebvre <a.lefebvre@outlook.fr>
+# Distributed under the terms of the GNU General Public License v2
+
+require haproxy
+
+PLATFORMS="~amd64"
