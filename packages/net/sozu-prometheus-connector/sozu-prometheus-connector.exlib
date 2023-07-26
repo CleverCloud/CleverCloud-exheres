@@ -1,0 +1,9 @@
+# Copyright 2017 Marc-Antoine Perennou <keruspe@exherbo.org>
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require sozu-connector [ connector_name="prometheus" ]
+
+SUMMARY="Sōzu prometheus connector"
+DESCRIPTION="Exposes Sōzu metrics in a prometheus format on HTTP."
+
