@@ -1,4 +1,5 @@
-# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Copyright 2023 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Copyright 2023 Emmanuel Bosquet <emmanuel.bosquet@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
 PLATFORMS="~amd64"

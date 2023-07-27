@@ -1,5 +1,5 @@
-# Copyright 2017 Marc-Antoine Perennou <keruspe@exherbo.org>
-# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Copyright 2023 Emmanuel Bosquet <emmanuel.bosquet@clever-cloud.com>
+# Copyright 2023 Florentin Dubois <florentin.dubois@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
 myexparam connector_name
@@ -19,22 +19,17 @@ LICENCES="Apache-2.0"
 
 DEPENDENCIES="
     build:
-        dev-libs/protobuf
+        dev-libs/protobuf:=
 "
 
-# we do not override the default compile and test phases
-
 sozu-connector_src_install() {
-    ecargo_install
+    cargo_src_install
 
     insinto "/etc/sozu/${SLOT}/connector"
     edo mv -v example.config.toml ${CONNECTOR_NAME}.toml
-    doins ${CONNECTOR_NAME}.toml
-
-    edo mv -v "systemd/${PN}.service" "systemd/${PN}-${SLOT}.service"
+    newins ${CONNECTOR_NAME}.toml
 
     install_systemd_files
-    emagicdocs
 
     alternatives_for "${PN}" "${SLOT}" "50" \
         "/usr/$(exhost --target)/bin/${PN}" "${PN}.${SLOT}" \
