@@ -56,6 +56,9 @@ SendSIGKILL=no
 # When a JVM receives a SIGTERM signal it exits with code 143
 SuccessExitStatus=143
 
+# Always restart the process
+Restart=always
+
 # Allow a slow startup before the systemd notifier module kicks in to extend the timeout
 TimeoutStartSec=75
 
