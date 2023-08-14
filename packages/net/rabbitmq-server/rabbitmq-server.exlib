@@ -23,7 +23,12 @@ DEPENDENCIES="
         user/rabbitmq
 "
 
+DEFAULT_SRC_COMPILE_PARAMS=(
+    V=1
+    -j1
+)
 DEFAULT_SRC_INSTALL_PARAMS=(
+    V=1
     "PREFIX=/usr/$(exhost --target)"
 )
 
