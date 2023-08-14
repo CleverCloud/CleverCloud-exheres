@@ -3,9 +3,14 @@
 
 require systemd-service python [ multibuild=false blacklist=none ] github [ user=rabbitmq suffix=tar.xz release=v${PV} ] utf8-locale
 
+MIX_TASK_ARCHIVE_DEPS_VERSION=1.0.0
+MIX_TASK_ARCHIVE_DEPS_DISTFILE=mix_task_archive_deps-${MIX_TASK_ARCHIVE_DEPS_VERSION}.ez
 SUMMARY="AMQP-compliant message broker"
 
 HOMEPAGE="http://www.rabbitmq.com/"
+DOWNLOADS+="
+    https://github.com/rabbitmq/mix_task_archive_deps/releases/download/${MIX_TASK_ARCHIVE_DEPS_VERSION}/${MIX_TASK_ARCHIVE_DEPS_DISTFILE}
+"
 
 LICENCES="MPL-1.1"
 SLOT="0"
@@ -30,15 +35,41 @@ DEFAULT_SRC_COMPILE_PARAMS=(
 DEFAULT_SRC_INSTALL_PARAMS=(
     V=1
     "PREFIX=/usr/$(exhost --target)"
+    MIX_TASK_ARCHIVE_DEPS_URL="${FETCHEDDIR}/${MIX_TASK_ARCHIVE_DEPS_DISTFILE}"
 )
 
 RESTRICT=test
 
-export_exlib_phases pkg_setup src_install
+export_exlib_phases pkg_setup src_unpack src_install
 
 rabbitmq-server_pkg_setup() {
     # elixir requires utf8
     require_utf8_locale
+
+    export MIX_ENV=prod
+    export MIX_HOME="${TEMP}"/.mix
+    export MIX_ARCHIVES="${MIX_HOME}"/archives
+}
+
+rabbitmq-server_src_unpack() {
+    default
+
+    # Yes, this is *still* ugly, but no workaround possible atm. Upstream working on it.
+
+    edo pushd "${WORK}"
+    esandbox disable_net
+    edo mix local.hex --force
+
+    local dep
+    for dep in csv json parallel_stream; do
+        edo pushd deps/${dep}
+        DEPS_DIR="${WORK}"/deps edo mix deps.get
+        edo sed -e '/deps.get/d' -i mix.exs
+        edo popd
+    done
+
+    esandbox enable_net
+    edo popd
 }
 
 rabbitmq-server_src_install() {
