@@ -20,6 +20,8 @@ LICENCES="Apache-2.0"
 DEPENDENCIES="
     build:
         dev-libs/protobuf:=
+    run:
+        net/sozu[>=0.15.0]
 "
 
 sozu-connector_src_install() {
