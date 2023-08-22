@@ -6,7 +6,7 @@ myexparam connector_name
 exparam -v CONNECTOR_NAME connector_name
 
 require alternatives
-require github [ user=CleverCloud force_git_clone=true tag="${PV}" ]
+require github [ user=CleverCloud force_git_clone=true tag="v${PV}" ]
 require systemd-service [ systemd_files=[ "systemd" ] ]
 require cargo
 
