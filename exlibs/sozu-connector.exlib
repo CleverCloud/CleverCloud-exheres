@@ -26,8 +26,8 @@ sozu-connector_src_install() {
     cargo_src_install
 
     insinto "/etc/sozu/${SLOT}/connector"
-    edo mv -v example.config.toml ${CONNECTOR_NAME}.toml
-    newins ${CONNECTOR_NAME}.toml
+    edo mv -v example.config.toml "${CONNECTOR_NAME}.toml"
+    newins "${CONNECTOR_NAME}.toml" "${CONNECTOR_NAME}.toml"
 
     install_systemd_files
 
