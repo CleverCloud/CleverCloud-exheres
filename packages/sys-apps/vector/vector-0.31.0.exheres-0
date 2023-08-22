@@ -5,3 +5,5 @@ PLATFORMS="~amd64"
 
 require vector
 
+# This will no longer be required for Vector >= 0.32
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/remove-unnecessary-mut-rust-1.71.patch )
