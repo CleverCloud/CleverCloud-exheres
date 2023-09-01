@@ -21,6 +21,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build+run:
+        dev-libs/aws-crt-cpp
         media-sound/pulseaudio
         net-misc/curl
         providers:libressl? ( dev-libs/libressl:= )
