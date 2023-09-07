@@ -38,7 +38,7 @@ DEPENDENCIES="
         dev-lang/clang:${LLVM_SLOT}
         dev-lang/llvm:${LLVM_SLOT}
         dev-libs/icu:=
-        dev-util/lttng-ust[<2.13]
+        dev-util/lttng-ust$(ever at_least 6 || echo '[<2.13]')
         net-misc/curl
         sys-apps/numactl
         sys-devel/gettext
