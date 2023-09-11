@@ -1,0 +1,14 @@
+# Copyright 2023 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="reorg" tag="ver_${PV}" ]
+require postgresql [ work="${PN}-ver_${PV}" min_version=11 ]
+
+SUMMARY="Reorganize tables in PostgreSQL databases with minimal locks"
+PLATFORMS="~amd64"
+LICENCES="BSD-3"
+SLOT="0"
+
+MYOPTIONS=""
+DEPENDENCIES=""
+
