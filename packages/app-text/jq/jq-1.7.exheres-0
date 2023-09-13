@@ -26,10 +26,3 @@ DEFAULT_SRC_CONFIGURE_PARAMS=(
     --disable-valgrind # requires non-stripped glibc
 )
 
-src_install() {
-    default
-
-    # Duplicate to ${PNVR}'s contents.
-    edo rm -r "${IMAGE}"/usr/share/doc/${PN}
-}
-
