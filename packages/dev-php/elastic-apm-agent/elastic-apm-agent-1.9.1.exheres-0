@@ -18,6 +18,10 @@ DEPENDENCIES="
         net-misc/curl
 "
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/gnu-features-fix.patch
+)
+
 pkg_setup() {
     exdirectory --allow /opt
 }
@@ -41,7 +45,7 @@ install_one_multibuild() {
     edo echo "elastic_apm.bootstrap_php_part_file=/opt/${PN}/php-${abi}/src/bootstrap_php_part.php" >> "${IMAGE}"/etc/php-${abi}/${PN}.ini
 
     insinto /opt/${PN}/php-${abi}/src
-    doins -r ../../src/ElasticApm
-    doins ../../src/bootstrap_php_part.php
+    doins -r ../../php/ElasticApm
+    doins ../../php/bootstrap_php_part.php
 }
 
