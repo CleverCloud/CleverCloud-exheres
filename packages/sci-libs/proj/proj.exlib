@@ -4,8 +4,9 @@
 #     Copyright 1999-2014 Gentoo Foundation
 
 require cmake
+require alternatives
 
-export_exlib_phases src_test
+export_exlib_phases src_prepare src_test src_install
 
 SUMMARY="PROJ.4 - Cartographic Projections Library"
 HOMEPAGE="https://proj.org/"
@@ -19,12 +20,15 @@ DEPENDENCIES="
         dev-libs/json[>=3.7.0]
         net-misc/curl
         tiff? ( media-libs/tiff:= )
+        !sci-libs/proj:0 [[
+            description = [ Pre-slotted version ]
+            resolution = uninstall-blocked-before
+        ]]
     test:
         dev-cpp/gtest[>=1.8.1]
 "
 
 LICENCES="MIT"
-SLOT="0"
 
 CMAKE_SRC_CONFIGURE_PARAMS=(
     -DCMAKE_INSTALL_DOCDIR="/usr/share/doc/${PNVR}"
@@ -39,6 +43,13 @@ CMAKE_SRC_CONFIGURE_TESTS=(
     '-DBUILD_TESTING:BOOL=TRUE -DBUILD_TESTING:BOOL=FALSE'
 )
 
+proj_src_prepare() {
+    cmake_src_prepare
+    edo sed -i \
+        -e "/PROJ_DATA_PATH/s:/proj:&-${SLOT}:" \
+        CMakeLists.txt
+}
+
 proj_src_test(){
     # PROJ_LIB is used as searchpath for proj.db
     export PROJ_LIB="${CMAKE_BUILDDIR}/data"
@@ -52,3 +63,41 @@ proj_src_test(){
     ctest ARGS+="-E '${tests_to_skip}'" test
 }
 
+proj_src_install() {
+    cmake_src_install
+
+    local alternatives=(
+        /usr/$(exhost --target)/lib/cmake/proj{,-${SLOT}}
+        /usr/$(exhost --target)/lib/cmake/proj4{,-${SLOT}}
+        /usr/$(exhost --target)/lib/libproj{,-${SLOT}}.so
+    )
+
+    alternatives+=(
+        /usr/$(exhost --target)/lib/pkgconfig/proj{,-${SLOT}}.pc
+    )
+
+    edo cd "${IMAGE}"
+
+    edo pushd usr/$(exhost --target)/include
+    local inc
+    for inc in *; do
+        alternatives+=( /usr/$(exhost --target)/include/${inc}{,-${SLOT}} )
+    done
+    edo popd
+
+    edo pushd usr/$(exhost --target)/bin
+    local bin
+    for bin in *; do
+        alternatives+=( /usr/$(exhost --target)/bin/${bin}{,-${SLOT}} )
+    done
+    edo popd
+
+    edo pushd usr/share/man
+    local man
+    for man in man?/*; do
+        alternatives+=( /usr/share/man/${man}{,-${SLOT}} )
+    done
+    edo popd
+
+    alternatives_for ${PN} ${SLOT} ${SLOT} "${alternatives[@]}"
+}

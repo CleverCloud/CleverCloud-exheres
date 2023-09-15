@@ -3,5 +3,6 @@
 
 require proj
 
+SLOT="25"
 PLATFORMS="~amd64"
 
