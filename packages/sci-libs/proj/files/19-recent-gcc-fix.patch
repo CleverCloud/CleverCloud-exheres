@@ -1,0 +1,14 @@
+Upstream: in recent versions
+Reason: Missing include with recent GCC
+Author: Morgane “Sardem FF7” Glidic <morgane.glidic@clever-cloud.com>
+diff -ur a/src/proj_json_streaming_writer.hpp proj-7.2.1/src/proj_json_streaming_writer.hpp
+--- a/src/proj_json_streaming_writer.hpp	2020-01-23 09:45:49.000000000 +0100
++++ proj-7.2.1/src/proj_json_streaming_writer.hpp	2023-09-15 12:08:22.516982436 +0200
+@@ -33,6 +33,7 @@
+ 
+ #include <vector>
+ #include <string>
++#include <cstdint>
+ 
+ #define CPL_DLL
+ 

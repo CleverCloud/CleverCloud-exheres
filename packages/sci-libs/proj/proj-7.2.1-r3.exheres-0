@@ -1,0 +1,12 @@
+# Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require proj
+
+SLOT="19"
+PLATFORMS="~amd64"
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/0001-CmakeLists-Fix-hardcoded-datarootdir.patch
+    "${FILES}"/${SLOT}-recent-gcc-fix.patch
+)

@@ -32,6 +32,7 @@ LICENCES="MIT"
 
 CMAKE_SRC_CONFIGURE_PARAMS=(
     -DCMAKE_INSTALL_DOCDIR="/usr/share/doc/${PNVR}"
+    -DDEFAULT_DATA_SUBDIR=/usr/share/${PN}-${SLOT}
     -DENABLE_CURL=ON
     -DNLOHMANN_JSON_ORIGIN=external
     -DRUN_NETWORK_DEPENDENT_TESTS=OFF
@@ -48,6 +49,9 @@ proj_src_prepare() {
     edo sed -i \
         -e "/PROJ_DATA_PATH/s:/proj:&-${SLOT}:" \
         CMakeLists.txt
+    edo sed -i \
+        -e "/DEFAULT_DATA_SUBDIR/s:/proj:&-${SLOT}:" \
+        cmake/ProjInstallPath.cmake
 }
 
 proj_src_test(){
