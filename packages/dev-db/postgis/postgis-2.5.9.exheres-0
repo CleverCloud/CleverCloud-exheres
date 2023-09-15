@@ -6,5 +6,25 @@ require postgis
 
 PLATFORMS="~amd64"
 
+DEPENDENCIES="
+    build+run:
+        sci-libs/proj:19
+"
+
+DEFAULT_SRC_CONFIGURE_PARAMS+=(
+    "--with-projdir=/etc/env.d/alternatives/_$(exhost --target)_proj/19/usr/$(exhost --target)"
+)
 DEFAULT_SRC_COMPILE_PARAMS=( -j1 )
 
+prepare_one_multibuild() {
+    edo sed -e "s/ar rs/${AR} rs/" -i libpgcommon/Makefile.in -i raster/rt_core/Makefile.in
+    edo sed -i \
+        -e '/LIBS/s:-lproj :-lproj-19 :g' \
+        configure
+    edo sed -i \
+        -e '/PROJ_LDFLAGS/s:-lproj:-lproj-19:g' \
+        liblwgeom/Makefile.in \
+        raster/test/cunit/Makefile.in \
+        raster/rt_core/Makefile.in
+    default
+}
