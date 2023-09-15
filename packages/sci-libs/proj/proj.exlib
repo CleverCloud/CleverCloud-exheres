@@ -96,6 +96,9 @@ proj_src_install() {
     done
     edo popd
 
+    alternatives_for _$(exhost --target)_${PN} ${SLOT} ${SLOT} "${alternatives[@]}"
+
+    alternatives=()
     edo pushd usr/share/man
     local man
     for man in man?/*; do
@@ -103,5 +106,5 @@ proj_src_install() {
     done
     edo popd
 
-    alternatives_for ${PN} ${SLOT} ${SLOT} "${alternatives[@]}"
+    alternatives_for _${PN} ${SLOT} ${SLOT} "${alternatives[@]}"
 }
