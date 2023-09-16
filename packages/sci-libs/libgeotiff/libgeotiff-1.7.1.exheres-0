@@ -7,5 +7,6 @@ PLATFORMS="~amd64"
 
 DEFAULT_SRC_PREPARE_PATCHES+=(
     -p2 "${FILES}"/${PNV}-testlistgeo-do-not-print-corner-coordinates-for-data.patch
+        "${FILES}"/${PNV}-Fix-make-check-to-pass-with-PROJ-9.3-fixes-89.patch
 )
 
