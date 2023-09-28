@@ -5,18 +5,21 @@ require systemd-service [ systemd_files=[ "contrib/systemd/etcd.service" "${FILE
 require github [ user="etcd-io" tag="v${PV}" ]
 
 SUMMARY="A distributed, reliable key-value store for the most critical data of a distributed system"
-PLATFORMS="~amd64"
+
 LICENCES="Apache-2.0"
 SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+RESTRICT="test"
+
 DEPENDENCIES="
     build:
-        dev-lang/go
+        dev-lang/go[>=1.19]
     build+run:
         group/${PN}
         user/${PN}
 "
-
-RESTRICT=test
 
 # TODO: Support go.mod in the Go exlib
 unset GOPATH
@@ -30,6 +33,9 @@ src_unpack() {
 
     edo pushd "${WORK}" 
     edo go mod download -x
+    # manually get additional modules to fix build, last checked: 3.5.9
+    edo go get google.golang.org/genproto@v0.0.0-20210602131652-f16073e35f0c
+    edo go get github.com/urfave/cli@v1.22.4
     edo popd
 
     esandbox enable_net
@@ -55,9 +61,11 @@ src_install() {
     dobin "bin/${PN}utl"
 
     diropts -m 0700 -o "${PN}" -g "${PN}"
+    keepdir "/var/lib/${PN}"
     keepdir "/var/lib/${PN}/snapshots"
 
     edo mv etcd.conf.yml.sample conf.yml
     insinto "/etc/${PN}"
     doins conf.yml
 }
+
