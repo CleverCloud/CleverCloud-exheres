@@ -1,6 +1,9 @@
 # Copyright 2019 Julien Durillon <julien.durillon@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
+require bash-completion zsh-completion
+require systemd-service
+
 SUMMARY="LLDP allows you to know exactly on which port is a server (and reciprocally)."
 DESCRIPTION="
 lldpd is an ISC-licensed implementation of LLDP for various Unixes. It also supports some
@@ -16,17 +19,41 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build:
+        virtual/pkg-config
     build+run:
+        dev-libs/libevent:=
+        sys-libs/libcap
+        sys-libs/readline:=
         user/$PN
         group/$PN
+    test:
+        dev-libs/check
 "
 
 BUGS_TO="julien.durillon@clever-cloud.com"
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     --enable-pie
+    --disable-fuzzer
+    --disable-json0
+    --disable-static
     --with-privsep-group="$PN"
     --with-privsep-user="$PN"
-    --runstatedir=/var/run
+    --with-readline
+    --with-systemdsystemunitdir=${SYSTEMDSYSTEMUNITDIR}
+    --without-embedded-libevent
+    --without-libbsd
+    --without-seccomp
+    --without-snmp
+    --without-sysusersdir
+    --without-xml
+    --runstatedir=/run
 )
+
+src_install() {
+    default
+
+    option bash-completion || edo rm -r "${IMAGE}"/usr/share/bash-completion
+    option zsh-completion || edo rm -r "${IMAGE}"/usr/share/zsh
+}
 
