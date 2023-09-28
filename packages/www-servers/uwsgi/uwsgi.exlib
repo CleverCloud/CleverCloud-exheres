@@ -7,8 +7,10 @@ require alternatives setup-py [ import=setuptools blacklist=none ]
 export_exlib_phases src_unpack src_configure src_compile src_install
 
 SUMMARY="Full stack for building (and hosting) network applications"
-HOMEPAGE="http://projects.unbit.it/uwsgi/"
+HOMEPAGE="https://uwsgi-docs.readthedocs.io/en/latest/"
 
+LICENCES="GPL-2"
+SLOT="0"
 MYOPTIONS="
     apache [[ description = [ Build the apache modules ] ]]
     python [[ description = [ Build the python plugin ] ]]
@@ -25,9 +27,6 @@ DEPENDENCIES="
         apache? ( www-servers/apache )
         ruby? ( dev-lang/ruby:= )
 "
-
-LICENCES="GPL-2"
-SLOT="0"
 
 WORK="${WORKBASE}"/${PNV}
 
