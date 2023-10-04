@@ -13,6 +13,7 @@ MYOPTIONS="( providers: libressl openssl ) [[ number-selected = exactly-one ]]"
 
 DEPENDENCIES="
     build+run:
+	app-arch/zstd
         dev-libs/icu:=
         net-libs/cyrus-sasl
         providers:libressl? ( dev-libs/libressl:= )
