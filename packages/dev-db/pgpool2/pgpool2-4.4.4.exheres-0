@@ -3,7 +3,7 @@
 
 MY_PV="${PV//./_}"
 
-require github [ user="pgpool" tag="${MY_PV}" ]
+require github [ user="pgpool" tag="V${MY_PV}" ]
 require postgresql [ work="${PN}-${MY_PV}" multibuild=false ]
 require systemd-service [ systemd_files=[ ${FILES}/systemd/${PN}.service ] ]
 
@@ -21,6 +21,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build+run:
+	dev-libs/libxcrypt:=
         dev-db/postgresql-client
         pam? ( sys-libs/pam )
         ssl? (
