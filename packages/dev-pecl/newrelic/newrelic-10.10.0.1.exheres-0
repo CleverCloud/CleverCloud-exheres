@@ -1,7 +1,7 @@
 # Copyright 2023 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require newrelic
+require newrelic [ php_abis=[ 5.6 ] ]
 
 PLATFORMS="~amd64"
 

@@ -1,0 +1,47 @@
+# Copyright 2015 Julien Durillon <julien.durillon@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+myexparam php_abis=[ 7.0 7.1 7.2 7.3 7.4 8.0 8.1 8.2 ]
+
+BASE_FILENAME="${PN}-php5-${PV}-linux"
+require php-pecl [ module=module work=${BASE_FILENAME} php_abis=[ $(exparam php_abis[@]) ] ]
+
+SUMMARY="Newrelic Agent for PHP"
+HOMEPAGE="http://www.newrelic.com/"
+DOWNLOADS="https://download.newrelic.com/php_agent/release/${BASE_FILENAME}.tar.gz"
+LICENCES="Apache-2.0 BSD-2 BSD-3 BSD-4 MIT PHP-3 newrelic"
+SLOT="$(ever range 1-2)"
+
+MYOPTIONS=""
+DEPENDENCIES=""
+
+BUGS_TO="julien.durillon@gmail.com"
+
+php-pecl_prepare_one_multibuild() {
+    :
+}
+
+php-pecl_configure_one_multibuild() {
+    :
+}
+
+php-pecl_install_one_multibuild() {
+    local abi=$(php-pecl_get_abi)
+    local extensionDir extensionFileName modver
+
+    edo mkdir -p "${IMAGE}"/etc/php-${abi}
+    extensionDir=$(php-config-${abi} --extension-dir)
+    extensionFileName="${extensionDir}/${PN}.so"
+    modver=$(basename ${extensionDir})
+
+    exeinto ${extensionDir}
+    newexe agent/x64/${PN}-${modver}.so ${PN}.so
+
+    insinto /etc/php-${abi}
+    newins scripts/newrelic.ini.template newrelic.ini
+
+    newbin daemon/newrelic-daemon.x64 newrelic-daemon
+
+    keepdir /var/log/newrelic/
+}
+
