@@ -3,12 +3,10 @@
 
 myexparam php_abis=[ 7.0 7.1 7.2 7.3 7.4 8.0 8.1 8.2 ]
 
-BASE_FILENAME="${PN}-php5-${PV}-linux"
-require php-pecl [ module=module work=${BASE_FILENAME} php_abis=[ $(exparam php_abis[@]) ] ]
+require php-pecl [ module=module work=${PN}-php5-${PV}-linux php_abis=[ $(exparam php_abis[@]) ] ]
 
 SUMMARY="Newrelic Agent for PHP"
 HOMEPAGE="http://www.newrelic.com/"
-DOWNLOADS="https://download.newrelic.com/php_agent/release/${BASE_FILENAME}.tar.gz"
 LICENCES="Apache-2.0 BSD-2 BSD-3 BSD-4 MIT PHP-3 newrelic"
 SLOT="$(ever range 1-2)"
 

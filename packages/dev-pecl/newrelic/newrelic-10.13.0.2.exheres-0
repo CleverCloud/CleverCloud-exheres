@@ -3,5 +3,6 @@
 
 require newrelic
 
+DOWNLOADS="https://download.newrelic.com/php_agent/release/${PN}-php5-${PV}-linux.tar.gz"
 PLATFORMS="~amd64"
 

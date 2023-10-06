@@ -3,5 +3,6 @@
 
 require newrelic [ php_abis=[ 5.6 ] ]
 
+DOWNLOADS="https://download.newrelic.com/php_agent/archive/${PN}/${PN}-php5-${PV}-linux.tar.gz"
 PLATFORMS="~amd64"
 
