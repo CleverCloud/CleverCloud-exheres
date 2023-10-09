@@ -61,7 +61,7 @@ rabbitmq-server_src_unpack() {
     edo mix local.hex --force
 
     local dep
-    for dep in csv json parallel_stream; do
+    for dep in csv json; do
         edo pushd deps/${dep}
         DEPS_DIR="${WORK}"/deps edo mix deps.get
         edo sed -e '/deps.get/d' -i mix.exs
