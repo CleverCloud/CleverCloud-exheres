@@ -50,6 +50,7 @@ pdns_src_configure() {
         --sysconfdir=/etc/powerdns \
         --with-dynmodules="${mymodules[@]}" \
         --with-modules= \
+        --enable-ipcipher \
         $(option_enable systemd) \
         $(option_with mysql mysql /usr/$(exhost --target)) \
         $(option_with postgres pgsql /usr/$(exhost --target)) \
