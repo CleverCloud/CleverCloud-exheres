@@ -28,11 +28,12 @@ DEPENDENCIES="
     build+run:
         group/pdns
         user/pdns
-        dev-lang/lua:=
+        dev-lang/LuaJIT
         dev-libs/boost[>=1.35.0]
         dev-libs/libsodium
         dev-libs/openssl:=
         dev-libs/protobuf:=
+        net/net-snmp
         mysql? ( virtual/mysql )
         postgres? ( dev-db/postgresql-client )
         systemd? ( sys-apps/systemd )
@@ -51,6 +52,8 @@ pdns_src_configure() {
         --with-dynmodules="${mymodules[@]}" \
         --with-modules= \
         --enable-ipcipher \
+        --without-gnutls \
+        --without-lmdb \
         $(option_enable systemd) \
         $(option_with mysql mysql /usr/$(exhost --target)) \
         $(option_with postgres pgsql /usr/$(exhost --target)) \

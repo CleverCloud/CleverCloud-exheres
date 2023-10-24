@@ -19,17 +19,20 @@ DEPENDENCIES="
     build+run:
         group/pdns
         user/pdns
-        dev-lang/lua:=
+        dev-lang/LuaJIT
         dev-libs/boost
         dev-libs/libsodium
         dev-libs/openssl:=
         dev-libs/protobuf:=
+        net/net-snmp
         systemd? ( sys-apps/systemd )
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     --sysconfdir=/etc/powerdns
     --enable-ipcipher
+    --without-gnutls
+    --without-lmdb
 )
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( systemd )
 

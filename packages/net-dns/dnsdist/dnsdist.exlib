@@ -21,13 +21,14 @@ DEPENDENCIES="
     build+run:
         group/dnsdist
         user/dnsdist
-        dev-lang/lua:=
+        dev-lang/LuaJIT
         dev-libs/boost[>=1.35.0]
         dev-libs/libedit
         dev-libs/libsodium
         dev-libs/openssl:=
         dev-libs/protobuf:=
         dev-libs/re2:=
+        net/net-snmp
         systemd? ( sys-apps/systemd )
 "
 
@@ -40,6 +41,8 @@ dnsdist_src_configure() {
         --enable-dns-over-tls \
         --enable-libssl \
         --enable-ipcipher \
+        --without-gnutls \
+        --without-lmdb \
         $(option_enable systemd)
 }
 
