@@ -39,6 +39,7 @@ dnsdist_src_configure() {
         --enable-dnscrypt \
         --enable-dns-over-tls \
         --enable-libssl \
+        --enable-ipcipher \
         $(option_enable systemd)
 }
 
