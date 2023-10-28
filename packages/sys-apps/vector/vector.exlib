@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user=vectordotdev tag="v${PV}" force_git_clone=true ]
-require cargo [ disable_default_features=true rust_minimum_version="1.66.0" ]
+require cargo [ disable_default_features=true rust_minimum_version="1.73.0" ]
 require systemd-service [ systemd_files=[ distribution/systemd/${PN}.service ${FILES}/${PN}@.service ] systemd_tmpfiles=[ ${FILES}/${PN}.conf ] ]
 
 SUMMARY="Vector is a lightweight, ultra-fast, open-source tool for building observability pipelines"
@@ -46,7 +46,7 @@ src_install() {
     cargo_src_install
 
     insinto /etc/${PN}
-    doins config/${PN}.toml
+    doins config/${PN}.yaml
 
     keepdir /var/lib/${PN}
 
