@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user=alanxz pn=rabbitmq-c tag=v${PV} ]
-require cmake [ api=2 ]
+require cmake
 
 SUMMARY="RabbitMQ C client"
 
@@ -19,9 +19,13 @@ DEPENDENCIES="
         virtual/pkg-config
     build+run:
         dev-libs/popt  [[ note = [ for tools ] ]]
-        providers:openssl? ( dev-libs/openssl:=[>=0.9.8] )
+        providers:openssl? ( dev-libs/openssl:=[>=1.1.1] )
         providers:libressl? ( dev-libs/libressl:= )
 "
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/463054383fbeef889b409a7f843df5365288e2a0.patch
+)
 
 BUGS_TO="keruspe@exherbo.org"
 
@@ -29,12 +33,14 @@ BUGS_TO="keruspe@exherbo.org"
 RESTRICT="test"
 
 CMAKE_SRC_CONFIGURE_PARAMS=(
-    -DBUILD_API_DOCS:BOOL=OFF
-    -DBUILD_EXAMPLES:BOOL=OFF
-    -DBUILD_SSL_SUPPORT:BOOL=ON
-    -DBUILD_TESTS:BOOL=OFF
-    -DBUILD_TOOLS:BOOL=ON
-    -DBUILD_TOOLS_DOCS:BOOL=ON
+    -DBUILD_API_DOCS:BOOL=FALSE
+    -DBUILD_EXAMPLES:BOOL=FALSE
+    -DBUILD_OSSFUZZ:BOOL=FALSE
+    -DBUILD_STATIC_LIBS:BOOL=FALSE
+    -DBUILD_TESTING:BOOL=FALSE
+    -DBUILD_TOOLS:BOOL=TRUE
+    -DBUILD_TOOLS_DOCS:BOOL=TRUE
+    -DENABLE_SSL_SUPPORT:BOOL=TRUE
 )
 
 src_test() {
