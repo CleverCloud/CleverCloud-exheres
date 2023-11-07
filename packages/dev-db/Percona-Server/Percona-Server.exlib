@@ -63,7 +63,6 @@ DEPENDENCIES="
         app-arch/lz4
         dev-libs/libaio
         dev-libs/libedit
-        dev-libs/protobuf:=[>=2.6.1]
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl:= )
         !dev-db/mariadb [[
@@ -106,11 +105,7 @@ else
     "
 fi
 
-if ever at_least 8; then
-    DEFAULT_SRC_PREPARE_PATCHES=(
-        "${FILES}/${SLOT}-cmake-zlib-fix.patch"
-    )
-else
+if ! ever at_least 8; then
     DEFAULT_SRC_PREPARE_PATCHES=(
         "${FILES}/${SLOT}-recent-gcc-fixes.patch"
     )
@@ -212,7 +207,7 @@ CMAKE_SRC_CONFIGURE_PARAMS=(
     -DWITH_CLIENT_PROTOCOL_TRACING:BOOL=FALSE
     -DWITH_LZ4:STRING=system
     -DWITH_MSAN:BOOL=FALSE
-    -DWITH_PROTOBUF=system
+    -DWITH_PROTOBUF=bundled
     -DWITH_RAPID:BOOL=FALSE
     -DWITH_TEST_TRACE_PLUGIN:BOOL=FALSE
     -DWITH_UBSAN:BOOL=FALSE

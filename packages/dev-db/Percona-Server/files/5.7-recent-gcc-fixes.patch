@@ -1,16 +1,6 @@
 Reason: GCC 12+ fixes
 Source: Morgane “Sardem FF7” Glidic <sardemff7@exherbo.org>
 Upstream: no
---- a/storage/rocksdb/rocksdb/db/compaction/compaction_iteration_stats.h  2023-06-27 16:13:36.020745949 +0200
-+++ b/storage/rocksdb/rocksdb/db/compaction/compaction_iteration_stats.h  2023-06-27 16:14:22.299690808 +0200
-@@ -6,6 +6,7 @@
- #pragma once
- 
-+#include <cstdint>
- #include "rocksdb/rocksdb_namespace.h"
- 
- struct CompactionIterationStats {
-   // Compaction statistics
 --- a/storage/rocksdb/rocksdb/table/block_based/data_block_hash_index.h   2023-06-27 17:03:55.983739095 +0200
 +++ b/storage/rocksdb/rocksdb/table/block_based/data_block_hash_index.h   2023-06-27 17:04:06.043517785 +0200
 @@ -7,6 +7,7 @@
