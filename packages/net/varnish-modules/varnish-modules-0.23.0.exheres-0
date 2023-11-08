@@ -1,22 +1,23 @@
 # Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user="varnish" tag=${PNV} ]
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
+require github [ user=varnish release=${PV} suffix=tar.gz ]
 
 SUMMARY="A collection of modules (vmods) extending Varnish VCL"
-HOMEPAGE="https://github.com/varnish/varnish-modules"
 
-LICENCES="as-is"
+LICENCES="BSD-2"
 SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""
 
-DEPENDENCIES="
-    build+run:
-        net/varnish
-"
-
 # Way too much networking
 RESTRICT="test"
+
+DEPENDENCIES="
+    build:
+        dev-lang/python:*[>=3]
+        virtual/pkg-config
+    build+run:
+        net/varnish[>=7.4.0]
+"
 
