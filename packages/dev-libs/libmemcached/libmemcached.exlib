@@ -1,22 +1,44 @@
 # Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require launchpad
+require github [ user=awesomized ] cmake
 
 SUMMARY="libMemcached is an open source client library for the memcached server"
-HOMEPAGE="http://libmemcached.org/libMemcached.html"
 
 LICENCES="BSD-3"
 SLOT="0"
 MYOPTIONS="sasl"
 
-DEPENDENCIES="
-    build+run:
-        sasl? ( net-libs/cyrus-sasl )
-"
-
 # Since tests are failing when net/memcached, they are skipped
 RESTRICT="test"
 
-DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'sasl' )
+DEPENDENCIES="
+    build:
+        dev-python/Sphinx
+        virtual/pkg-config
+    build+run:
+        dev-libs/libevent:=
+        sasl? ( net-libs/cyrus-sasl )
+"
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/${PNVR}
+    -DBUILD_DOCS:BOOL=FALSE
+    -DBUILD_DOCS_MAN:BOOL=TRUE
+    -DBUILD_SHARED_LIBS:BOOL=TRUE
+    -DENABLE_DTRACE:BOOL=FALSE
+    -DENABLE_HASH_FNV64:BOOL=FALSE
+    -DENABLE_HASH_HSIEH:BOOL=FALSE
+    -DENABLE_HASH_MURMUR:BOOL=TRUE
+    -DENABLE_MEMASLAP:BOOL=TRUE
+    -DENABLE_OPENSSL_CRYPTO:BOOL=FALSE
+)
+
+CMAKE_SRC_CONFIGURE_OPTION_ENABLES=(
+    'sasl SASL'
+)
+
+CMAKE_SRC_CONFIGURE_TESTS=(
+    '-DBUILD_TESTING:BOOL=TRUE -DBUILD_TESTING:BOOL=FALSE'
+)
 
