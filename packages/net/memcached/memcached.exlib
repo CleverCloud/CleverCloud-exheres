@@ -6,10 +6,10 @@ require systemd-service [ systemd_files=[ memcached.service ] ]
 export_exlib_phases src_install
 
 SUMMARY="memcached is a high-performance, distributed memory object caching system"
+HOMEPAGE="https://memcached.org"
+DOWNLOADS="${HOMEPAGE}/files/${PNV}.tar.gz"
 
-HOMEPAGE="http://memcached.org/"
 LICENCES="BSD-2"
-DOWNLOADS="http://www.memcached.org/files/${PNV}.tar.gz"
 SLOT="0"
 MYOPTIONS="sasl platform: amd64"
 
@@ -23,8 +23,10 @@ DEPENDENCIES="
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --disable-large-client-flags
     --disable-proxy
     --disable-proxy-uring
+    --disable-werror
 )
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'sasl' 'platform:amd64 64bit' )
 
