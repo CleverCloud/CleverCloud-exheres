@@ -12,8 +12,6 @@ SLOT="7"
 RESTRICT="test"
 MYOPTIONS="sasl"
 
-DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'sasl memcached-sasl' )
-
 DEPENDENCIES="
     build+run:
         dev-libs/libmemcached[>=1.0.18][sasl?]
@@ -22,5 +20,15 @@ DEPENDENCIES="
 prepare_one_multibuild() {
     edo sed -e '/AC_PATH_PROG(PKG_CONFIG/d' -i config.m4
     php-pecl_prepare_one_multibuild
+}
+
+configure_one_multibuild() {
+    if option sasl ; then
+        PHP_PECL_SRC_CONFIGURE_PARAMS+=( --enable-memcached-sasl )
+    else
+        PHP_PECL_SRC_CONFIGURE_PARAMS+=( --disable-memcached-sasl )
+    fi
+
+    php-pecl_configure_one_multibuild
 }
 
