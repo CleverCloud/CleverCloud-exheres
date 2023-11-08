@@ -2,17 +2,25 @@
 # Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user="${PN}cache" project="${PN}-cache" tag=${PNV} ]
-require autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
+require autotools [ supported_autoconf=[ 2.7 ] supported_automake=[ 1.16 ] ]
 require systemd-service
 
 SUMMARY="Varnish Cache, the high-performance HTTP accelerator"
-HOMEPAGE="https://www.varnish-cache.org/"
+HOMEPAGE="https://www.varnish-cache.org"
+DOWNLOADS="${HOMEPAGE}/downloads/${PNV}.tgz"
 
-LICENCES="as-is"
+BUGS_TO="keruspe@exherbo.org"
+
+LICENCES="BSD-2"
 SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS="modules [[ description = [ A collection of modules (vmods) extending Varnish VCL ] ]]"
+MYOPTIONS="
+    doc
+    modules [[ description = [ A collection of modules (vmods) extending Varnish VCL ] ]]
+"
+
+# Way too much networking
+RESTRICT="test"
 
 DEPENDENCIES="
     build:
@@ -24,26 +32,37 @@ DEPENDENCIES="
         user/varnish
         group/varnish
         dev-libs/libedit
-        dev-libs/pcre
+        dev-libs/pcre2
+        sys-libs/ncurses
         sys-libs/readline:=
     post:
         modules? ( net/varnish-modules ) 
 "
 
-BUGS_TO="keruspe@exherbo.org"
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --enable-pcre2-jit
+    --disable-coverage
+    --disable-oss-fuzz
+    --with-ncurses
+    --without-contrib
+    --without-jemalloc
+    --without-unwind
+)
 
-# Way too much networking
-RESTRICT="test"
+# varnish{,-legacy}.m4
+AT_M4DIR=( . )
 
 src_prepare() {
-    edo sed -i -e 's/-Werror//' ${WORK}/configure.ac
+    edo sed \
+        -e 's/-Werror//' \
+        -i configure.ac
 
-    AT_M4DIR=( "${WORK}" )
     autotools_src_prepare
 }
 
 src_install() {
     default
+
     keepdir /var/lib/varnish
 
     insinto /etc/varnish
@@ -51,6 +70,12 @@ src_install() {
     doins "${FILES}"/varnish.params
 
     install_systemd_files
+
+    if option doc ; then
+        edo pushd doc
+        dodoc -r html
+        edo popd
+    fi
 }
 
 pkg_postinst() {
