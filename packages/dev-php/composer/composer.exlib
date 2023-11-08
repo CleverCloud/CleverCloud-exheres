@@ -7,10 +7,11 @@ export_exlib_phases src_unpack src_install
 
 SUMMARY="Dependency manager for PHP"
 HOMEPAGE="https://getcomposer.org"
-DOWNLOADS="https://getcomposer.org/download/${PV/_/-}/${PN}.phar -> ${PNV}.phar"
+DOWNLOADS="${HOMEPAGE}/download/${PV/_/-}/${PN}.phar -> ${PNV}.phar"
 
-LICENCES="as-is"
-SLOT="0"
+LICENCES="MIT"
+SLOT="$(ever major)"
+MYOPTIONS=""
 
 DEPENDENCIES="
     run:
@@ -22,7 +23,7 @@ DEPENDENCIES="
 "
 
 composer_src_unpack() {
-    mkdir -p "${WORK}"
+    edo mkdir -p "${WORK}"
     edo cp "${FETCHEDDIR}"/${PNV}.phar "${WORK}"/${PN}-${SLOT}.phar
 }
 
@@ -31,3 +32,4 @@ composer_src_install() {
     alternatives_for "${PN}" "${SLOT}" "${SLOT}" \
         /usr/$(exhost --target)/bin/${PN}{,-${SLOT}}.phar
 }
+

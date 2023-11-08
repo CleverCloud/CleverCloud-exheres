@@ -5,5 +5,3 @@ require composer
 
 PLATFORMS="~amd64 ~armv8"
 
-SLOT="1"
-
