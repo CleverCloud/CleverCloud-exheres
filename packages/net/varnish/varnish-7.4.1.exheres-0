@@ -16,7 +16,6 @@ SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS="
     doc
-    modules [[ description = [ A collection of modules (vmods) extending Varnish VCL ] ]]
 "
 
 # Way too much networking
@@ -35,8 +34,10 @@ DEPENDENCIES="
         dev-libs/pcre2
         sys-libs/ncurses
         sys-libs/readline:=
-    post:
-        modules? ( net/varnish-modules ) 
+    suggestion:
+        net/varnish-modules [[
+            description = [ A collection of modules (vmods) extending Varnish VCL ]
+        ]]
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
