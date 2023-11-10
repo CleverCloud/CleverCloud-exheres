@@ -8,7 +8,7 @@ else
 fi
 
 require systemd-service [ systemd_files=[ ${SYSTEMD_FILES_DIRECTORY}/systemd/${PN}.service ] ]
-require lua [ multibuild=false with_opt=true whitelist="5.3 $(ever at_least 2.8 && echo 5.4)" ]
+require lua [ multibuild=false with_opt=true whitelist="5.3 $(ever at_least 2.4 && echo 5.4)" ]
 
 export_exlib_phases src_compile src_install
 
