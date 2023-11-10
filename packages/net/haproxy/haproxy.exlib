@@ -19,6 +19,7 @@ DOWNLOADS="https://www.haproxy.org/download/$(ever range 1-2)/src/${PNV}.tar.gz"
 LICENCES="GPL-2"
 SLOT="0"
 MYOPTIONS="
+    ( libc: musl )
 "
 
 if ever at_least 2.4; then
@@ -32,6 +33,7 @@ DEPENDENCIES="
         dev-libs/openssl:=
         dev-libs/pcre[>=8.32]
         sys-libs/zlib
+        !libc:musl? ( dev-libs/libxcrypt:= )
     run:
         group/haproxy
         user/haproxy
