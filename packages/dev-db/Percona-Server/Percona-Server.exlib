@@ -63,6 +63,7 @@ DEPENDENCIES="
         app-arch/lz4
         dev-libs/libaio
         dev-libs/libedit
+        dev-libs/protobuf:3.19
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl:= )
         !dev-db/mariadb [[
@@ -207,7 +208,7 @@ CMAKE_SRC_CONFIGURE_PARAMS=(
     -DWITH_CLIENT_PROTOCOL_TRACING:BOOL=FALSE
     -DWITH_LZ4:STRING=system
     -DWITH_MSAN:BOOL=FALSE
-    -DWITH_PROTOBUF=bundled
+    -DWITH_PROTOBUF=system
     -DWITH_RAPID:BOOL=FALSE
     -DWITH_TEST_TRACE_PLUGIN:BOOL=FALSE
     -DWITH_UBSAN:BOOL=FALSE
