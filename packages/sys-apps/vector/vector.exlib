@@ -43,7 +43,7 @@ ECARGO_FEATURES=(
 )
 
 src_install() {
-    ecargo_install
+    cargo_src_install
 
     insinto /etc/${PN}
     doins config/${PN}.toml
@@ -53,7 +53,6 @@ src_install() {
     install_systemd_files
 
     option examples && dodoc -r config/examples
-    emagicdocs
 }
 
 pkg_postinst() {
