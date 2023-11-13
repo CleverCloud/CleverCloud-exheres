@@ -35,7 +35,7 @@ setup_cargo_features() {
         ECARGO_FEATURES=('use-openssl')
         ECARGO_FEATURE_ENABLES=('logs-debug logs-debug' 'logs-trace logs-trace' 'tolerant-http1-parser tolerant-http1-parser')
     else
-        ECARGO_FEATURES=() 
+        ECARGO_FEATURES=()
         ECARGO_FEATURE_ENABLES=('logs-debug logs-debug' 'logs-trace logs-trace')
     fi
 }
@@ -73,12 +73,12 @@ src_install() {
     for dir in "${dirs[@]}"; do
         pushd "${dir}"
             setup_cargo_features "${dir}"
-            ecargo_install
+            ecargo_install --path=. --root="${IMAGE}"/usr/$(exhost --target) --frozen
         popd
     done
 
     edo env BINDIR="/usr/$(exhost --target)/bin" SYSCONFDIR="/etc" DATADIR="/usr/share" RUNDIR="/run" os-build/exherbo/generate.sh
-   
+
     insinto "/etc/${PN}/${SLOT}"
     doins generated/config.toml
 

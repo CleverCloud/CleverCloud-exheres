@@ -50,7 +50,7 @@ sozu_src_test() {
 
 sozu_src_install() {
     pushd bin
-        ecargo_install
+    cargo_src_install
     popd
 
     insinto "/etc/${PN}/${SLOT}"
