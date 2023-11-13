@@ -38,13 +38,13 @@ ECARGO_FEATURE_ENABLES=(
 
 sozu_src_compile() {
     pushd bin
-        ecargo_build
+    cargo_src_compile
     popd
 }
 
 sozu_src_test() {
     pushd bin
-        ecargo_test
+    cargo_src_test
     popd
 }
 
