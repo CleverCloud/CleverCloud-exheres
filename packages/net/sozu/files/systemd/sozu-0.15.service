@@ -4,16 +4,26 @@ Documentation=https://docs.rs/sozu/
 After=network-online.target local-fs.target remote-fs.target time-sync.target
 Wants=network-online.target local-fs.target remote-fs.target time-sync.target
 
+StartLimitIntervalSec=10
+StartLimitBurst=5
+
 [Service]
-RuntimeDirectory=sozu.0.15
 Type=simple
+
+RuntimeDirectory=sozu.0.15
 PIDFile=/run/sozu.0.15/sozu.pid
+
 ExecStartPre=/usr/bin/sozu.0.15 config check --config /etc/sozu/0.15/config.toml
 ExecStart=/usr/bin/sozu.0.15 start --config /etc/sozu/0.15/config.toml
-ExecReloadPre=/usr/bin/sozu.0.15 config check --config /etc/sozu/0.15/config.toml
 ExecReload=/usr/bin/sozu.0.15 reload --config /etc/sozu/0.15/config.toml
 Restart=on-failure
+
 LimitNOFILE=65536
+
+# Since systemd 229, should be in [Unit] but in order to support systemd <229,
+# it is also supported to have it here.
+StartLimitInterval=10
+StartLimitBurst=5
 
 [Install]
 WantedBy=multi-user.target
