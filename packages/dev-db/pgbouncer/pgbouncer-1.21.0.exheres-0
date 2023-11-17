@@ -5,3 +5,7 @@ require pgbouncer
 
 PLATFORMS="~amd64"
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/lib_usual_tls_tls.c.patch
+)
+

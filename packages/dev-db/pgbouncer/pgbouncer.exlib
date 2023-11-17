@@ -1,38 +1,75 @@
 # Copyright 2013 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require systemd-service
+require systemd-service [ systemd_files=[ etc/${PN}.{service,socket} ] ]
 
-export_exlib_phases src_install
+
+export_exlib_phases src_prepare src_install
 
 SUMMARY="Lightweight connection pooler for PostgreSQL"
-HOMEPAGE="https://${PN}.github.io"
-DOWNLOADS="https://${PN}.github.io/downloads/files/${PV}/${PNV}.tar.gz"
+HOMEPAGE="https://www.${PN}.org"
+DOWNLOADS="${HOMEPAGE}/downloads/files/${PV}/${PNV}.tar.gz"
 
 LICENCES="ISC"
 SLOT="0"
 MYOPTIONS="
+    systemd
     ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
+# tests require python and unpackaged dev-python/psycopg
+RESTRICT="test"
+
 DEPENDENCIES="
+    build:
+        virtual/pkg-config
     build+run:
         dev-db/postgresql-client
         dev-libs/libevent:=
         net-dns/c-ares
+        sys-libs/pam
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl:= )
+        systemd? ( sys-apps/systemd )
+        user/postgres
+        group/postgres
 "
 
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --enable-evdns
+    --disable-werror
+    --with-cares
+    --with-openssl
+    --with-pam
+)
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
+    systemd
+)
 
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}/lib_usual_tls_tls.c.patch" )
+pgbouncer_src_prepare() {
+    default
+
+    edo sed \
+        -e 's:/var/run:/run:g' \
+        -e 's:unix_socket_dir = /tmp:unix_socket_dir = /run/postgresql:g' \
+        -i etc/${PN}.ini
+}
 
 pgbouncer_src_install() {
-    install_systemd_files
+    default
 
     insinto /etc/${PN}
-    doins ${FILES}/${PN}.ini
+    doins etc/${PN}.ini
+    edo touch "${IMAGE}"/etc/${PN}/userlist.txt
 
-    default
+    keepdir /var/log/${PN}
+    edo chown -R postgres:postgres "${IMAGE}"/var/log/${PN}
+
+    install_systemd_files
+
+    insinto /usr/$(exhost --target)/lib/tmpfiles.d
+    hereins ${PN}.conf <<EOF
+d /run/pgbouncer 0755 postgres postgres
+EOF
 }
 
