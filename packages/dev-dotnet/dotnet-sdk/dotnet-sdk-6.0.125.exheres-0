@@ -8,6 +8,6 @@ require dotnet-sdk [ dotnet_project="installer" \
     dotnet_tag="v${PV}" \
     dotnet_patches="${WORK}/src/SourceBuild/tarball/patches/" \
     dotnet_tarball="${WORKBASE}/dotnet-sources/artifacts/x64/Release/${PNV}-exherbo-x64.tar.gz" \
-    runtime="${SLOT}.24" \
+    runtime="${SLOT}.25" \
     llvm_slot=16 ]
 
