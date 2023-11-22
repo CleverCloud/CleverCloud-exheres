@@ -26,20 +26,20 @@ DEPENDENCIES="
 src_compile () {
     # mvn needs to fetch dependencies
     esandbox disable_net
-    edo /usr/$(exhost --target)/bin/mvn package --projects "${PN}" -DskipTests=true -Dmaven.javadoc.skip=true
+    edo mvn package --projects apm-agent-common,${PN} -DskipTests=true -Dmaven.javadoc.skip=true
     esandbox enable_net
 }
 
 src_test () {
     # mvn needs to fetch dependencies
     esandbox disable_net
-    edo /usr/$(exhost --target)/bin/mvn test --projects "${PN}"
+    edo mvn test --projects apm-agent-common,${PN}
     esandbox enable_net
 }
 
 src_install () {
     insinto /usr/share/"${PN}"
-    newins "${PN}"/target/"${PNV}".jar "${PN}".jar
-    newins "${PN}"/target/"${PNV}"-standalone.jar "${PN}"-standalone.jar
+    newins apm-agent-common/target/apm-agent-common-${PV}.jar apm-agent-common.jar
+    newins "${PN}"/target/${PNV}.jar ${PN}.jar
 }
 
