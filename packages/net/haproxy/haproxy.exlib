@@ -32,6 +32,7 @@ DEPENDENCIES="
     build+run:
         dev-libs/openssl:=
         dev-libs/pcre[>=8.32]
+        sys-apps/systemd
         sys-libs/zlib
         !libc:musl? ( dev-libs/libxcrypt:= )
     run:
@@ -39,24 +40,11 @@ DEPENDENCIES="
         user/haproxy
 "
 
-if ever at_least 1.8; then
-    DEPENDENCIES+="
-        build+run:
-            sys-apps/systemd
-    "
-fi
-
-if ever at_least 2.0; then
-    _target=linux-glibc
-else
-    _target=linux2628
-fi
-
 DEFAULT_SRC_COMPILE_PARAMS=(
     V=1
     PREFIX=/usr
     SBINDIR=/usr/$(exhost --target)/bin
-    TARGET=${_target}
+    TARGET=linux-glibc
     USE_PCRE=1
     USE_PCRE_JIT=1
     USE_THREAD=1
