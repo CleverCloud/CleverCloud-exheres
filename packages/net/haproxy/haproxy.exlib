@@ -31,7 +31,6 @@ fi
 DEPENDENCIES="
     build+run:
         dev-libs/openssl:=
-        dev-libs/pcre[>=8.32]
         sys-apps/systemd
         sys-libs/zlib
         !libc:musl? ( dev-libs/libxcrypt:= )
@@ -45,8 +44,6 @@ DEFAULT_SRC_COMPILE_PARAMS=(
     PREFIX=/usr
     SBINDIR=/usr/$(exhost --target)/bin
     TARGET=linux-glibc
-    USE_PCRE=1
-    USE_PCRE_JIT=1
     USE_THREAD=1
     USE_REGPARM=1
     USE_GETADDRINFO=1
@@ -56,8 +53,26 @@ DEFAULT_SRC_COMPILE_PARAMS=(
     CC=${CC}
 )
 
-# USE_STATIC_PCRE=1
-# TODO: switch to PCRE2
+if ever at_least 2.8.4; then
+    DEPENDENCIES+="
+        build+run:
+            dev-libs/pcre2
+    "
+    DEFAULT_SRC_COMPILE_PARAMS+=(
+        USE_PCRE2=1
+        USE_PCRE2_JIT=1
+    )
+else
+    DEPENDENCIES+="
+        build+run:
+            dev-libs/pcre[>=8.32]
+    "
+    DEFAULT_SRC_COMPILE_PARAMS+=(
+        USE_PCRE=1
+        USE_PCRE_JIT=1
+    )
+fi
+
 DEFAULT_SRC_INSTALL_PARAMS=( "${DEFAULT_SRC_COMPILE_PARAMS[@]}" DOCDIR=/usr/share/doc/${PNVR} )
 
 haproxy_src_compile() {
