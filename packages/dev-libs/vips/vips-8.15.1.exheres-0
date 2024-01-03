@@ -1,0 +1,145 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=lib${PN} project=lib${PN} release=v${PV} suffix="tar.xz" ] meson
+require option-renames [ renames=[ 'jpeg-xl jpegxl' ] ]
+require vala [ vala_dep=true with_opt=true ]
+
+SUMMARY="libvips is a demand-driven, horizontally threaded image processing library"
+
+LICENCES="LGPL-2.1"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS="
+    archive [[ description = [ Support for creating image pyramids with dzsave ] ]]
+    exif
+    fftw
+    fits [[ description = [ Support for F(lexible) I(mage) T(ransport) S(ystem) format ] ]]
+    fontconfig [[
+        description = [ Support for font handling utilizing fontconfig ]
+        requires = [ pango ]
+    ]]
+    gif
+    gobject-introspection
+    heif
+    imagequant [[ description = [ Support for writing 8-bit palette-ised PNGs and GIFs ] ]]
+    jpeg2000
+    jpegxl
+    lcms
+    magick [[ description = [ Support for all libMagick-supported image file types ] ]]
+    openexr
+    orc [[ description = [ Runtime compiler support to accelerate some operations ] ]]
+    pango [[ description = [ Support for Pango-based text rendering ] ]]
+    pdf [[ description = [ Support for PDF load with poppler-glib ] ]]
+    svg
+    tiff
+    webp
+    ( providers: ijg-jpeg jpeg-turbo ) [[ number-selected = exactly-one ]]
+    ( providers: graphicsmagick imagemagick ) [[
+        number-selected = at-most-one
+        requires = magick
+    ]]
+"
+
+DEPENDENCIES="
+    build:
+        virtual/pkg-config
+    build+run:
+        dev-libs/expat
+        dev-libs/glib:2[>=2.52]
+        media-libs/libpng:=[>=1.2.9]
+        sys-libs/zlib
+        archive? ( app-arch/libarchive[>=3.0.0] )
+        exif? ( media-libs/libexif[>=0.6] )
+        fftw? ( sci-libs/fftw )
+        fits? ( sci-libs/cfitsio:= )
+        fontconfig? ( media-libs/fontconfig )
+        gif? ( media-libs/cgif[>=0.2.0] )
+        gobject-introspection? ( gnome-desktop/gobject-introspection:1 )
+        heif? ( media-libs/libheif[>=1.4.0] )
+        imagequant? ( media-gfx/libimagequant )
+        jpeg2000? ( media-libs/OpenJPEG:2[>=2.4] )
+        jpegxl? ( media-libs/libjxl:=[>=0.6] )
+        lcms? ( media-libs/lcms2[tiff?] )
+        magick? (
+            providers:graphicsmagick? ( media-gfx/GraphicsMagick )
+            providers:imagemagick? ( media-gfx/ImageMagick[>=7] )
+        )
+        openexr? (
+            media-libs/imath
+            media-libs/openexr[>=3]
+        )
+        orc? ( dev-libs/orc:0.4 )
+        pango? (
+            x11-libs/cairo[>=1.2]
+            x11-libs/pango[>=1.32.6]
+        )
+        pdf? (
+            app-text/poppler[>=0.16.0][cairo][glib]
+            x11-libs/cairo[>=1.2]
+        )
+        providers:ijg-jpeg? ( media-libs/jpeg:= )
+        providers:jpeg-turbo? ( media-libs/libjpeg-turbo )
+        svg? ( gnome-desktop/librsvg:2[>=2.40.3] )
+        tiff? ( media-libs/tiff:=[>=4.0.10][webp?] )
+        webp? ( media-libs/libwebp:=[>=0.6][tiff?] )
+"
+
+# All tests are run, even if an option is disabled.
+RESTRICT="test"
+
+MESON_SRC_CONFIGURE_PARAMS=(
+    -Danalyze=true
+    -Dcplusplus=true
+    -Ddeprecated=true
+    -Ddoxygen=false
+    -Dexamples=false
+    -Dgtk_doc=false
+    -Dhighway=disabled
+    -Djpeg=enabled
+    -Dmatio=disabled
+    -Dmodules=enabled
+    -Dnifti=disabled
+    -Dnsgif=true
+    -Dopenslide=disabled
+    -Dpdfium=disabled
+    -Dpng=enabled
+    -Dppm=true
+    -Dquantizr=disabled
+    -Dradiance=true
+    -Dspng=disabled
+    -Dzlib=enabled
+)
+
+MESON_SRC_CONFIGURE_OPTIONS=(
+    'providers:graphicsmagick -Dmagick-package=GraphicsMagick'
+    'providers:imagemagick -Dmagick-package=MagickCore'
+)
+
+MESON_SRC_CONFIGURE_OPTION_FEATURES=(
+    archive
+    'gif cgif'
+    exif
+    fftw
+    'fits cfitsio'
+    fontconfig
+    'gobject-introspection introspection'
+    heif
+    'jpeg2000 openjpeg'
+    'jpegxl jpeg-xl'
+    lcms
+    magick
+    openexr
+    orc
+    'pango pangocairo'
+    'pdf poppler'
+    'svg rsvg'
+    tiff
+    webp
+)
+
+MESON_SRC_CONFIGURE_OPTION_SWITCHES=(
+    vapi
+)
+
