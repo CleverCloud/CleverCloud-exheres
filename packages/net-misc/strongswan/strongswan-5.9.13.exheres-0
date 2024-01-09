@@ -1,8 +1,10 @@
 # Copyright 2017 Julien Durillon <julien.durillon@gmail.com>
 # Distributed under the terms of the GNU General Public License v2
 
+require systemd-service
+
 SUMMARY="IPsec-based VPN solution focused on security and ease of use, supporting IKEv1/IKEv2 and MOBIKE"
-HOMEPAGE="http://www.strongswan.org/"
+HOMEPAGE="https://www.strongswan.org/"
 DOWNLOADS="https://download.strongswan.org/${PNV}.tar.bz2"
 
 LICENCES="GPL-2 RSA DES"
@@ -62,7 +64,8 @@ DEPENDENCIES="
         networkmanager? ( net-apps/NetworkManager )
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl:= )
-        sqlite? ( dev-db/sqlite[>=3.3.1] )
+        sqlite? ( dev-db/sqlite:3[>=3.3.1] )
+        systemd? ( sys-apps/systemd )
     run:
         sys-apps/iproute2
         group/ipsec
@@ -71,22 +74,24 @@ DEPENDENCIES="
 BUGS_TO="julien.durillon@gmail.com"
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
-    --disable-static
     --enable-chapoly
     --enable-ikev1
     --enable-ikev2
     --enable-kernel-netlink
     --enable-socket-dynamic
     --enable-swanctl
-    --enable-systemd
     --enable-vici
     --enable-xauth-pam
+    --disable-cert-enroll
+    --disable-cert-enroll-timer
+    --disable-openxpki
+    --disable-static
     --with-group=ipsec
 )
 
 DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
-        "caps capabilities /usr/$(exhost --target)"
-        "systemd systemdsystemunitdir /usr/$(exhost --target)/lib/systemd/system"
+    "caps capabilities /usr/$(exhost --target)"
+    "systemd systemdsystemunitdir ${SYSTEMDSYSTEMUNITDIR}"
 )
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
     botan
@@ -124,6 +129,7 @@ DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
     sqlite
     'sqlite attr-sql'
     'sqlite sql'
+    systemd
     plugins:led
     plugins:lookip
     plugins:systime-fix
@@ -145,7 +151,7 @@ DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
 src_install() {
     default
 
-    edo find "${IMAGE}/usr/$(exhost --target)" -name '*.la' -delete
+    edo find "${IMAGE}"/usr/$(exhost --target) -name '*.la' -delete
 
     keepdir /etc/ipsec.d/{aacerts,acerts,cacerts,certs,crls,ocspcerts,private,reqs}
     keepdir /etc/swanctl/{bliss,conf.d,ecdsa,pkcs12,pkcs8,private,pubkey,rsa,x509,x509aa,x509ac,x509ca,x509crl,x509ocsp}
