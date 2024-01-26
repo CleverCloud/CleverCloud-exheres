@@ -28,7 +28,7 @@ DEPENDENCIES="
 
 BUGS_TO="arnaud.lefebvre@clever-cloud.com"
 
-WORK="${WORKBASE}/${MY_PNV}-${MY_PLATFORM}"
+WORK="${WORKBASE}/${MY_PNV}"
 
 RESTRICT="strip"
 
@@ -38,14 +38,18 @@ pkg_setup() {
 
 src_install() {
     default
+
     edo mkdir "${IMAGE}"/opt
     edo cd "${WORKBASE}"
-    edo mv "${MY_PNV}-${MY_PLATFORM}" "${IMAGE}"/opt/${MY_PN}
-    edo rmdir "${IMAGE}"/opt/${MY_PN}/plugins
-    edo rmdir "${IMAGE}"/opt/${MY_PN}/node/lib
-    keepdir /opt/${MY_PN}/data
+    edo mv "${MY_PNV}" "${IMAGE}"/opt/${MY_PN}
+    keepdir /opt/${MY_PN}/{data,logs}
     edo chown -R ${MY_PN}:${MY_PN} "${IMAGE}"/opt/${MY_PN}
+
+    # remove empty directories
+    edo find "${IMAGE}" -type d -empty -delete
+
     install_systemd_files
+
     hereenvd 99${MY_PN} <<EOF
 CONFIG_PROTECT="/opt/${MY_PN}/config"
 EOF
