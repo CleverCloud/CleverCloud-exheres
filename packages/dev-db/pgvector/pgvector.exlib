@@ -1,0 +1,14 @@
+# Copyright 2024 Lucas DRAESCHER <lucas.draescher@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ tag="v${PV}" ]
+require postgresql
+
+SUMMARY="Open-source vector similarity search for Postgres"
+
+LICENCES="PostgreSQL"
+SLOT="0"
+
+DEPENDENCIES=""
+MYOPTIONS=""
+
