@@ -17,15 +17,11 @@ exparam -v LLVM_SLOT llvm_slot
 
 require github [ user="dotnet" project="${DOTNET_PROJECT}" tag="${DOTNET_TAG}" force_git_clone=true ] alternatives providers flag-o-matic
 
-export_exlib_phases pkg_setup src_unpack src_prepare src_configure src_compile src_install
+export_exlib_phases pkg_setup src_prepare src_configure src_compile src_install
 
 SUMMARY=".NET Core is a cross-platform version of .NET for building websites, services, and console apps."
 HOMEPAGE="https://dotnet.microsoft.com/"
 LICENCES="MIT"
-
-if ! ever at_least 6; then
-    DOWNLOADS="https://dotnetcli.azureedge.net/dotnet/Sdk/${SLOT}.208/${PN}-${SLOT}.208-linux-x64.tar.gz -> ${PNV}-bootstrap.tar.gz"
-fi
 
 MYOPTIONS=""
 DEPENDENCIES="
@@ -52,28 +48,10 @@ DEPENDENCIES="
         ]]
 "
 
-if ! ever at_least 6; then
-    DEFAULT_SRC_PREPARE_PATCHES=(
-        "${FILES}/${SLOT}/0001-BOOTSTRAP-add-exherbo-rid.patch"
-        "${FILES}/${SLOT}/0002-BOOTSTRAP-add-exherbo-rid.patch"
-    )
-fi
-
 dotnet-sdk_pkg_setup() {
     exdirectory --allow /opt
     export CC="$(exhost --tool-prefix)clang"
     export CXX="$(exhost --tool-prefix)clang++"
-}
-
-dotnet-sdk_src_unpack() {
-    scm_src_unpack
-
-    if ! ever at_least 6; then
-        local dotnet="${WORK}/.dotnet"
-        edo mkdir ${dotnet}
-        edo tar xf ${FETCHEDDIR}/${PNV}-bootstrap.tar.gz -C ${dotnet}
-        export PATH="${WORK}/.dotnet:${PATH}"
-    fi
 }
 
 dotnet-sdk_src_prepare() {
@@ -96,17 +74,15 @@ dotnet-sdk_src_compile() {
     export SkipDownloadingPreviouslySourceBuiltPackages=true
     export UseRazorBuildServer=false
 
-    if ever at_least 6; then
-        # error : Unable to locate repository with working directory that contains directory '/var/cache/paludis/distfiles/scm/dotnet-sdk'
-        edo git remote set-url origin https://github.com/dotnet/installer.git
+    # error : Unable to locate repository with working directory that contains directory '/var/cache/paludis/distfiles/scm/dotnet-sdk'
+    edo git remote set-url origin https://github.com/dotnet/installer.git
 
-        # Create a .NET source tarball
-        edo bash build.sh /p:ArcadeBuildTarball=true /p:TarballDir=${WORKBASE}/dotnet-sources
+    # Create a .NET source tarball
+    edo bash build.sh /p:ArcadeBuildTarball=true /p:TarballDir=${WORKBASE}/dotnet-sources
 
-        # Prep the source to build on your distro
-        pushd ${WORKBASE}/dotnet-sources
-        edo bash prep.sh
-    fi
+    # Prep the source to build on your distro
+    pushd ${WORKBASE}/dotnet-sources
+    edo bash prep.sh
 
     # Build the .NET SDK
     edo bash build.sh
