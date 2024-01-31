@@ -5,7 +5,6 @@ SLOT="$(ever range 1-2)"
 PLATFORMS="~amd64"
 
 require dotnet-sdk [ dotnet_project="dotnet" \
-    dotnet_tag="v${PV}" \
     dotnet_tarball="${WORK}/artifacts/x64/Release/${PNV}01-exherbo-x64.tar.gz" \
     runtime="${PV}" \
     llvm_slot=17 ]
