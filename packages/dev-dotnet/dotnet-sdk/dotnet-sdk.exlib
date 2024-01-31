@@ -13,6 +13,8 @@ exparam -v DOTNET_TARBALL dotnet_tarball
 exparam -v RUNTIME runtime
 exparam -v LLVM_SLOT llvm_slot
 
+SCM_CHECKOUT_TO="${FETCHEDDIR}/${PNV}"
+
 require github [ user="dotnet" project="${DOTNET_PROJECT}" tag="${DOTNET_TAG}" force_git_clone=true ] alternatives providers flag-o-matic
 
 export_exlib_phases pkg_setup src_prepare src_configure src_compile src_install
