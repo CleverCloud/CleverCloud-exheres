@@ -1,7 +1,8 @@
 From 5a7d0f595e6bc664177c3893b73fc4282a8610ef Mon Sep 17 00:00:00 2001
 From: s0dyy <msorin@msorin.com>
 Date: Thu, 15 Oct 2020 16:30:50 +0200
-Subject: [PATCH] RUNTIME-clang-banned-by-distribution
+Upstream: no
+Reason: clang banned by distribution
 
 ---
  eng/native/build-commons.sh          | 2 +-

@@ -1,7 +1,8 @@
 From dc31dfc3b611f24cd9b092bbe5b09cc17758a6ac Mon Sep 17 00:00:00 2001
 From: s0dyy <msorin@msorin.com>
 Date: Wed, 24 Nov 2021 15:25:42 +0100
-Subject: [PATCH] RUNTIME-ar-nm-ranlib-link-objdump-objcopy-banned
+Upstream: no
+Reason: ar/nm/ranlib banned by distribution
 
 ---
  eng/native/configuretools.cmake | 12 ++++++------

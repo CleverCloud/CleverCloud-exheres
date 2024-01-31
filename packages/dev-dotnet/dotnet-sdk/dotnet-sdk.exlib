@@ -3,14 +3,12 @@
 
 myexparam dotnet_project
 myexparam dotnet_tag
-myexparam dotnet_patches
 myexparam dotnet_tarball
 myexparam runtime
 myexparam llvm_slot
 
 exparam -v DOTNET_PROJECT dotnet_project
 exparam -v DOTNET_TAG dotnet_tag
-exparam -v DOTNET_PATCHES dotnet_patches
 exparam -v DOTNET_TARBALL dotnet_tarball
 exparam -v RUNTIME runtime
 exparam -v LLVM_SLOT llvm_slot
@@ -57,7 +55,7 @@ dotnet-sdk_pkg_setup() {
 dotnet-sdk_src_prepare() {
     default
 
-    edo cp -r "${FILES}"/${SLOT}/*/ "${DOTNET_PATCHES}"
+    edo cp -r "${FILES}"/${SLOT}/* ${WORK}/src/SourceBuild/tarball/patches/runtime/
 }
 
 dotnet-sdk_src_configure() {

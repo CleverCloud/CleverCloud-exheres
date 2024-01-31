@@ -1,7 +1,8 @@
 From f795028cc8814179d18a5c086dc4bb900c55389d Mon Sep 17 00:00:00 2001
 From: s0dyy <msorin@msorin.com>
 Date: Wed, 24 Nov 2021 15:15:26 +0100
-Subject: [PATCH] RUNTIME-readelf-banned-by-distribution
+Upstream: no
+Reason: readelf banned by distribution
 
 ---
  eng/native/genmoduleindex.sh | 2 +-
