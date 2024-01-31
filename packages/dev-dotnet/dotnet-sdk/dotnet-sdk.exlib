@@ -55,7 +55,9 @@ dotnet-sdk_pkg_setup() {
 dotnet-sdk_src_prepare() {
     default
 
-    edo cp -r "${FILES}"/${SLOT}/* ${WORK}/src/SourceBuild/tarball/patches/runtime/
+    if ! ever at_least 8; then
+        edo cp -r "${FILES}"/${SLOT}/* ${WORK}/src/SourceBuild/tarball/patches/runtime/
+    fi
 }
 
 dotnet-sdk_src_configure() {
@@ -73,19 +75,27 @@ dotnet-sdk_src_compile() {
     export UseRazorBuildServer=false
 
     # error : Unable to locate repository with working directory that contains directory '/var/cache/paludis/distfiles/scm/dotnet-sdk'
-    edo git remote set-url origin https://github.com/dotnet/installer.git
+    edo git remote set-url origin "${SCM_REPOSITORY}"
 
-    # Create a .NET source tarball
-    edo bash build.sh /p:ArcadeBuildTarball=true /p:TarballDir=${WORKBASE}/dotnet-sources
+    if ! ever at_least 8; then
+        edo bash build.sh /p:ArcadeBuildTarball=true /p:TarballDir=${WORKBASE}/dotnet-sources
+        pushd ${WORKBASE}/dotnet-sources
+    fi
 
-    # Prep the source to build on your distro
-    pushd ${WORKBASE}/dotnet-sources
     edo bash prep.sh
 
-    # Build the .NET SDK
-    edo bash build.sh
-    
     esandbox enable_net
+
+    esandbox allow_net --bind "unix:${TEMP%/}/dotnet-*"
+    esandbox allow_net --bind 'unix:/tmp/*'
+    esandbox allow_net --connect 'unix:/tmp/*'
+
+    edo bash build.sh
+
+    esandbox disallow_net --bind 'unix:/tmp/*'
+    esandbox disallow_net --connect 'unix:/tmp/*'
+    esandbox disallow_net --bind "unix:${TEMP%/}/dotnet-*"
+    
 }
 
 dotnet-sdk_src_install() {

@@ -1,0 +1,77 @@
+From fd3b10689a91a6d9fa9f9da24d6a66daf04b6907 Mon Sep 17 00:00:00 2001
+From: s0dyy <msorin@msorin.com>
+Date: Fri, 26 Jan 2024 19:28:16 +0100
+Upstream: no
+Reason: clang banned by distribution
+
+---
+ src/runtime/eng/native/build-commons.sh     | 2 +-
+ src/runtime/src/coreclr/build-runtime.sh    | 4 ++--
+ src/runtime/src/native/corehost/build.sh    | 2 +-
+ src/runtime/src/native/libs/build-native.sh | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/src/runtime/eng/native/build-commons.sh b/src/runtime/eng/native/build-commons.sh
+index d9eb04cd8a..173e1f92d4 100755
+--- a/src/runtime/eng/native/build-commons.sh
++++ b/src/runtime/eng/native/build-commons.sh
+@@ -358,7 +358,7 @@ while :; do
+             ;;
+ 
+         clang*|-clang*)
+-            __Compiler="$lowerI"
++            __Compiler=${CC}
+             ;;
+ 
+         cmakeargs|-cmakeargs)
+diff --git a/src/runtime/src/coreclr/build-runtime.sh b/src/runtime/src/coreclr/build-runtime.sh
+index 06f79ec34b..8dfb5e9cee 100755
+--- a/src/runtime/src/coreclr/build-runtime.sh
++++ b/src/runtime/src/coreclr/build-runtime.sh
+@@ -54,7 +54,7 @@ handle_arguments_local() {
+             __RequestedBuildComponents="$__RequestedBuildComponents $2"
+             __ShiftArgs=1
+             ;;
+-        
++
+         subdir|-subdir)
+             __SubDir="$2"
+             __ShiftArgs=1
+@@ -84,7 +84,7 @@ __BuildType=Debug
+ __CodeCoverage=0
+ 
+ # Set the various build properties here so that CMake and MSBuild can pick them up
+-__Compiler=clang
++__Compiler=${CC}
+ __CommonMSBuildArgs=
+ __ConfigureOnly=0
+ __CrossBuild=0
+diff --git a/src/runtime/src/native/corehost/build.sh b/src/runtime/src/native/corehost/build.sh
+index 6d112876e9..d5df1a1c9d 100755
+--- a/src/runtime/src/native/corehost/build.sh
++++ b/src/runtime/src/native/corehost/build.sh
+@@ -15,7 +15,7 @@ __TargetArch=x64
+ __TargetOS=linux
+ __BuildType=Debug
+ __CMakeArgs=""
+-__Compiler=clang
++__Compiler=${CC}
+ __CrossBuild=0
+ __PortableBuild=1
+ __RootBinDir="$__RepoRootDir/artifacts"
+diff --git a/src/runtime/src/native/libs/build-native.sh b/src/runtime/src/native/libs/build-native.sh
+index 4d712eb0ee..2f7d1a6adb 100755
+--- a/src/runtime/src/native/libs/build-native.sh
++++ b/src/runtime/src/native/libs/build-native.sh
+@@ -39,7 +39,7 @@ __TargetArch=x64
+ __TargetOS=linux
+ __BuildType=Debug
+ __CMakeArgs=""
+-__Compiler=clang
++__Compiler=${CC}
+ __CrossBuild=0
+ __PortableBuild=1
+ __RootBinDir="$__RepoRootDir/artifacts"
+-- 
+2.43.0
+
