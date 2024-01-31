@@ -32,6 +32,7 @@ DEPENDENCIES="
         dev-lang/clang:${LLVM_SLOT}
         dev-lang/llvm:${LLVM_SLOT}
         dev-libs/icu:=
+	dev-libs/openssl:=
         dev-util/lttng-ust$(if ever at_least 6; then echo '[>=2.13.6]'; else echo '[<2.13]'; fi)
         net-misc/curl
         sys-apps/numactl
