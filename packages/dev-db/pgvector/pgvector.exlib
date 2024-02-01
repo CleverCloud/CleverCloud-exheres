@@ -1,8 +1,11 @@
 # Copyright 2024 Lucas DRAESCHER <lucas.draescher@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
+myexparam min_version
+myexparam max_version
+
 require github [ tag="v${PV}" ]
-require postgresql
+require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" ]
 
 SUMMARY="Open-source vector similarity search for Postgres"
 
