@@ -2,10 +2,10 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user=vectordotdev tag="v${PV}" force_git_clone=true ]
-require cargo [ disable_default_features=true rust_minimum_version="1.73.0" ]
+require cargo [ disable_default_features=true rust_minimum_version="1.73.0" static=true ]
 require systemd-service [ systemd_files=[ distribution/systemd/${PN}.service ${FILES}/${PN}@.service ] systemd_tmpfiles=[ ${FILES}/${PN}.conf ] ]
 
-export_exlib_phases src_install pkg_postinst
+export_exlib_phases src_prepare src_install pkg_postinst
 
 SUMMARY="Vector is a lightweight, ultra-fast, open-source tool for building observability pipelines"
 HOMEPAGE="https://vector.dev"
@@ -18,13 +18,17 @@ MYOPTIONS="
 "
 
 DEPENDENCIES="
-    build+run:
+    build:
         dev-libs/openssl:=
-        dev-libs/protobuf:=[>=3.19]
+        dev-libs/protobuf:*[>=3.19]
         sys-libs/zlib
     run:
         group/${PN}
         user/${PN}
+        !static? (
+            dev-libs/openssl:=
+            sys-libs/zlib
+        )
 "
 
 # Docker test
@@ -43,6 +47,14 @@ ECARGO_FEATURES=(
     'enterprise'
     'component-validation-runner'
 )
+
+vector_src_prepare() {
+    if optionq static; then
+        export OPENSSL_STATIC=true
+    fi
+
+    default
+}
 
 vector_src_install() {
     cargo_src_install
