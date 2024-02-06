@@ -19,9 +19,10 @@ export_exlib_phases pkg_setup src_prepare src_configure src_compile src_install
 
 SUMMARY=".NET Core is a cross-platform version of .NET for building websites, services, and console apps."
 HOMEPAGE="https://dotnet.microsoft.com/"
-LICENCES="MIT"
 
+LICENCES="MIT"
 MYOPTIONS=""
+
 DEPENDENCIES="
     build:
         app-admin/eclectic-llvm
@@ -32,7 +33,7 @@ DEPENDENCIES="
         dev-lang/clang:${LLVM_SLOT}
         dev-lang/llvm:${LLVM_SLOT}
         dev-libs/icu:=
-	dev-libs/openssl:=
+        dev-libs/openssl:=
         dev-util/lttng-ust$(if ever at_least 6; then echo '[>=2.13.6]'; else echo '[<2.13]'; fi)
         net-misc/curl
         sys-apps/numactl
@@ -57,7 +58,7 @@ dotnet-sdk_src_prepare() {
     default
 
     if ! ever at_least 8; then
-        edo cp -r "${FILES}"/${SLOT}/* ${WORK}/src/SourceBuild/tarball/patches/runtime/
+        edo cp -r "${FILES}"/${SLOT}/* "${WORK}"/src/SourceBuild/tarball/patches/runtime/
     fi
 }
 
