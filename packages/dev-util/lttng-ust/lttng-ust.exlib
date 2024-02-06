@@ -18,8 +18,10 @@ MYOPTIONS="
 "
 
 DEPENDENCIES="
+    build:
+        virtual/pkg-config
     build+run:
-        dev-libs/userspace-rcu[>=0.11.0]
+        dev-libs/userspace-rcu[>=0.12]
         numa? ( sys-apps/numactl[>=2.0.12] )
 "
 
@@ -29,6 +31,7 @@ DEFAULT_SRC_CONFIGURE_PARAMS=(
     --disable-java-agent-all
     --disable-java-agent-jul
     --disable-java-agent-log4j
+    --disable-java-agent-log4j2
     --disable-jni-interface
     --disable-man-pages
     --disable-static
@@ -39,18 +42,6 @@ DEFAULT_SRC_CONFIGURE_PARAMS=(
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
     numa
 )
-
-if ever at_least 2.13.7; then
-    DEPENDENCIES+="
-        build:
-            virtual/pkg-config
-        build+run:
-            dev-libs/userspace-rcu[>=0.12]
-    "
-    DEFAULT_SRC_CONFIGURE_PARAMS+=(
-        --disable-java-agent-log4j2
-    )
-fi
 
 lttng-ust_src_install() {
     default
