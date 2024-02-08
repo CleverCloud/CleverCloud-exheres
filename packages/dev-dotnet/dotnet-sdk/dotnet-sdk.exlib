@@ -110,9 +110,10 @@ dotnet-sdk_src_install() {
         "/usr/$(exhost --target)/bin/dotnet" "/opt/${PN}-${SLOT}/dotnet"
         "/usr/$(exhost --target)/lib/libhostfxr.so" "/opt/${PN}-${SLOT}/host/fxr/${RUNTIME}/libhostfxr.so"
         "/usr/$(exhost --target)/lib/libnethost.so" "/opt/${PN}-${SLOT}/packs/Microsoft.NETCore.App.Host.${rid}/${RUNTIME}/runtimes/${rid}/native/libnethost.so"
+        "/usr/$(exhost --target)/lib/libnethost.a"  "/opt/${PN}-${SLOT}/packs/Microsoft.NETCore.App.Host.${rid}/${RUNTIME}/runtimes/${rid}/native/libnethost.a"
     )
 
-    for libpath in ${IMAGE}/opt/${PN}-${SLOT}/shared/Microsoft.NETCore.App/${RUNTIME}/{*.a,*.so} ; do
+    for libpath in "${IMAGE}"/opt/${PN}-${SLOT}/shared/Microsoft.NETCore.App/${RUNTIME}/*.so ; do
         lib=${libpath##*/}
         alternatives+=( "/usr/$(exhost --target)/lib/${lib}" "/opt/${PN}-${SLOT}/shared/Microsoft.NETCore.App/${RUNTIME}/${lib}" )
     done
