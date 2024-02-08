@@ -40,7 +40,6 @@ DEPENDENCIES="
         sys-devel/gettext
         sys-devel/lld:${LLVM_SLOT}
         sys-devel/lldb
-        sys-libs/llvm-libunwind
         sys-libs/zlib
         !dev-dotnet/dotnet-sdk:0 [[
             description = [ slot move ]
