@@ -1,4 +1,4 @@
-# Copyright 2023 Quentin “Sardem FF7” Glidic <sardemff7@exherbo.org>
+# Copyright 2023 Morgane “Sardem FF7” Glidic <sardemff7@exherbo.org>
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ release=${PV} suffix=tar.gz ]

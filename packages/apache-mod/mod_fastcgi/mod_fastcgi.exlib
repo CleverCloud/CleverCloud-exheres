@@ -1,7 +1,7 @@
 # Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 # Based in part upon 'mod_gnutls.exlib', which is:
-#       Copyright 2011 Quentin "Sardem FF7" Glidic <sardemff7+exherbo@sardemff7.net>
+#       Copyright 2011 Morgane "Sardem FF7" Glidic <sardemff7@exherbo.org>
 
 export_exlib_phases src_compile src_install
 
