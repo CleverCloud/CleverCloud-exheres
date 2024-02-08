@@ -76,6 +76,9 @@ dotnet-sdk_src_compile() {
     export SkipDownloadingPreviouslySourceBuiltPackages=true
     export UseRazorBuildServer=false
 
+    # opt-out of collecting and sharing telemetry with Microsoft
+    export DOTNET_CLI_TELEMETRY_OPTOUT=true
+
     # error : Unable to locate repository with working directory that contains directory '/var/cache/paludis/distfiles/scm/dotnet-sdk'
     edo git remote set-url origin "${SCM_REPOSITORY}"
 
