@@ -73,6 +73,7 @@ perf_make() {
         NO_LIBBPF=1
         NO_LIBDEBUGINFOD=$(perf_option debuginfod)
         NO_LIBZSTD=$(perf_option zstd)
+        NO_LIBTRACEEVENT=1
     )
 
     emake "${params[@]}" "${@}"
