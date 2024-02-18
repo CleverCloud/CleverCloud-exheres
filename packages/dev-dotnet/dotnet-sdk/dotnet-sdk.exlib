@@ -2,18 +2,20 @@
 # Distributed under the terms of the GNU General Public License v2
 
 myexparam dotnet_project
+myexparam dotnet_tag
 myexparam dotnet_tarball
-myexparam runtime
+myexparam dotnet_runtime
 myexparam llvm_slot
 
 exparam -v DOTNET_PROJECT dotnet_project
+exparam -v DOTNET_TAG dotnet_tag
 exparam -v DOTNET_TARBALL dotnet_tarball
-exparam -v RUNTIME runtime
+exparam -v DOTNET_RUNTIME dotnet_runtime
 exparam -v LLVM_SLOT llvm_slot
 
 SCM_CHECKOUT_TO="${FETCHEDDIR}/${PNV}"
 
-require github [ user="dotnet" project="${DOTNET_PROJECT}" tag="v${PV}" force_git_clone=true ] alternatives providers flag-o-matic
+require github [ user="dotnet" project="${DOTNET_PROJECT}" tag="${DOTNET_TAG}" force_git_clone=true ] alternatives providers flag-o-matic
 
 export_exlib_phases pkg_setup src_prepare src_configure src_compile src_install
 
@@ -110,14 +112,14 @@ dotnet-sdk_src_install() {
 
     local alternatives=(
         "/usr/$(exhost --target)/bin/dotnet" "/opt/${PN}-${SLOT}/dotnet"
-        "/usr/$(exhost --target)/lib/libhostfxr.so" "/opt/${PN}-${SLOT}/host/fxr/${RUNTIME}/libhostfxr.so"
-        "/usr/$(exhost --target)/lib/libnethost.so" "/opt/${PN}-${SLOT}/packs/Microsoft.NETCore.App.Host.${rid}/${RUNTIME}/runtimes/${rid}/native/libnethost.so"
-        "/usr/$(exhost --target)/lib/libnethost.a"  "/opt/${PN}-${SLOT}/packs/Microsoft.NETCore.App.Host.${rid}/${RUNTIME}/runtimes/${rid}/native/libnethost.a"
+        "/usr/$(exhost --target)/lib/libhostfxr.so" "/opt/${PN}-${SLOT}/host/fxr/${DOTNET_RUNTIME}/libhostfxr.so"
+        "/usr/$(exhost --target)/lib/libnethost.so" "/opt/${PN}-${SLOT}/packs/Microsoft.NETCore.App.Host.${rid}/${DOTNET_RUNTIME}/runtimes/${rid}/native/libnethost.so"
+        "/usr/$(exhost --target)/lib/libnethost.a"  "/opt/${PN}-${SLOT}/packs/Microsoft.NETCore.App.Host.${rid}/${DOTNET_RUNTIME}/runtimes/${rid}/native/libnethost.a"
     )
 
-    for libpath in "${IMAGE}"/opt/${PN}-${SLOT}/shared/Microsoft.NETCore.App/${RUNTIME}/*.so ; do
+    for libpath in "${IMAGE}"/opt/${PN}-${SLOT}/shared/Microsoft.NETCore.App/${DOTNET_RUNTIME}/*.so ; do
         lib=${libpath##*/}
-        alternatives+=( "/usr/$(exhost --target)/lib/${lib}" "/opt/${PN}-${SLOT}/shared/Microsoft.NETCore.App/${RUNTIME}/${lib}" )
+        alternatives+=( "/usr/$(exhost --target)/lib/${lib}" "/opt/${PN}-${SLOT}/shared/Microsoft.NETCore.App/${DOTNET_RUNTIME}/${lib}" )
     done
 
     alternatives_for dotnet ${PN}-${SLOT} ${SLOT} "${alternatives[@]}"
