@@ -18,15 +18,15 @@ BUGS_TO="arnaud.lefebvre@clever-cloud.com"
 DEPENDENCIES="
     build:
         dev-java/maven
-    build+run:
         virtual/jdk:=[>=9]
+    run:
         virtual/jre:=[>=9]
 "
 
 src_compile () {
     # mvn needs to fetch dependencies
     esandbox disable_net
-    edo mvn package --projects apm-agent-common,${PN} -DskipTests=true -Dmaven.javadoc.skip=true
+    edo mvn package --projects apm-agent-common,${PN} -DskipTests=true -Dmaven.javadoc.skip=true -Dmaven.compiler.target=8
     esandbox enable_net
 }
 
