@@ -26,7 +26,7 @@ DEPENDENCIES="
 src_compile () {
     # mvn needs to fetch dependencies
     esandbox disable_net
-    edo mvn package --projects apm-agent-common,${PN} -DskipTests=true -Dmaven.javadoc.skip=true -Dmaven.compiler.target=8
+    edo mvn package --projects apm-agent-common,${PN},${PN}-cli -DskipTests=true -Dmaven.javadoc.skip=true -Dmaven.compiler.target=8
     esandbox enable_net
 }
 
@@ -41,5 +41,6 @@ src_install () {
     insinto /usr/share/"${PN}"
     newins apm-agent-common/target/apm-agent-common-${PV}.jar apm-agent-common.jar
     newins "${PN}"/target/${PNV}.jar ${PN}.jar
+    newins "${PN}-cli"/target/${PN}-cli-${PV}.jar ${PN}-cli.jar
 }
 
