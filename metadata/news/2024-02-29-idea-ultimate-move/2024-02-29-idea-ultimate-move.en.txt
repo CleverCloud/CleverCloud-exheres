@@ -1,0 +1,10 @@
+Title: dev-util/idea-ultimate moved to dev-util/idea-ultimate::platypus
+Author: Alexandre DUVAL <kannarfr@gmail.com>
+Content-Type: text/plain
+Posted: 2024-02-29
+Revision: 1
+News-Item-Format: 1.0
+Display-If-Installed: dev-util/idea-ultimate
+
+dev-util/idea-ultimate has been moved to dev-util/idea-ultimate::platypus
+Please uninstall old package and afterwards install new version
