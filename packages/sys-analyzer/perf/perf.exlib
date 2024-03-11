@@ -17,6 +17,7 @@ MYOPTIONS="
     audit [[ description = [ Support for libaudit to interact with the audit kernel subsystem ] ]]
     debuginfod [[ description = [ Support fetching debug information from a debuginfod server ] ]]
     gtk2
+    tui [[ description = [ Support an interactive terminal user interface ] ]]
     zstd [[ description = [ ZStd based runtime trace compression in record mode ] ]]
 
     ( providers: libunwind llvm-libunwind ) [[ number-selected = exactly-one ]]
@@ -36,10 +37,10 @@ DEPENDENCIES="
         sys-apps/numactl
         sys-devel/binutils
         sys-libs/libcap
-        sys-libs/slang
         sys-libs/zlib
         audit? ( app-admin/audit )
         gtk2? ( x11-libs/gtk+:2 )
+        tui? ( sys-libs/slang )
         zstd? ( app-arch/zstd )
         providers:libunwind? ( dev-libs/libunwind )
         providers:llvm-libunwind? ( sys-libs/llvm-libunwind )
@@ -74,6 +75,7 @@ perf_make() {
         NO_LIBDEBUGINFOD=$(perf_option debuginfod)
         NO_LIBZSTD=$(perf_option zstd)
         NO_LIBTRACEEVENT=1
+        NO_SLANG=$(perf_option tui)
     )
 
     emake "${params[@]}" "${@}"
