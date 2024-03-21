@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 # .deb content is not extracted into a folder, I used a / for the work as a workaround
-require php-pecl [ module=module php_abis=[ 7.4 8.0 8.1 8.2 ] work="/" ]
+require php-pecl [ module=module php_abis=[ 7.4 8.0 8.1 8.2 8.3 ] work="/" ]
 
 SUMMARY="Profile, Test, and Continuously Optimize PHP Code Performance"
 HOMEPAGE="https://www.blackfire.io"
