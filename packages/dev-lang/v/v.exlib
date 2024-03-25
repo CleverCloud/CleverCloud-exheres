@@ -48,17 +48,19 @@ DEFAULT_SRC_COMPILE_PARAMS=(
     local=1
 )
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/patches-${PV}/0001-tools-prevent-module-updates-during-v-build-tools.patch
+    "${FILES}"/patches-${PV}/0002-vtest-self-add-native_test-to-skippable-tests.patch
+    "${FILES}"/patches-${PV}/0003-vtest-self-add-vet_test-to-skippable-tests.patch
+    "${FILES}"/patches-${PV}/0004-vtest-self-add-network-tests-to-skippable-tests.patch
+)
 
 v_src_prepare() {
-  # Disable update/recompile tools as recommanded by V team
-  edo echo "println('use your package manager to update V," > cmd/tools/vup.v
-  edo echo "or if you want more recent V versions, just clone V from source," >> cmd/tools/vup.v
-  edo echo "see https://github.com/vlang/v#installing-v-from-source')" >> cmd/tools/vup.v
+  default
 
-  edo echo "println('v self is disabled for packaged versions of V." > cmd/tools/vself.v
-  edo echo "Use your package manager, to update your V package instead." >> cmd/tools/vself.v
-  edo echo "Alternatively, if you do want a more recent V version, just clone V from source," >> cmd/tools/vself.v
-  edo echo "then follow the instructions here: https://github.com/vlang/v#installing-v-from-source')" >> cmd/tools/vself.v
+  # Replace update/recompile tools to disable them
+  edo cp -f ${FILES}/vup.v cmd/tools/vup.v
+  edo cp -f ${FILES}/vself.v cmd/tools/vself.v
 
   # Remove native tools needing X11 (fail to build on non graphical/X11 setup)
   if ! option is_xorg_env; then
@@ -105,18 +107,7 @@ v_src_compile() {
 }
 
 v_src_test() {
-  # Skip tests using an embeded compiler
-  edo export VTEST_SANDBOXED_PACKAGING=1
-  edo sed -i "/'vlib\/v\/gen\/c\/coutput_test.v',/c\ \t'vlib/v/gen/c/coutput_test.v',\n\t'vlib/v/gen/native/tests/native_test.v'," cmd/tools/vtest-self.v
-  
-  # Some HTTP/Server tests need network access
-  esandbox allow_net "inet:0.0.0.0@8080"
-  esandbox allow_net "inet:0.0.0.0@18197"
-  esandbox allow_net --connect "inet:127.0.0.1@45123"
   edo ./v test-self
-  esandbox disallow_net "inet:0.0.0.0@8080"
-  esandbox disallow_net "inet:0.0.0.0@18197"
-  esandbox disallow_net --connect "inet:127.0.0.1@45123"
 }
 
 v_src_install () {
@@ -138,13 +129,93 @@ v_src_install () {
   dodoc -r "examples"
 
   # Install additional tools built
+  local bins=(
+    "cmd/tools/vgret"
+    "cmd/tools/vtest-all"
+    "cmd/tools/parser_speed"
+    "cmd/tools/detect_tcc"
+    "cmd/tools/vcompress"
+    "cmd/tools/regress"
+    "cmd/tools/vscan"
+    "cmd/tools/vfmt"
+    "cmd/tools/changelog_helper"
+    "cmd/tools/vbuild-examples"
+    "cmd/tools/vrepeat"
+    "cmd/tools/vcomplete"
+    "cmd/tools/vmissdoc"
+    "cmd/tools/translate"
+    "cmd/tools/vbuild-vbinaries"
+    "cmd/tools/vself"
+    "cmd/tools/vtest-parser"
+    "cmd/tools/vsetup-freetype"
+    "cmd/tools/vbin2v"
+    "cmd/tools/vup"
+    "cmd/tools/vsymlink"
+    "cmd/tools/vdoctor"
+    "cmd/tools/scanner_speed"
+    "cmd/tools/check_os_api_parity"
+    "cmd/tools/vtest-fmt"
+    "cmd/tools/fast_job"
+    "cmd/tools/test_os_process"
+    "cmd/tools/vwatch"
+    "cmd/tools/vbuild-tools"
+    "cmd/tools/vls"
+    "cmd/tools/vwipe-cache"
+    "cmd/tools/install_wabt.vsh"
+    "cmd/tools/install_binaryen.vsh"
+    "cmd/tools/performance_compare"
+    "cmd/tools/vrepl"
+    "cmd/tools/report_v_module_folders_without_tests"
+    "cmd/tools/vbug"
+    "cmd/tools/vtracev"
+    "cmd/tools/vtest-self"
+    "cmd/tools/test_if_v_test_system_works"
+    "cmd/tools/vshould-compile-all"
+    "cmd/tools/map_fuzz"
+    "cmd/tools/vtest-cleancode"
+    "cmd/tools/git_pre_commit_hook.vsh"
+    "cmd/tools/vcheck-md"
+    "cmd/tools/show_ancient_deprecations"
+    "cmd/tools/oldv"
+    "cmd/tools/vbump"
+    "cmd/tools/vshader"
+    "cmd/tools/vtest"
+    "cmd/tools/vshare"
+  )
+
   exeinto "/usr/$(exhost --target)/libexec/vlang/cmd/tools/"
-  for fail in "cmd/tools"/*; do
-    if file "${f}" | grep -q "executable"; then
-      doexe ${f}
-    fi
+  for f in "${bins[@]}"; do
+    [[ -f "${f}" ]] && doexe ${f}
   done
 
+  local builders=(
+    "cmd/tools/builders/native_builder"
+    "cmd/tools/builders/interpret_builder"
+    "cmd/tools/builders/c_builder"
+    "cmd/tools/builders/js_builder"
+    "cmd/tools/builders/golang_builder"
+    "cmd/tools/builders/wasm_builder"
+  )
+
+  exeinto "/usr/$(exhost --target)/libexec/vlang/cmd/tools/builders/"
+  for f in "${builders[@]}"; do
+    [[ -f "${f}" ]] && doexe ${f}
+  done
+
+  local sub_tools=(
+    "vpm"
+    "vast"
+    "vvet"
+    "vdoc"
+    "vwhere"
+    "vcreate"
+  )
+  
+  for s in "${sub_tools[@]}"; do
+    exeinto "/usr/$(exhost --target)/libexec/vlang/cmd/tools/${s}/"
+    [[ -f "cmd/tools/${s}/${s}" ]] && doexe "cmd/tools/${s}/${s}"
+  done 
+  
   # Install v and vcc compiler
   exeinto "/usr/$(exhost --target)/libexec/vlang/"
   doexe "v"
