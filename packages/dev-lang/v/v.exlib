@@ -1,13 +1,12 @@
-# Copyright 2024 davlgd <david.legrand@clever-cloud.com>
+# Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-export_exlib_phases src_prepare src_compile src_test src_install
+export_exlib_phases src_prepare pkg_setup src_compile src_test src_install
 
-SCM_REPOSITORY="https://github.com/vlang/${PN}.git"
-SCM_TAG="${PV}"
-SCM_SECONDARY_REPOSITORIES="vc tcc"
+SCM_SECONDARY_REPOSITORIES="vc tcc markdown"
 SCM_vc_REPOSITORY="https://github.com/vlang/vc"
 SCM_tcc_REPOSITORY="https://github.com/vlang/tccbin"
+SCM_markdown_REPOSITORY="https://github.com/vlang/markdown"
 
 case "${PLATFORM}" in
   "amd64") SCM_tcc_BRANCH="thirdparty-linux-amd64" ;;
@@ -15,7 +14,7 @@ case "${PLATFORM}" in
   "armv8") SCM_tcc_BRANCH="thirdparty-linux-aarch64" ;;
 esac
 
-require scm-git
+require github [ user=vlang tag=${PV} force_git_clone=true ] scm-git 
 
 SUMMARY="Simple, fast, safe, compiled language for developing maintainable software"
 HOMEPAGE="https://vlang.io/"
@@ -29,15 +28,26 @@ Despite being simple, V gives the developer a lot of power. Anything you can do 
 
 UPSTREAM_CHANGELOG="https://github.com/vlang/v/blob/master/CHANGELOG.md [[ lang = en ]]"
 UPSTREAM_DOCUMENTATION="
-    https://github.com/vlang/v/blob/master/doc/docs.md [[ lang = en description = [ Documentation ] ]]
+    https://github.com/vlang/v/blob/master/doc/docs.md [[ 
+        lang = en 
+        description = [ Documentation ] 
+    ]]
     https://modules.vlang.io/ [[ lang = en description = [ Standard Library ] ]]
 "
 
 LICENCES="MIT"
 SLOT="0"
-MYOPTIONS="platform: amd64 armv7 armv8"
+MYOPTIONS="
+    is_xorg_env [[ 
+        description = [ Set to 'true' if X window system is enabled on your system, it will be tested too ]
+    ]]
+    platform: amd64 armv8
+"
 
-DEFAULT_SRC_COMPILE_PARAMS="local=1"
+DEFAULT_SRC_COMPILE_PARAMS=(
+    local=1
+)
+
 
 v_src_prepare() {
   # Disable update/recompile tools as recommanded by V team
@@ -50,25 +60,45 @@ v_src_prepare() {
   edo echo "Alternatively, if you do want a more recent V version, just clone V from source," >> cmd/tools/vself.v
   edo echo "then follow the instructions here: https://github.com/vlang/v#installing-v-from-source')" >> cmd/tools/vself.v
 
-  # Remove tools needing X11 (fail to build on non graphical/X11 setup)
-  edo rm cmd/tools/vshare.v
+  # Remove native tools needing X11 (fail to build on non graphical/X11 setup)
+  if ! option is_xorg_env; then
+    edo rm cmd/tools/vshare.v
+  fi
 
   # Get and configure local vc/tcc/cc compilers
   edo mv ../vc .
   edo mv ../tcc thirdparty/
-  edo export VFLAGS="-cc $(exhost --tool-prefix)cc"
+
+  # Install Markdown vmodule
+  edo mkdir -p ~/.vmodules/
+  edo mv ../markdown ~/.vmodules/
+}
+
+v_pkg_setup() {
+  # Configure sanbox compiler
+  export VFLAGS="-cc $(exhost --tool-prefix)cc"
+
+  # Skip tests/phases using network or an embeded compiler
+  export VTEST_SANDBOXED_PACKAGING=1
 }
 
 v_src_compile() {
   default
-  
-  # Compile additional tools, downloading modules from GitHub
-  # This will be avoidable in next releases (https://github.com/vlang/v/pull/21094)
-  esandbox allow_net --connect "inet:0.0.0.0/0@443"
-  esandbox allow_net --connect "inet:0.0.0.0/0@53"
   edo ./v build-tools
-  esandbox disallow_net --connect "inet:0.0.0.0/0@443"
-  esandbox disallow_net --connect "inet:0.0.0.0/0@53"
+  
+  # Tools in a subfolder need to be compiled separately
+  local sub_tools=(
+    "vpm"
+    "vast"
+    "vvet"
+    "vdoc"
+    "vwhere"
+    "vcreate"
+  )
+  
+  for s in "${sub_tools[@]}"; do
+    edo ./v cmd/tools/${s}/
+  done 
 
   # Create a file to prevent tools to be automaticaly recompiled
   edo touch cmd/tools/.disable_autorecompilation
