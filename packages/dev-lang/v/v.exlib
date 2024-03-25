@@ -1,0 +1,127 @@
+# Copyright 2024 davlgd <david.legrand@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+export_exlib_phases src_prepare src_compile src_test src_install
+
+SCM_REPOSITORY="https://github.com/vlang/${PN}.git"
+SCM_TAG="${PV}"
+SCM_SECONDARY_REPOSITORIES="vc tcc"
+SCM_vc_REPOSITORY="https://github.com/vlang/vc"
+SCM_tcc_REPOSITORY="https://github.com/vlang/tccbin"
+
+case "${PLATFORM}" in
+  "amd64") SCM_tcc_BRANCH="thirdparty-linux-amd64" ;;
+  "armv7") SCM_tcc_BRANCH="thirdparty-linux-arm" ;;
+  "armv8") SCM_tcc_BRANCH="thirdparty-linux-aarch64" ;;
+esac
+
+require scm-git
+
+SUMMARY="Simple, fast, safe, compiled language for developing maintainable software"
+HOMEPAGE="https://vlang.io/"
+DESCRIPTION="
+V is a statically typed compiled programming language designed for building maintainable software.
+It's similar to Go and its design has also been influenced by Oberon, Rust, Swift, Kotlin, and Python.
+V is a very simple language. Going through this documentation will take you about a weekend, and by the end of it you will have pretty much learned the entire language.
+The language promotes writing simple and clear code with minimal abstraction.
+Despite being simple, V gives the developer a lot of power. Anything you can do in other languages, you can do in V.
+"
+
+UPSTREAM_CHANGELOG="https://github.com/vlang/v/blob/master/CHANGELOG.md [[ lang = en ]]"
+UPSTREAM_DOCUMENTATION="
+    https://github.com/vlang/v/blob/master/doc/docs.md [[ lang = en description = [ Documentation ] ]]
+    https://modules.vlang.io/ [[ lang = en description = [ Standard Library ] ]]
+"
+
+LICENCES="MIT"
+SLOT="0"
+MYOPTIONS="platform: amd64 armv7 armv8"
+
+DEFAULT_SRC_COMPILE_PARAMS="local=1"
+
+v_src_prepare() {
+  # Disable update/recompile tools as recommanded by V team
+  edo echo "println('use your package manager to update V," > cmd/tools/vup.v
+  edo echo "or if you want more recent V versions, just clone V from source," >> cmd/tools/vup.v
+  edo echo "see https://github.com/vlang/v#installing-v-from-source')" >> cmd/tools/vup.v
+
+  edo echo "println('v self is disabled for packaged versions of V." > cmd/tools/vself.v
+  edo echo "Use your package manager, to update your V package instead." >> cmd/tools/vself.v
+  edo echo "Alternatively, if you do want a more recent V version, just clone V from source," >> cmd/tools/vself.v
+  edo echo "then follow the instructions here: https://github.com/vlang/v#installing-v-from-source')" >> cmd/tools/vself.v
+
+  # Remove tools needing X11 (fail to build on non graphical/X11 setup)
+  edo rm cmd/tools/vshare.v
+
+  # Get and configure local vc/tcc/cc compilers
+  edo mv ../vc .
+  edo mv ../tcc thirdparty/
+  edo export VFLAGS="-cc $(exhost --tool-prefix)cc"
+}
+
+v_src_compile() {
+  default
+  
+  # Compile additional tools, downloading modules from GitHub
+  # This will be avoidable in next releases (https://github.com/vlang/v/pull/21094)
+  esandbox allow_net --connect "inet:0.0.0.0/0@443"
+  esandbox allow_net --connect "inet:0.0.0.0/0@53"
+  edo ./v build-tools
+  esandbox disallow_net --connect "inet:0.0.0.0/0@443"
+  esandbox disallow_net --connect "inet:0.0.0.0/0@53"
+
+  # Create a file to prevent tools to be automaticaly recompiled
+  edo touch cmd/tools/.disable_autorecompilation
+}
+
+v_src_test() {
+  # Skip tests using an embeded compiler
+  edo export VTEST_SANDBOXED_PACKAGING=1
+  edo sed -i "/'vlib\/v\/gen\/c\/coutput_test.v',/c\ \t'vlib/v/gen/c/coutput_test.v',\n\t'vlib/v/gen/native/tests/native_test.v'," cmd/tools/vtest-self.v
+  
+  # Some HTTP/Server tests need network access
+  esandbox allow_net "inet:0.0.0.0@8080"
+  esandbox allow_net "inet:0.0.0.0@18197"
+  esandbox allow_net --connect "inet:127.0.0.1@45123"
+  edo ./v test-self
+  esandbox disallow_net "inet:0.0.0.0@8080"
+  esandbox disallow_net "inet:0.0.0.0@18197"
+  esandbox disallow_net --connect "inet:127.0.0.1@45123"
+}
+
+v_src_install () {
+  insinto "/usr/$(exhost --target)/libexec/vlang/"
+  doins "v.mod"
+
+  local paths=(
+    "cmd"
+    "vlib"
+    "thirdparty"
+  )
+
+  for p in "${paths[@]}"; do
+    doins -r "${p}"
+  done 
+
+  emagicdocs
+  dodoc -r "doc"
+  dodoc -r "examples"
+
+  # Install additional tools built
+  exeinto "/usr/$(exhost --target)/libexec/vlang/cmd/tools/"
+  for fail in "cmd/tools"/*; do
+    if file "${f}" | grep -q "executable"; then
+      doexe ${f}
+    fi
+  done
+
+  # Install v and vcc compiler
+  exeinto "/usr/$(exhost --target)/libexec/vlang/"
+  doexe "v"
+  exeinto "/usr/$(exhost --target)/libexec/vlang/thirdparty/tcc/"
+  doexe "thirdparty/tcc/tcc.exe"
+
+  # Create the V symlink
+  dodir /usr/$(exhost --target)/bin
+  dosym ../libexec/vlang/v /usr/$(exhost --target)/bin/v
+}

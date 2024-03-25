@@ -1,0 +1,6 @@
+# Copyright 2024 davlgd <david.legrand@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require v
+
+PLATFORMS="~amd64 ~armv7 ~armv8"
