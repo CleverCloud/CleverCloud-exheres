@@ -1,0 +1,22 @@
+Source: David Legrand <david.legrand@clever-cloud.com>
+Upstream: No
+Reason: Add `server_test.v` and `tcp_test.v` asking for wide network access
+---
+ cmd/tools/vtest-self.v | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/cmd/tools/vtest-self.v b/cmd/tools/vtest-self.v
+index 9de90f1e4..427a0895d 100644
+--- a/cmd/tools/vtest-self.v
++++ b/cmd/tools/vtest-self.v
+@@ -346,6 +346,8 @@ const skip_on_sandboxed_packaging = [
+ 	'vlib/v/compiler_errors_test.v',
+ 	'vlib/v/gen/c/coutput_test.v',
+ 	'cmd/tools/vvet/vet_test.v',
++	'vlib/net/http/server_test.v',
++	'vlib/net/tcp_test.v',
+ ]
+ 
+ // Note: musl misses openssl, thus the http tests can not be done there
+-- 
+2.39.3 (Apple Git-146)

@@ -1,0 +1,239 @@
+# Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+export_exlib_phases src_prepare pkg_setup src_compile src_test src_install
+
+SCM_SECONDARY_REPOSITORIES="vc tcc markdown"
+SCM_vc_REPOSITORY="https://github.com/vlang/vc"
+SCM_tcc_REPOSITORY="https://github.com/vlang/tccbin"
+SCM_markdown_REPOSITORY="https://github.com/vlang/markdown"
+
+case "${PLATFORM}" in
+  "amd64") SCM_tcc_BRANCH="thirdparty-linux-amd64" ;;
+  "armv7") SCM_tcc_BRANCH="thirdparty-linux-arm" ;;
+  "armv8") SCM_tcc_BRANCH="thirdparty-linux-aarch64" ;;
+esac
+
+require github [ user=vlang tag=${PV} force_git_clone=true ] scm-git 
+
+SUMMARY="Simple, fast, safe, compiled language for developing maintainable software"
+HOMEPAGE="https://vlang.io/"
+DESCRIPTION="
+V is a statically typed compiled programming language designed for building maintainable software.
+It's similar to Go and its design has also been influenced by Oberon, Rust, Swift, Kotlin, and Python.
+V is a very simple language. Going through this documentation will take you about a weekend, and by the end of it you will have pretty much learned the entire language.
+The language promotes writing simple and clear code with minimal abstraction.
+Despite being simple, V gives the developer a lot of power. Anything you can do in other languages, you can do in V.
+"
+
+UPSTREAM_CHANGELOG="https://github.com/vlang/v/blob/master/CHANGELOG.md [[ lang = en ]]"
+UPSTREAM_DOCUMENTATION="
+    https://github.com/vlang/v/blob/master/doc/docs.md [[ 
+        lang = en 
+        description = [ Documentation ] 
+    ]]
+    https://modules.vlang.io/ [[ 
+      lang = en 
+      description = [ Standard Library ] 
+    ]]
+"
+
+LICENCES="MIT"
+SLOT="0"
+MYOPTIONS="
+    X [[ 
+        description = [ X clipboard client example with test ]
+    ]]
+    platform: amd64 armv8
+"
+
+DEPENDENCIES="
+    build+run:
+        X? ( x11-libs/libX11 )
+"
+
+DEFAULT_SRC_COMPILE_PARAMS=(
+    local=1
+)
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/patches-${PV}/0001-tools-prevent-module-updates-during-v-build-tools.patch
+    "${FILES}"/patches-${PV}/0002-vtest-self-add-native_test-to-skippable-tests.patch
+    "${FILES}"/patches-${PV}/0003-vtest-self-add-vet_test-to-skippable-tests.patch
+    "${FILES}"/patches-${PV}/0004-vtest-self-add-network-tests-to-skippable-tests.patch
+)
+
+v_src_prepare() {
+  default
+
+  # Replace update/recompile tools to disable them
+  edo cp -f "${FILES}"/vself.v cmd/tools/vself.v
+  edo cp -f "${FILES}"/vup.v cmd/tools/vup.v
+
+  # Remove native tools needing X11 (fail to build on non graphical/X11 setup)
+  if ! option X; then
+    edo rm cmd/tools/vshare.v
+  fi
+
+  # Get and configure local vc/tcc/cc compilers
+  edo mv ../tcc thirdparty/
+  edo mv ../vc .
+
+  # Install Markdown vmodule
+  edo mkdir -p "${HOME}"/.vmodules/
+  edo mv ../markdown "${HOME}"/.vmodules/
+}
+
+v_pkg_setup() {
+  # Configure sanbox compiler
+  export VFLAGS="-cc $(exhost --tool-prefix)cc"
+
+  # Skip tests/phases using network or an embeded compiler
+  export VTEST_SANDBOXED_PACKAGING=1
+}
+
+v_src_compile() {
+  default
+  edo ./v build-tools
+  
+  # Tools in a subfolder need to be compiled separately
+  local sub_tools=(
+    vast
+    vcreate
+    vdoc
+    vpm
+    vvet
+    vwhere
+  )
+  
+  for s in "${sub_tools[@]}"; do
+    edo ./v cmd/tools/${s}/
+  done 
+
+  # Create a file to prevent tools to be automaticaly recompiled
+  edo touch cmd/tools/.disable_autorecompilation
+}
+
+v_src_test() {
+  edo ./v test-self
+}
+
+v_src_install () {
+  insinto "/usr/$(exhost --target)/libexec/vlang/cmd/tools/"
+  doins cmd/tools/.disable_autorecompilation
+
+  insinto "/usr/$(exhost --target)/libexec/vlang/"
+  doins v.mod
+  
+  local paths=(
+    thirdparty
+    vlib
+  )
+
+  for p in "${paths[@]}"; do
+    doins -r "${p}"
+  done 
+
+  emagicdocs
+  dodoc -r doc
+  dodoc -r examples
+
+  # Install additional tools built
+  local bins=(
+    changelog_helper
+    check_os_api_parity
+    detect_tcc
+    fast_job
+    git_pre_commit_hook.vsh
+    install_binaryen.vsh
+    install_wabt.vsh
+    map_fuzz
+    oldv
+    parser_speed
+    performance_compare
+    regress
+    report_v_module_folders_without_tests
+    scanner_speed
+    show_ancient_deprecations
+    test_if_v_test_system_works
+    test_os_process
+    translate
+    vbin2v
+    vbug
+    vbuild-examples
+    vbuild-tools
+    vbuild-vbinaries
+    vbump
+    vcheck-md
+    vcomplete
+    vcompress
+    vdoctor
+    vfmt
+    vgret
+    vls
+    vmissdoc
+    vrepeat
+    vrepl
+    vscan
+    vself
+    vsetup-freetype
+    vshader
+    vshould-compile-all
+    vsymlink
+    vtest
+    vtest-all
+    vtest-cleancode
+    vtest-fmt
+    vtest-parser
+    vtest-self
+    vtracev
+    vup
+    vwatch
+    vwipe-cache
+    $(option X vshare)
+  )
+
+  exeinto "/usr/$(exhost --target)/libexec/vlang/cmd/tools/"
+  for f in "${bins[@]}"; do
+    doexe "cmd/tools/${f}"
+  done
+
+  local builders=(
+    c_builder
+    golang_builder
+    interpret_builder
+    js_builder
+    native_builder
+    wasm_builder
+  )
+
+  exeinto "/usr/$(exhost --target)/libexec/vlang/cmd/tools/builders/"
+  for f in "${builders[@]}"; do
+    doexe "cmd/tools/builders/${f}"
+  done
+
+  local sub_tools=(
+    vast
+    vcreate
+    vdoc
+    vpm
+    vvet
+    vwhere
+  )
+  
+  for s in "${sub_tools[@]}"; do
+    exeinto "/usr/$(exhost --target)/libexec/vlang/cmd/tools/${s}/"
+    doexe "cmd/tools/${s}/${s}"
+  done 
+  
+  # Install v and vcc compiler
+  exeinto "/usr/$(exhost --target)/libexec/vlang/thirdparty/tcc/"
+  doexe thirdparty/tcc/tcc.exe
+  exeinto "/usr/$(exhost --target)/libexec/vlang/"
+  doexe v
+
+  # Create the V symlink
+  dodir /usr/$(exhost --target)/bin
+  dosym ../libexec/vlang/v /usr/$(exhost --target)/bin/v
+}
+

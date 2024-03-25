@@ -1,0 +1,22 @@
+From 1f515a4c0707fd7ac9a57d52e7af3c932fa2f744 Mon Sep 17 00:00:00 2001
+From: David Legrand <1110600+davlgd@users.noreply.github.com>
+Date: Mon, 25 Mar 2024 09:05:20 +0100
+Subject: [PATCH] vtest self: add native_test to skippable tests for sandboxed
+ packaging
+Upstream: Yes (#21095)
+---
+ cmd/tools/vtest-self.v | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/cmd/tools/vtest-self.v b/cmd/tools/vtest-self.v
+index 1c4b2a7df1eebf..e374b8c861eca3 100644
+--- a/cmd/tools/vtest-self.v
++++ b/cmd/tools/vtest-self.v
+@@ -342,6 +342,7 @@ const skip_on_non_amd64_or_arm64 = [
+ const skip_on_sandboxed_packaging = [
+ 	'do_not_remove',
+ 	'vlib/v/slow_tests/inout/compiler_test.v',
++	'vlib/v/gen/native/tests/native_test.v',
+ 	'vlib/v/compiler_errors_test.v',
+ 	'vlib/v/gen/c/coutput_test.v',
+ ]
