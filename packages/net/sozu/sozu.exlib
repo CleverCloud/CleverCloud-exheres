@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require alternatives
-require github [ user=sozu-proxy force_git_clone=true tag="${PV}" ]
+require github [ user=sozu-proxy force_git_clone=true tag="${PV/rc/-rc.}" ]
 require systemd-service [ systemd_files=[ "${FILES}/systemd/${PN}-${SLOT}.service" "${FILES}/systemd/${PN}-${SLOT}@.service" ] ]
 require cargo
 
@@ -27,7 +27,9 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build:
-        dev-libs/protobuf
+        dev-libs/protobuf:* [[
+            note = [ protoc is needed to build sozu since 0.15.19 ]
+        ]]
 "
 
 ECARGO_FEATURE_ENABLES=(
