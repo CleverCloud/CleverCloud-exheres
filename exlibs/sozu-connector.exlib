@@ -19,10 +19,13 @@ LICENCES="Apache-2.0"
 
 DEPENDENCIES="
     build:
-        dev-libs/protobuf:=
+        dev-libs/protobuf:* [[
+            note = [ needed to build the sozu-client, used by side-cars to communicate with sozu in protobuf ]
+        ]]
     run:
-        net/sozu[>=0.15.0]
+        net/sozu:${SLOT}
 "
+
 
 sozu-connector_src_install() {
     cargo_src_install
