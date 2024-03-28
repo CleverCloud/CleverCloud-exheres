@@ -23,10 +23,6 @@ DEPENDENCIES="
         providers:libressl? ( dev-libs/libressl:= )
 "
 
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/463054383fbeef889b409a7f843df5365288e2a0.patch
-)
-
 BUGS_TO="keruspe@exherbo.org"
 
 # test_basic requires rabbitmq server up and running
