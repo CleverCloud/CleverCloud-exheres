@@ -2,7 +2,7 @@
 # Copyright 2023 Emmanuel Bosquet <emmanuel.bosquet@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require sozu-prometheus-connector
-
 PLATFORMS="~amd64"
 SLOT="0.15"
+
+require sozu-prometheus-connector [ slot="${SLOT}" ]

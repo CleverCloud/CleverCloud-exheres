@@ -5,4 +5,4 @@
 PLATFORMS="~amd64"
 SLOT="0.15"
 
-require sozu-pulsar-connector
+require sozu-pulsar-connector [ slot="${SLOT}" ]

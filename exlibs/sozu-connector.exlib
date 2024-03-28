@@ -5,6 +5,9 @@
 myexparam connector_name
 exparam -v CONNECTOR_NAME connector_name
 
+myexparam slot
+exparam -v SLOT slot
+
 require alternatives
 require github [ user=CleverCloud force_git_clone=true tag="v${PV}" ]
 require systemd-service [ systemd_files=[ "systemd" ] ]
@@ -15,7 +18,6 @@ export_exlib_phases src_install
 HOMEPAGE="https://github.com/CleverCloud/${PN}"
 BUGS_TO="Florentin Dubois <florentin.dubois@clever-cloud.com>"
 LICENCES="Apache-2.0"
-
 
 DEPENDENCIES="
     build:

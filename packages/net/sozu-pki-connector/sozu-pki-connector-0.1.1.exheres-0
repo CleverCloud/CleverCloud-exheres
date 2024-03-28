@@ -5,4 +5,4 @@
 PLATFORMS="~amd64"
 SLOT="0.15"
 
-require sozu-pki-connector
+require sozu-pki-connector [ slot="${SLOT}" ]
