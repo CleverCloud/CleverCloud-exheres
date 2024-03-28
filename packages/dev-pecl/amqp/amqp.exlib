@@ -2,12 +2,13 @@
 # Distributed under the terms of the GNU General Public License v2
 
 PECL_PV="${PV/_/}"
-require php-pecl [ module=module ]
+myexparam php_abis=[ 7.4 8.0 8.1 8.2 8.3 ]
+require php-pecl [ module=module php_abis=[ $(exparam php_abis[@]) ] ]
 
 SUMMARY="Communicate with any AMQP compliant server"
-PLATFORMS="~amd64"
 LICENCES="PHP-3"
-SLOT="0"
+SLOT="$(ever range 1-2)"
+
 # Tests require running rabbitmq-server
 RESTRICT="test"
 
