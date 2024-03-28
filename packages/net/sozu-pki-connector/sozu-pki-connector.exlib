@@ -2,7 +2,10 @@
 # Copyright 2023 Florentin Dubois <florentin.dubois@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require sozu-connector [ connector_name="pki" ]
+myexparam slot
+exparam -v SLOT slot
+
+require sozu-connector [ connector_name="pki" slot="${SLOT}" ]
 
 SUMMARY="Sōzu pki connector"
 DESCRIPTION="Retrieves Public Key Infrastructure (PKI) from a directory and transmits to Sōzu."
