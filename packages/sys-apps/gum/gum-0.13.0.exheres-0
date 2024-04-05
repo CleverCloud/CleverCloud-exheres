@@ -1,0 +1,11 @@
+# Copyright 2023 Yannick Guern <yannick.guern@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=charmbracelet tag=v${PV} ] go [ go_minimum_version=1.21 ]
+
+SUMMARY="A tool for glamorous shell scripts. Leverage the power of Bubbles and Lip Gloss in your scripts and aliases without writing any Go code!"
+LICENCES="MIT"
+PLATFORMS="~amd64 ~armv8"
+SLOT="0"
+DEPENDENCIES=""
+
