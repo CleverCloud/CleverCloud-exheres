@@ -6,15 +6,13 @@ require github [ user=kristapsdz tag="VERSION_${PV//./_}" force_git_clone=true ]
 SUMMARY="simple markdown translator"
 LICENCES="ISC"
 SLOT="0"
-PLATFORMS="~amd64"
+PLATFORMS="~amd64 ~armv8"
 
 MYOPTIONS=""
 DEPENDENCIES="
     build+run:
         dev-libs/libmd
 "
-
-DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/0001-liblowdown-add-a-symlink-for-the-install-phase.patch )
 
 src_configure() {
     edo ./configure LDFLAGS="${LDFLAGS}" PREFIX=/usr/$(exhost --target)
