@@ -29,7 +29,11 @@ composer_src_unpack() {
 
 composer_src_install() {
     dobin ${PN}-${SLOT}.phar
+    dosym /usr/$(exhost --target)/bin/composer.phar /usr/$(exhost --target)/bin/composer
+
     alternatives_for "${PN}" "${SLOT}" "${SLOT}" \
-        /usr/$(exhost --target)/bin/${PN}{,-${SLOT}}.phar
+        /usr/$(exhost --target)/bin/${PN}{,-${SLOT}}.phar \
+        /usr/$(exhost --target)/bin/${PN}{,-${SLOT}}
+
 }
 
