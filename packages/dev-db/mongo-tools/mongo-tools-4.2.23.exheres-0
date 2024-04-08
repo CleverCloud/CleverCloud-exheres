@@ -12,7 +12,7 @@ put aside, and rewritten in go since 3.0.
 
 LICENCES="Apache-2.0"
 SLOT="0"
-PLATFORMS="~amd64"
+PLATFORMS="~amd64 ~armv8"
 MYOPTIONS="
     sasl
     ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
@@ -20,7 +20,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build:
-        dev-lang/go[>=1.10]
+        dev-lang/go[>=1.20]
         dev-libs/libpcap
         virtual/pkg-config
     build+run:
