@@ -18,6 +18,6 @@ DEPENDENCIES="
         dev-lang/python:*[>=3]
         virtual/pkg-config
     build+run:
-        net/varnish[>=7.4.0]
+        net/varnish[>=7.5.0]
 "
 
