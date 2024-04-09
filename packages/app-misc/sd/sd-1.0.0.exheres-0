@@ -7,7 +7,7 @@ SUMMARY="Intuitive find & replace CLI (sed alternative)"
 
 LICENCES="MIT"
 SLOT="0"
-PLATFORMS="~amd64"
+PLATFORMS="~amd64 ~armv8"
 
 MYOPTIONS=""
 
