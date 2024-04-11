@@ -20,13 +20,13 @@ src_compile() {
 }
 
 src_install() {
+    install_systemd_files
+
     dobin ${PN}{,d}
 
     insinto /etc/default
     insopts -m0600
     doins cmd/${PN}d/${PN}d.defaults
-    mv ${IMAGE}/etc/default/${PN}d{.defaults,}
-
-    install_systemd_files
+    edo mv ${IMAGE}/etc/default/${PN}d{.defaults,}
 }
 
