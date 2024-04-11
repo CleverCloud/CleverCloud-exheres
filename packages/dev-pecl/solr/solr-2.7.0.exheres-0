@@ -7,3 +7,5 @@ require php-pecl [ module=module php_abis=[ 7.4 8.0 8.1 8.2 8.3 ] ]
 PLATFORMS="~amd64"
 SLOT="2.7"
 
+DEFAULT_SRC_PREPARE_PATCHES=( ${FILES}/solr-hard-coded-pkg-config.patch )
+
