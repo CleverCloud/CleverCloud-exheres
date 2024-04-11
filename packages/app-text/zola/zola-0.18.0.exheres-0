@@ -1,0 +1,15 @@
+# Copyright 2024 davlgd <david.legrand@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cargo
+require github [ user=getzola tag=v${PV} ]
+
+SUMMARY="A fast static site generator in a single binary with everything built-in"
+HOMEPAGE="https://get${PN}.com"
+
+LICENCES="MIT"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
