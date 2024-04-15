@@ -9,4 +9,3 @@ require sozu-connector [ connector_name="prometheus" slot="${SLOT}" ]
 
 SUMMARY="Sōzu prometheus connector"
 DESCRIPTION="Exposes Sōzu metrics in a prometheus format on HTTP."
-

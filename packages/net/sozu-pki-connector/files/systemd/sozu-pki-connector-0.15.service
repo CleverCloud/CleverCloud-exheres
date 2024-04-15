@@ -1,0 +1,25 @@
+[Unit]
+Description = Sōzu pki connector - Retrieves Public Key Infrastructure (PKI) from a directory and transmits to Sōzu.
+Documentation = https://github.com/CleverCloud/sozu-pki-connector
+After=network-online.target local-fs.target remote-fs.target time-sync.target
+Wants=network-online.target local-fs.target remote-fs.target time-sync.target
+
+StartLimitIntervalSec=30
+StartLimitBurst=64
+
+[Service]
+Type=simple
+
+ExecStart=/usr/libexec/sozu-pki-connector.0.15 --config /etc/sozu/0.15/connector/pki.toml
+Restart=always
+
+TimeoutStopSec=30
+LimitNOFILE=65536
+
+# Since systemd 229, should be in [Unit] but in order to support systemd <229,
+# it is also supported to have it here.
+StartLimitInterval=30
+StartLimitBurst=64
+
+[Install]
+WantedBy=sozu-0.15.service

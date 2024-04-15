@@ -8,10 +8,9 @@ exparam -v CONNECTOR_NAME connector_name
 myexparam slot
 exparam -v SLOT slot
 
-require alternatives
 require github [ user=CleverCloud force_git_clone=true tag="v${PV}" ]
-require systemd-service [ systemd_files=[ "systemd" ] ]
-require cargo
+require systemd-service [ systemd_files=[ "${FILES}/systemd/${PN}-${SLOT}.service" ] ]
+require cargo [ channel=stable ]
 
 export_exlib_phases src_install
 
@@ -25,21 +24,22 @@ DEPENDENCIES="
             note = [ needed to build the sozu-client, used by side-cars to communicate with sozu in protobuf ]
         ]]
     run:
-        net/sozu:${SLOT}
+        net/sozu:${SLOT} [[
+            note = [ Sōzu is required to run the connector ]
+        ]]
 "
 
 
 sozu-connector_src_install() {
     cargo_src_install
+    install_systemd_files
+    emagicdocs
 
     insinto "/etc/sozu/${SLOT}/connector"
     edo mv -v example.config.toml "${CONNECTOR_NAME}.toml"
     newins "${CONNECTOR_NAME}.toml" "${CONNECTOR_NAME}.toml"
 
-    install_systemd_files
-
-    alternatives_for "${PN}" "${SLOT}" "50" \
-        "/usr/$(exhost --target)/bin/${PN}" "${PN}.${SLOT}" \
-        "/usr/$(exhost --target)/lib/systemd/system/${PN}.service" "${PN}-${SLOT}.service" \
-        "/etc/sozu/connector/${CONNECTOR_NAME}.toml" "/etc/sozu/${SLOT}/connector/${CONNECTOR_NAME}.toml"
+    dodir /usr/$(exhost --target)/libexec
+    edo mv -v "${IMAGE}"/usr/$(exhost --target)/{bin/${PN},libexec/${PN}.${SLOT}}
+    edo rmdir -v "${IMAGE}"/usr/$(exhost --target)/bin
 }

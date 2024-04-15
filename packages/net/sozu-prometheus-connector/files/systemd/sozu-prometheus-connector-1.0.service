@@ -1,0 +1,25 @@
+[Unit]
+Description = Sōzu prometheus connector - Exposes Sōzu metrics in a prometheus format on HTTP.
+Documentation = https://github.com/CleverCloud/sozu-prometheus-connector
+After=network-online.target local-fs.target remote-fs.target time-sync.target
+Wants=network-online.target local-fs.target remote-fs.target time-sync.target
+
+StartLimitIntervalSec=30
+StartLimitBurst=64
+
+[Service]
+Type=simple
+
+ExecStart=/usr/libexec/sozu-prometheus-connector.1.0 --config /etc/sozu/1.0/connector/prometheus.toml
+Restart=always
+
+TimeoutStopSec=30
+LimitNOFILE=65536
+
+# Since systemd 229, should be in [Unit] but in order to support systemd <229,
+# it is also supported to have it here.
+StartLimitInterval=30
+StartLimitBurst=64
+
+[Install]
+WantedBy=sozu-1.0.service
