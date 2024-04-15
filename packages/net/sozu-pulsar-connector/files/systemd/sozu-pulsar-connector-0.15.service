@@ -1,0 +1,25 @@
+[Unit]
+Description = Sōzu pulsar connector - Transmit requests to Sōzu, consuming a pulsar topic
+Documentation = https://github.com/CleverCloud/sozu-pulsar-connector
+After=network-online.target local-fs.target remote-fs.target time-sync.target
+Wants=network-online.target local-fs.target remote-fs.target time-sync.target
+
+StartLimitIntervalSec=30
+StartLimitBurst=64
+
+[Service]
+Type=simple
+
+ExecStart=/usr/libexec/sozu-pulsar-connector.0.15 --config /etc/sozu/0.15/connector/pulsar.toml
+Restart=always
+
+TimeoutStopSec=30
+LimitNOFILE=65536
+
+# Since systemd 229, should be in [Unit] but in order to support systemd <229,
+# it is also supported to have it here.
+StartLimitInterval=30
+StartLimitBurst=64
+
+[Install]
+WantedBy=sozu-0.15.service

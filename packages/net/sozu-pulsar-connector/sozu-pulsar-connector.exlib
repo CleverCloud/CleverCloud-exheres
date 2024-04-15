@@ -9,4 +9,3 @@ require sozu-connector [ connector_name="pulsar" slot="${SLOT}" ]
 
 SUMMARY="Sōzu pulsar connector"
 DESCRIPTION="Transmit requests to Sōzu, consuming a pulsar topic"
-
