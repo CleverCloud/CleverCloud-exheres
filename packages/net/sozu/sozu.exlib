@@ -4,7 +4,7 @@
 
 require alternatives
 require github [ user=sozu-proxy force_git_clone=true tag="${PV/rc/-rc.}" ]
-require systemd-service [ systemd_files=[ "${FILES}/systemd/${PN}-${SLOT}.service" "${FILES}/systemd/${PN}-${SLOT}@.service" ] ]
+require systemd-service [ systemd_files=[ "${FILES}/systemd/${PN}-${SLOT}.service" ] ]
 require cargo
 
 export_exlib_phases src_compile src_test src_install
@@ -55,6 +55,9 @@ sozu_src_install() {
     cargo_src_install
     popd
 
+    keepdir "/etc/${PN}/${SLOT}/html"
+    keepdir "/etc/${PN}/${SLOT}/connector"
+
     insinto "/etc/${PN}/${SLOT}"
     doins bin/config.toml
 
@@ -70,13 +73,5 @@ sozu_src_install() {
     emagicdocs
 
     alternatives_for "${PN}" "${SLOT}" "50" \
-        "/usr/$(exhost --target)/bin/${PN}" "${PN}.${SLOT}" \
-        "/usr/$(exhost --target)/lib/systemd/system/${PN}.service" "${PN}-${SLOT}.service" \
-        "/usr/$(exhost --target)/lib/systemd/system/${PN}@.service" "${PN}-${SLOT}@.service"
-
-    if [ "0" = $(ever range 1-1) ]; then
-        alternatives_for "${PN}" "${SLOT}" "50" \
-            "/etc/sozu/html/404.html" "/etc/sozu/${SLOT}/html/404.html" \
-            "/etc/sozu/html/503.html" "/etc/sozu/${SLOT}/html/503.html"
-    fi
+        "/usr/$(exhost --target)/bin/${PN}" "${PN}.${SLOT}"
 }
