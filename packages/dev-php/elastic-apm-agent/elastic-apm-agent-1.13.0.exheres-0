@@ -1,0 +1,50 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+MY_PN="apm-agent-php"
+require github [ user="elastic" release="v${PV}" pnv="${MY_PN}-linux-x86-64" suffix="tar" ]
+require php-pecl [ work="opt/elastic/${MY_PN}" php_abis=[ 7.2 7.3 7.4 8.0 8.1 8.2 8.3 ] ]
+
+SUMMARY="This is the official PHP agent for Elastic APM"
+HOMEPAGE="https://www.elastic.co/apm"
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS=""
+DEPENDENCIES="
+    build+run:
+        dev-libs/libunistring:=
+        net-misc/curl
+"
+
+pkg_setup() {
+    exdirectory --allow /opt
+}
+
+php-pecl_prepare_one_multibuild() {
+    :
+}
+
+php-pecl_configure_one_multibuild() {
+    :
+}
+
+php-pecl_install_one_multibuild() {
+    local abi=$(php-pecl_get_abi)
+    local extensionDir=$(php-config-${abi} --extension-dir)
+    local modver=$(basename ${extensionDir})
+
+    insinto /etc/php-${abi}
+    hereins elastic-apm-agent.ini <<EOF
+extension = elastic_apm.so
+elastic_apm.bootstrap_php_part_file=/opt/elastic-apm-agent/php-${abi}/src/bootstrap_php_part.php
+EOF
+
+    insinto /opt/elastic-apm-agent/php-${abi}
+    doins -r src
+
+    exeinto ${extensionDir}
+    newexe extensions/elastic_apm-${modver}.so elastic_apm.so
+}
+
