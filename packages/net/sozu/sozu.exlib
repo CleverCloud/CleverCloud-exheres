@@ -5,9 +5,9 @@
 require alternatives
 require github [ user=sozu-proxy force_git_clone=true tag="${PV/rc/-rc.}" ]
 require systemd-service [ systemd_files=[ "${FILES}/systemd/${PN}-${SLOT}.service" ] ]
-require cargo
+require cargo [ crate_path=bin ]
 
-export_exlib_phases src_compile src_test src_install
+export_exlib_phases src_install
 
 SUMMARY="Sōzu reverse proxy"
 DESCRIPTION="Sōzu is a lightweight, fast, always-up reverse proxy server."
@@ -38,22 +38,8 @@ ECARGO_FEATURE_ENABLES=(
     'tolerant-http1-parser tolerant-http1-parser'
 )
 
-sozu_src_compile() {
-    pushd bin
-    cargo_src_compile
-    popd
-}
-
-sozu_src_test() {
-    pushd bin
-    cargo_src_test
-    popd
-}
-
 sozu_src_install() {
-    pushd bin
     cargo_src_install
-    popd
 
     keepdir "/etc/${PN}/${SLOT}/html"
     keepdir "/etc/${PN}/${SLOT}/connector"
