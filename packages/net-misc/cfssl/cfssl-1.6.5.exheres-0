@@ -1,26 +1,21 @@
 # Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user="cloudflare" tag="v${PV}" ]
+require github [ user=cloudflare tag=v${PV} ]
 
 SUMMARY="Cloudflare's PKI and TLS toolkit"
 HOMEPAGE="https://github.com/cloudflare/cfssl"
 SLOT="0"
 LICENSCES="BSD-2"
-PLATFORMS="~amd64"
+PLATFORMS="~amd64 ~armv8"
 
 DEPENDENCIES="
     build:
-        dev-lang/go
+        dev-lang/go[>=1.18]
 "
-
-# TODO: Support go.mod in the Go exlib
-unset GOPATH
 
 src_unpack() {
     default
-
-    export GOMODCACHE="${FETCHEDDIR}/go/pkg/mod"
 
     esandbox disable_net
 
@@ -33,17 +28,16 @@ src_unpack() {
 
 src_install() {
     local bins=(
-        cfssl 
-        cfssl-bundle 
-        cfssl-certinfo 
-        cfssl-newkey 
-        cfssl-scan 
-        cfssl-scan 
-        cfssljson 
-        mkbundle 
+        cfssl
+        cfssl-bundle
+        cfssl-certinfo
+        cfssl-newkey
+        cfssl-scan
+        cfssljson
+        mkbundle
         multirootca
     )
-    
+
     pushd bin
         dobin "${bins[@]}"
     popd
