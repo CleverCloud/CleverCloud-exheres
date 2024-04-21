@@ -7,28 +7,11 @@ SUMMARY="A terminal user-interface for tshark, inspired by Wireshark."
 HOMEPAGE="https://termshark.io/"
 LICENCES="MIT"
 SLOT="0"
-PLATFORMS="~amd64"
+PLATFORMS="~amd64 ~armv8"
 
 MYOPTIONS=""
 DEPENDENCIES="
     run:
         net-analyzer/wireshark
 "
-
-# TODO: Support go.mod in the Go exlib
-unset GOPATH
-
-src_unpack() {
-    default
-
-    esandbox disable_net
-    pushd ${WORK}
-    edo go mod download
-    esandbox enable_net
-}
-
-src_compile() {
-    # TODO: Add exparam if main.go has a different name or location.
-    edo go build cmd/termshark/termshark.go
-}
 
