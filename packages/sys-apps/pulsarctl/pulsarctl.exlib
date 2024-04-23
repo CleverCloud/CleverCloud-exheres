@@ -1,0 +1,44 @@
+# Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require alternatives
+require go [ go_minimum_version=1.18 ] github [ user=streamnative tag=v${PV} force_git_clone=true ]
+
+export_exlib_phases src_compile src_install src_unpack
+
+SUMMARY="A CLI tool for the Apache Pulsar project"
+HOMEPAGE="https://github.com/streamnative/pulsarctl"
+
+LICENCES="Apache-2.0"
+SLOT="$(ever range 1-2)"
+
+MYOPTIONS=""
+DEPENDENCIES="
+    build:
+        sys-devel/make
+    build+run:
+        !sys-apps/pulsarctl:0 [[
+            description = [ Slot move ]
+            resolution = uninstall-blocked-before
+        ]]
+"
+
+pulsarctl_src_unpack() {
+    scm_src_unpack
+    go_src_unpack
+}
+
+pulsarctl_src_compile() {
+    LDFLAGS="" emake ${PN}
+}
+
+pulsarctl_src_install() {
+    local alternatives=( "/usr/$(exhost --target)/bin/${PN}" ${PN}-${SLOT} )
+
+    dobin bin/${PN}
+    emagicdocs
+
+    alternatives_for ${PN} ${SLOT} ${SLOT} "${alternatives[@]}"
+}
+
