@@ -14,3 +14,8 @@ DEPENDENCIES="
         app-crypt/gnupg
 "
 
+# EXLIB TODO: support custom paths to avoid broken binaries
+src_compile() {
+    edo go build -v ./cmd/sops
+}
+
