@@ -1,0 +1,28 @@
+# Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require zabbix-common [ bin_name=${PN} ]
+
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        dev-db/sqlite:3
+    suggestion:
+        net-analyzer/zabbix-agent
+"
+
+DEFAULT_SRC_CONFIGURE_PARAMS+=(
+    --enable-proxy
+    --disable-agent
+    --disable-server
+    --with-sqlite3
+)
+
+ZABBIX_SRC_INSTALL_KEEPDIRS=(
+    /etc/zabbix/zabbix_proxy.conf.d
+    /usr/share/zabbix/externalscripts
+    /usr/share/zabbix/alertscripts
+)
+
+ZABBIX_SRC_INSTALL_DATABASE=sqlite3

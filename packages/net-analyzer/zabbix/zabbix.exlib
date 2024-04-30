@@ -1,0 +1,62 @@
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require zabbix-common [ bin_name=${PN}-server ]
+
+export_exlib_phases src_install
+
+MYOPTIONS="
+    java [[ description = [ Install the Java Gateway for JMX monitoring ] ]]
+"
+
+DEPENDENCIES="
+    build+run:
+        dev-db/postgresql-client
+        dev-libs/libevent:=
+        java? ( virtual/jre )
+    run:
+        net-misc/fping
+    suggestion:
+        net-analyzer/zabbix-agent
+        dev-db/postgresql:*[>=13]
+"
+
+DEFAULT_SRC_CONFIGURE_PARAMS+=(
+    --enable-server
+    --disable-agent
+    --disable-proxy
+    --with-postgresql
+)
+
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
+    java
+)
+
+ZABBIX_SRC_INSTALL_KEEPDIRS=(
+    /etc/${PN}/zabbix_server.conf.d
+    /usr/share/${PN}/externalscripts
+    /usr/share/${PN}/alertscripts
+    /usr/share/${PN}/zabbix_java
+)
+
+ZABBIX_SRC_INSTALL_DATABASE=postgresql
+
+zabbix_src_install() {
+    zabbix-common_src_install
+
+    if optionq java; then
+        insinto "/usr/share/${PN}/zabbix_java"
+        doins -r "${IMAGE}"/usr/$(exhost --target)/bin/zabbix_java/{bin,lib}
+
+        exeinto "/usr/share/${PN}/zabbix_java/"
+        for exe in startup.sh shutdown.sh settings.sh; do
+            doexe "${IMAGE}/usr/$(exhost --target)/bin/zabbix_java/${exe}"
+        done
+
+        edo mv "${IMAGE}"/usr/share/${PN}/zabbix_java/bin/zabbix-java-gateway{-${PV},}.jar
+        edo sed 's/PID_FILE/#PID_FILE/' -i "${IMAGE}/usr/share/${PN}/zabbix_java/settings.sh"
+    fi
+
+    # Makefile clean after copy
+    edo find "${IMAGE}"/usr/share/${PN} -type f -name "Makefile*" -delete
+}

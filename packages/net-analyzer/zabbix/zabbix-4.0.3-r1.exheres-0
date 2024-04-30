@@ -59,7 +59,7 @@ src_install() {
     insinto /usr/$(exhost --target)/lib/tmpfiles.d
     doins "${FILES}"/tmpfiles.d/zabbix.conf
     if optionq java; then
-        doins "${FILES}"/tmpfiles.d/zabbix-java-gateway.conf
+        newins "${FILES}"/tmpfiles.d/opt_java_zabbix-java-gateway.conf zabbix-java-gateway.conf
     fi
 
     KEEPDIRS=(

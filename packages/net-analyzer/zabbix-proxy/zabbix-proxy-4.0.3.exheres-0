@@ -51,7 +51,7 @@ src_install() {
 
     install_systemd_files
     insinto /usr/$(exhost --target)/lib/tmpfiles.d
-    doins "${FILES}"/tmpfiles.d/zabbix.conf
+    doins "${FILES}"/tmpfiles.d/zabbix-proxy.conf
 
     KEEPDIRS=(
         /etc/zabbix/zabbix_proxy.conf.d

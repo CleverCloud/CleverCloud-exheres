@@ -1,0 +1,103 @@
+# Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
+# Copyright 2012 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+myexparam bin_name
+
+export_exlib_phases src_install
+
+SUMMARY="Enterprise-class Monitoring Tool"
+HOMEPAGE="https://www.zabbix.com"
+DOWNLOADS="https://cdn.zabbix.com/zabbix/sources/stable/$(ever range 1-2)/zabbix-${PV}.tar.gz"
+
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS="
+    snmp
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
+"
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/libxml2:2.0
+        dev-libs/pcre2
+        net-misc/curl
+        group/zabbix
+        user/zabbix
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl:= )
+        snmp? ( net/net-snmp )
+"
+
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    PKG_CONFIG=/usr/host/bin/$(exhost --tool-prefix)pkg-config
+    --sysconfdir=/etc/zabbix
+    --enable-ipv6
+    --with-openssl
+    --with-libcurl
+    --with-libpcre2
+    --with-libxml2
+    --without-gnutls
+    --without-libpcre
+    --without-mbedtls
+)
+
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
+    'snmp net-snmp'
+)
+
+DEFAULT_SRC_COMPILE_PARAMS=(
+    AR=${AR}
+    RANLIB=${RANLIB}
+)
+
+DEFAULT_SRC_INSTALL_PARAMS=(
+    AR=${AR}
+    RANLIB=${RANLIB}
+)
+
+WORK=${WORKBASE}/zabbix-${PV}
+
+zabbix-common_src_install() {
+    default
+
+    install_systemd_files
+
+    if [[ -n "${ZABBIX_SRC_INSTALL_DATABASE}" ]]; then
+        local db_target=/usr/share/zabbix/database
+
+        elog "The database is not configured, schemes are available in ${db_target}"
+        dodir "${db_target}"
+        insinto "${db_target}"
+        doins -r database/${ZABBIX_SRC_INSTALL_DATABASE}
+    fi
+
+    insinto /usr/$(exhost --target)/lib/tmpfiles.d
+    edo pushd "${FILES}"/tmpfiles.d
+    local f n opt
+    for f in *; do
+        if [[ ${f} == opt_*_* ]]; then
+            opt=${f#opt_}
+            n=${opt#*_}
+            opt=${opt%%_*}
+            if optionq ${opt}; then
+                newins "${FILES}"/tmpfiles.d/${f} ${n}
+            fi
+        else
+            doins "${FILES}"/tmpfiles.d/${f}
+        fi
+    done
+
+    keepdir "${ZABBIX_SRC_INSTALL_KEEPDIRS[@]}"
+
+    # This line is mandatory for systemd and can be useful for other init systems
+    local bin_name
+    exparam -v bin_name bin_name
+    edo sed -i -e 's@^\(# PidFile.*\)@\1\nPidFile=/run/zabbix/'${bin_name}'.pid@' "${IMAGE}"/etc/zabbix/${bin_name//-/_}.conf
+
+    # Remove empty dirs
+    edo find "${IMAGE}" -type d -empty -delete
+}
+
