@@ -1,7 +1,63 @@
 # Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
+# Copyright 2012 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require zabbix-agent
+require systemd-service
 
+SUMMARY="Enterprise-class Monitoring Tool"
+HOMEPAGE="http://www.zabbix.com"
+DOWNLOADS="mirror://sourceforge/zabbix/zabbix-${PV}.tar.gz"
+
+LICENCES="GPL-2"
+SLOT="0"
 PLATFORMS="~amd64"
+MYOPTIONS="
+    ipv6
+    snmp
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
+"
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/pcre
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl:= )
+        group/zabbix
+        user/zabbix
+        snmp? ( net/net-snmp )
+"
+
+DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'ipv6')
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( 'snmp net-snmp' )
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    '--disable-server'
+    '--enable-agent'
+    '--sysconfdir=/etc/zabbix'
+    '--with-openssl'
+    '--without-mbedtls'
+    '--without-gnutls'
+)
+DEFAULT_SRC_COMPILE_PARAMS=( AR=${AR} RANLIB=${RANLIB} )
+
+WORK="${WORKBASE}"/zabbix-${PV}
+
+src_install() {
+    default
+
+    install_systemd_files
+    insinto /usr/$(exhost --target)/lib/tmpfiles.d
+    doins "${FILES}"/tmpfiles.d/zabbix-agent.conf
+
+    KEEPDIRS=(
+        /etc/zabbix/zabbix_agent.conf.d
+        /etc/zabbix/zabbix_agentd.conf.d
+    )
+    keepdir ${KEEPDIRS[@]}
+
+    # This line is mandatory for systemd and can be useful for other init systems
+    sed -i -e 's@^\(# PidFile.*\)@\1\nPidFile=/run/zabbix/zabbix-agentd.pid@' "${IMAGE}"/etc/zabbix/zabbix_agentd.conf
+
+    # Remove empty dirs
+    edo find "${IMAGE}" -type d -empty -delete
+}
 
