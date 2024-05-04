@@ -107,10 +107,16 @@ dotnet-sdk_src_compile() {
 dotnet-sdk_src_install() {
     local rid="exherbo-x64"
 
+    insinto /etc/${PN}-${SLOT}
+    hereins install_location <<EOF
+/opt/${PN}-${SLOT}
+EOF
+
     dodir /opt/${PN}-${SLOT}
     edo tar xf ${DOTNET_TARBALL} -C "${IMAGE}"/opt/${PN}-${SLOT}
 
     local alternatives=(
+        "/etc/dotnet" "/etc/${PN}-${SLOT}"
         "/usr/$(exhost --target)/bin/dotnet" "/opt/${PN}-${SLOT}/dotnet"
         "/usr/$(exhost --target)/lib/libhostfxr.so" "/opt/${PN}-${SLOT}/host/fxr/${DOTNET_RUNTIME}/libhostfxr.so"
         "/usr/$(exhost --target)/lib/libnethost.so" "/opt/${PN}-${SLOT}/packs/Microsoft.NETCore.App.Host.${rid}/${DOTNET_RUNTIME}/runtimes/${rid}/native/libnethost.so"
