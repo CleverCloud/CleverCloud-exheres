@@ -49,6 +49,12 @@ DEPENDENCIES="
         ]]
 "
 
+# src_compile fetches from internet which breaks with syd-3, because this
+# phase is run under a network namespace. Ideally fetch should be moved
+# to src_unpack which runs outside net-ns.
+# TODO(alip): Drop sandbox once paludis#20 is fixed.
+RESTRICT=sandbox
+
 dotnet-sdk_pkg_setup() {
     exdirectory --allow /opt
     export CC="$(exhost --tool-prefix)clang"
