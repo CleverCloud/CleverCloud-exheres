@@ -10,5 +10,12 @@ SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""
 
+DEPENDENCIES="
+    build+run:
+        sys-fs/lvm2
+"
+
 BUGS_TO="marc-antoine.perennou@clever-cloud.com"
+
+CARGO_SRC_TEST_PARAMS=( unit_tests )
 
