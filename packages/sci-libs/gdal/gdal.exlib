@@ -7,7 +7,7 @@ require cmake
 
 SUMMARY="Geospatial Data Abstraction Library"
 HOMEPAGE="https://gdal.org/"
-DOWNLOADS="https://download.osgeo.org/${PN}/${PV}/${PNV}.tar.gz"
+DOWNLOADS="https://download.osgeo.org/${PN}/${PV}/${PNV}.tar.xz"
 
 LICENCES="MIT"
 SLOT="0"
@@ -35,13 +35,13 @@ DEPENDENCIES="
         dev-libs/expat
         dev-libs/json-c:=[>=0.13]
         dev-libs/libxml2:2.0
-        media-libs/libpng:=
+        media-libs/libpng:=[>=1.6]
         media-libs/libwebp:0.6
-        media-libs/tiff:=[>=4.0]
-        net-misc/curl
-        sci-libs/geos
+        media-libs/tiff:=[>=4.1]
+        net-misc/curl[>=7.68]
+        sci-libs/geos[>=3.8]
         sci-libs/libgeotiff
-        sci-libs/proj:=[>=6]
+        sci-libs/proj:=[>=6.3]
         sci-libs/qhull
         sys-libs/zlib
         deflate? ( app-arch/libdeflate )
@@ -53,7 +53,7 @@ DEPENDENCIES="
             media-libs/imath
             media-libs/openexr[>=3]
         )
-        pdf? ( app-text/poppler )
+        pdf? ( app-text/poppler[>=0.86] )
         postgresql? ( dev-db/postgresql-client )
         providers:ijg-jpeg? ( media-libs/jpeg:= )
         providers:jpeg-turbo? ( media-libs/libjpeg-turbo )
