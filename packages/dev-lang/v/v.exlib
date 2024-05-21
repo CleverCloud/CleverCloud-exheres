@@ -57,10 +57,7 @@ DEFAULT_SRC_COMPILE_PARAMS=(
 )
 
 DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/patches-${PV}/0001-tools-prevent-module-updates-during-v-build-tools.patch
-    "${FILES}"/patches-${PV}/0002-vtest-self-add-native_test-to-skippable-tests.patch
-    "${FILES}"/patches-${PV}/0003-vtest-self-add-vet_test-to-skippable-tests.patch
-    "${FILES}"/patches-${PV}/0004-vtest-self-add-network-tests-to-skippable-tests.patch
+    "${FILES}"/patches-${PV}/0001-Add-failing-tests-to-skip_on_sandboxed_packaging.patch
 )
 
 v_src_prepare() {
@@ -85,10 +82,10 @@ v_src_prepare() {
 }
 
 v_pkg_setup() {
-  # Configure sanbox compiler
+  # Configure sandbox compiler
   export VFLAGS="-cc $(exhost --tool-prefix)cc"
 
-  # Skip tests/phases using network or an embeded compiler
+  # Skip tests/phases using network or an embedded compiler
   export VTEST_SANDBOXED_PACKAGING=1
 }
 
@@ -96,7 +93,8 @@ v_src_compile() {
   default
   edo ./v build-tools
   
-  # Tools in a subfolder need to be compiled separately
+  # Tools in a subfolder need to be built separately
+  # List can be found in cmd/tools/vbuild-tools.v
   local sub_tools=(
     vast
     vcreate
@@ -144,6 +142,7 @@ v_src_install () {
     check_os_api_parity
     detect_tcc
     fast_job
+    fmt_speed
     git_pre_commit_hook.vsh
     install_binaryen.vsh
     install_wabt.vsh
@@ -174,12 +173,12 @@ v_src_install () {
     vmissdoc
     vrepeat
     vrepl
+    vretry
     vscan
     vself
     vsetup-freetype
     vshader
     vshould-compile-all
-    vsymlink
     vtest
     vtest-all
     vtest-cleancode
@@ -217,6 +216,7 @@ v_src_install () {
     vcreate
     vdoc
     vpm
+    vsymlink
     vvet
     vwhere
   )
