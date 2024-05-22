@@ -18,7 +18,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build:
-        dev-cpp/abseil
+        dev-cpp/abseil[>=20240116.0]
     build+run:
         dev-libs/protobuf:=
         dev-libs/re2:=
