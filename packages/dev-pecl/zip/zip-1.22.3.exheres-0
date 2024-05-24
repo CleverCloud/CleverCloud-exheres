@@ -8,6 +8,11 @@ PLATFORMS="~amd64"
 LICENCES="PHP-3"
 SLOT="0"
 
+DEPENDENCIES="
+    build+run:
+	app-arch/libzip
+"
+
 # reason: PHP 8 only
 RESTRICT=test
 
