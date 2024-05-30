@@ -1,0 +1,42 @@
+# Copyright 2024 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="CINC is not Chef"
+HOMEPAGE="https://www.cinc.sh/start/auditor/"
+DOWNLOADS="http://downloads.cinc.sh/files/stable/cinc-auditor/${PV}/debian/12/cinc-auditor_${PV}-1_amd64.deb"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+WORK=${WORKBASE}
+
+pkg_setup() {
+    exdirectory --allow /opt
+}
+
+src_unpack() {
+    default
+
+    unpack ./data.tar.xz
+}
+
+src_install() {
+    exeinto /opt/cinc-auditor/bin
+    doexe opt/cinc-auditor/bin/*
+
+    exeinto /opt/cinc-auditor/embedded/bin
+    doexe opt/cinc-auditor/embedded/bin/*
+
+    insinto /opt/cinc-auditor/embedded
+    doins -r opt/cinc-auditor/embedded/{include,lib,ssl}
+
+    dodir /usr/$(exhost --target)/bin
+    dosym /opt/cinc-auditor/bin/cinc-auditor /usr/$(exhost --target)/bin/cinc-auditor
+
+    edo find "${IMAGE}" -type d -empty -delete
+}
+
