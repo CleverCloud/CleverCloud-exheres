@@ -20,7 +20,7 @@ MYOPTIONS="
         description = [ Support for font handling utilizing fontconfig ]
         requires = [ pango ]
     ]]
-    gif
+    gif [[ requires = [ imagequant ] ]]
     gobject-introspection
     heif
     imagequant [[ description = [ Support for writing 8-bit palette-ised PNGs and GIFs ] ]]
@@ -126,6 +126,7 @@ MESON_SRC_CONFIGURE_OPTION_FEATURES=(
     fontconfig
     'gobject-introspection introspection'
     heif
+    imagequant
     'jpeg2000 openjpeg'
     'jpegxl jpeg-xl'
     lcms
