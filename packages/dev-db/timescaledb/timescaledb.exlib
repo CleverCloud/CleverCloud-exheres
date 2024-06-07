@@ -10,10 +10,12 @@ require github [ user="timescale" tag="${PV}" ]
 require postgresql [ min_version="${MIN_VERSION}" max_version="${MAX_VERSION}" ]
 
 SUMMARY="TimescaleDB is an open-source database designed to make SQL scalable for time-series data"
-LICENCES="PostgreSQL"
+LICENCES="Apache-2.0 !bindist? ( Timescale )"
 SLOT="$(ever range 1-2)"
+MYOPTIONS="
+    bindist [[ description = [ Disable build of the restricted library tsl ] ]]
+"
 
-MYOPTIONS=""
 DEPENDENCIES="
     build+run:
         dev-libs/openssl:=
@@ -30,6 +32,7 @@ prepare_one_multibuild() {
         -DREGRESS_CHECKS=OFF
         -DSEND_TELEMETRY_DEFAULT=ON
         -DUSE_TELEMETRY=ON
+        -DAPACHE_ONLY=$(option bindist ON OFF)
     )
     edo bash bootstrap "${options[@]}"
     export PATH="${old_path}"
