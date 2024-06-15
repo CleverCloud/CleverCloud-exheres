@@ -1,7 +1,7 @@
 # Copyright 2023 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ tag=v${PV} ] go [ go_minimum_version=1.22 ]
+require github [ tag=v${PV} ] go [ go_minimum_version=1.22.4 ]
 require systemd-service [ systemd_files=[ cmd/${PN}d/${PN}d.service ] ]
 
 SUMMARY="Tailscale lets you easily manage access to private resources, quickly SSH into devices on your network, and work securely from anywhere in the world"
