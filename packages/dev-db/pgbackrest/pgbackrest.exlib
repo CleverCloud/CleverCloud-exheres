@@ -1,0 +1,37 @@
+# Copyright 2024 Lucas DRAESCHER <lucas.draescher@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ tag="release/${PV}" ]
+require meson
+
+SUMMARY="Reliable PostgreSQL Backup & Restore"
+
+LICENCES="MIT"
+SLOT="0"
+
+MYOPTIONS="
+    zstd
+"
+
+DEPENDENCIES="
+    build:
+        dev-libs/libyaml
+    build+run:
+	app-arch/bzip2
+        app-arch/lz4
+        dev-db/postgresql-client
+	dev-libs/libxml2:2.0
+	net-libs/libssh2
+	dev-libs/openssl:=
+	sys-libs/zlib
+	zstd? ( app-arch/zstd )
+"
+
+MESON_SRC_CONFIGURE_PARAMS=(
+    -Dlibssh2=enabled
+)
+
+MESON_SRC_CONFIGURE_OPTION_FEATURES=(
+    'zstd libzstd'
+)
+
