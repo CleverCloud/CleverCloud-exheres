@@ -23,7 +23,7 @@ DEPENDENCIES="
         dev-libs/libxcrypt:=
         dev-libs/libxml2:2.0
         dev-libs/openssl:=
-        dev-libs/pcre
+        dev-libs/pcre2
         sys-libs/libcap
         apache? ( www-servers/apache )
         ruby? ( dev-lang/ruby:= )
