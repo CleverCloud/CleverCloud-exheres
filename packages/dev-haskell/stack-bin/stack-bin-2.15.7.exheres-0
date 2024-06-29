@@ -6,7 +6,7 @@ DESCRIPTION="
 Stack is a cross-platform program for developing Haskell projects.
 It is intended for Haskellers both new and experienced.
 "
-HOMEPAGE="http://haskellstack.org/"
+HOMEPAGE="https://haskellstack.org/"
 DOWNLOADS="https://github.com/commercialhaskell/stack/releases/download/v${PV}/stack-${PV}-linux-x86_64.tar.gz"
 
 LICENCES="BSD-3"
@@ -16,10 +16,8 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     run:
-        dev-libs/gmp[>=6.1] [[ note = [ depends on libgmp.so.10 ] ]]
+        dev-libs/gmp:=[>=6.1] [[ note = [ depends on libgmp.so.10 ] ]]
 "
-
-BUGS_TO="hasufell@posteo.de"
 
 WORK=${WORKBASE}/stack-${PV}-linux-x86_64
 
