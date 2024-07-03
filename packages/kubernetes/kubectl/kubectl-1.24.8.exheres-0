@@ -1,8 +1,0 @@
-# Copyright 2022 Maxime Sorin <maxime.sorin@clever-cloud.com>
-# Distributed under the terms of the GNU General Public License v2
-
-require kubernetes
-
-SUMMARY="Kubernetes - the command-line tool"
-PLATFORMS="~amd64"
-
