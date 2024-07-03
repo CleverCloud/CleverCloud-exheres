@@ -1,0 +1,7 @@
+# Copyright 2024 Gilles Biannic <gilles.biannic@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cni [ kind="main" ]
+
+DESCRIPTION="Dummy is a useful feature for routing packets through the Linux kernel without transmitting. Like loopback, it is a purely virtual interface that allows packets to be routed to a designated IP address. Unlike loopback, the IP address can be arbitrary and is not restricted to the 127.0.0.0/8 range."
+PLATFORMS="~amd64"
