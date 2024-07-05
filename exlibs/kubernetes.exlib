@@ -3,18 +3,20 @@
 
 export_exlib_phases src_install
 
-MY_PN="kubernetes"
-SCM_CHECKOUT_TO="${MY_PN}"
+myexparam user="kubernetes"
+myexparam project="kubernetes"
+
+SCM_CHECKOUT_TO="$(exparam project)"
 
 require alternatives
-require github [ tag="v${PV}" ] go [ go_minimum_version=1.22 ]
+require github [ user="$(exparam user)" project="$(exparam project)" tag="v${PV}" ] go [ go_minimum_version=1.22 ]
 
 LICENCES="Apache-2.0"
 SLOT=$(ever range 1-2)
 
 RESTRICT=test
 
-WORK="${WORKBASE}/${MY_PN}-${PV}/cmd/${PN}"
+WORK="${WORKBASE}/$(exparam project)-${PV}/cmd/${PN}"
 
 kubernetes_src_install() {
     dobin "${PN}"
