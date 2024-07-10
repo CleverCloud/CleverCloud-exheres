@@ -1,0 +1,44 @@
+# Copyright 2024 miton18 <remi@collignon-ducret.fr>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=CleverCloud tag="v${PV}" force_git_clone=true ]
+require cargo [ disable_default_features=true rust_minimum_version="1.73.0" static=true ]
+require systemd-service [ systemd_files=[ "${FILES}/systemd/${PN}@.service" ] systemd_tmpfiles=[ "${FILES}/systemd/${PN}.conf" ] ]
+
+export_exlib_phases src_install
+
+SUMMARY="Metrics scraper for Warp10 & Prometheus"
+HOMEPAGE="https://github.com/CleverCloud/beamium"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        user/${PN}
+"
+
+# Docker test
+RESTRICT="test"
+
+beamium_src_install() {
+    cargo_src_install
+
+    dodir /usr/$(exhost --target)/libexec
+    edo mv "${IMAGE}"/usr/$(exhost --target)/{bin,libexec}/${PN}
+    edo rmdir "${IMAGE}"/usr/$(exhost --target)/bin
+
+    install_systemd_files
+
+    insopts -m 0600 -o ${PN} -g ${PN}
+    diropts -m 0700 -o ${PN} -g ${PN}
+
+    dodir /etc/${PN}
+    insinto /etc/${PN}
+    newins config.sample.yaml config.yaml
+    keepdir /var/lib/${PN}
+    keepdir /var/log/${PN}
+}
+

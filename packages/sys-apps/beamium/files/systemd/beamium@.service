@@ -1,0 +1,22 @@
+[Unit]
+Description=Beamium
+Documentation=https://github.com/CleverCloud/beamium
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+User=beamium
+
+Environment=BEAMIUM_CONFIG_FILE=/etc/beamium/%i.yaml
+EnvironmentFile=-/etc/conf.d/beamium
+
+ExecStartPre=/usr/host/libexec/beamium --config ${BEAMIUM_CONFIG_FILE} --check
+ExecStart=/usr/host/libexec/beamium --config ${BEAMIUM_CONFIG_FILE}
+Restart=always
+
+StartLimitInterval=10
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
+
