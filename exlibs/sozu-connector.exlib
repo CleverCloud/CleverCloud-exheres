@@ -8,7 +8,7 @@ exparam -v CONNECTOR_NAME connector_name
 myexparam slot
 exparam -v SLOT slot
 
-require github [ user=CleverCloud force_git_clone=true tag="v${PV}" ]
+require github [ user=CleverCloud force_git_clone=true tag="v${PV/rc/-rc.}" ]
 require systemd-service [ systemd_files=[ "${FILES}/systemd/${PN}-${SLOT}.service" ] ]
 require cargo [ channel=stable ]
 
