@@ -6,6 +6,7 @@ SUMMARY="Meta-package to provides kubernetes clients command lines"
 SLOT="$(ever range 1-2)"
 DEPENDENCIES="
     run:
+        kubernetes/crictl
         kubernetes/kubeadm:${SLOT}
         kubernetes/kubectl:${SLOT}
         kubernetes/kubectl-convert:${SLOT}
