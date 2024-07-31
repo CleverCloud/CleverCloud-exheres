@@ -9,6 +9,7 @@ DEPENDENCIES="
         kubernetes/bandwidth
         kubernetes/bridge
         kubernetes/dhcp
+        kubernetes/dummy
         kubernetes/firewall
         kubernetes/host-device
         kubernetes/host-local
@@ -24,6 +25,7 @@ DEPENDENCIES="
         kubernetes/ptp
         kubernetes/sbr
         kubernetes/static
+        kubernetes/tap
         kubernetes/tuning
         kubernetes/vlan
         kubernetes/vrf
