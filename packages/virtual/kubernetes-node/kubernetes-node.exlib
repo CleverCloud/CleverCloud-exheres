@@ -29,5 +29,6 @@ DEPENDENCIES="
         kubernetes/tuning
         kubernetes/vlan
         kubernetes/vrf
+        sys-apps/containerd
         virtual/kubernetes-clients:${SLOT}
 "
