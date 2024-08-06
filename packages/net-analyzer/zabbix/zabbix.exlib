@@ -13,12 +13,13 @@ DEPENDENCIES="
     build+run:
         dev-db/postgresql-client
         dev-libs/libevent:=
-        java? ( virtual/jre )
+        java? ( virtual/jre:* )
     run:
         net-misc/fping
     suggestion:
         net-analyzer/zabbix-agent
         dev-db/postgresql:*[>=13]
+        dev-lang/php:*[<8][php_extensions:pgsql] [[ description = [ PHP Frontend ] ]]
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS+=(
@@ -43,6 +44,11 @@ ZABBIX_SRC_INSTALL_DATABASE=postgresql
 
 zabbix_src_install() {
     zabbix-common_src_install
+
+    insinto /usr/share/${PN}/frontend
+    doins -r "${WORK}"/ui/*
+    # Clean up empty folder
+    edo rmdir "${IMAGE}"/usr/share/zabbix/frontend/local/app
 
     if optionq java; then
         insinto "/usr/share/${PN}/zabbix_java"
