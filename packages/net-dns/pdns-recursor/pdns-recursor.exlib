@@ -1,9 +1,10 @@
 # Copyright 2012 Kevin Decherf <kevin@kdecherf.com>
 # Distributed under the terms of the GNU General Public License v2
 
+require cargo [ rust_minimum_version=1.64.0 ]
 require systemd-service
 
-export_exlib_phases src_install
+export_exlib_phases src_unpack src_configure src_compile src_test src_install
 
 SUMMARY="PowerDNS Recursive Server"
 HOMEPAGE="https://www.powerdns.com"
@@ -16,36 +17,65 @@ MYOPTIONS="
 "
 
 DEPENDENCIES="
+    build:
+        virtual/pkg-config
     build+run:
         group/pdns
         user/pdns
-        dev-lang/LuaJIT
-        dev-libs/boost
+        dev-lang/LuaJIT[>=2.0.2]
+        dev-libs/boost[>=1.42]
         dev-libs/libsodium
         dev-libs/openssl:=
         dev-libs/protobuf:=
         net/net-snmp
+        net-misc/curl[>=7.21.3]
+        sys-libs/libcap
         systemd? ( sys-apps/systemd )
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
     --sysconfdir=/etc/powerdns
     --enable-ipcipher
+    --disable-coverage
+    --disable-static
+    --with-libcap
+    --with-libcurl
+    --with-libssl
+    --with-libsodium
+    --with-lua=luajit
+    --with-net-snmp
+    --with-service-group=pdns
+    --with-service-user=pdns
+    --with-systemd=${SYSTEMDSYSTEMUNITDIR}
     --without-gnutls
+    --without-libdecaf
     --without-lmdb
 )
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( systemd )
 
+pdns-recursor_src_unpack() {
+    default
+
+    edo pushd "${WORK}"/settings/rust
+    ecargo_fetch
+    edo popd
+}
+
+pdns-recursor_src_configure() {
+    default
+}
+
+pdns-recursor_src_compile() {
+    default
+}
+
+pdns-recursor_src_test() {
+    default
+}
+
 pdns-recursor_src_install() {
     default
 
-    edo mv "${IMAGE}"/etc/powerdns/recursor.conf{-dist,}
-    # We update recursor.conf with pdns uid, gid
-    edo sed -i \
-        -e '/set[ug]id=/s:^# ::' \
-        -e '/set[ug]id=/s:$:pdns:' \
-        "${IMAGE}"/etc/powerdns/recursor.conf
-
-    install_systemd_files
+    edo mv "${IMAGE}"/etc/powerdns/recursor.yml{-dist,}
 }
 
