@@ -5,6 +5,7 @@ export_exlib_phases src_prepare pkg_setup src_compile src_test src_install
 
 SCM_SECONDARY_REPOSITORIES="vc tcc markdown"
 SCM_vc_REPOSITORY="https://github.com/vlang/vc"
+SCM_vc_REVISION="96adc0f840c696b61c2b2567f0bdad8fabc4cda1"
 SCM_tcc_REPOSITORY="https://github.com/vlang/tccbin"
 SCM_markdown_REPOSITORY="https://github.com/vlang/markdown"
 
@@ -14,7 +15,7 @@ case "${PLATFORM}" in
   "armv8") SCM_tcc_BRANCH="thirdparty-linux-aarch64" ;;
 esac
 
-require github [ user=vlang tag=${PV} force_git_clone=true ] scm-git 
+require github [ user=vlang tag=${PV} force_git_clone=true ] scm-git
 
 SUMMARY="Simple, fast, safe, compiled language for developing maintainable software"
 HOMEPAGE="https://vlang.io/"
@@ -28,20 +29,20 @@ Despite being simple, V gives the developer a lot of power. Anything you can do 
 
 UPSTREAM_CHANGELOG="https://github.com/vlang/v/blob/master/CHANGELOG.md [[ lang = en ]]"
 UPSTREAM_DOCUMENTATION="
-    https://github.com/vlang/v/blob/master/doc/docs.md [[ 
-        lang = en 
-        description = [ Documentation ] 
+    https://github.com/vlang/v/blob/master/doc/docs.md [[
+        lang = en
+        description = [ Documentation ]
     ]]
-    https://modules.vlang.io/ [[ 
-      lang = en 
-      description = [ Standard Library ] 
+    https://modules.vlang.io/ [[
+      lang = en
+      description = [ Standard Library ]
     ]]
 "
 
 LICENCES="MIT"
 SLOT="0"
 MYOPTIONS="
-    X [[ 
+    X [[
         description = [ X clipboard client example with test ]
     ]]
     platform: amd64 armv8
@@ -92,7 +93,7 @@ v_pkg_setup() {
 v_src_compile() {
   default
   edo ./v build-tools
-  
+
   # Tools in a subfolder need to be built separately
   # List can be found in cmd/tools/vbuild-tools.v
   local sub_tools=(
@@ -103,10 +104,10 @@ v_src_compile() {
     vvet
     vwhere
   )
-  
+
   for s in "${sub_tools[@]}"; do
     edo ./v cmd/tools/${s}/
-  done 
+  done
 
   # Create a file to prevent tools to be automaticaly recompiled
   edo touch cmd/tools/.disable_autorecompilation
@@ -122,7 +123,7 @@ v_src_install () {
 
   insinto "/usr/$(exhost --target)/libexec/vlang/"
   doins v.mod
-  
+
   local paths=(
     thirdparty
     vlib
@@ -130,7 +131,7 @@ v_src_install () {
 
   for p in "${paths[@]}"; do
     doins -r "${p}"
-  done 
+  done
 
   emagicdocs
   dodoc -r doc
@@ -220,12 +221,12 @@ v_src_install () {
     vvet
     vwhere
   )
-  
+
   for s in "${sub_tools[@]}"; do
     exeinto "/usr/$(exhost --target)/libexec/vlang/cmd/tools/${s}/"
     doexe "cmd/tools/${s}/${s}"
-  done 
-  
+  done
+
   # Install v and vcc compiler
   exeinto "/usr/$(exhost --target)/libexec/vlang/thirdparty/tcc/"
   doexe thirdparty/tcc/tcc.exe
