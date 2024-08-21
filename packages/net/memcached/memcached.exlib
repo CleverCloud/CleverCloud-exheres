@@ -23,9 +23,13 @@ DEPENDENCIES="
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --disable-asan
     --disable-large-client-flags
     --disable-proxy
+    --disable-proxy-tls
     --disable-proxy-uring
+    --disable-seccomp
+    --disable-tls
     --disable-werror
 )
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'sasl' 'platform:amd64 64bit' )
