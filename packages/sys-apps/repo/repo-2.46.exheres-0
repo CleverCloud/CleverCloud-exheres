@@ -5,7 +5,7 @@ require python [ blacklist=2 ]
 
 SUMMARY="The multiple repository tool"
 HOMEPAGE="https://gerrit.googlesource.com/git-repo/"
-DOWNLOADS="https://storage.googleapis.com/git-repo-downloads/${PNV}"
+DOWNLOADS="https://gerrit.googlesource.com/git-repo/+/refs/tags/v${PV}/${PN}?format=TEXT -> ${PNV}.b64"
 
 LICENCES="Apache-2.0"
 SLOT="0"
@@ -17,7 +17,7 @@ DEPENDENCIES="
 
 src_unpack() {
     mkdir -p "${WORK}"
-    edo cp "${FETCHEDDIR}"/${PNV} "${WORK}"/${PN}
+    edo base64 -d "${FETCHEDDIR}"/"${PNV}".b64 > "${WORK}"/"${PN}"
 }
 
 src_install() {
