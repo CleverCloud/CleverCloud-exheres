@@ -63,7 +63,6 @@ DEPENDENCIES="
         app-arch/lz4
         dev-libs/libaio
         dev-libs/libedit
-        dev-libs/protobuf:3.19
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl:= )
         !dev-db/mariadb [[
@@ -88,6 +87,7 @@ if ever at_least 8; then
         build+run:
             app-crypt/krb5
             dev-libs/libfido2[>=1.4.0]
+            dev-libs/protobuf:3.24
             dev-libs/re2:=
             net-directory/openldap
             net-libs/cyrus-sasl
@@ -208,7 +208,7 @@ CMAKE_SRC_CONFIGURE_PARAMS=(
     -DWITH_CLIENT_PROTOCOL_TRACING:BOOL=FALSE
     -DWITH_LZ4:STRING=system
     -DWITH_MSAN:BOOL=FALSE
-    -DWITH_PROTOBUF=system
+    -DWITH_PROTOBUF=$(ever at_least 8.0 && echo system || echo bundled)
     -DWITH_RAPID:BOOL=FALSE
     -DWITH_TEST_TRACE_PLUGIN:BOOL=FALSE
     -DWITH_UBSAN:BOOL=FALSE
