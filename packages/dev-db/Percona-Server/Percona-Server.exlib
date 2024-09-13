@@ -87,7 +87,6 @@ if ever at_least 8; then
         build+run:
             app-crypt/krb5
             dev-libs/libfido2[>=1.4.0]
-            dev-libs/protobuf:3.24
             dev-libs/re2:=
             net-directory/openldap
             net-libs/cyrus-sasl
@@ -208,7 +207,7 @@ CMAKE_SRC_CONFIGURE_PARAMS=(
     -DWITH_CLIENT_PROTOCOL_TRACING:BOOL=FALSE
     -DWITH_LZ4:STRING=system
     -DWITH_MSAN:BOOL=FALSE
-    -DWITH_PROTOBUF=$(ever at_least 8.0 && echo system || echo bundled)
+    -DWITH_PROTOBUF=bundled
     -DWITH_RAPID:BOOL=FALSE
     -DWITH_TEST_TRACE_PLUGIN:BOOL=FALSE
     -DWITH_UBSAN:BOOL=FALSE
@@ -295,6 +294,18 @@ Percona-Server_src_install() {
         "${IMAGE}"/usr/$(exhost --target)/lib/${PN}-${SLOT}/pkgconfig/perconaserverclient.pc
 
     if ever at_least 8; then
+        # Fix the bundled protobuf files
+        edo pushd "${IMAGE}"
+        if [[ -d usr/lib64/mysql ]]; then
+            edo mv usr/{lib64,$(exhost --target)/lib}/mysql
+            edo find usr/lib64 -type d -empty -delete
+        fi
+        if [[ -d usr/lib/mysql ]]; then
+            edo mv usr/{lib,$(exhost --target)/lib}/mysql
+            edo find usr/lib -type d -empty -delete
+        fi
+        edo popd
+
         # Remove files pages we explicitly do not want to package
         # https://github.com/percona/percona-server/blob/8.0/build-ps/percona-server.spec#L639
         # TODO: Maybe find a better way
