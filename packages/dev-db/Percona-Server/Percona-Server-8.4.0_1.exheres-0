@@ -1,0 +1,7 @@
+# Copyright 2024 Aurélien Hébert <aurrelhebert@gmail.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require Percona-Server
+
+PLATFORMS="~amd64 ~x86"
+
