@@ -5,9 +5,9 @@ SLOT="$(ever range 1-2)"
 PLATFORMS="~amd64"
 
 require dotnet-sdk [ dotnet_project="dotnet" \
-    dotnet_tag="v${SLOT}.4" \
+    dotnet_tag="v${SLOT}.8" \
     dotnet_tarball="${WORK}/artifacts/x64/Release/${PNV}-exherbo-x64.tar.gz" \
-    dotnet_runtime="${SLOT}.4" \
+    dotnet_runtime="${SLOT}.8" \
     llvm_slot=17 ]
 
 DEFAULT_SRC_PREPARE_PATCHES=(
