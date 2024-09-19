@@ -2,7 +2,7 @@
 # Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require autotools [ supported_autoconf=[ 2.7 ] supported_automake=[ 1.16 ] ]
+require autotools [ supported_autoconf=[ 2.7 ] supported_automake=[ 1.17 ] ]
 require systemd-service
 
 SUMMARY="Varnish Cache, the high-performance HTTP accelerator"
