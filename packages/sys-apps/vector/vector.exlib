@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user=vectordotdev tag="v${PV}" force_git_clone=true ]
-require cargo [ disable_default_features=true rust_minimum_version="1.73.0" static=true ]
+require cargo [ disable_default_features=true rust_minimum_version="1.78.0" static=true ]
 require systemd-service [ systemd_files=[ distribution/systemd/${PN}.service ${FILES}/${PN}@.service ] systemd_tmpfiles=[ ${FILES}/${PN}.conf ] ]
 
 export_exlib_phases src_prepare src_install pkg_postinst
@@ -44,8 +44,8 @@ ECARGO_FEATURES=(
     'sources-dnstap'
     'transforms'
     'unix'
-    'enterprise'
     'component-validation-runner'
+    secrets
 )
 
 vector_src_prepare() {
@@ -53,6 +53,7 @@ vector_src_prepare() {
         export OPENSSL_STATIC=true
     fi
 
+    export RUSTFLAGS="--allow unexpected_cfgs --allow dependency_on_unit_never_type_fallback --allow dead_code"
     default
 }
 
