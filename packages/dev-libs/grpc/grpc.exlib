@@ -20,7 +20,7 @@ DEPENDENCIES="
     build:
         dev-cpp/abseil[>=20240116.0]
     build+run:
-        dev-libs/protobuf:=
+        dev-libs/protobuf:=[>=3.27]
         dev-libs/re2:=
         net-dns/c-ares[>=1.13.0]
         sys-libs/zlib
