@@ -1,7 +1,7 @@
 # Copyright 2019 Maxime SORIN <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ force_git_clone=true user='apache' project='pulsar' tag=v${PV} ]
+require github [ user=apache tag=v${PV} ]
 require cmake
 
 SUMMARY="Pulsar C++ client library"
@@ -12,8 +12,6 @@ SLOT="0"
 
 MYOPTIONS=""
 DEPENDENCIES="
-    build:
-        dev-cpp/gtest[googlemock(+)]
     build+run:
         app-arch/snappy
         app-arch/zstd
@@ -23,10 +21,15 @@ DEPENDENCIES="
         dev-libs/openssl:=
         dev-libs/protobuf:=[>=3.15.0]
         net-misc/curl
+    test:
+        dev-cpp/gtest[googlemock(+)]
 "
 
-CMAKE_SOURCE="${WORKBASE}/${PNV}/${PN}"
-
 CMAKE_SRC_CONFIGURE_PARAMS=(
-    -DBUILD_PYTHON_WRAPPER:BOOL=OFF
+    -DCMAKE_CXX_STANDARD=17
 )
+
+CMAKE_SRC_CONFIGURE_TESTS=(
+    '-DBUILD_TESTS:BOOL=TRUE -DBUILD_TESTS:BOOL=FALSE'
+)
+
