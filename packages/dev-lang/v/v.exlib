@@ -5,7 +5,7 @@ export_exlib_phases src_prepare pkg_setup src_compile src_test src_install
 
 SCM_SECONDARY_REPOSITORIES="vc tcc markdown"
 SCM_vc_REPOSITORY="https://github.com/vlang/vc"
-SCM_vc_REVISION="96adc0f840c696b61c2b2567f0bdad8fabc4cda1"
+SCM_vc_REVISION="54beb1f416b404a06b894e6883a0e2368d80bc3e"
 SCM_tcc_REPOSITORY="https://github.com/vlang/tccbin"
 SCM_markdown_REPOSITORY="https://github.com/vlang/markdown"
 
@@ -57,8 +57,24 @@ DEFAULT_SRC_COMPILE_PARAMS=(
     local=1
 )
 
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/patches-${PV}/0001-Add-failing-tests-to-skip_on_sandboxed_packaging.patch
+TESTS_TO_SKIP=(
+  vlib/net/http/server_test.v
+  vlib/net/tcp_test.v
+  vlib/os/os_test.c.v
+  vlib/semver/semver_test.v
+)
+
+# Tools in a subfolder need to be built separately
+# List can be found in cmd/tools/vbuild-tools.v
+SUBTOOLS=(
+  vast
+  vcover
+  vcreate
+  vdoc
+  vpm
+  vsymlink
+  vvet
+  vwhere
 )
 
 v_src_prepare() {
@@ -92,24 +108,20 @@ v_pkg_setup() {
 
 v_src_compile() {
   default
+
+  # Add tests to skip to the testing tool source code
+  for test in "${TESTS_TO_SKIP[@]}"; do
+    local escaped_test=$(echo "$test" | sed 's/[\/&]/\\&/g')
+    edo sed -i "/const skip_on_sandboxed_packaging = \[/,/\]/s/'do_not_remove'/'do_not_remove',\n        '$escaped_test'/" cmd/tools/vtest-self.v
+  done
+
   edo ./v build-tools
 
-  # Tools in a subfolder need to be built separately
-  # List can be found in cmd/tools/vbuild-tools.v
-  local sub_tools=(
-    vast
-    vcreate
-    vdoc
-    vpm
-    vvet
-    vwhere
-  )
-
-  for s in "${sub_tools[@]}"; do
+  for s in "${SUBTOOLS[@]}"; do
     edo ./v cmd/tools/${s}/
   done
 
-  # Create a file to prevent tools to be automaticaly recompiled
+  # Create a file to prevent tools to be automatically recompiled
   edo touch cmd/tools/.disable_autorecompilation
 }
 
@@ -138,7 +150,10 @@ v_src_install () {
   dodoc -r examples
 
   # Install additional tools built
+  # To get this list, compile v manually, launch ./v build-tools and then this command:
+  # find cmd/tools -maxdepth 1 -type f -executable -printf "%f\n" | sort
   local bins=(
+    amalgamate
     changelog_helper
     check_os_api_parity
     detect_tcc
@@ -147,6 +162,7 @@ v_src_install () {
     git_pre_commit_hook.vsh
     install_binaryen.vsh
     install_wabt.vsh
+    map_clear
     map_fuzz
     oldv
     parser_speed
@@ -168,6 +184,7 @@ v_src_install () {
     vcomplete
     vcompress
     vdoctor
+    vdownload
     vfmt
     vgret
     vls
@@ -212,17 +229,7 @@ v_src_install () {
     doexe "cmd/tools/builders/${f}"
   done
 
-  local sub_tools=(
-    vast
-    vcreate
-    vdoc
-    vpm
-    vsymlink
-    vvet
-    vwhere
-  )
-
-  for s in "${sub_tools[@]}"; do
+  for s in "${SUBTOOLS[@]}"; do
     exeinto "/usr/$(exhost --target)/libexec/vlang/cmd/tools/${s}/"
     doexe "cmd/tools/${s}/${s}"
   done
