@@ -20,6 +20,15 @@ MYOPTIONS="
     ) [[
         number-selected = exactly-one
     ]]
+    mysql? (
+        ( providers:
+            mariadb
+            percona
+        ) [[
+            *description = [ mysql database provider ]
+            number-selected = exactly-one
+        ]]
+    )
 "
 
 DEPENDENCIES="
@@ -34,7 +43,10 @@ DEPENDENCIES="
         dev-libs/openssl:=
         dev-libs/protobuf:=
         net/net-snmp
-        mysql? ( virtual/mysql )
+        mysql? (
+            providers:mariadb? ( dev-db/mariadb )
+            providers:percona? ( dev-db/Percona-Server:= )
+        )
         postgres? ( dev-db/postgresql-client )
         systemd? ( sys-apps/systemd )
     suggestion:
