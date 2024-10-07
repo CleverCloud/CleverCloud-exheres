@@ -7,15 +7,15 @@ Requires=network-online.target
 [Service]
 User=vector
 Group=vector
-Environment=VECTOR_CONFIG_FILE=/etc/vector/%i.yaml
-EnvironmentFile=-/etc/default/vector
-EnvironmentFile=-/etc/conf.d/vector-%i.conf
-ExecStartPre=/usr/bin/vector validate ${VECTOR_CONFIG_FILE} $VERTOR_ARGS
-ExecStart=/usr/bin/vector --config ${VECTOR_CONFIG_FILE} $VERTOR_ARGS
-ExecReload=/usr/bin/vector validate ${VECTOR_CONFIG_FILE} $VERTOR_ARGS
+ExecStartPre=/usr/bin/vector validate ${VECTOR_CONFIG_FILE}
+ExecStart=/usr/bin/vector --config ${VECTOR_CONFIG_FILE}
+ExecReload=/usr/bin/vector validate ${VECTOR_CONFIG_FILE}
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
 AmbientCapabilities=CAP_NET_BIND_SERVICE
+Environment=VECTOR_CONFIG_FILE=/etc/vector/%i.yaml
+EnvironmentFile=-/etc/default/vector
+EnvironmentFile=-/etc/conf.d/vector-%i.conf
 StartLimitInterval=10
 StartLimitBurst=5
 
