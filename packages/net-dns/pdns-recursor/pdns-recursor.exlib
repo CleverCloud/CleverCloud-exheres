@@ -22,8 +22,8 @@ DEPENDENCIES="
     build+run:
         group/pdns
         user/pdns
-        dev-lang/LuaJIT[>=2.0.2]
-        dev-libs/boost[>=1.42]
+        dev-lang/LuaJIT[>=2.1.0]
+        dev-libs/boost[>=1.54]
         dev-libs/libsodium
         dev-libs/openssl:=
         dev-libs/protobuf:=

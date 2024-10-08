@@ -14,13 +14,12 @@ SLOT="0"
 MYOPTIONS="
     ipv6
     systemd
-    (
+    modules:
+        bind
         mysql
         postgres
-    ) [[
-        number-selected = exactly-one
-    ]]
-    mysql? (
+
+    modules:mysql? (
         ( providers:
             mariadb
             percona
@@ -38,25 +37,27 @@ DEPENDENCIES="
         group/pdns
         user/pdns
         dev-lang/LuaJIT
-        dev-libs/boost[>=1.35.0]
+        dev-libs/boost[>=1.54.0]
         dev-libs/libsodium
         dev-libs/openssl:=
         dev-libs/protobuf:=
+        dev-util/ragel
         net/net-snmp
-        mysql? (
+        modules:mysql? (
             providers:mariadb? ( dev-db/mariadb )
             providers:percona? ( dev-db/Percona-Server:= )
         )
-        postgres? ( dev-db/postgresql-client )
+        modules:postgres? ( dev-db/postgresql-client )
         systemd? ( sys-apps/systemd )
     suggestion:
-        postgres? ( dev-db/postgresql )
+        modules:postgres? ( dev-db/postgresql )
 "
 
 pdns_src_configure() {
     local mymodules=(
-        $(option mysql gmysql)
-        $(option postgres gpgsql)
+        $(option modules:bind bind)
+        $(option modules:mysql gmysql)
+        $(option modules:postgres gpgsql)
     )
 
     econf \
@@ -67,10 +68,8 @@ pdns_src_configure() {
         --without-gnutls \
         --without-lmdb \
         $(option_enable systemd) \
-        $(option_with mysql mysql /usr/$(exhost --target)) \
-        $(option_with postgres pgsql /usr/$(exhost --target)) \
-        $(option postgres "--with-pgsql-includes=/usr/$(exhost --target)/include") \
-        $(option postgres "--with-pgsql-libs=/usr/$(exhost --target)/lib")
+        $(option_with modules:mysql mysql-config /usr/$(exhost --target)/bin/mysql_config) \
+        $(option_with modules:postgres pg-config /usr/$(exhost --target)/bin/pg_config)
 }
 
 pdns_src_install() {
@@ -81,7 +80,7 @@ pdns_src_install() {
     edo mv "${IMAGE}"/etc/powerdns/pdns.conf{-dist,}
     # We update pdns.conf with pdns uid, gid and defaul module-dir
     # Enable modules and backends at launch
-    local backend=$((option postgres && echo gpgsql) || (option mysql && echo gmysql))
+    local backend=$((option modules:postgres && echo gpgsql) || (option modules:mysql && echo gmysql))
     edo sed \
         -e '/set[ug]id=/s:^# ::' \
         -e '/set[ug]id=/s:$:pdns:' \
@@ -94,8 +93,8 @@ pdns_src_install() {
         -i "${IMAGE}"/etc/powerdns/pdns.conf
 
     option ipv6 || edo sed -e '/query-local-address6=/s:^# ::' -e '/query-local-address6=/s/:://' -i "${IMAGE}"/etc/powerdns/pdns.conf
-    option postgres && edo cat "${FILES}"/pdns.d/pgsql.conf >> "${IMAGE}"/etc/powerdns/pdns.conf
-    option mysql && edo cat "${FILES}"/pdns.d/mysql.conf >> "${IMAGE}"/etc/powerdns/pdns.conf
+    option modules:postgres && edo cat "${FILES}"/pdns.d/pgsql.conf >> "${IMAGE}"/etc/powerdns/pdns.conf
+    option modules:mysql && edo cat "${FILES}"/pdns.d/mysql.conf >> "${IMAGE}"/etc/powerdns/pdns.conf
 
     install_systemd_files
 }

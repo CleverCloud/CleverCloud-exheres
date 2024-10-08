@@ -22,8 +22,9 @@ DEPENDENCIES="
         group/dnsdist
         user/dnsdist
         dev-lang/LuaJIT
-        dev-libs/boost[>=1.35.0]
+        dev-libs/boost[>=1.54.0]
         dev-libs/libedit
+        dev-libs/libpcap
         dev-libs/libsodium
         dev-libs/openssl:=
         dev-libs/protobuf:=
