@@ -1,5 +1,5 @@
 Upstream: no
-Author: Quentin “Sardem FF7” Glidic <sardemff6exherbo.org>
+Author: Morgane “Sardem FF7” Glidic <sardemff7@exherbo.org>
 Reason: GCC 10+ build fixes
 diff -ur a/icd-main.cpp b/icd-main.cpp
 --- a/icd-main.cpp	2023-04-11 14:38:20.806404530 +0200

@@ -1,5 +1,5 @@
 Upstream: no
-Author: Quentin “Sardem FF7” Glidic <sardemff6exherbo.org>
+Author: Morgane “Sardem FF7” Glidic <sardemff7@exherbo.org>
 Reason: Exherbo layout
 diff -ur a/Makefile b/Makefile
 --- a/Makefile	2023-04-11 14:36:52.653872352 +0200
