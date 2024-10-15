@@ -1,0 +1,28 @@
+# Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Redirection.io agent"
+HOMEPAGE="https://redirection.io/"
+
+UPSTREAM_CHANGELOG="https://redirection.io/documentation/changelog/redirectionio-agent [[ lang = en ]]"
+UPSTREAM_DOCUMENTATION="https://redirection.io/documentation/developer-documentation/agent-configuration-reference [[ lang = en ]]"
+
+DOWNLOADS="
+    platform:amd64? ( https://packages.redirection.io/dist/stable/2/any/${PV}/redirectionio-agent_${PV}-1_any_amd64.tar.gz )
+    platform:armv8? ( https://packages.redirection.io/dist/stable/2/any/${PV}/redirectionio-agent_${PV}-1_any_aarch64.tar.gz )
+"
+
+PLATFORMS="~amd64 ~armv8"
+LICENCES="all-rights-reserved"
+SLOT="0"
+MYOPTIONS="
+    ( platform: amd64 armv8 )
+"
+DEPENDENCIES=""
+
+WORK="${WORKBASE}"
+
+src_install() {
+    dobin "${WORK}"/redirection-agent/redirectionio-agent
+}
+
