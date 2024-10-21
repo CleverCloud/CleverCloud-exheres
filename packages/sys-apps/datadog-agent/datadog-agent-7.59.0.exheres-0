@@ -1,0 +1,61 @@
+# Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=DataDog force_git_clone=true ]
+require systemd-service
+
+SUMMARY="A software that collects events and metrics from hosts and sends them to Datadog"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64 ~armv8"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        dev-lang/go[>=1.22.0]
+        dev-lang/python[>=3.11.0]
+        dev-python/pip
+        sys-devel/cmake[>=3.12.0]
+"
+
+src_unpack() {
+    scm_src_unpack
+
+    export GOPATH="${TEMP}/go"
+    export GOBIN="${GOPATH}/bin"
+    export PATH="${GOBIN}:${PATH}"
+
+    edo pushd "${WORKBASE}/${PNV}"
+    esandbox disable_net
+
+    edo python -m venv .venv
+    edo source .venv/bin/activate
+    edo pip install -r requirements.txt
+
+    edo invoke install-tools
+    edo go mod download -x
+    esandbox enable_net
+    edo popd
+}
+
+src_compile() {
+    edo invoke agent.build --build-exclude=systemd
+}
+
+src_install() {
+    # We remove unavailable modules
+    edo rm -rf bin/agent/dist/conf.d/{apm.yaml.default,process_agent.yaml.default,winproc.d}
+
+    insinto /etc/datadog-agent/
+    doins -r bin/agent/dist/*
+    newbin bin/agent/agent ${PN}
+    dolib.so dev/lib64/*
+
+    insinto /usr/$(exhost --target)/include/
+    doins -r dev/include/*
+
+    install_systemd_files
+    emagicdocs
+}
+

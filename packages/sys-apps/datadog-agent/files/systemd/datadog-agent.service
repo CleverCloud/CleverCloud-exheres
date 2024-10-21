@@ -1,0 +1,21 @@
+[Unit]
+Description=Datadog Agent
+Documentation=https://docs.datadoghq.com/agent/
+After=network-online.target local-fs.target remote-fs.target
+Wants=network-online.target
+
+StartLimitInterval=10
+StartLimitBurst=5
+
+[Service]
+Type=simple
+Restart=always
+
+User=datadog-agent
+Group=datadog-agent
+
+Environment=DD_AGENT_CONFIG_FILE=/etc/datadog-agent/datadog.yaml
+ExecStart=/usr/host/bin/datadog-agent run --cfgpath ${DD_AGENT_CONFIG_FILE}
+
+[Install]
+WantedBy=multi-user.target
