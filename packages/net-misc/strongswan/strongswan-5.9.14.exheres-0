@@ -25,6 +25,15 @@ MYOPTIONS="
     kernel-pfkey [[ description = [ PF_KEY kernel interface ] ]]
     ldap [[ description = [ Fetch files via libldap ] ]]
     mysql
+    mysql? (
+        ( providers:
+            mariadb
+            percona
+        ) [[
+            *description = [ mysql database provider ]
+            number-selected = exactly-one
+        ]]
+    )
     networkmanager
     pam
     pkcs11
@@ -60,7 +69,10 @@ DEPENDENCIES="
         gcrypt? ( dev-libs/libgcrypt:0 )
         gmp? ( dev-libs/gmp:=[>=4.1.5] )
         ldap? ( net-directory/openldap )
-        mysql? ( virtual/mysql )
+        mysql? (
+            providers:mariadb? ( dev-db/mariadb )
+            providers:percona? ( dev-db/Percona-Server:= )
+        )
         networkmanager? ( net-apps/NetworkManager )
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl:= )
