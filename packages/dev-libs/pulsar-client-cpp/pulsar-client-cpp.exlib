@@ -3,6 +3,7 @@
 
 require github [ user=apache tag=v${PV} ]
 require cmake
+require flag-o-matic
 
 SUMMARY="Pulsar C++ client library"
 HOMEPAGE="https://pulsar.apache.org/docs/en/client-libraries-cpp/"
@@ -15,6 +16,7 @@ DEPENDENCIES="
     build+run:
         app-arch/snappy
         app-arch/zstd
+        dev-cpp/abseil
         dev-cpp/log4cplus
         dev-libs/boost
         dev-libs/jsoncpp:=
@@ -24,6 +26,11 @@ DEPENDENCIES="
     test:
         dev-cpp/gtest[googlemock(+)]
 "
+
+pkg_setup() {
+    # Fix "libabsl_log_internal_check_op.so.2407.0.0: error adding symbols: DSO missing from command line"
+    append-ldflags -Wl,--copy-dt-needed-entries
+}
 
 CMAKE_SRC_CONFIGURE_PARAMS=(
     -DCMAKE_CXX_STANDARD=17
