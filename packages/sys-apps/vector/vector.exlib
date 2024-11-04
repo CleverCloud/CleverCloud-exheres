@@ -14,7 +14,31 @@ LICENCES="Apache-2.0"
 SLOT="0"
 
 MYOPTIONS="
+    api [[ description = [ GraphQL API to interact with a running instance ] ]]  
+    validation [[ description = [ checks the validity of your Vector configuration ] ]]
+    enrichment-tables [[ description = [ Enrich events from external data sources ] ]]  
     examples [[ description = [ Install config examples ] ]]
+    secrets [[ description = [ Retrieve secrets from external backend ] ]]
+    sinks [[ description = [ Enables all sinks ] ]]
+    sources [[ description = [ Enables all sources ] ]]
+    transforms [[ description = [ Enables all transforms ] ]]
+    jemalloc
+    (
+        sinks-pulsar [[ description = [ Enables pulsar sink ] ]]
+    ) [[
+        *requires = -sinks
+    ]]
+    (
+        sources-file [[ description = [ Enables file source ] ]]
+        sources-journald [[ description = [ Enables journald source ] ]]
+    ) [[
+        *requires = -sources
+    ]]
+    (
+        transforms-remap [[ description = [ Enables remap transform ] ]]
+    ) [[
+        *requires = -transforms
+    ]]
 "
 
 DEPENDENCIES="
@@ -34,18 +58,21 @@ DEPENDENCIES="
 # Docker test
 RESTRICT="test"
 
-# feature 'rdkafka/gssapi-vendored' needs libsasl/libsasl2
-ECARGO_FEATURES=(
-    'api'
-    'api-client'
-    'enrichment-tables'
-    'sinks'
-    'sources'
-    'sources-dnstap'
-    'transforms'
-    'unix'
-    'component-validation-runner'
-    secrets
+ECARGO_FEATURE_ENABLES=(
+    'api api'
+    'api api-client'
+    'validation component-validation-runner'
+    'enrichment-tables enrichment-tables'
+    'jemalloc unix'
+    'secrets secrets'
+    'sinks sinks'
+    'sinks-pulsar sinks-pulsar'
+    'sources sources'
+    'sources sources-dnstap'
+    'sources-file sources-file'
+    'sources-journald sources-journald'
+    'transforms transforms'
+    'transforms-remap transforms-remap'
 )
 
 vector_src_prepare() {
