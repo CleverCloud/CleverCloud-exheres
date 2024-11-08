@@ -4,13 +4,22 @@
 require kubernetes systemd-service
 
 SUMMARY="Kubernetes - the primary node agent that runs on each node"
-PLATFORMS="~amd64"
+
 DEPENDENCIES="
     run:
         net-firewall/conntrack-tools
 "
 
+pkg_setup() {
+    exdirectory --allow /etc/systemd/system
+}
+
 src_install() {
     kubernetes_src_install
+
+    keepdir /etc/kubernetes/{pki,manifests}
+    keepdir /etc/systemd/system/${PN}.service.d
+    keepdir /var/lib/${PN}/pki
+
     install_systemd_files
 }
