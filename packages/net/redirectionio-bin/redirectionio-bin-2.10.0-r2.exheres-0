@@ -3,6 +3,7 @@
 
 require systemd-service [ systemd_files=[ redirection-agent/redirectionio-agent.service ] ]
 
+MY_PN=${PN/-bin}
 SUMMARY="Redirection.io agent"
 HOMEPAGE="https://redirection.io/"
 
@@ -20,16 +21,20 @@ SLOT="0"
 MYOPTIONS="
     ( platform: amd64 armv8 )
 "
+
 DEPENDENCIES="
     build+run:
-        group/redirectionio
-        user/redirectionio
+        group/${MY_PN}
+        user/${MY_PN}
 "
 
 WORK="${WORKBASE}"
 
 src_install() {
-    insinto /etc/redirectionio
+    keepdir /var/lib/${MY_PN}
+    edo chown ${MY_PN}:${MY_PN} "${IMAGE}"/var/lib/${MY_PN}
+
+    insinto /etc/${MY_PN}
     doins "${WORK}"/redirection-agent/agent.yml
 
     install_systemd_files
