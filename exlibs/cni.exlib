@@ -1,12 +1,12 @@
 # Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-export_exlib_phases src_unpack src_compile src_install
+export_exlib_phases pkg_setup
 
 MY_PN="plugins"
 SCM_CHECKOUT_TO="plugins"
 
-require github [ user="containernetworking" tag="v${PV}" ]
+require github [ user="containernetworking" tag="v${PV}" ] go
 
 # Kind of the container network interface (a.k.a "ipam", "meta" or "main")
 myexparam kind
@@ -28,27 +28,18 @@ DEPENDENCIES="
 
 RESTRICT=test
 
-# TODO: Support go.mod in the Go exlib
-unset GOPATH
-
-cni_src_unpack() {
-    default
-
-    export GOMODCACHE="${FETCHEDDIR}/go/pkg/mod"
-
-    esandbox disable_net
-
-    edo pushd "${WORK}" 
-    edo go mod download -x
-    edo popd
-
-    esandbox enable_net
+cni_pkg_setup() {
+    exdirectory --allow /opt
 }
 
-cni_src_compile() {
+go_src_compile() {
     edo go build -v "./plugins/${kind}/${PN}"
 }
 
-cni_src_install() {
-    dobin "${PN}"
+go_src_install() {
+    keepdir /etc/cni/net.d
+
+    exeinto /opt/cni/bin
+    newexe ${PN} ${PN}
 }
+
