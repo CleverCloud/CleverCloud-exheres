@@ -15,6 +15,7 @@ MYOPTIONS="sasl"
 DEPENDENCIES="
     build+run:
         dev-libs/libmemcached[>=1.0.18][sasl?]
+        sys-libs/zlib
 "
 
 prepare_one_multibuild() {
