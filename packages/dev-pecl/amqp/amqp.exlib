@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 PECL_PV="${PV/_/}"
-myexparam php_abis=[ 7.4 8.0 8.1 8.2 8.3 ]
+myexparam php_abis=[ 7.4 8.0 8.1 8.2 8.3 8.4 ]
 require php-pecl [ module=module php_abis=[ $(exparam php_abis[@]) ] ]
 
 SUMMARY="Communicate with any AMQP compliant server"
@@ -14,7 +14,7 @@ RESTRICT="test"
 
 DEPENDENCIES="
     build+run:
-        net-libs/librabbitmq[>=0.6.0]
+        net-libs/librabbitmq[>=0.7.1]
 "
 
 prepare_one_multibuild() {
