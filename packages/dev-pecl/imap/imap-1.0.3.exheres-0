@@ -1,0 +1,18 @@
+# Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module php_abis=[ 8.4 ] ]
+
+SUMMARY="An extension to operate with the IMAP protocol, as well as the NNTP, POP3, and local mailbox access methods"
+PLATFORMS="~amd64"
+LICENCES="PHP-3"
+SLOT="0"
+
+DEPENDENCIES="
+    build+run:
+	    dev-libs/c-client[>=2007e][ssl(+)]
+"
+
+PHP_PECL_SRC_CONFIGURE_PARAMS=(
+    --with-imap-ssl
+)
