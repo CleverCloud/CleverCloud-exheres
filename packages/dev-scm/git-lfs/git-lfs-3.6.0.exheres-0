@@ -1,7 +1,7 @@
 # Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require go [ go_minimum_version=1.17 ] github [ tag=v${PV} force_git_clone=true ]
+require go [ go_minimum_version=1.23 ] github [ tag=v${PV} force_git_clone=true ]
 
 SUMMARY="Git extension for versioning large files"
 
