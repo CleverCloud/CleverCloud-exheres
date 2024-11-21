@@ -1,0 +1,15 @@
+# Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module php_abis=[ 8.4 ] ]
+
+SUMMARY="This extension allows you to check the spelling of a word and offer suggestions"
+PLATFORMS="~amd64"
+LICENCES="PHP-3"
+SLOT="0"
+
+DEPENDENCIES="
+    build+run:
+        app-spell/aspell[>=0.50.0]
+"
+
