@@ -1,8 +1,6 @@
 # Copyright 2022 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-export_exlib_phases src_install
-
 myexparam user="kubernetes"
 myexparam project="kubernetes"
 
@@ -10,6 +8,8 @@ SCM_CHECKOUT_TO="$(exparam project)"
 
 require alternatives
 require github [ user="$(exparam user)" project="$(exparam project)" tag="v${PV}" ] go [ go_minimum_version=1.22 ]
+
+export_exlib_phases src_install
 
 LICENCES="Apache-2.0"
 SLOT=$(ever range 1-2)
