@@ -29,7 +29,7 @@ DEPENDENCIES="
         dev-libs/openssl:=
         dev-python/typing[python_abis:2.7]
         dev-python/Cheetah[python_abis:2.7]
-        dev-python/PyYAML[python_abis:2.7]
+        dev-python/PyYAML:2.7[python_abis:2.7]
         net-libs/cyrus-sasl
 "
 
