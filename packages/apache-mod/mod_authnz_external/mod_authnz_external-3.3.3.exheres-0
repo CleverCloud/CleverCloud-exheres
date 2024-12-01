@@ -1,7 +1,8 @@
 # Copyright 2016 Marc-Antoine Perennou
 # Distributed under the terms of the GNU General Public License v2
 
-require googlecode [ project=mod-auth-external suffix=tar.gz ]
+GITHUB_PN="mod-auth-external"
+require github [ user=phokz project="$GITHUB_PN" tag=refs/tags/${PNV} ]
 
 SUMMARY="Apache External Authentication Module"
 BUGS_TO="keruspe@exherbo.org"
@@ -14,6 +15,8 @@ DEPENDENCIES="
     build+run:
         www-servers/apache[>=2.4]
 "
+
+WORK="${WORKBASE}/${GITHUB_PN}-${PNV}"
 
 src_install() {
     exeinto /usr/$(exhost --target)/libexec/apache2/modules/
