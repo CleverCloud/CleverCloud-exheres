@@ -1,0 +1,25 @@
+# Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cargo [ rust_minimum_version=1.79 ]
+require github [ user=jdx tag=v${PV} ]
+
+SUMMARY="dev tools, env vars, task runner"
+HOMEPAGE="https://mise.jdx.dev/"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="providers: ( libressl openssl ) [[ number-selected = exactly-one ]]"
+
+# The supported LibreSSL and OpenSSL versions are taken from the `version_error()`
+# function of openssl-sys 0.9.104, which is what is specified by the Cargo.lock of
+DEPENDENCIES="
+    build+run:
+        providers:libressl? ( dev-libs/libressl:=[>=2.5&<4.1] )
+        providers:openssl?  ( dev-libs/openssl:= )
+"
+
+# Don't let the openssl-sys crate use a vendored openssl
+OPENSSL_NO_VENDOR=1
+
