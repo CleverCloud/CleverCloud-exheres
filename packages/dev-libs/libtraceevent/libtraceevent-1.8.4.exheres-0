@@ -1,0 +1,16 @@
+# Copyright 2024 Arnaud Lefebvre <a.lefebvre@outlook.fr>
+# Distributed under the terms of the GNU General Public License v3
+
+require meson
+
+SUMMARY="Library to parse raw trace event formats"
+HOMEPAGE="https://trace-cmd.org/"
+DOWNLOADS="https://git.kernel.org/pub/scm/libs/libtrace/${PN}.git/snapshot/${PNV}.tar.gz"
+
+LICENCES="GPL-2 LGPL-2.1"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS=""
+DEPENDENCIES=""
+
