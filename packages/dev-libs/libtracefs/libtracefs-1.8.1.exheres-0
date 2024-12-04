@@ -1,0 +1,19 @@
+# Copyright 2024 Arnaud Lefebvre <a.lefebvre@outlook.fr>
+# Distributed under the terms of the GNU General Public License v3
+
+require meson
+
+SUMMARY="Linux kernel trace file system library"
+HOMEPAGE="https://trace-cmd.org/"
+DOWNLOADS="https://git.kernel.org/pub/scm/libs/libtrace/${PN}.git/snapshot/${PNV}.tar.gz"
+
+LICENCES="GPL-2 LGPL-2.1"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS=""
+DEPENDENCIES="
+    build+run:
+        dev-libs/libtraceevent[>=1.8]
+"
+
