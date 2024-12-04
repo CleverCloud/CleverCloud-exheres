@@ -24,17 +24,20 @@ MYOPTIONS="
     transforms [[ description = [ Enables all transforms ] ]]
     jemalloc
     (
+        sinks-elasticsearch [[ description = [ Enables elasticsearch sink ] ]]
         sinks-pulsar [[ description = [ Enables pulsar sink ] ]]
     ) [[
         *requires = -sinks
     ]]
     (
         sources-file [[ description = [ Enables file source ] ]]
+        sources-http_server [[ description = [ Enables http_server source ] ]]
         sources-journald [[ description = [ Enables journald source ] ]]
     ) [[
         *requires = -sources
     ]]
     (
+        transforms-filter [[ description = [ Enables filter transform ] ]]
         transforms-remap [[ description = [ Enables remap transform ] ]]
     ) [[
         *requires = -transforms
@@ -66,12 +69,15 @@ ECARGO_FEATURE_ENABLES=(
     'jemalloc unix'
     'secrets secrets'
     'sinks sinks'
+    'sinks-elasticsearch sinks-elasticsearch'
     'sinks-pulsar sinks-pulsar'
     'sources sources'
     'sources sources-dnstap'
     'sources-file sources-file'
+    'sources-http_server sources-http_server'
     'sources-journald sources-journald'
     'transforms transforms'
+    'transforms-filter transforms-filter'
     'transforms-remap transforms-remap'
 )
 
