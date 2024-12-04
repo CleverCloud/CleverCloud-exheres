@@ -1,0 +1,28 @@
+# Copyright 2024 Arnaud Lefebvre <a.lefebvre@outlook.fr>
+# Distributed under the terms of the GNU General Public License v3
+
+
+MY_PNV="${PN}-v${PV}"
+WORK="${WORKBASE}/${MY_PNV}"
+
+require meson
+
+SUMMARY="CLI to interact with Ftrace Linux kernel internal tracer"
+HOMEPAGE="https://trace-cmd.org/"
+DOWNLOADS="https://git.kernel.org/pub/scm/utils/${PN}/${PN}.git/snapshot/${MY_PNV}.tar.gz"
+
+LICENCES="GPL-2 LGPL-2.1"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS=""
+DEPENDENCIES="
+    build+run:
+        app-arch/zstd
+        dev-libs/libtraceevent[>=1.8]
+        dev-libs/libtracefs[>=1.5]
+        sys-libs/zlib
+"
+
+MESON_SRC_CONFIGURE_PARAMS=( -Dpython=false )
+
