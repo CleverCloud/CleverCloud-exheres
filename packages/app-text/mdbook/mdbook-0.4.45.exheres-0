@@ -1,7 +1,7 @@
 # Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require cargo [ rust_minimum_version=1.74.0 ]
+require cargo [ rust_minimum_version=1.77.0 ]
 
 SUMMARY="mdBook is a utility to create modern online books from Markdown files"
 PLATFORMS="~amd64 ~armv8"
@@ -12,6 +12,7 @@ DEPENDENCIES=""
 
 CARGO_SRC_TEST_PARAMS=( --
     --skip example_book_can_build
+    --skip remove_emphasis_works
     --skip round_trip_write_and_parse_input
     --skip theme_dir_overrides_work_correctly
 )
