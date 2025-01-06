@@ -19,7 +19,6 @@ DEPENDENCIES="
     suggestion:
         net-analyzer/zabbix-agent
         dev-db/postgresql:*[>=13]
-        dev-lang/php:*[<8][php_extensions:pgsql] [[ description = [ PHP Frontend ] ]]
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS+=(

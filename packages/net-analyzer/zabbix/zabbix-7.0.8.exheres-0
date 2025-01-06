@@ -5,3 +5,11 @@
 require zabbix
 
 PLATFORMS="~amd64"
+
+DEPENDENCIES+="
+   run:
+        dev-lang/php:8.3[php_extensions:pgsql] [[ description = [ PHP Frontend ] ]]
+        dev-db/postgresql:=[>=13]
+  suggestion:
+        www-servers/apache
+"

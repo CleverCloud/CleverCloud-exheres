@@ -30,6 +30,7 @@ DEPENDENCIES="
         snmp? ( net/net-snmp )
     run:
         net-misc/fping
+        dev-lang/php:*[<8][php_extensions:pgsql] [[ description = [ PHP Frontend ] ]]
     suggestion:
         net-analyzer/zabbix-agent
         net-analyzer/zabbix-frontend
