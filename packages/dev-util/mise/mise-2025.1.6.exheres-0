@@ -1,7 +1,7 @@
 # Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require cargo [ rust_minimum_version=1.79 ]
+require cargo [ rust_minimum_version=1.82 ]
 require github [ user=jdx tag=v${PV} ]
 
 SUMMARY="dev tools, env vars, task runner"
