@@ -1,0 +1,15 @@
+# Copyright 2025 David Legrand <david.legrand@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module php_abis=[ 7.2 7.3 7.4 8.0 8.1 8.2 8.3 8.4 ] work="$PNV/ext" ]
+
+SUMMARY="Reader for the MaxMind DB file format"
+PLATFORMS="~amd64 ~armv8"
+LICENCES="Apache-2.0"
+SLOT="0"
+
+DEPENDENCIES="
+    build+run:
+       net-libs/libmaxminddb
+"
+
