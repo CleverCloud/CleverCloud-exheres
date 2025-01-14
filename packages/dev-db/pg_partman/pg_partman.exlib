@@ -1,13 +1,15 @@
 # Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
+myexparam min_version
+myexparam max_version
+
 require github [ user="pgpartman" tag="v${PV}" ]
-require postgresql
+require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" ]
 
 SUMMARY="pg_partman is an extension to create and manage both time-based and serial-based table partition sets"
 LICENCES="PostgreSQL"
-PLATFORMS="~amd64"
-SLOT="0"
+SLOT="$(ever major)"
 
 DEPENDENCIES=""
 
