@@ -18,9 +18,9 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build:
-        dev-cpp/abseil[>=20240116.0]
+        dev-cpp/abseil[>=20240722.0]
     build+run:
-        dev-libs/protobuf:=[>=3.27]
+        dev-libs/protobuf:=[>=3.29]
         dev-libs/re2:=
         net-dns/c-ares[>=1.13.0]
         sys-libs/zlib
@@ -76,3 +76,4 @@ grpc_src_install() {
     # absl_dynamic_annotations is inside absl_base
     edo sed -e 's/ -labsl_dynamic_annotations//' -i "${IMAGE}"/usr/$(exhost --target)/lib/pkgconfig/*.pc
 }
+
