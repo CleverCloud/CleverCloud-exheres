@@ -2,10 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require solr
-require php-pecl [ module=module php_abis=[ 7.4 8.0 8.1 8.2 8.3 ] ]
+require php-pecl [ module=module php_abis=[ 7.4 8.0 8.1 8.2 8.3 8.4 ] ]
 
 PLATFORMS="~amd64"
-SLOT="2.7"
-
-DEFAULT_SRC_PREPARE_PATCHES=( ${FILES}/solr-hard-coded-pkg-config.patch )
+SLOT="2.8"
 
