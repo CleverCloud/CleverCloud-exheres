@@ -7,6 +7,7 @@ require meson
 SUMMARY="Reliable PostgreSQL Backup & Restore"
 
 LICENCES="MIT"
+PLATFORMS="~amd64"
 SLOT="0"
 
 MYOPTIONS="
