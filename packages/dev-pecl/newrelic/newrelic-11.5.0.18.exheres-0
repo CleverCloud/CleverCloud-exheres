@@ -1,7 +1,7 @@
-# Copyright 2023 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Copyright 2025 David Legrand <david.legrand@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require newrelic [ php_abis=[ 7.0 7.1 ] ]
+require newrelic
 
 DOWNLOADS="https://download.newrelic.com/php_agent/release/${PN}-php5-${PV}-linux.tar.gz"
 PLATFORMS="~amd64"
