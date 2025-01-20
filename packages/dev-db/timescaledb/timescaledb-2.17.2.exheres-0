@@ -1,0 +1,7 @@
+# Copyright 2023 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require timescaledb [ min_version="14" max_version="17" ]
+
+PLATFORMS="~amd64"
+
