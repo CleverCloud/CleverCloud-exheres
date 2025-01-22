@@ -2,67 +2,56 @@
 # Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require alternatives
+myexparam min_version
+myexparam max_version
+
+require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" ]
 
 SUMMARY="Spatial and Geographic objects for PostgreSQL"
-HOMEPAGE="http://postgis.net/"
-DOWNLOADS="http://download.osgeo.org/${PN}/source/${PNV}.tar.gz"
+HOMEPAGE="https://postgis.net/"
+DOWNLOADS="https://download.osgeo.org/${PN}/source/${PNV}.tar.gz"
 LICENCES="GPL-2"
 SLOT="$(ever major)"
 
 MYOPTIONS="
     address-standardizer
+    lto
     protobuf
     topology
 "
 DEPENDENCIES="
     build+run:
         dev-libs/json-c:=
-        dev-libs/libxml2
+        dev-libs/libxml2:2.0
         media-libs/libwebp:0.6
-        sci-libs/gdal
-        sci-libs/geos
-        sci-libs/proj:=
+        sci-libs/gdal[>=3.2.0]
+        sci-libs/geos[>=3.11.0]
+        sci-libs/proj:=[>=7.2.1]
         address-standardizer? ( dev-libs/pcre )
         protobuf? ( dev-libs/protobuf-c[>=1.3.2] )
         !dev-db/postgis:0 [[
             description = [ slot move ]
             resolution = uninstall-blocked-before
         ]]
+        !dev-db/postgis:3[<3.5.0] [[
+            description = [ Removing alternatives causes file collisions. Please uninstall before proceeding. ]
+            resolution = manual
+        ]]
 "
 
 RESTRICT="test"
 
-DEFAULT_SRC_CONFIGURE_PARAMS=(
-    CPPBIN=/usr/host/bin/$(exhost --tool-prefix)cpp
-)
+configure_one_multibuild() {
+    local options=(
+        CPPBIN=/usr/host/bin/$(exhost --tool-prefix)cpp
+        --with-pgconfig=/usr/$(exhost --target)/libexec/postgresql-${MULTIBUILD_TARGET}/pg_config
+        --bindir=/usr/$(exhost --target)/libexec/postgresql-${MULTIBUILD_TARGET}
+        $(option_enable lto)
+        $(option_with address-standardizer)
+        $(option_with protobuf)
+        $(option_with topology)
+    )
 
-DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
-    'address-standardizer'
-    'protobuf'
-    'topology'
-)
-
-install_one_multibuild() {
-    default_src_install
-
-    local alternatives=()
-    local extensions=( postgis.control postgis_tiger_geocoder.control )
-
-    if option address-standardizer; then
-        extensions+=( address_standardizer.control address_standardizer.sql address_standardizer_data_us.control address_standardizer_data_us.sql )
-        alternatives+=( "/usr/share/doc/postgresql-${MULTIBUILD_TARGET}/extension/README.address_standardizer" "README-${SLOT}.address_standardizer" )
-    fi
-    option topology && extensions+=( postgis_topology.control )
-
-    for e in "${extensions[@]}"; do
-        alternatives+=( "/usr/share/postgresql-${MULTIBUILD_TARGET}/extension/${e}" "${e/./-${SLOT}.}" )
-    done
-    for b in pgsql2shp shp2pgsql raster2pgsql ; do
-        alternatives+=( "/usr/$(exhost --target)/lib/debug/usr/$(exhost --target)/libexec/postgresql-${MULTIBUILD_TARGET}/${b}.debug" "${b}-${SLOT}.debug" )
-        alternatives+=( "/usr/$(exhost --target)/libexec/postgresql-${MULTIBUILD_TARGET}/${b}" "${b}-${SLOT}" )
-    done
-
-    alternatives_for postgis ${PN}-${SLOT} ${SLOT} "${alternatives[@]}"
+    econf "${options[@]}"
 }
 
