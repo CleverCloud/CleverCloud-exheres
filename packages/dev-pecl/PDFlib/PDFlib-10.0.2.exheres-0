@@ -2,13 +2,13 @@
 # Distributed under the terms of the GNU General Public License v2
 
 BASE_FILENAME="${PNV}-Linux-x64-php"
-require php-pecl [ module=module work=${BASE_FILENAME} php_abis=[ 7.4 8.0 8.1 8.2 8.3 8.4 ] ]
+require php-pecl [ module=module work=${BASE_FILENAME} php_abis=[ 7.4 8.0 ] ]
 
 SUMMARY="PDFlib is a development library for creating PDF"
 HOMEPAGE="https://www.pdflib.com"
 DOWNLOADS="https://www.pdflib.com/binaries/${PN}/${PV//./}/${BASE_FILENAME}.tar.gz"
 LICENCES="all-rights-reserved"
-SLOT="0"
+SLOT="10.0.2"
 PLATFORMS="~amd64"
 
 MYOPTIONS=""

@@ -1,0 +1,36 @@
+# Copyright 2023 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+BASE_FILENAME="${PNV}-Linux-x64-php"
+require php-pecl [ module=module work=${BASE_FILENAME} php_abis=[ 8.1 8.2 8.3 8.4 ] ]
+
+SUMMARY="PDFlib is a development library for creating PDF"
+HOMEPAGE="https://www.pdflib.com"
+DOWNLOADS="https://www.pdflib.com/binaries/${PN}/${PV//./}/${BASE_FILENAME}.tar.gz"
+LICENCES="all-rights-reserved"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS=""
+DEPENDENCIES=""
+
+php-pecl_prepare_one_multibuild() {
+    :
+}
+
+php-pecl_configure_one_multibuild() {
+    :
+}
+
+php-pecl_install_one_multibuild() {
+    local abi=$(php-pecl_get_abi)
+
+    exeinto $(php-config-${abi} --extension-dir)
+    newexe bind/php/php-"${abi//./}0"-nts/php_pdflib.so ${PN}.so
+
+    insinto /etc/php-${abi}
+    hereins ${PN}.ini <<INI
+extension = ${PN}.so
+INI
+}
+
