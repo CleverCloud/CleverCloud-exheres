@@ -14,7 +14,7 @@ MYOPTIONS=""
 
 DEPENDENCIES="
     build:
-        dev-lang/go[>=1.22.0]
+        dev-lang/go[>=1.23.0]
         dev-lang/python:*[>=3.11.0&<3.13]
         dev-python/pip
         sys-devel/cmake[>=3.12.0]
