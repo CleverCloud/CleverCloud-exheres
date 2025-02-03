@@ -1,0 +1,23 @@
+# Copyright 2019 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+myexparam min_version
+myexparam max_version
+exparam -v MIN_VERSION min_version
+exparam -v MAX_VERSION max_version
+
+require github [ user="postgrespro" tag="v${PV}" ]
+require postgresql [ min_version="${MIN_VERSION}" max_version="${MAX_VERSION}" ]
+
+SUMMARY="Sampling based statistics of wait events"
+LICENCES="PostgreSQL"
+SLOT="$(ever range 2-3)"
+
+DEPENDENCIES=""
+
+prepare_one_multibuild() {
+    export USE_PGXS=1
+
+    postgresql_prepare_one_multilib
+}
+
