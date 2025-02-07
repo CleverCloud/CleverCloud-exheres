@@ -6,6 +6,6 @@ require gdal
 PLATFORMS="~amd64"
 
 DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/19ba2562b506f628e0f023774fdb52ada656f95b.patch
+    "${FILES}"/9b99975d327d67394b6be03b22bd40c7e83db0cb.patch
 )
 
