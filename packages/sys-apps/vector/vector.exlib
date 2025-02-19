@@ -14,9 +14,9 @@ LICENCES="Apache-2.0"
 SLOT="0"
 
 MYOPTIONS="
-    api [[ description = [ GraphQL API to interact with a running instance ] ]]  
+    api [[ description = [ GraphQL API to interact with a running instance ] ]]
     validation [[ description = [ checks the validity of your Vector configuration ] ]]
-    enrichment-tables [[ description = [ Enrich events from external data sources ] ]]  
+    enrichment-tables [[ description = [ Enrich events from external data sources ] ]]
     examples [[ description = [ Install config examples ] ]]
     secrets [[ description = [ Retrieve secrets from external backend ] ]]
     sinks [[ description = [ Enables all sinks ] ]]
@@ -61,6 +61,12 @@ DEPENDENCIES="
 # Docker test
 RESTRICT="test"
 
+ECARGO_EXTRA_RUSTFLAGS=(
+    --allow unexpected_cfgs
+    --allow dependency_on_unit_never_type_fallback
+    --allow dead_code
+)
+
 ECARGO_FEATURE_ENABLES=(
     'api api'
     'api api-client'
@@ -86,7 +92,9 @@ vector_src_prepare() {
         export OPENSSL_STATIC=true
     fi
 
-    export RUSTFLAGS="--allow unexpected_cfgs --allow dependency_on_unit_never_type_fallback --allow dead_code"
+    edo sed -i \
+        -e '/rustflags = "/s:$:]:' -e '/rustflags = "/s: ": [":' \
+        .cargo/config.toml
     default
 }
 
