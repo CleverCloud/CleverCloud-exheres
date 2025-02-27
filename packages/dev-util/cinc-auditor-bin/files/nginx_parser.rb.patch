@@ -1,0 +1,55 @@
+Source: Clever Cloud
+Upstream: no
+Reason: fix parsing of nginx configuration file
+
+--- a/opt/cinc-auditor/embedded/lib/ruby/gems/3.1.0/gems/inspec-core-5.22.65/lib/inspec/utils/nginx_parser.rb
++++ b/opt/cinc-auditor/embedded/lib/ruby/gems/3.1.0/gems/inspec-core-5.22.65/lib/inspec/utils/nginx_parser.rb
+@@ -11,12 +11,17 @@
+   rule(:comment) { str("#") >> (match["\n\r"].absent? >> any).repeat }
+
+   rule(:exp) do
+-    section | assignment
++    map_section | section | assignment | single_statement
+   end
++
+   rule(:assignment) do
+     (identifier >> values.maybe.as(:args)).as(:assignment) >> str(";") >> filler?
+   end
+
++  rule(:single_statement) do
++    (match("[a-zA-Z~*.]") >> (match('[\s;]').absent? >> any).repeat).as(:statement) >> str(";") >> filler?
++  end
++
+   rule(:standard_identifier) do
+     (match("[a-zA-Z~*.]") >> match('\S').repeat).as(:identifier) >> space >> space.repeat
+   end
+@@ -59,9 +64,21 @@
+     value.repeat >> space.maybe
+   end
+
++  rule(:map_exp) do
++    ((identifier | empty_identifier) >> values.maybe.as(:args)).as(:assignment) >> str(";") >> filler?
++  end
++
++  rule(:empty_identifier) do
++    str("''").as(:identifier) >> space >> space.repeat
++  end
++
+   rule(:section) do
+     identifier.as(:section) >> values.maybe.as(:args) >> str("{") >> filler? >> exp.repeat.as(:expressions) >> str("}") >> filler?
+   end
++
++  rule(:map_section) do
++    (str("map").as(:identifier)).as(:section) >> space >> space.repeat >> values.maybe.as(:args) >> str("{") >> filler? >> map_exp.repeat.as(:expressions) >> str("}") >> filler?
++  end
+ end
+
+ class NginxTransform < Parslet::Transform
+@@ -76,6 +93,7 @@
+
+   rule(section: { identifier: simple(:x) }, args: subtree(:y), expressions: subtree(:z)) { Group.new(x.to_s, y, z) }
+   rule(assignment: { identifier: simple(:x), args: subtree(:y) }) { Exp.new(x.to_s, y) }
++  rule(statement: simple(:x)) { Exp.new(x.to_s, nil.to_s) }
+   rule(value: simple(:x)) { x.to_s }
+ end
+

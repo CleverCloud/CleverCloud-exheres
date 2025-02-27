@@ -14,6 +14,10 @@ DEPENDENCIES=""
 
 WORK=${WORKBASE}
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/nginx_parser.rb.patch
+)
+
 pkg_setup() {
     exdirectory --allow /opt
 }
