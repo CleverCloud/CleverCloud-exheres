@@ -1,7 +1,7 @@
 # Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require cargo [ rust_minimum_version=1.82 ]
+require cargo [ rust_minimum_version=1.85 ]
 require github [ user=jdx tag=v${PV} ]
 
 SUMMARY="dev tools, env vars, task runner"
@@ -13,7 +13,7 @@ PLATFORMS="~amd64"
 MYOPTIONS="providers: ( libressl openssl ) [[ number-selected = exactly-one ]]"
 
 # The supported LibreSSL and OpenSSL versions are taken from the `version_error()`
-# function of openssl-sys 0.9.104, which is what is specified by the Cargo.lock of
+# function of openssl-sys 0.9.106, which is what is specified by the Cargo.lock of
 DEPENDENCIES="
     build+run:
         providers:libressl? ( dev-libs/libressl:=[>=2.5&<4.1] )
