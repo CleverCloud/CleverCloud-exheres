@@ -1,6 +1,6 @@
 # Copyright 2019 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require pg_wait_sampling [ min_version="10" max_version="11" ]
+require pg_wait_sampling [ min_version="13" max_version="17" ]
 
 PLATFORMS="~amd64"
