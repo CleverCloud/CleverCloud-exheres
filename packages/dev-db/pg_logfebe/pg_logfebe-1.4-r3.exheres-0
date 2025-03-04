@@ -3,11 +3,12 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require github [ user=logplex tag="v${PV}" ]
-require postgresql [ min_version="10" max_version="16" ]
+require postgresql [ min_version="13" max_version="16" ]
 
 SUMMARY="Uses Postgres FEBE to Frame Postgres Logs"
 
 LICENCES="PostgreSQL"
+PLATFORMS="~amd64"
 SLOT="0"
 
 DEPENDENCIES=""
