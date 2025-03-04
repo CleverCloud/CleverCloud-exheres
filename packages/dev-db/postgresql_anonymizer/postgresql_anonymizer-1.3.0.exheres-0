@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require gitlab [ user=dalibo new_download_scheme=true ]
-require postgresql [ min_version=11 max_version=15 ]
+require postgresql [ min_version=13 max_version=17 ]
 
 SUMMARY="postgresql_anonymizer is an extension to mask or replace personally identifiable information (PII) or commercially sensitive data from a PostgreSQL database"
 PLATFORMS="~amd64"
