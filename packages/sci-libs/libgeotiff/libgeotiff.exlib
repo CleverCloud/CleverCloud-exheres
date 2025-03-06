@@ -9,15 +9,20 @@ LICENCES="MIT"
 SLOT="0"
 MYOPTIONS="
      ( providers: ijg-jpeg jpeg-turbo ) [[ number-selected = exactly-one ]]
- "
+"
 
 DEPENDENCIES="
+    build:
+        virtual/pkg-config
     build+run:
-        media-libs/tiff:=
-        sci-libs/proj
+        media-libs/tiff:=[>=3.6.0]
+        sci-libs/proj:=[>=6]
         sys-libs/zlib
         providers:ijg-jpeg? ( media-libs/jpeg:= )
         providers:jpeg-turbo? ( media-libs/libjpeg-turbo )
 "
 
+DEFAULT_SRC_CONFIGURE_PARAMS=(
+    --disable-static
+)
 
