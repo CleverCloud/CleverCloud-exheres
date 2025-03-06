@@ -1,0 +1,23 @@
+Upstream: yes
+
+From 43bfe3b886eab93e46cda603293e739e1ee95e53 Mon Sep 17 00:00:00 2001
+From: Matthias Neugschwandtner <matthias.neugschwandtner@oracle.com>
+Date: Mon, 15 May 2023 13:16:37 +0200
+Subject: [PATCH] Add cstdint header to thin launcher
+
+---
+ sdk/src/org.graalvm.launcher.native/src/launcher.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sdk/src/org.graalvm.launcher.native/src/launcher.cc b/sdk/src/org.graalvm.launcher.native/src/launcher.cc
+index e7a8a543c951..9c7b64991681 100644
+--- a/sdk/src/org.graalvm.launcher.native/src/launcher.cc
++++ b/sdk/src/org.graalvm.launcher.native/src/launcher.cc
+@@ -41,6 +41,7 @@
+ 
+ #include <jni.h>
+ #include <string.h>
++#include <cstdint>
+ #include <string>
+ #include <iostream>
+ #include <sstream>

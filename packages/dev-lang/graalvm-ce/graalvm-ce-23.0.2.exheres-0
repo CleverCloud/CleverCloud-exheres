@@ -1,0 +1,12 @@
+# Copyright 2025 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SLOT="17"
+PLATFORMS="~amd64"
+
+require graalvm-ce [ labsjdk="labsjdk-ce-${SLOT}.0.9+9" jvmci="jvmci-23.0-b22" ]
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/gcc-14-error-uintptr_t-was-not-declared-in-this-scope.patch"
+)
+

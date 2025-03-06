@@ -4,23 +4,22 @@
 # Based in part upon 'oracle-jdk-bin-1.8.0.144.ebuild' from Gentoo, which is:
 # Copyright 1999-2017 Gentoo Foundation
 
-SLOT="17"
+myexparam labsjdk
+myexparam jvmci
+exparam -v LABSJDK labsjdk
+exparam -v JVMCI jvmci
 
 SCM_REPOSITORY="https://github.com/oracle/graal.git"
 SCM_TAG="vm-${PV}"
-LABSJDK="labsjdk-ce-${SLOT}.0.6"
-JVMCI="jvmci-23.0-b04"
 
 require scm-git java-jdk autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
 
 SUMMARY="Run Programs Faster Anywhere"
 DESCRIPTION="GraalVM is a universal virtual machine for running applications written in JavaScript, Python, Ruby, R, JVM-based languages like Java, Scala, Clojure, Kotlin, and LLVM-based languages such as C and C++"
 HOMEPAGE="https://www.graalvm.org/"
-
 LICENCES="GPL-2-with-classpath-exception"
-PLATFORMS="~amd64"
+DOWNLOADS="https://github.com/graalvm/labs-openjdk-${SLOT}/releases/download/${JVMCI}/${LABSJDK}-${JVMCI}-linux-amd64.tar.gz"
 
-DOWNLOADS="https://github.com/graalvm/labs-openjdk-${SLOT}/releases/download/${JVMCI}/${LABSJDK}+2-${JVMCI}-linux-amd64.tar.gz"
 MYOPTIONS="
     alsa 
     cups
@@ -29,7 +28,7 @@ MYOPTIONS="
 "
 DEPENDENCIES="
     build:
-        dev-java/mx[>=6.4.0]
+        dev-java/mx[>=7.45.0]
         dev-lang/python:2.7
         sys-devel/binutils[>=2.33.1]
         sys-devel/gcc:*[>=6.4.0]
@@ -62,33 +61,25 @@ src_prepare(){
     echo 
 
     # Replace hard coded binary
-    edo sed -e /return/s/gcc/${CC}/ -i substratevm/src/com.oracle.svm.hosted/src/com/oracle/svm/hosted/c/codegen/CCompilerInvoker.java
-    edo sed -e /return/s/gcc/${CC}/ -i substratevm/src/com.oracle.svm.core.posix/src/com/oracle/svm/core/posix/linux/libc/GLibC.java
-    edo sed -e /return/s/gcc/${CC}/ -i substratevm/src/com.oracle.svm.core.posix/src/com/oracle/svm/core/posix/linux/libc/BionicLibC.java
-    edo sed -e /compilerCommand/s/cc/${CC}/ -i substratevm/src/com.oracle.svm.hosted/src/com/oracle/svm/hosted/image/CCLinkerInvocation.java
+    edo sed -e /return/s/gcc/${CC}/ -i substratevm/src/com.oracle.svm.hosted/src/com/oracle/svm/hosted/c/libc/HostedGLibC.java
     edo sed -e "s/objdump/$(exhost --tool-prefix)&/" -i substratevm/mx.substratevm/mx_substratevm.py
 
     default
 }
 
 src_compile(){
-    export JAVA_HOME=${WORKBASE}/${LABSJDK}-${JVMCI}
+    export JAVA_HOME=${WORKBASE}/${LABSJDK%+*}-${JVMCI}
     export MX_ALT_OUTPUT_ROOT=${WORK}/mxbuild
+    export DYNAMIC_IMPORTS=/substratevm,/tools,/sulong
+    export EXCLUDE_COMPONENTS=llp
+    export FORCE_BASH_LAUNCHERS=polyglot
 
     edo pushd vm
-
     esandbox disable_net
 
-    # sforceimports will check and download the right revision of graaljs
-    edo mx -v --env ce sforceimports
-
-    # GraalVM CE does not include Native Image by default with "ce" build
-    # EXCLUDE_COMPONENTS=nju,nic,ni,nil,llp
-    # We need to modify the EXCLUDE_COMPONENTS variable to exclude only llp
-    edo mx --dynamicimports /substratevm,/tools,/sulong --exclude-components=llp --force-bash-launchers=polyglot build
+    edo mx build
 
     esandbox enable_net
-
     edo popd
 }
 
