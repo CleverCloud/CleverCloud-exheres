@@ -12,12 +12,14 @@ SUMMARY="PROJ.4 - Cartographic Projections Library"
 HOMEPAGE="https://proj.org/"
 DOWNLOADS="https://download.osgeo.org/${PN}/${PNV}.tar.gz"
 
+LICENCES="MIT"
 MYOPTIONS="tiff"
 
 DEPENDENCIES="
+    build:
+        virtual/pkg-config
     build+run:
         dev-db/sqlite:3[>=3.11]
-        dev-libs/json[>=3.7.0]
         net-misc/curl
         tiff? ( media-libs/tiff:= )
         !sci-libs/proj:0 [[
@@ -28,43 +30,67 @@ DEPENDENCIES="
         dev-cpp/gtest[>=1.8.1]
 "
 
-LICENCES="MIT"
+if ever at_least 9.6.0 ; then
+    DEPENDENCIES+="
+        build:
+            dev-libs/json[>=3.7.0]
+    "
+fi
 
 CMAKE_SRC_CONFIGURE_PARAMS=(
-    -DCMAKE_INSTALL_DOCDIR="/usr/share/doc/${PNVR}"
-    -DDEFAULT_DATA_SUBDIR=/usr/share/${PN}-${SLOT}
-    -DENABLE_CURL=ON
-    -DNLOHMANN_JSON_ORIGIN=external
-    -DRUN_NETWORK_DEPENDENT_TESTS=OFF
-    -DUSE_EXTERNAL_GTEST=ON
-    -DUSE_CCACHE=OFF
+    -DCMAKE_INSTALL_DOCDIR:PATH="/usr/share/doc/${PNVR}"
+    -DENABLE_CURL:BOOL=TRUE
+    -DUSE_EXTERNAL_GTEST:BOOL=TRUE
 )
 CMAKE_SRC_CONFIGURE_OPTION_ENABLES=( TIFF )
 CMAKE_SRC_CONFIGURE_TESTS=(
     '-DBUILD_TESTING:BOOL=TRUE -DBUILD_TESTING:BOOL=FALSE'
 )
 
+if ever at_least 9.6.0 ; then
+    CMAKE_SRC_CONFIGURE_PARAMS+=(
+        -DBASH_COMPLETIONS_DIR:PATH=""
+        -DBUILD_SHARED_LIBS:BOOL=TRUE
+        -DEMBED_PROJ_DATA_PATH:BOOL=TRUE
+        -DEMBED_RESOURCE_FILES:BOOL=FALSE
+        -DNLOHMANN_JSON_ORIGIN:STRING=external
+        -DRUN_NETWORK_DEPENDENT_TESTS:BOOL=FALSE
+        -DTESTING_USE_NETWORK:BOOL=FALSE
+        -DUSE_CCACHE:BOOL=FALSE
+        -DUSE_ONLY_EMBEDDED_RESOURCE_FILES:BOOL=FALSE
+    )
+else
+    CMAKE_SRC_CONFIGURE_PARAMS+=(
+        -DDEFAULT_DATA_SUBDIR:PATH=/usr/share/${PN}-${SLOT}
+    )
+fi
+
 proj_src_prepare() {
     cmake_src_prepare
-    edo sed -i \
-        -e "/PROJ_DATA_PATH/s:/proj:&-${SLOT}:" \
-        CMakeLists.txt
-    edo sed -i \
-        -e "/DEFAULT_DATA_SUBDIR/s:/proj:&-${SLOT}:" \
-        cmake/ProjInstallPath.cmake
+
+    if ever at_least 9.6.0 ; then
+        edo sed -i \
+            -e "/set(PROJ_DATA_PATH/s:/proj:&-${SLOT}:" \
+            CMakeLists.txt
+    else
+        edo sed -i \
+            -e "/DEFAULT_DATA_SUBDIR/s:/proj:&-${SLOT}:" \
+            cmake/ProjInstallPath.cmake
+    fi
 }
 
 proj_src_test(){
     # PROJ_LIB is used as searchpath for proj.db
     export PROJ_LIB="${CMAKE_BUILDDIR}/data"
 
-    local tests_to_skip=""
-    if ! option tiff ; then
+    if ! ever at_least 9.6.0 && ! option tiff ; then
         # 6 tests out of 55 fail without tiff
-        tests_to_skip="(Deformation|geotiff_grids|defmodel|proj_test_cpp_api|gie_self_tests|test_network)"
+        CMAKE_SRC_TEST_PARAMS=(
+            -E '(Deformation|geotiff_grids|defmodel|proj_test_cpp_api|gie_self_tests|test_network)'
+        )
     fi
 
-    ctest ARGS+="-E '${tests_to_skip}'" test
+    cmake_src_test
 }
 
 proj_src_install() {
@@ -76,9 +102,11 @@ proj_src_install() {
         /usr/$(exhost --target)/lib/libproj{,-${SLOT}}.so
     )
 
-    alternatives+=(
-        /usr/$(exhost --target)/lib/pkgconfig/proj{,-${SLOT}}.pc
-    )
+    if ever at_least 9.6.0 ; then
+        alternatives+=(
+            /usr/$(exhost --target)/lib/pkgconfig/proj{,-${SLOT}}.pc
+        )
+    fi
 
     edo cd "${IMAGE}"
 
@@ -108,3 +136,4 @@ proj_src_install() {
 
     alternatives_for _${PN} ${SLOT} ${SLOT} "${alternatives[@]}"
 }
+

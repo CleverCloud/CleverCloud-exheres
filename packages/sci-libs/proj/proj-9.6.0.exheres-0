@@ -3,10 +3,7 @@
 
 require proj
 
-SLOT="19"
+# PROJ_SOVERSION in CMakeLists.txt
+SLOT="25"
 PLATFORMS="~amd64"
 
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/0001-CmakeLists-Fix-hardcoded-datarootdir.patch
-    "${FILES}"/${SLOT}-recent-gcc-fix.patch
-)
