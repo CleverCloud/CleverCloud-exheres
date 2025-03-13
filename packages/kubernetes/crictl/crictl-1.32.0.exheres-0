@@ -1,0 +1,7 @@
+# Copyright 2024 Gilles Biannic <gilles.biannic@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require kubernetes [ user="kubernetes-sigs" project="cri-tools" ]
+
+SUMMARY="crictl is a CLI for Kubelet Container Runtime Interface (CRI)"
+PLATFORMS="~amd64"
