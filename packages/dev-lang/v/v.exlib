@@ -5,7 +5,7 @@ export_exlib_phases src_prepare pkg_setup src_compile src_test src_install
 
 SCM_SECONDARY_REPOSITORIES="vc tcc markdown"
 SCM_vc_REPOSITORY="https://github.com/vlang/vc"
-SCM_vc_REVISION="54beb1f416b404a06b894e6883a0e2368d80bc3e"
+SCM_vc_REVISION="66ea39be2275ac723225b9ca99d51ec1212c640d"
 SCM_tcc_REPOSITORY="https://github.com/vlang/tccbin"
 SCM_markdown_REPOSITORY="https://github.com/vlang/markdown"
 
@@ -61,7 +61,6 @@ TESTS_TO_SKIP=(
   vlib/net/http/server_test.v
   vlib/net/tcp_test.v
   vlib/os/os_test.c.v
-  vlib/semver/semver_test.v
 )
 
 # Tools in a subfolder need to be built separately
@@ -112,7 +111,7 @@ v_src_compile() {
   # Add tests to skip to the testing tool source code
   for test in "${TESTS_TO_SKIP[@]}"; do
     local escaped_test=$(echo "$test" | sed 's/[\/&]/\\&/g')
-    edo sed -i "/const skip_on_sandboxed_packaging = \[/,/\]/s/'do_not_remove'/'do_not_remove',\n        '$escaped_test'/" cmd/tools/vtest-self.v
+    edo sed -i "/'$escaped_test'/d" cmd/tools/vtest-self.v
   done
 
   edo ./v build-tools
@@ -157,6 +156,7 @@ v_src_install () {
     changelog_helper
     check_os_api_parity
     detect_tcc
+    fast
     fast_job
     fmt_speed
     git_pre_commit_hook.vsh
@@ -189,6 +189,7 @@ v_src_install () {
     vgret
     vls
     vmissdoc
+    vreduce
     vrepeat
     vrepl
     vretry
@@ -203,6 +204,8 @@ v_src_install () {
     vtest-fmt
     vtest-parser
     vtest-self
+    vtime
+    vtimeout
     vtracev
     vup
     vwatch
