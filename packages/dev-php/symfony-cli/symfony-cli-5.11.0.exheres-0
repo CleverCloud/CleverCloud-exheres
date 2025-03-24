@@ -1,7 +1,7 @@
 # Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require go [ go_minimum_version=1.22.4 ] github [ tag=v${PV} ] 
+require go [ go_minimum_version=1.23.0 ] github [ tag=v${PV} ] 
 
 SUMMARY="A must-have tool when developing Symfony applications on your local machine"
 
