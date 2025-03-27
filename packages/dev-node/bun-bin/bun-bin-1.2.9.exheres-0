@@ -1,0 +1,32 @@
+# Copyright 2025 David Legrand <david.legrand@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SUMMARY="Incredibly fast JavaScript runtime, bundler, test runner, and package manager all in one"
+HOMEPAGE="https://bun.sh/"
+
+MY_PN="bun"
+
+DOWNLOADS="
+    platform:amd64? ( https://github.com/oven-sh/bun/releases/download/bun-v${PV}/bun-linux-x64.zip )
+    platform:armv8? ( https://github.com/oven-sh/bun/releases/download/bun-v${PV}/bun-linux-aarch64.zip )
+"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64 ~armv8"
+MYOPTIONS="
+    ( platform: amd64 armv8 )
+"
+
+DEPENDENCIES=""
+
+WORK="${WORKBASE}"
+
+case "${PLATFORM}" in
+  "amd64") PN_ARCH="linux-x64" ;;
+  "armv8") PN_ARCH="linux-aarch64" ;;
+esac
+
+src_install() {
+    dobin ${MY_PN}-${PN_ARCH}/${MY_PN}
+}
