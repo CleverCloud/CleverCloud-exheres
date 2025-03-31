@@ -1,7 +1,7 @@
 # Copyright 2022 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user='mozilla' tag=v${PV} ] go [ go_minimum_version=1.22 ]
+require github [ user='mozilla' tag=v${PV} ] go [ go_minimum_version=1.23.0 ]
 
 SUMMARY="Simple and flexible tool for managing secrets"
 LICENCES="MPL-2.0"
