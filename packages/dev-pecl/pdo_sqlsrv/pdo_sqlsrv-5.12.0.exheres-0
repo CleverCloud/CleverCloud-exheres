@@ -1,0 +1,15 @@
+# Copyright 2025 Tristan Charbonneau <tristan.charbonneau@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module php_abis=[ 8.1 8.2 8.3 8.4 ] ]
+
+SUMMARY="Microsoft Drivers for PHP for SQL Server (PDO_SQLSRV)"
+PLATFORMS="~amd64"
+LICENCES="MIT"
+SLOT="0"
+
+DEPENDENCIES="
+    build+run:
+        dev-pecl/sqlsrv
+"
+
