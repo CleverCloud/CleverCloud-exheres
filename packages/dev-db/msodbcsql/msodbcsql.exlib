@@ -3,8 +3,8 @@
 
 export_exlib_phases pkg_setup pkg_postinst pkg_prerm src_unpack src_install
 
-VERSION_MAJOR=$(ever 1)
-VERSION_MAJOR_MINOR=$(ever 1-2)
+VERSION_MAJOR=$(ever range 1)
+VERSION_MAJOR_MINOR=$(ever range 1-2)
 
 MY_PN="${PN}${VERSION_MAJOR}"
 MY_PV="${PV}-1"
