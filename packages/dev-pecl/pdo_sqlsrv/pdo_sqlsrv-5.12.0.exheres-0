@@ -11,5 +11,7 @@ SLOT="0"
 DEPENDENCIES="
     build+run:
         dev-pecl/sqlsrv
+    run:
+        dev-db/msodbcsql
 "
 
