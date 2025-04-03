@@ -1,0 +1,18 @@
+# Copyright 2025 Tristan Charbonneau <tristan.charbonneau@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require autotools [ supported_autoconf=[ 2.7 ] supported_automake=[ 1.17 ] ]
+
+SUMMARY="Shell script which can be used to detect if the program is running in a virtual machine."
+HOMEPAGE="https://people.redhat.com/~rjones/virt-what/"
+DOWNLOADS="https://people.redhat.com/~rjones/${PN}/files/${PNV}.tar.gz"
+
+PLATFORMS="~amd64"
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS="
+"
+DEPENDENCIES="
+    build+run:
+        dev-lang/perl:*
+"
