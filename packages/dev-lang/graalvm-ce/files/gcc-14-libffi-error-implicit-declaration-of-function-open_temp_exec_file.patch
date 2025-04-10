@@ -1,0 +1,56 @@
+Upstream: yes
+
+From 33c713fbac51d97277338424e8463cbba23ff775 Mon Sep 17 00:00:00 2001
+From: s0dyy <maxime.sorin@clever-cloud.com>
+Date: Fri, 11 Apr 2025 11:59:56 +0200
+Subject: [PATCH] gcc 14 libffi implicit declaration of function 'open_temp_exec_file'
+
+---
+ truffle/mx.truffle/mx_truffle.py | 4 ++--
+ truffle/mx.truffle/suite.py      | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/truffle/mx.truffle/mx_truffle.py b/truffle/mx.truffle/mx_truffle.py
+index 15358b7738c..e6696b0a2f9 100644
+--- a/truffle/mx.truffle/mx_truffle.py
++++ b/truffle/mx.truffle/mx_truffle.py
+@@ -1036,7 +1036,7 @@ class LibffiBuilderProject(mx.AbstractNativeProject, mx_native.NativeDependency)
+         self.out_dir = self.get_output_root()
+         if mx.get_os() == 'windows':
+             self.delegate = mx_native.DefaultNativeProject(suite, name, subDir, [], [], None,
+-                                                           mx.join(self.out_dir, 'libffi-3.4.4'),
++                                                           mx.join(self.out_dir, 'libffi-3.4.6'),
+                                                            'static_lib',
+                                                            deliverable='ffi',
+                                                            cflags=['-MD', '-O2', '-DFFI_BUILDING_DLL'])
+@@ -1073,7 +1073,7 @@ class LibffiBuilderProject(mx.AbstractNativeProject, mx_native.NativeDependency)
+                                                   'include/ffi.h',
+                                                   'include/ffitarget.h'],
+                                                  mx.join(self.out_dir, 'libffi-build'),
+-                                                 mx.join(self.out_dir, 'libffi-3.4.4'))
++                                                 mx.join(self.out_dir, 'libffi-3.4.6'))
+             configure_args = ['--disable-dependency-tracking',
+                               '--disable-shared',
+                               '--with-pic',
+diff --git a/truffle/mx.truffle/suite.py b/truffle/mx.truffle/suite.py
+index e806aac9db9..3fa5351f260 100644
+--- a/truffle/mx.truffle/suite.py
++++ b/truffle/mx.truffle/suite.py
+@@ -72,12 +72,12 @@ suite = {
+ 
+     "LIBFFI_SOURCES" : {
+       "resource" : True,
+-      "version" : "3.4.4",
++      "version" : "3.4.6",
+       "urls" : [
+         "https://lafo.ssw.uni-linz.ac.at/pub/graal-external-deps/libffi-{version}.tar.gz",
+         "https://github.com/libffi/libffi/releases/download/v{version}/libffi-{version}.tar.gz",
+       ],
+-      "digest" : "sha512:88680aeb0fa0dc0319e5cd2ba45b4b5a340bc9b4bcf20b1e0613b39cd898f177a3863aa94034d8e23a7f6f44d858a53dcd36d1bb8dee13b751ef814224061889",
++      "digest" : "sha512:033d2600e879b83c6bce0eb80f69c5f32aa775bf2e962c9d39fbd21226fa19d1e79173d8eaa0d0157014d54509ea73315ad86842356fc3a303c0831c94c6ab39",
+     },
+ 
+     "ANTLR4": {
+-- 
+2.48.1
+

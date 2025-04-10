@@ -1,0 +1,15 @@
+# Copyright 2025 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SLOT="21"
+PLATFORMS="~amd64"
+
+require graalvm-ce [ labsjdk="labsjdk-ce-${SLOT}.0.2+13" jvmci="jvmci-23.1-b33" ]
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/gcc-14-error-implicit-declaration-of-function-isspace.patch"
+    "${FILES}/gcc-14-error-implicit-declaration-of-function-syscall.patch"
+    "${FILES}/gcc-14-libffi-error-implicit-declaration-of-function-open_temp_exec_file.patch"
+    "${FILES}/no-such-file-or-directory-org-graalvm-toolchain-test-hello.patch"
+)
+

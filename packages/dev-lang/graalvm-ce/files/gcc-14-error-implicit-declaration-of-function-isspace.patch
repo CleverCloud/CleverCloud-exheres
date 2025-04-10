@@ -1,0 +1,26 @@
+Upstream: yes
+
+From 296128e3a21abb5b5f3ba5fba9892e20f5dcb27e Mon Sep 17 00:00:00 2001
+From: s0dyy <maxime.sorin@clever-cloud.com>
+Date: Fri, 11 Apr 2025 01:18:00 +0200
+Subject: [PATCH] gcc 14 error implicit declaration of function isspace
+
+---
+ .../src/com.oracle.svm.native.libchelper/src/getThreadUserTime.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/substratevm/src/com.oracle.svm.native.libchelper/src/getThreadUserTime.c b/substratevm/src/com.oracle.svm.native.libchelper/src/getThreadUserTime.c
+index e33580a689a..8ef2ad8e9a8 100644
+--- a/substratevm/src/com.oracle.svm.native.libchelper/src/getThreadUserTime.c
++++ b/substratevm/src/com.oracle.svm.native.libchelper/src/getThreadUserTime.c
+@@ -30,6 +30,7 @@
+ #include <string.h>
+ #include <sys/types.h>
+ #include <unistd.h>
++#include <ctype.h>
+ 
+ /*
+  * Returns the thread user time.
+-- 
+2.48.1
+

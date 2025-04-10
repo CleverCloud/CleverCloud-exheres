@@ -1,0 +1,26 @@
+Upstream: yes
+
+From 056cf746e8c5daa4c23a8b081b8a82fbc669c8a3 Mon Sep 17 00:00:00 2001
+From: s0dyy <maxime.sorin@clever-cloud.com>
+Date: Fri, 11 Apr 2025 01:37:29 +0200
+Subject: [PATCH] gcc 14 error implicit declaration of function syscall
+
+---
+ .../src/com.oracle.svm.native.libchelper/src/getThreadId.c       | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/substratevm/src/com.oracle.svm.native.libchelper/src/getThreadId.c b/substratevm/src/com.oracle.svm.native.libchelper/src/getThreadId.c
+index 4e60f087cf8..48421bb1ff2 100644
+--- a/substratevm/src/com.oracle.svm.native.libchelper/src/getThreadId.c
++++ b/substratevm/src/com.oracle.svm.native.libchelper/src/getThreadId.c
+@@ -28,6 +28,7 @@
+ 
+ #include <sys/syscall.h>
+ #include <sys/types.h>
++#include <unistd.h>
+ 
+ /*
+  * Based on os::Linux::gettid() from jdk-20-ga, see
+-- 
+2.48.1
+
