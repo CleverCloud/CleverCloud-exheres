@@ -52,6 +52,10 @@ DEPENDENCIES="
         virtual/jre:${SLOT}
 "
 
+pkg_setup() {
+    exdirectory --allow /opt
+}
+
 src_unpack() {
     default
     scm_src_unpack
@@ -60,7 +64,6 @@ src_unpack() {
 src_prepare(){
     echo 
 
-    # Replace hard coded binary
     edo sed -e /return/s/gcc/${CC}/ -i substratevm/src/com.oracle.svm.hosted/src/com/oracle/svm/hosted/c/libc/HostedGLibC.java
     edo sed -e "s/objdump/$(exhost --tool-prefix)&/" -i substratevm/mx.substratevm/mx_substratevm.py
 
@@ -84,7 +87,7 @@ src_compile(){
 }
 
 src_install(){
-    local java_home="/usr/$(exhost --target)/lib/${PN}"
+    local java_home="/opt/${PNV}"
 
     dodir "${java_home}"
 
@@ -116,13 +119,6 @@ src_install(){
     edo chmod 755 "${IMAGE}/${java_home}"/bin/*
     edo chmod 755 "${IMAGE}/${java_home}"/lib/{jexec,jspawnhelper}
 
-    # Remove symbolic links in /usr/$(exhost --target)/bin which could 
-    # be problematic (collision with original binaries: node, npm...)
-    # Maybe find a better solution?
-    for bin in lli; do
-        edo rm "${IMAGE}/${java_home}"/bin/${bin}
-    done
-
     # Creating the Class Data Sharing archives
     edo "${IMAGE}/${java_home}"/bin/java -server -Xshare:dump
 
@@ -130,13 +126,70 @@ src_install(){
     edo rm "${IMAGE}/${java_home}"/lib/security/cacerts
     dosym /etc/pki/ca-trust/extracted/java/cacerts "${java_home}"/lib/security/cacerts
 
-    # Set up java-jdk and java-jre alternatives automatically. 
-    do_jdk_alternatives
+    # The following code for alternatives handling is copied over from java-jdk.exlib
+    # which currently doesn't allow jre_home to be under /opt. The code can be removed
+    # once the exlib has been updated with support for such.
+    local jre_home="${java_home}"
+
+    local jdk_bins=( ) \
+          jre_bins=( )
+
+    # Collect the installed binaries from ${java_home}/bin
+    for jdk_bin in "${IMAGE}${java_home}"/bin/* ; do
+        [[ ! -d "${jdk_bin}" && -x "${jdk_bin}" ]] &&
+            jdk_bins+=( "${jdk_bin##*/}" )
+    done
+
+    # Collect the installed binaries from ${java_home}/jre/bin
+    for jre_bin in "${IMAGE}${java_home}"/jre/bin/* ; do
+        [[ ! -d "${jre_bin}" && -x "${jre_bin}" ]] &&
+            jre_bins+=( "${jre_bin##*/}" )
+    done
+
+    # For ${jdk_bins}, filter out all binaries common to both ${jdk_bins} and
+    # ${jre_bins} -- we want the java-jre alternatives module to own those
+    for jre_bin in "${jre_bins[@]}" ; do
+        for index in "${!jdk_bins[@]}" ; do
+            [[ "${jdk_bins[$index]}" == "${jre_bin}" ]] && unset jdk_bins[$index]
+        done
+    done
+
+    # Create alternatives mappings for the collected binaries and man pages
+    local jdk_alternatives_map_bin=( ) \
+          jre_alternatives_map_bin=( )
+
+    for jdk_bin in "${jdk_bins[@]}" ; do
+        jdk_alternatives_map_bin+=(
+            "/usr/$(exhost --target)/bin/${jdk_bin}" "${java_home}/bin/${jdk_bin}"
+        )
+    done
+
+    for jre_bin in "${jre_bins[@]}" ; do
+        jre_alternatives_map_bin+=(
+            "/usr/$(exhost --target)/bin/${jre_bin}" "${java_home}/jre/bin/${jre_bin}"
+        )
+    done
+
+    # Just for clarity, tie everything together: group the above mappings
+    # according to the alternatives module they belong to
+    local jdk_alternatives=(
+        "/usr/$(exhost --target)/lib/jdk" "${java_home}"
+        "${jdk_alternatives_map_bin[@]}"
+    )
+
+    local jre_alternatives=(
+        "/usr/$(exhost --target)/lib/jre" "${java_home}"
+        "${jre_alternatives_map_bin[@]}"
+    )
+
+    # Finally, pass the groups to their respective alternatives modules
+    alternatives_for "java-jdk" "${PN}-${SLOT}" "${SLOT}" "${jdk_alternatives[@]}"
+    alternatives_for "java-jre" "${PN}-${SLOT}" "${SLOT}" "${jre_alternatives[@]}"
 
     pushd "${IMAGE}${java_home}"/bin > /dev/null
     for target_path in ../jre/bin/* ; do
         local binary_name="${target_path##*/}"
-        if [[ -f "${binary_name}" && -x "${binary_name}" && ! -L "${binary_name}" ]] ;     then
+        if [[ -f "${binary_name}" && -x "${binary_name}" && ! -L "${binary_name}" ]] ; then
             edo rm -f "${binary_name}"
             dosym "${target_path}" "${java_home}/bin/${binary_name}"
         fi
