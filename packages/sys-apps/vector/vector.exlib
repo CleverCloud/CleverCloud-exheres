@@ -95,6 +95,10 @@ vector_src_prepare() {
     edo sed -i \
         -e '/rustflags = "/s:$:]:' -e '/rustflags = "/s: ": [":' \
         .cargo/config.toml
+
+    # Official binary is built with these: https://github.com/vectordotdev/vector/blob/master/scripts/environment/release-flags.sh
+    export CARGO_PROFILE_RELEASE_LTO=fat
+    export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1
     default
 }
 
