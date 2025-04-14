@@ -1,0 +1,33 @@
+# Copyright 2025 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=facebookincubator branch=main ] meson
+
+SUMMARY="A userspace out-of-memory killer"
+PLATFORMS="~amd64"
+LICENCES="GPL-2"
+SLOT="0"
+
+MYOPTIONS="
+    ( providers: systemd )
+"
+DEPENDENCIES="
+    build+run:
+        dev-libs/jsoncpp:=
+        providers:systemd? ( sys-apps/systemd )
+    test:
+        dev-cpp/gtest
+"
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/0001-meson.build-fix-hardcoded-libdir.patch"
+)
+
+src_test() {
+    esandbox allow_net --bind "unix:/tmp/oomd-*"
+
+    meson_src_test
+
+    esandbox disallow_net --bind "unix:/tmp/oomd-*"
+}
+

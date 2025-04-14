@@ -1,0 +1,26 @@
+Upstream: no
+From 00b33a96947fa6a07c3a663f2c15030bcaf5fbdd Mon Sep 17 00:00:00 2001
+From: s0dyy <maxime.sorin@clever-cloud.com>
+Date: Mon, 14 Apr 2025 16:26:23 +0200
+Subject: [PATCH] meson.build: fix hardcoded libdir
+
+---
+ meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index 1fc24cb..ee025ae 100644
+--- a/meson.build
++++ b/meson.build
+@@ -108,7 +108,7 @@ prefixdir = get_option('prefix')
+ bindir = join_paths(prefixdir, get_option('bindir'))
+ sysconfdir = join_paths(prefixdir, get_option('sysconfdir'))
+ oomdconfdir = join_paths(sysconfdir, 'oomd')
+-systemunitdir = join_paths(prefixdir, 'lib/systemd/system')
++systemunitdir = join_paths(prefixdir, get_option('libdir'), 'systemd/system')
+ 
+ substs = configuration_data()
+ substs.set('bindir', bindir)
+-- 
+2.48.1
+
