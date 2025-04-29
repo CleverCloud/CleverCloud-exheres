@@ -1,7 +1,7 @@
 # Copyright 2023 Morgane “Sardem FF7” Glidic <sardemff7@exherbo.org>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ release=${PV} suffix=tar.gz ]
+require github [ tag=${PV} ]
 
 SUMMARY="Make Linux crash dump small by filtering and compressing pages"
 
@@ -31,14 +31,11 @@ DEPENDENCIES="
         )
 "
 
-export_exlib_phases src_prepare src_compile
+DEFAULT_SRC_INSTALL_PARAMS=(
+    SBINDIR=/usr/$(exhost --target)/bin
+)
 
-makedumpfile_src_prepare() {
-    default
-    sed -i \
-        -e "s:usr/sbin:usr/$(exhost --target)/bin:" \
-        Makefile
-}
+export_exlib_phases src_compile
 
 makedumpfile_src_compile() {
     local opts=(
