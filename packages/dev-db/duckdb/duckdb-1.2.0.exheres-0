@@ -1,0 +1,25 @@
+# Copyright 2025 Aurélien Hébert <aurelien.hebert@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="duckdb" tag="v${PV}" ]
+require cmake
+
+SUMMARY="DuckDB: an in-process SQL OLAP database management system"
+HOMEPAGE="https://duckdb.org"
+
+LICENCES="MIT"
+PLATFORMS="~amd64"
+SLOT="0"
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+  -DOVERRIDE_GIT_DESCRIBE:STRING="v${PV}"
+  -DGIT_COMMIT_HASH:STRING="v${PV}"
+  -DBUILD_MAIN_DUCKDB_LIBRARY:BOOL=TRUE
+)
+
+src_install() {
+  cmake_src_install
+
+  # Remove empty directories from install image to prevent Paludis merge failure
+  edo find "${IMAGE}" -type d -empty -delete
+}
