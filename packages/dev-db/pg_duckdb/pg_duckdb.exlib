@@ -1,0 +1,43 @@
+# Copyright 2025 Aurélien Hébert <aurelien.hebert@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+myexparam min_version=
+myexparam max_version=
+
+require github [ user="duckdb" tag="v${PV}" ]
+require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" ]
+
+SUMMARY="pg_duckdb: PostgreSQL extension for DuckDB"
+LICENCES="MIT PostgreSQL"
+SLOT="0"
+MYOPTIONS=""
+
+# pg_duckdb builds against DuckDB's C++ internals, pinned per release.
+# icu: every session runs SET TimeZone; json: read_json/json_* and json/jsonb operators.
+DEPENDENCIES="
+    build+run:
+        app-arch/lz4
+        dev-db/duckdb[>=1.4&<1.5][icu][json]
+"
+
+# check installs into the live PG tree, then needs a running server and pytest
+RESTRICT="test"
+
+DEFAULT_SRC_COMPILE_PARAMS=(
+    DUCKDB_BUILD=ReleaseStatic
+    FULL_DUCKDB_LIB=
+    "PG_DUCKDB_LINK_FLAGS=-lduckdb -lstdc++ -llz4"
+)
+DEFAULT_SRC_INSTALL_PARAMS=(
+    "${DEFAULT_SRC_COMPILE_PARAMS[@]}"
+)
+prepare_one_multibuild() {
+    default
+
+    edo sed -i \
+        -e '/FULL_DUCKDB_LIB/d' \
+        -e '/PG_DUCKDB_LINK_FLAGS =/d' \
+        Makefile
+    edo mkdir -p .git/modules/third_party/duckdb
+    edo touch .git/modules/third_party/duckdb/HEAD
+}
