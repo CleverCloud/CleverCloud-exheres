@@ -9,7 +9,7 @@ HOMEPAGE="https://mise.jdx.dev/"
 
 LICENCES="MIT"
 SLOT="0"
-PLATFORMS="~amd64"
+PLATFORMS="~amd64 ~armv8"
 MYOPTIONS="providers: ( libressl openssl ) [[ number-selected = exactly-one ]]"
 
 # The supported LibreSSL and OpenSSL versions are taken from the `version_error()`
