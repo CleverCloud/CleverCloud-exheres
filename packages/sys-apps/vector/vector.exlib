@@ -25,6 +25,7 @@ MYOPTIONS="
     jemalloc
     (
         sinks-elasticsearch [[ description = [ Enables elasticsearch sink ] ]]
+        sinks-http [[ description = [ Enables HTTP sink ] ]]
         sinks-pulsar [[ description = [ Enables pulsar sink ] ]]
     ) [[
         *requires = -sinks
@@ -76,6 +77,7 @@ ECARGO_FEATURE_ENABLES=(
     'secrets secrets'
     'sinks sinks'
     'sinks-elasticsearch sinks-elasticsearch'
+    'sinks-http sinks-http'
     'sinks-pulsar sinks-pulsar'
     'sources sources'
     'sources sources-dnstap'
