@@ -1,0 +1,59 @@
+# Copyright 2025 Tanguy MAZÉ <tanguy.maze@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SCM_SECONDARY_REPOSITORIES="readies"
+SCM_EXTERNAL_REFS="deps/readies:readies"
+SCM_readies_REPOSITORY="https://github.com/RedisLabsModules/readies.git"
+SCM_readies_REVISION="28ddde9e66d72289b3d3e700dc7114b27de20888"
+SCM_REPOSITORY="https://github.com/RedisJSON/RedisJSON.git"
+SCM_BRANCH="master"
+
+require cargo [ debug=true rust_minimum_version=1.66.0 ] \
+        scm-git
+
+
+SUMMARY="RedisJSON - a JSON data type for Redis"
+HOMEPAGE="https://github.com/RedisJSON/RedisJSON"
+
+LICENCES="|| ( AGPL-3 SSPL-1 )"
+SLOT="0"
+
+DEPENDENCIES="
+    build:
+        app-admin/eclectic-clang
+        dev-lang/llvm:=[clang(+)]
+"
+MYOPTIONS=""
+
+pkg_setup() {
+    # Set environment variables for bindgen early
+    # This is needed to find the stddef.h header
+    local target="$(exhost --target)"
+    export BINDGEN_EXTRA_CLANG_ARGS="-isystem /usr/${target}/lib/llvm/20/lib/clang/20/include -isystem /usr/${target}/include"
+    
+    default
+}
+
+src_prepare() {
+    default
+
+    ecargo_fetch
+}
+
+src_install() {
+    # Install Redis module to the correct location
+    insinto /usr/$(exhost --target)/lib
+    
+    # Find the librejson.so file by looking in all target directories
+    local lib_file lib_path
+    
+    # Use find to locate the library file in any target directory
+    lib_path=$(find "${WORK}/target" -name "librejson.so" -path "*/release/*" | head -n 1)
+    
+    if [[ -z "${lib_path}" ]]; then
+        die "Could not find librejson.so in any target directory"
+    fi
+    
+    einfo "Installing Redis module from: ${lib_path}"
+    doins "${lib_path}"
+}
