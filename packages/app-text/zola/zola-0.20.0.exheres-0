@@ -9,6 +9,7 @@ HOMEPAGE="https://get${PN}.com"
 
 LICENCES="MIT"
 SLOT="0"
+PLATFORMS="~amd64"
 MYOPTIONS=""
 
 DEPENDENCIES=""
