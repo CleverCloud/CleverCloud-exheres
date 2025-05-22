@@ -3,4 +3,6 @@
 
 require RedisJSON
 
+SCM_readies_REVISION="28ddde9e66d72289b3d3e700dc7114b27de20888"
+
 PLATFORMS="~amd64"
