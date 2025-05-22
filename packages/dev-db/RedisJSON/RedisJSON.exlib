@@ -5,7 +5,6 @@ SCM_SECONDARY_REPOSITORIES="readies"
 SCM_EXTERNAL_REFS="deps/readies:readies"
 SCM_readies_REPOSITORY="https://github.com/RedisLabsModules/readies.git"
 SCM_REPOSITORY="https://github.com/RedisJSON/RedisJSON.git"
-SCM_BRANCH="master"
 
 require cargo [ debug=true rust_minimum_version=1.66.0 ] \
         scm-git
