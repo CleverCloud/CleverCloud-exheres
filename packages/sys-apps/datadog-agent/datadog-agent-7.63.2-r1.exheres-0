@@ -34,6 +34,8 @@ src_unpack() {
 
     edo python${python_version} -m venv .venv
     edo source .venv/bin/activate
+
+    edo sed -i 's/main/59ff0fc027be93b61cf7f6af9acac415d585a296/g' requirements.txt
     edo pip install -r requirements.txt
 
     edo invoke install-tools
