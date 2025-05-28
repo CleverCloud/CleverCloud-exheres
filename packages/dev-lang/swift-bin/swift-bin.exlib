@@ -1,0 +1,63 @@
+# Copyright 2022 Rémi Bardon <remi.bardon.dev@gmail.com>
+# Copyright 2025 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+MY_PNV=swift-${PV}
+
+require alternatives
+
+export_exlib_phases pkg_setup src_install
+
+SUMMARY="The Swift Programming Language"
+HOMEPAGE="https://www.swift.org"
+DOWNLOADS="https://download.swift.org/${MY_PNV}-release/ubi9/${MY_PNV}-RELEASE/${MY_PNV}-RELEASE-ubi9.tar.gz"
+
+LICENCES="Apache-2.0"
+SLOT="$(ever range 1-2)"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    run:
+        app-arch/unzip
+        app-arch/zip
+        dev-db/sqlite:3
+        dev-lang/python:3.9
+        dev-libs/libedit
+        dev-libs/libxml2:2.0
+        dev-scm/git
+        net-misc/curl
+        net-misc/rsync
+        sys-libs/ncurses
+"
+
+RESTRICT="strip test"
+
+WORK=${WORKBASE}/${MY_PNV}-RELEASE-ubi9
+
+swift-bin_pkg_setup() {
+    exdirectory --allow /opt
+}
+
+swift-bin_src_install() {
+    local swift_home=/opt/${MY_PNV}
+
+    insinto ${swift_home}
+    doins -r usr/{include,lib,lib64,libexec,local,share}
+
+    exeinto ${swift_home}/bin
+    doexe "${WORK}"/usr/bin/*
+
+    edo pushd "${IMAGE}"/${swift_home}/bin
+
+    local alternatives=()
+    for bin in swift* ; do
+        alternatives+=( "/usr/$(exhost --target)/bin/${bin}" "${swift_home}/bin/${bin}" )
+    done
+
+    edo popd
+
+    alternatives_for swift ${SLOT}-bin ${SLOT} "${alternatives[@]}"
+
+    emagicdocs
+}
+
