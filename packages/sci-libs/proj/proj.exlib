@@ -30,7 +30,7 @@ DEPENDENCIES="
         dev-cpp/gtest[>=1.8.1]
 "
 
-if ever at_least 9.6.0 ; then
+if ever at_least 9.6.1 ; then
     DEPENDENCIES+="
         build:
             dev-libs/json[>=3.7.0]
@@ -47,12 +47,13 @@ CMAKE_SRC_CONFIGURE_TESTS=(
     '-DBUILD_TESTING:BOOL=TRUE -DBUILD_TESTING:BOOL=FALSE'
 )
 
-if ever at_least 9.6.0 ; then
+if ever at_least 9.6.1 ; then
     CMAKE_SRC_CONFIGURE_PARAMS+=(
         -DBASH_COMPLETIONS_DIR:PATH=""
         -DBUILD_SHARED_LIBS:BOOL=TRUE
         -DEMBED_PROJ_DATA_PATH:BOOL=TRUE
         -DEMBED_RESOURCE_FILES:BOOL=FALSE
+        -DEXPORT_PDB:BOOL=FALSE
         -DNLOHMANN_JSON_ORIGIN:STRING=external
         -DRUN_NETWORK_DEPENDENT_TESTS:BOOL=FALSE
         -DTESTING_USE_NETWORK:BOOL=FALSE
@@ -68,7 +69,7 @@ fi
 proj_src_prepare() {
     cmake_src_prepare
 
-    if ever at_least 9.6.0 ; then
+    if ever at_least 9.6.1 ; then
         edo sed -i \
             -e "/set(PROJ_DATA_PATH/s:/proj:&-${SLOT}:" \
             CMakeLists.txt
@@ -83,7 +84,7 @@ proj_src_test(){
     # PROJ_LIB is used as searchpath for proj.db
     export PROJ_LIB="${CMAKE_BUILDDIR}/data"
 
-    if ! ever at_least 9.6.0 && ! option tiff ; then
+    if ! ever at_least 9.6.1 && ! option tiff ; then
         # 6 tests out of 55 fail without tiff
         CMAKE_SRC_TEST_PARAMS=(
             -E '(Deformation|geotiff_grids|defmodel|proj_test_cpp_api|gie_self_tests|test_network)'
@@ -102,7 +103,7 @@ proj_src_install() {
         /usr/$(exhost --target)/lib/libproj{,-${SLOT}}.so
     )
 
-    if ever at_least 9.6.0 ; then
+    if ever at_least 9.6.1 ; then
         alternatives+=(
             /usr/$(exhost --target)/lib/pkgconfig/proj{,-${SLOT}}.pc
         )
