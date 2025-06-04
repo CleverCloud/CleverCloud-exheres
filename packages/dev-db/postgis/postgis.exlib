@@ -27,7 +27,7 @@ DEPENDENCIES="
         sci-libs/gdal[>=3.2.0]
         sci-libs/geos[>=3.11.0]
         sci-libs/proj:=[>=7.2.1]
-        address-standardizer? ( dev-libs/pcre )
+        address-standardizer? ( dev-libs/pcre2 )
         protobuf? ( dev-libs/protobuf-c[>=1.3.2] )
         !dev-db/postgis:0 [[
             description = [ slot move ]
