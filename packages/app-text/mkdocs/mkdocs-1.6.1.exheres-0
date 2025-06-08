@@ -1,7 +1,7 @@
 # Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require pypi py-pep517 [ backend=setuptools entrypoints=[ ${PN} ] ]
+require pypi py-pep517 [ backend=setuptools ]
 
 SUMMARY="A fast, simple and downright gorgeous static site generator that's geared towards building project documentation"
 HOMEPAGE="https://www.mkdocs.org"
