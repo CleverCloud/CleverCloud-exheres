@@ -14,12 +14,11 @@ HOMEPAGE="https://perf.wiki.kernel.org/"
 LICENCES="GPL-2"
 SLOT="0"
 MYOPTIONS="
-    audit [[ description = [ Support for libaudit to interact with the audit kernel subsystem ] ]]
     debuginfod [[ description = [ Support fetching debug information from a debuginfod server ] ]]
     gtk2
     tui [[ description = [ Support an interactive terminal user interface ] ]]
-    zstd [[ description = [ ZStd based runtime trace compression in record mode ] ]]
 
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
     ( providers: libunwind llvm-libunwind ) [[ number-selected = exactly-one ]]
 "
 
@@ -31,19 +30,19 @@ DEPENDENCIES="
         sys-devel/flex
     build+run:
         app-arch/xz
+        app-arch/zstd
         dev-lang/perl:=
         dev-lang/python:=
         dev-util/elfutils[debuginfod?]
         sys-apps/numactl
         sys-devel/binutils
-        sys-libs/libcap
         sys-libs/zlib
-        audit? ( app-admin/audit )
         gtk2? ( x11-libs/gtk+:2 )
         tui? ( sys-libs/slang )
-        zstd? ( app-arch/zstd )
+        providers:libressl? ( dev-libs/libressl:= )
         providers:libunwind? ( dev-libs/libunwind )
         providers:llvm-libunwind? ( sys-libs/llvm-libunwind )
+        providers:openssl? ( dev-libs/openssl:= )
 "
 
 RESTRICT="test"
@@ -51,10 +50,6 @@ RESTRICT="test"
 WORK="${WORKBASE}"/linux-${PV}/tools/perf/
 
 BASH_COMPLETIONS=( 'perf-completion.sh' )
-
-perf_option() {
-    option ${1} "" "1"
-}
 
 perf_make() {
     local params=(
@@ -68,14 +63,21 @@ perf_make() {
         HOSTLD=$(exhost --tool-prefix)ld
         CROSS_COMPILE=$(exhost --tool-prefix)
 
-        PYTHON=python$(python_get_abi)
-        GTK2=$(option gtk2 "1" "")
-        NO_LIBAUDIT=$(perf_option audit)
+        BUILD_BPF_SKEL=0 # requires libbpf
+        LIBUNWIND=1
+        NO_CAPSTONE=1
+        NO_JVMTI=1
+        NO_LIBBABELTRACE=1
         NO_LIBBPF=1
-        NO_LIBDEBUGINFOD=$(perf_option debuginfod)
-        NO_LIBZSTD=$(perf_option zstd)
+        NO_LIBLLVM=1
+        NO_LIBPFM4=1
         NO_LIBTRACEEVENT=1
-        NO_SLANG=$(perf_option tui)
+        NO_SDT=1 # requires systemtap-sdt
+        PYTHON=python$(python_get_abi)
+
+        $(option debuginfod "" NO_LIBDEBUGINFOD=1)
+        $(option gtk2 GTK2=1)
+        $(option tui "" NO_SLANG=1)
     )
 
     emake "${params[@]}" "${@}"
