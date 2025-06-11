@@ -85,6 +85,8 @@ DEPENDENCIES="
 if ever at_least 8; then
     DEPENDENCIES+="
         build+run:
+            group/mysqlrouter
+            user/mysqlrouter
             app-crypt/krb5
             dev-libs/libfido2[>=1.4.0]
             dev-libs/re2:=
