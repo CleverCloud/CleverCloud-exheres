@@ -1,0 +1,24 @@
+# Copyright 2025 Aurélien Hébert <aurelien.hebert@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+myexparam min_version
+myexparam max_version
+
+require github [ user=supabase tag="v${PV}" ]
+require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" ]
+
+export_exlib_phases pkg_setup
+
+SUMMARY="A PostgreSQL extension that enables asynchronous (non-blocking) HTTP/HTTPS requests with SQL."
+
+LICENCES="PostgreSQL"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+DEFAULT_SRC_COMPILE_PARAMS=( OPTFLAGS='' )
+
+pg_net_pkg_setup() {
+    export USE_PGXS=1
+}
