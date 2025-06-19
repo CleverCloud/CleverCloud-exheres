@@ -5,7 +5,7 @@ export_exlib_phases src_prepare pkg_setup src_compile src_test src_install
 
 SCM_SECONDARY_REPOSITORIES="vc tcc markdown"
 SCM_vc_REPOSITORY="https://github.com/vlang/vc"
-SCM_vc_REVISION="66ea39be2275ac723225b9ca99d51ec1212c640d"
+SCM_vc_REVISION="a17f1105aa18b604ed8dac8fa5ca9424362c6e15"
 SCM_tcc_REPOSITORY="https://github.com/vlang/tccbin"
 SCM_markdown_REPOSITORY="https://github.com/vlang/markdown"
 
@@ -59,7 +59,6 @@ DEFAULT_SRC_COMPILE_PARAMS=(
 
 TESTS_TO_SKIP=(
   vlib/net/http/server_test.v
-  vlib/net/tcp_test.v
   vlib/os/os_test.c.v
 )
 
@@ -153,10 +152,10 @@ v_src_install () {
   # find cmd/tools -maxdepth 1 -type f -executable -printf "%f\n" | sort
   local bins=(
     amalgamate
+    cc_compilation_failed_non_windows.sh
     changelog_helper
     check_os_api_parity
     detect_tcc
-    fast
     fast_job
     fmt_speed
     git_pre_commit_hook.vsh
@@ -193,6 +192,7 @@ v_src_install () {
     vrepeat
     vrepl
     vretry
+    vrun
     vscan
     vself
     vsetup-freetype
@@ -218,6 +218,7 @@ v_src_install () {
     doexe "cmd/tools/${f}"
   done
 
+  # List can be found in cmd/tools/builders
   local builders=(
     c_builder
     golang_builder
