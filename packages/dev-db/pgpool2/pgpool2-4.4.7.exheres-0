@@ -21,8 +21,8 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build+run:
-	dev-libs/libxcrypt:=
         dev-db/postgresql-client
+        dev-libs/libxcrypt:=
         pam? ( sys-libs/pam )
         ssl? (
             providers:libressl? ( dev-libs/libressl:= )
@@ -39,7 +39,7 @@ prepare_one_multibuild() {
 }
 
 DEFAULT_SRC_CONFIGURE_PARAMS=(
-    --disable-rpath 
+    --disable-rpath
     --sysconfdir="/etc/${PN}"
 )
 
@@ -52,12 +52,9 @@ install_one_multibuild() {
     default
 
     install_systemd_files
-}
 
-pkg_postinst() {
-    if [[ ! -d /var/log/pgpool/oiddir ]]; then
-        edo mkdir -p /var/log/pgpool/oiddir
-        edo chown -R postgres:postgres /var/log/pgpool
-    fi
+    diropts -m 0755 -o postgres -g postgres
+    dodir /var/log/pgpool
+    keepdir /var/log/pgpool/oiddir
 }
 
