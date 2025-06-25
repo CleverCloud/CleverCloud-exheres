@@ -33,6 +33,6 @@ src_install() {
 
     install_systemd_files
 
+    diropts -m 0755 -o blackfire -g blackfire
     keepdir /var/log/blackfire
-    edo chown -R blackfire:blackfire "${IMAGE}"/var/log/blackfire
 }
