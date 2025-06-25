@@ -7,7 +7,7 @@ MY_PNV="${MY_PN}-${PV}"
 
 require systemd-service [ systemd_tmpfiles=[ "${FILES}"/tmpfiles/"${MY_PN}-${SLOT}".conf ] systemd_files=[ "${MY_PN}-${SLOT}".service ] ]
 
-export_exlib_phases pkg_setup src_install pkg_postinst
+export_exlib_phases pkg_setup src_install
 
 SUMMARY="Store, search, analyze"
 HOMEPAGE="https://www.elastic.co/products/elastic-stack"
@@ -71,11 +71,9 @@ elasticsearch-bin_src_install() {
     edo mkdir "${IMAGE}"/opt
     edo cd "${WORKBASE}"
     edo mv ${MY_PNV} "${IMAGE}"/opt/${MY_PN}-${SLOT}
-    keepdir /opt/${MY_PN}-${SLOT}/logs
 
     keepdir /opt/${MY_PN}-${SLOT}/config/jvm.options.d
 
-    edo rmdir "${IMAGE}"/opt/${MY_PN}-${SLOT}/plugins
     install_systemd_files
     insinto /usr/$(exhost --target)/lib/sysctl.d
     doins "${FILES}"/sysctl/*-${SLOT}*
@@ -95,13 +93,7 @@ EOF
         fi
         edo rm -rf "${IMAGE}"/opt/${MY_PN}-${SLOT}/jdk
     fi
+
+    diropts -m 0755 -o ${MY_PN} -g ${MY_PN}
+    keepdir /opt/${MY_PN}-${SLOT}/{logs,plugins}
 }
-
-elasticsearch-bin_pkg_postinst() {
-    if [[ ! -d "${ROOT}/opt/${MY_PN}-${SLOT}/plugins" ]]; then
-        edo mkdir -p "${ROOT}/opt/${MY_PN}-${SLOT}/plugins"
-    fi
-
-    edo chown -R ${MY_PN}:${MY_PN} /opt/${MY_PN}-${SLOT}
-}
-
