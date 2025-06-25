@@ -38,13 +38,11 @@ CMAKE_SRC_CONFIGURE_PARAMS=(
 src_install() {
     default
 
+    diropts -m 0755 -o ${PN} -g ${PN}
     keepdir /var/lib/{arangodb3,arangodb3-apps}
     keepdir /var/log/arangodb3
 }
 
 pkg_postinst() {
-    edo chown -R ${PN}: /var/lib/{arangodb3,arangodb3-apps}
-    edo chown -R ${PN}: /var/log/arangodb3
-
     ewarn "run 'arango-secure-installation' to set a root password"
 }
