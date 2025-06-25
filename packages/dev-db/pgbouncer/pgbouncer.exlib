@@ -62,14 +62,14 @@ pgbouncer_src_install() {
     doins etc/${PN}.ini
     edo touch "${IMAGE}"/etc/${PN}/userlist.txt
 
-    keepdir /var/log/${PN}
-    edo chown -R postgres:postgres "${IMAGE}"/var/log/${PN}
-
     install_systemd_files
 
     insinto /usr/$(exhost --target)/lib/tmpfiles.d
     hereins ${PN}.conf <<EOF
 d /run/pgbouncer 0755 postgres postgres
 EOF
+
+    diropts -m 0755 -o postgres -g postgres
+    keepdir /var/log/${PN}
 }
 
