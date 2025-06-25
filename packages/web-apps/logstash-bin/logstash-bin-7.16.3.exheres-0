@@ -46,9 +46,6 @@ src_install() {
     edo cd ${WORKBASE}
     edo mv ${MY_PNV} "${IMAGE}"/opt/${MY_PN}
 
-    keepdir /opt/${MY_PN}/data
-    edo chown -R ${MY_PN}:${MY_PN} "${IMAGE}"/opt/${MY_PN}
-
     # remove empty directories
     edo find "${IMAGE}"/opt/${MY_PN}/vendor -type d -empty -delete
 
@@ -60,5 +57,8 @@ src_install() {
     hereenvd 99${MY_PN} <<EOF
 CONFIG_PROTECT="/opt/${MY_PN}/config"
 EOF
+
+    diropts -m 0755 -o ${MY_PN} -g ${MY_PN}
+    keepdir /opt/${MY_PN}/data
 }
 
