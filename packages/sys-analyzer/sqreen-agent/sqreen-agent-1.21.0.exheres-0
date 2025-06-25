@@ -43,12 +43,9 @@ src_install() {
     dodir /usr/$(exhost --target)/bin
     dosym /opt/${PNVR}/${PN} /usr/$(exhost --target)/bin/${PN}
 
-    keepdir /var/log/sqreen
-
     install_systemd_files
-}
 
-pkg_postinst() {
-    edo chown sqreen: /var/log/sqreen
+    diropts -m 0755 -o sqreen -g sqreen
+    keepdir /var/log/sqreen
 }
 
