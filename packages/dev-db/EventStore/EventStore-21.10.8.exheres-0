@@ -55,10 +55,10 @@ src_install() {
     dodir /opt/${PN}
     edo mv ${WORK}/src/${PN}.ClusterNode/bin/x64/Release/net5.0/* ${IMAGE}/opt/${PN}
 
-    keepdir /var/{lib,log}/${PN,,}
-    edo chown ${PN,,}: ${IMAGE}/var/{lib,log}/${PN,,}
-
     install_systemd_files
+
+    diropts -m 0755 -o ${PN,,} -g ${PN,,}
+    keepdir /var/{lib,log}/${PN,,}
 }
 
 pkg_postinst(){
