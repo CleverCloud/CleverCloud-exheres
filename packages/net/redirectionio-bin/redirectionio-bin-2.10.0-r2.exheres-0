@@ -31,14 +31,14 @@ DEPENDENCIES="
 WORK="${WORKBASE}"
 
 src_install() {
-    keepdir /var/lib/${MY_PN}
-    edo chown ${MY_PN}:${MY_PN} "${IMAGE}"/var/lib/${MY_PN}
-
     insinto /etc/${MY_PN}
     doins "${WORK}"/redirection-agent/agent.yml
 
     install_systemd_files
 
     dobin "${WORK}"/redirection-agent/redirectionio-agent
+
+    diropts -m 0755 -o ${MY_PN} -g ${MY_PN}
+    keepdir /var/lib/${MY_PN}
 }
 
