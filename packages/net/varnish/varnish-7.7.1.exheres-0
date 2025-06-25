@@ -64,8 +64,6 @@ src_prepare() {
 src_install() {
     default
 
-    keepdir /var/lib/varnish
-
     insinto /etc/varnish
     newins etc/example.vcl default.vcl
     doins "${FILES}"/varnish.params
@@ -77,18 +75,13 @@ src_install() {
         dodoc -r html
         edo popd
     fi
+
+    diropts -m 0755 -o varnish -g varnish
+    keepdir /var/lib/${PN}
+    keepdir /var/log/${PN}
 }
 
 pkg_postinst() {
-    edo chown -R ${PN}:${PN} /var/lib/${PN}
-
-    if [[ ! -f /var/log/${PN}/${PN}.log ]]; then
-        edo mkdir -p /var/log/${PN}
-        edo touch /var/log/${PN}/${PN}.log
-        edo chown -R ${PN}:${PN} /var/log/${PN}
-        edo chmod g+w /var/log/${PN}/${PN}.log
-    fi
-
     if [[ ! -f /etc/${PN}/secret ]]; then
         dd if=/dev/random of=/etc/${PN}/secret count=1 bs=4096
         einfo "A secret file has just been generated in /etc/varnish/secret"
