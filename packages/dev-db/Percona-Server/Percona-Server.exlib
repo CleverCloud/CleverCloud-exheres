@@ -326,9 +326,6 @@ Percona-Server_src_install() {
 LDPATH=/usr/@TARGET@/lib/${PN}-${SLOT}
 EOF
 
-    keepdir /var/lib/mysql-files
-    edo chown mysql:mysql "${IMAGE}"/var/lib/mysql-files
-    edo chmod 0750 "${IMAGE}"/var/lib/mysql-files
     if ! ever at_least 8; then
         edo rm "${IMAGE}"/usr/{README.md,COPYING.*,PATENTS}
     fi
@@ -362,6 +359,9 @@ EOF
     edo mv "${IMAGE}"/usr/share/aclocal/{mysql,${PN}-${SLOT}}.m4
 
     alternatives_for mysql ${PN}-${SLOT} ${SLOT} "${alternatives[@]}"
+
+    diropts -m 0750 -o mysql -g mysql
+    keepdir /var/lib/mysql-files
 }
 
 Percona-Server_pkg_postinst() {
