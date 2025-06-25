@@ -5,7 +5,7 @@ require github [ user=vectordotdev tag="v${PV}" force_git_clone=true ]
 require cargo [ disable_default_features=true rust_minimum_version="1.78.0" static=true ]
 require systemd-service [ systemd_files=[ distribution/systemd/${PN}.service ${FILES}/${PN}@.service ] systemd_tmpfiles=[ ${FILES}/${PN}.conf ] ]
 
-export_exlib_phases src_prepare src_install pkg_postinst
+export_exlib_phases src_prepare src_install
 
 SUMMARY="Vector is a lightweight, ultra-fast, open-source tool for building observability pipelines"
 HOMEPAGE="https://vector.dev"
@@ -110,15 +110,12 @@ vector_src_install() {
     insinto /etc/${PN}
     doins config/${PN}.yaml
 
-    keepdir /var/lib/${PN}
 
     install_systemd_files
 
     option examples && dodoc -r config/examples
-}
 
-vector_pkg_postinst() {
-    edo chown ${PN}: /var/lib/${PN}
-    edo chmod 0700 /var/lib/${PN}
+    diropts -m 0700 -o ${PN} -g ${PN}
+    keepdir /var/lib/${PN}
 }
 
