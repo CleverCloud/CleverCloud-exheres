@@ -57,12 +57,7 @@ src_install() {
         install_systemd_files
     fi
 
-    dodir /var/lib/${PN}
+    diropts -m 0755 -o proxysql -g proxysql
     keepdir /var/lib/${PN}
-}
-
-pkg_postinst() {
-    default
-    edo chown proxysql:proxysql -R /var/lib/${PN}
 }
 
