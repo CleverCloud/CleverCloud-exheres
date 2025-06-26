@@ -12,7 +12,6 @@ export_exlib_phases pkg_setup
 SUMMARY="The PostgreSQL Audit Extension (pgAudit) provides detailed session and/or object audit logging via the standard PostgreSQL logging facility."
 
 LICENCES="PostgreSQL"
-SLOT="0"
 MYOPTIONS=""
 
 DEPENDENCIES=""

@@ -1,6 +1,7 @@
 # Copyright 2025 Aurélien Hébert <aurelien.hebert@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require pgaudit [ min_version="13" max_version="17" ]
+require pgaudit [ min_version="17" max_version="17" ]
 
+SLOT="$(ever major)"
 PLATFORMS="~amd64"
