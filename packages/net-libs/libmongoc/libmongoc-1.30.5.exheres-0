@@ -1,0 +1,52 @@
+# Copyright 2025 Aurélien Hébert <aurelien.hebert@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=mongodb project=mongo-c-driver tag=${PV} ]
+require cmake
+
+SUMMARY="A client library written in C for MongoDB"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    snappy
+    zstd
+"
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/libbson[>=${PV}]
+        dev-libs/openssl:=
+        sys-libs/zlib
+        snappy? ( app-arch/snappy )
+        zstd? ( app-arch/zstd )
+"
+
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    -DENABLE_STATIC=OFF
+    -DENABLE_SHARED=ON
+    -DBUILD_TESTING=OFF
+    -DENABLE_UNINSTALL=OFF
+
+    -DENABLE_BSON=ON
+    -DUSE_SYSTEM_LIBBSON=ON
+    -DENABLE_SASL=OFF
+    -DENABLE_ZLIB=SYSTEM
+)
+
+CMAKE_SRC_CONFIGURE_OPTIONS_CUSTOM=(
+    'snappy -DENABLE_SNAPPY=ON -DENABLE_SNAPPY=OFF'
+    'zstd -DENABLE_ZSTD=ON -DENABLE_ZSTD=OFF'
+)
+
+DEFAULT_SRC_INSTALL_EXTRA_DOCS=(
+    THIRD_PARTY_NOTICES
+)
+
+src_install() {
+    cmake_src_install
+
+    edo rm -r "${IMAGE}"/usr/share/mongo-c-driver
+}
