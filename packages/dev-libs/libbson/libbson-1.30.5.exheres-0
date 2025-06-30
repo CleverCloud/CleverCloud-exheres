@@ -1,0 +1,32 @@
+# Copyright 2025 Morgane “Sardem FF7” Glidic <sardemff7@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=mongodb project=mongo-c-driver tag=${PV} ]
+require cmake
+
+SUMMARY="A library to manipulate BSON"
+LICENCES="Apache-2.0"
+PLATFORMS="~amd64"
+SLOT="0"
+MYOPTIONS=""
+DEPENDENCIES=""
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    # libmongoc requires both static and shared to build against system libbson
+    -DENABLE_STATIC:BOOL=ON
+    -DENABLE_SHARED:BOOL=ON
+    -DENABLE_BSON:BOOL=ON
+    -DENABLE_MONGOC:BOOL=OFF
+    -DBUILD_TESTING:BOOL=OFF
+    -DENABLE_UNINSTALL:BOOL=OFF
+)
+
+DEFAULT_SRC_INSTALL_EXTRA_DOCS=(
+    THIRD_PARTY_NOTICES
+)
+
+src_install() {
+    cmake_src_install
+
+    edo rm -r "${IMAGE}"/usr/share/mongo-c-driver
+}
