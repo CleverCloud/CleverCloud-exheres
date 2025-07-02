@@ -1,0 +1,52 @@
+# Copyright 2025 Aurélien Hébert <aurelien.hebert@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+MY_PV=${PV//\.}
+MY_PV=${MY_PV/_/U}
+
+require flag-o-matic
+
+SUMMARY="Intel® Decimal Floating-Point Math Library"
+HOMEPAGE="https://www.intel.com/content/www/us/en/developer/articles/tool/intel-decimal-floating-point-math-library.html"
+DOWNLOADS="https://www.netlib.org/misc/intel/${PN}${MY_PV}.tar.gz"
+
+LICENCES="BSD-3"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+WORK=${WORKBASE}/LIBRARY
+
+pkg_setup() {
+    append-cflags -fPIC
+}
+
+src_compile() {
+    emake -j${EXJOBS} \
+        _CFLAGS_OPT="${CFLAGS} -fPIC" \
+        AR_CMD="${AR} rv" \
+        CC="${CC}" \
+        CC_NAME=cc \
+        CALL_BY_REF=0 \
+        GLOBAL_RND=0 \
+        GLOBAL_FLAGS=0 \
+        UNCHANGED_BINARY_FLAGS=0
+
+    edo cp "${FILES}"/intelmathlib.pc .
+    edo sed -i \
+        -e "s:@EXHOST@:$(exhost --target):" \
+        -e "s:@VERSION@:${MY_PV}:" \
+        intelmathlib.pc
+}
+
+src_install() {
+    dolib.a libbid.a
+
+    insinto /usr/$(exhost --target)/include/${PN}
+    doins src/*.h
+
+    insinto /usr/$(exhost --target)/lib/pkgconfig
+    doins intelmathlib.pc
+}

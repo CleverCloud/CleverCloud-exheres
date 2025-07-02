@@ -1,0 +1,9 @@
+prefix=/usr
+includedir=${prefix}/@EXHOST@/include
+libdir=${prefix}/@EXHOST@/lib
+
+Name: libbid
+Description:
+Version: @VERSION@
+Libs: -L${libdir} -lbid
+Cflags: -I${includedir}/IntelRDFPMathLib
