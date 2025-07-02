@@ -1,0 +1,58 @@
+# Copyright 2025 Aurélien Hébert <aurelien.hebert@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+myexparam min_version
+myexparam max_version
+
+MY_PV=${PV/_/-}
+MY_PNV=${PN}-${MY_PV}
+
+require github [ user=FerretDB tag=v${MY_PV} ]
+require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" work=${MY_PNV} postgresql_opts='[postgresql_extensions:tsm_system_rows]' ]
+require flag-o-matic
+
+export_exlib_phases pkg_setup
+
+SUMMARY="Native NoSQL extension for PostgreSQL"
+DESCRIPTION="
+DocumentDB offers a native implementation of document-oriented NoSQL database,
+enabling seamless CRUD operations on BSON data types within a PostgreSQL framework
+"
+
+LICENCES="MIT"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        dev-libs/libbson[=1.30.5]
+        dev-libs/IntelRDFPMathLib
+    run:
+        dev-db/pg_cron[postgresql_servers:*(-)]
+        dev-db/pgvector[postgresql_servers:*(-)]
+        dev-db/postgis:*[postgresql_servers:*(-)]
+        dev-db/rum[postgresql_servers:*(-)]
+"
+
+DEFAULT_SRC_COMPILE_PARAMS=( OPTFLAGS='' )
+
+documentdb_pkg_setup() {
+   export USE_PGXS=1
+}
+
+prepare_one_multibuild() {
+    default
+
+    postgresql_prepare_one_multilib
+
+    edo sed -i \
+        -e "s/cpp -undef/$(exhost --tool-prefix)&/g" \
+        pg_documentdb_core/Makefile \
+        pg_documentdb/Makefile \
+        internal/pg_documentdb_distributed/Makefile
+
+    edo sed -i \
+        -e "s/shell pkg-config/shell $(exhost --tool-prefix)pkg-config/g" \
+        -e '/PG_CFLAGS/s:-Werror::' \
+        Makefile.cflags
+}
