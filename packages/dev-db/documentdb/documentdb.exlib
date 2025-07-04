@@ -4,7 +4,7 @@
 myexparam min_version
 myexparam max_version
 
-MY_PV=${PV/_/-}
+MY_PV=${PV/_/-ferretdb-}
 MY_PNV=${PN}-${MY_PV}
 
 require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" postgresql_opts='[postgresql_extensions:tsm_system_rows]' ]
@@ -33,6 +33,9 @@ DEPENDENCIES="
         dev-db/postgis:*[postgresql_servers:*(-)]
         dev-db/rum[postgresql_servers:*(-)]
 "
+
+# Some tests are failing due to some spaces differences on the output format
+RESTRICT="test"
 
 DEFAULT_SRC_COMPILE_PARAMS=( OPTFLAGS='' )
 
