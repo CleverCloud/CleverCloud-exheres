@@ -1,6 +1,8 @@
 # Copyright 2025 David Legrand <david.legrand@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
+FERRETDB_COMMIT="0ad2ad90fa7419d1fbb0db41ec05faa36e312add"
+
 require github [ tag=v${PV} ] go [ go_minimum_version=1.24.0 bin_name="bin/ferretdb" package_path="./cmd/ferretdb" ]
 
 SUMMARY="A truly open source MongoDB alternative"
@@ -12,13 +14,10 @@ MYOPTIONS=""
 
 DEPENDENCIES=""
 
-GO_SRC_COMPILE_PARAMS=(
-    "-coverpkg=./..."
-)
-
 src_prepare() {
     default
 
+    edo echo "${FERRETDB_COMMIT}" | edo tee build/version/commit.txt
     edo echo "exherbo" | edo tee build/version/package.txt
     edo echo "v${PV}" | edo tee build/version/version.txt
 }
