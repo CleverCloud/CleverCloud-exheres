@@ -7,8 +7,8 @@ HOMEPAGE="https://frankenphp.dev/"
 MY_PN="frankenphp"
 
 DOWNLOADS="
-    platform:amd64? ( https://github.com/dunglas/frankenphp/releases/download/v${PV}/frankenphp-linux-x86_64 -> ${PNV} )
-    platform:armv8? ( https://github.com/dunglas/frankenphp/releases/download/v${PV}/frankenphp-linux-aarch64  -> ${PNV} )
+    platform:amd64? ( https://github.com/php/frankenphp/releases/download/v${PV}/frankenphp-linux-x86_64 -> ${PNV} )
+    platform:armv8? ( https://github.com/php/frankenphp/releases/download/v${PV}/frankenphp-linux-aarch64  -> ${PNV} )
 "
 
 LICENCES="MIT"
