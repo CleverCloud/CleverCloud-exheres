@@ -1,0 +1,14 @@
+# Copyright 2025 Alexandre Bocquier <alexandre.bocquier@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ tag=v${PV} ]
+require go [ go_minimum_version=1.24.0 bin_path="bin/${PN}" package_path="./cmd/${PN}" ]
+
+SUMMARY="The Kubernetes Package Manager"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES=""
