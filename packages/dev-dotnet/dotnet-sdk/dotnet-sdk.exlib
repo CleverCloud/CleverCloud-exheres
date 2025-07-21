@@ -88,7 +88,11 @@ dotnet-sdk_src_compile() {
         pushd ${WORKBASE}/dotnet-sources
     fi
 
-    edo bash prep.sh
+    if ever at_least 9; then
+        edo bash prep-source-build.sh
+    else
+        edo bash prep.sh
+    fi
 
     esandbox enable_net
 
@@ -96,12 +100,16 @@ dotnet-sdk_src_compile() {
     esandbox allow_net --bind 'unix:/tmp/*'
     esandbox allow_net --connect 'unix:/tmp/*'
 
-    edo bash build.sh
+    if ever at_least 9; then
+        edo bash build.sh -sb
+    else
+        edo bash build.sh
+    fi
 
     esandbox disallow_net --bind 'unix:/tmp/*'
     esandbox disallow_net --connect 'unix:/tmp/*'
     esandbox disallow_net --bind "unix:${TEMP%/}/dotnet-*"
-    
+
 }
 
 dotnet-sdk_src_install() {

@@ -1,0 +1,15 @@
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SLOT="$(ever range 1-2)"
+PLATFORMS="~amd64"
+
+require dotnet-sdk [ dotnet_project="dotnet" \
+    dotnet_tag="v${SLOT}.7" \
+    dotnet_tarball="${WORK}/artifacts/assets/Release/${PNV}-exherbo-x64.tar.gz" \
+    dotnet_runtime="${SLOT}.7" \
+    llvm_slot=20 ]
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/${SLOT}/0001-clang-banned-by-distribution.patch"
+)
