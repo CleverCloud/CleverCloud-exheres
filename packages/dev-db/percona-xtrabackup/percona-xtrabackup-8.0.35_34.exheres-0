@@ -1,0 +1,7 @@
+# Copyright 2025 Benoit FOURNIER <benoit.fournier@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require percona-xtrabackup
+
+PLATFORMS="~amd64"
+

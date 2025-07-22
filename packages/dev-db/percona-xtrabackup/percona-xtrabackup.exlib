@@ -1,0 +1,66 @@
+# Copyright 2025 Benoit FOURNIER <benoit.fournier@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+# libkmip needed since 8.0
+if ever at_least 8; then
+    SCM_SECONDARY_REPOSITORIES="libkmip"
+    SCM_libkmip_REPOSITORY="https://github.com/Percona-Lab/libkmip.git"
+    SCM_EXTERNAL_REFS="extra/libkmip:libkmip"
+fi
+
+require github [ user="percona" project="percona-xtrabackup" tag="${PNV/_/-}" force_git_clone="true" ] cmake 
+export_exlib_phases src_install
+
+SLOT=$(ever range 1-2)
+
+case "${SLOT}" in
+    8.0)
+    BOOST_PV="1_77_0"
+    ;;
+    2.4)
+    BOOST_PV="1_59_0"
+    ;;
+esac
+
+SUMMARY="Open source hot backup tool for InnoDB and XtraDB databases"
+HOMEPAGE="https://www.percona.com/mysql/software/percona-xtrabackup"
+if ! ever at_least 8.4; then
+    DOWNLOADS="https://archives.boost.io/release/${BOOST_PV//_/.}/source/boost_${BOOST_PV}.tar.bz2"
+fi
+
+LICENCES="GPL-2"
+
+DEPENDENCIES="
+    build+run:
+        app-arch/lz4
+        app-arch/zstd
+        dev-libs/libaio
+        dev-libs/libev
+        dev-libs/libgcrypt
+        dev-libs/libxcrypt:=
+        dev-libs/openssl:=
+        net-libs/libtirpc
+        sys-libs/ncurses
+        sys-libs/libquadmath:=
+"
+
+CMAKE_SRC_CONFIGURE_PARAMS=(
+    --hates=CMAKE_BUILD_TYPE
+    -DBUILD_CONFIG=xtrabackup_release
+    -DWITH_MAN_PAGES=OFF
+)
+
+if ! ever at_least 8.4; then
+    CMAKE_SRC_CONFIGURE_PARAMS+=(
+        -DWITH_BOOST:PATH="${WORKBASE}/boost_${BOOST_PV}"
+    )
+fi
+
+# delete empty directory before merge
+percona-xtrabackup_src_install() {
+    cmake_src_install
+    edo rmdir ${IMAGE}/usr/$(exhost --target)/lib/plugin/debug
+    if [[ ${SLOT} == "8.0" ]]; then
+        edo rmdir ${IMAGE}/usr/$(exhost --target)/docs
+    fi
+}
