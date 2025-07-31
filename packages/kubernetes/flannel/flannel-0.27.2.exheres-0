@@ -1,0 +1,25 @@
+# Copyright 2025 Alexandre Bocquier <alexandre.bocquier@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="flannel-io" tag=v${PV} ]
+require go [ go_minimum_version=1.24.0 ]
+
+SUMMARY="flannel is a network fabric for containers, designed for Kubernetes "
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+pkg_setup() {
+    exdirectory --allow /opt
+}
+
+src_install() {
+    emagicdocs
+
+    exeinto /opt/cni/bin
+    doexe ${PN}
+}
