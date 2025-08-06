@@ -1,0 +1,32 @@
+# Copyright 2025 Aurélien Hébert <aurelien.hebert@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+myexparam min_version
+myexparam max_version
+
+require github [ user=jimjonesbr tag="${PV}" ]
+require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" ]
+
+SUMMARY="Triplestore Foreign Data Wrapper for PostgreSQL"
+
+LICENCES="MIT"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        net-misc/curl[>=7.74.0]
+        dev-libs/redland[>=1.0.17]
+"
+
+DEFAULT_SRC_COMPILE_PARAMS=( OPTFLAGS='' )
+
+prepare_one_multibuild() {
+    default
+
+    postgresql_prepare_one_multilib
+
+    edo sed -i \
+        -e "s/pkg-config/$(exhost --tool-prefix)pkg-config/g" \
+        Makefile
+}
