@@ -1,0 +1,15 @@
+[Unit]
+Description=DBtune agent
+After=network.target
+
+[Service]
+User=postgres
+Group=postgres
+ExecStart=/usr/host/bin/dbtune-agent
+Restart=always
+RestartSec=5s
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,24 @@
+# Copyright 2025 Benoît Fournier <benoit.fournier@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user='dbtuneai' project=${PN} tag=v${PV} ] 
+require go [ package_path='./cmd' ]
+require systemd-service
+
+SUMMARY="Open-source Agent to observe and optimize your PostgreSQL database"
+HOMEPAGE="https://www.dbtune.com"
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+    run:
+        group/postgres
+        user/postgres
+"
+
+src_install()
+{
+    go_src_install
+    install_systemd_files    
+}
