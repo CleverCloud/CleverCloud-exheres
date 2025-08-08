@@ -7,7 +7,7 @@ MY_PNV="${MY_PN}-${PV}"
 
 require systemd-service [ systemd_tmpfiles=[ "${FILES}"/tmpfiles/"${MY_PN}-${SLOT}".conf ] systemd_files=[ "${MY_PN}-${SLOT}".service ] ]
 
-export_exlib_phases pkg_setup src_install
+export_exlib_phases pkg_setup src_install pkg_postinst
 
 SUMMARY="Store, search, analyze"
 HOMEPAGE="https://www.elastic.co/products/elastic-stack"
@@ -46,13 +46,13 @@ if ever at_least 8; then
             )
     "
 else
-DEPENDENCIES+="
-        run:
-            !bundled-java? (
-                virtual/jdk:=[>=8]
-                virtual/jre:=[>=8]
-            )
-    "
+    DEPENDENCIES+="
+            run:
+                !bundled-java? (
+                    virtual/jdk:=[>=8]
+                    virtual/jre:=[>=8]
+                )
+        "
 fi
 
 BUGS_TO="arnaud.lefebvre@clever-cloud.com"
@@ -72,8 +72,6 @@ elasticsearch-bin_src_install() {
     edo cd "${WORKBASE}"
     edo mv ${MY_PNV} "${IMAGE}"/opt/${MY_PN}-${SLOT}
 
-    keepdir /opt/${MY_PN}-${SLOT}/config/jvm.options.d
-
     install_systemd_files
     insinto /usr/$(exhost --target)/lib/sysctl.d
     doins "${FILES}"/sysctl/*-${SLOT}*
@@ -92,8 +90,21 @@ EOF
                 -i "${IMAGE}/etc/sysconfig/${MY_PN}-${SLOT}"
         fi
         edo rm -rf "${IMAGE}"/opt/${MY_PN}-${SLOT}/jdk
+    else
+        edo chown -R ${MY_PN}:${MY_PN} "${IMAGE}/opt/${MY_PN}-${SLOT}/jdk"
     fi
 
+    edo rmdir "${IMAGE}/opt/${MY_PN}-${SLOT}/plugins"
+
     diropts -m 0755 -o ${MY_PN} -g ${MY_PN}
-    keepdir /opt/${MY_PN}-${SLOT}/{logs,plugins}
+    keepdir /opt/${MY_PN}-${SLOT}/{data,logs,config/jvm.options.d}
+
+    edo chown -R ${MY_PN}:${MY_PN} "${IMAGE}/opt/${MY_PN}-${SLOT}/config"
 }
+
+elasticsearch-bin_pkg_postinst() {
+    ewarn "/opt/${MY_PN}-${SLOT}/plugins is needed for elasticsearch to start"
+    ewarn "but cannot be created with a .keep file."
+    ewarn "Please create it after installation"
+}
+
