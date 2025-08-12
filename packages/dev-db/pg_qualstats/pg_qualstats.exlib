@@ -1,8 +1,11 @@
 # Copyright 2019 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
+myexparam min_version
+myexparam max_version
+
 require github [ user="powa-team" tag="${PV}" ]
-require postgresql
+require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" ]
 
 SUMMARY="A PostgreSQL extension for collecting statistics about predicates, helping find what indices are missing"
 
