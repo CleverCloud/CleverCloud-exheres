@@ -47,12 +47,19 @@ prepare_one_multibuild() {
     default
 
     postgresql_prepare_one_multilib
+ 
+    # Abbreviate SHA hashes to at least 10 characters, required to avoid warning on FerretDB boot
+    # Waiting for the patch to be released upstream: https://github.com/microsoft/documentdb/pull/260
+    edo sed -i \
+        -e "s/git rev-parse --short HEAD/git rev-parse --short=10 HEAD/" \
+        scripts/generate_extension_version.sh
 
     edo sed -i \
         -e "s/cpp -undef/$(exhost --tool-prefix)&/g" \
         pg_documentdb_core/Makefile \
         pg_documentdb/Makefile \
-        internal/pg_documentdb_distributed/Makefile
+        internal/pg_documentdb_distributed/Makefile \
+        internal/pg_documentdb_extended_rum/Makefile
 
     edo sed -i \
         -e "s/shell pkg-config/shell $(exhost --tool-prefix)pkg-config/g" \
