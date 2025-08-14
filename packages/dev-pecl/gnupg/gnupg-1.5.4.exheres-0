@@ -13,7 +13,7 @@ MYOPTIONS=""
 DEPENDENCIES="
     build+run:
         app-crypt/gnupg
-        app-crypt/gpgme
+        app-crypt/gpgme:=
 "
 
 RESTRICT="test"
