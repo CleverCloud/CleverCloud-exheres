@@ -1,10 +1,10 @@
 # Copyright 2013 Ankur Kothari
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=stedolan release=${PNV} suffix=tar.gz ]
+require github [ user=jqlang release=${PNV} suffix=tar.gz ]
 
 SUMMARY="Command-line JSON processor"
-HOMEPAGE+=" https://stedolan.github.io/jq/"
+HOMEPAGE+=" https://jqlang.org"
 
 LICENCES="jq"
 PLATFORMS="~amd64 ~armv7 ~armv8 ~x86"
