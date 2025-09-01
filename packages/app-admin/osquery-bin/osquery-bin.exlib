@@ -1,0 +1,43 @@
+# Copyright 2025 Stanislav SAUVIN <stanislav.sauvin@clever-cloud.com>
+# Copyright 2025 Lisa CARRIER <lisa.carrier@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service
+
+export_exlib_phases pkg_setup src_install
+
+SUMMARY="SQL powered operating system instrumentation, monitoring, and analytics framework"
+DOWNLOADS="
+    platform:amd64? ( https://github.com/osquery/osquery/releases/download/${PV}/osquery-${PV}_1.linux_x86_64.tar.gz )
+    platform:armv8? ( https://github.com/osquery/osquery/releases/download/${PV}/osquery-${PV}_1.linux_aarch64.tar.gz )
+"
+LICENCES="GPL-2"
+SLOT="0"
+MYOPTIONS="( platform: amd64 armv8 )"
+
+DEPENDENCIES=""
+
+WORK="${WORKBASE}"
+
+osquery-bin_pkg_setup() {
+    exdirectory --allow /opt
+}
+
+osquery-bin_src_install() {
+    insinto /opt/osquery
+
+    doins -r opt/osquery/share
+
+    exeinto /opt/osquery/bin
+    doexe opt/osquery/bin/osqueryd
+    doexe opt/osquery/bin/osqueryctl
+
+    dodir /usr/$(exhost --target)/bin 
+    dosym /opt/osquery/bin/osqueryd /usr/$(exhost --target)/bin/osqueryd
+    dosym /opt/osquery/bin/osqueryd /usr/$(exhost --target)/bin/osqueryi
+    dosym /opt/osquery/bin/osqueryctl /usr/$(exhost --target)/bin/osqueryctl
+
+    dodoc opt/osquery/share/osquery/osquery.example.conf
+
+    install_systemd_files
+}
