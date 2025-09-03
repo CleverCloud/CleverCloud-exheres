@@ -16,6 +16,7 @@ SLOT="0"
 MYOPTIONS="
     debuginfod [[ description = [ Support fetching debug information from a debuginfod server ] ]]
     gtk2
+    tracepoints [[ description = [ Support using tracepoints for capture, useful for multiple tools including perf trace ] ]]
     tui [[ description = [ Support an interactive terminal user interface ] ]]
 
     ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
@@ -38,6 +39,7 @@ DEPENDENCIES="
         sys-devel/binutils
         sys-libs/zlib
         gtk2? ( x11-libs/gtk+:2 )
+        tracepoints? ( dev-libs/libtraceevent )
         tui? ( sys-libs/slang )
         providers:libressl? ( dev-libs/libressl:= )
         providers:libunwind? ( dev-libs/libunwind )
@@ -71,12 +73,12 @@ perf_make() {
         NO_LIBBPF=1
         NO_LIBLLVM=1
         NO_LIBPFM4=1
-        NO_LIBTRACEEVENT=1
         NO_SDT=1 # requires systemtap-sdt
         PYTHON=python$(python_get_abi)
 
         $(option debuginfod "" NO_LIBDEBUGINFOD=1)
         $(option gtk2 GTK2=1)
+        $(option tracepoints "" NO_LIBTRACEEVENT=1)
         $(option tui "" NO_SLANG=1)
     )
 
