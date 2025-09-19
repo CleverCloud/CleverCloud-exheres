@@ -5,7 +5,7 @@ export_exlib_phases src_prepare pkg_setup src_compile src_test src_install
 
 SCM_SECONDARY_REPOSITORIES="vc tcc markdown"
 SCM_vc_REPOSITORY="https://github.com/vlang/vc"
-SCM_vc_REVISION="a17f1105aa18b604ed8dac8fa5ca9424362c6e15"
+SCM_vc_REVISION="e377b42e26eb9c703ccaf65f37d700a7369ac3db"
 SCM_tcc_REPOSITORY="https://github.com/vlang/tccbin"
 SCM_markdown_REPOSITORY="https://github.com/vlang/markdown"
 
@@ -157,7 +157,9 @@ v_src_install () {
     check_os_api_parity
     detect_tcc
     fast_job
+    find_doc_comments_with_no_dots
     fmt_speed
+    gg_split_memdump_to_frames.vsh
     git_pre_commit_hook.vsh
     install_binaryen.vsh
     install_wabt.vsh
@@ -182,6 +184,7 @@ v_src_install () {
     vcheck-md
     vcomplete
     vcompress
+    vdiff
     vdoctor
     vdownload
     vfmt
