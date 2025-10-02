@@ -29,4 +29,9 @@ prepare_one_multibuild() {
     edo sed -i \
         -e "s/pkg-config/$(exhost --tool-prefix)pkg-config/g" \
         Makefile
+
+    local original="README.md"
+    local replace="rdf_fdw.md"
+    edo sed -i -e "s/${original}/${replace}/g" Makefile
+    edo mv "${original}" "${replace}"
 }
