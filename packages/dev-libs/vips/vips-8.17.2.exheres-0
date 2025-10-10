@@ -57,10 +57,10 @@ DEPENDENCIES="
         fontconfig? ( media-libs/fontconfig )
         gif? ( media-libs/cgif[>=0.2.0] )
         gobject-introspection? ( gnome-desktop/gobject-introspection:1 )
-        heif? ( media-libs/libheif[>=1.4.0] )
+        heif? ( media-libs/libheif[>=1.7.0] )
         imagequant? ( media-gfx/libimagequant )
         jpeg2000? ( media-libs/OpenJPEG:2[>=2.4] )
-        jpegxl? ( media-libs/libjxl:=[>=0.6] )
+        jpegxl? ( media-libs/libjxl:=[>=0.7] )
         lcms? ( media-libs/lcms2[tiff?] )
         magick? (
             providers:graphicsmagick? ( media-gfx/GraphicsMagick )
@@ -92,10 +92,10 @@ RESTRICT="test"
 MESON_SRC_CONFIGURE_PARAMS=(
     -Danalyze=true
     -Dcplusplus=true
+    -Dcpp-docs=false
     -Ddeprecated=true
-    -Ddoxygen=false
+    -Ddocs=false
     -Dexamples=false
-    -Dgtk_doc=false
     -Dhighway=disabled
     -Djpeg=enabled
     -Dmatio=disabled
