@@ -1,7 +1,7 @@
 # Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require cargo [ rust_minimum_version=1.85 ]
+require cargo [ rust_minimum_version=1.88 ]
 require github [ user=jdx tag=v${PV} ]
 
 SUMMARY="dev tools, env vars, task runner"
@@ -12,11 +12,11 @@ SLOT="0"
 PLATFORMS="~amd64 ~armv8"
 MYOPTIONS="providers: ( libressl openssl ) [[ number-selected = exactly-one ]]"
 
-# The supported LibreSSL and OpenSSL versions are taken from the `version_error()`
-# function of openssl-sys 0.9.106, which is what is specified by the Cargo.lock of
+# function of openssl-sys 0.9.110, which is what is specified by the Cargo.lock of mise-2025.10.21.
+# See: https://github.com/sfackler/rust-openssl/blob/openssl-sys-v0.9.110/openssl-sys/build/main.rs#L420
 DEPENDENCIES="
     build+run:
-        providers:libressl? ( dev-libs/libressl:=[>=2.5&<4.1] )
+        providers:libressl? ( dev-libs/libressl:=[>=3.5&<4.2] )
         providers:openssl?  ( dev-libs/openssl:= )
 "
 
