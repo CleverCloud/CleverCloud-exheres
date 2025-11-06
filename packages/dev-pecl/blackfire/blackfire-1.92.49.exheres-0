@@ -6,7 +6,11 @@ require php-pecl [ module=module php_abis=[ 7.4 8.0 8.1 8.2 8.3 8.4 ] work="/" ]
 
 SUMMARY="Profile, Test, and Continuously Optimize PHP Code Performance"
 HOMEPAGE="https://www.blackfire.io"
+
+UPSTREAM_DOCUMENTATION="https://docs.blackfire.io/up-and-running/update"
+
 DOWNLOADS="https://packages.${PN}.io/debian/pool/any/main/b/${PN}-php/${PN}-php_${PV}_amd64.deb"
+
 LICENCES="all-rights-reserved"
 SLOT="0"
 PLATFORMS="~amd64"
