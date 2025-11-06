@@ -1,0 +1,8 @@
+# Copyright 2025 Tanguy Maze <tanguy.maze@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require elasticsearch-bin
+
+SLOT="9"
+PLATFORMS="~amd64"
+
