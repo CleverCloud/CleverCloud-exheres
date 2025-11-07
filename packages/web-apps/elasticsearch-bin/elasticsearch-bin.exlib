@@ -95,7 +95,7 @@ EOF
 
     edo rmdir "${IMAGE}/opt/${MY_PN}-${SLOT}/plugins"
 
-    diropts -m 0755 -o ${MY_PN} -g ${MY_PN}
+    diropts -m 0750 -o ${MY_PN} -g ${MY_PN}
     keepdir /opt/${MY_PN}-${SLOT}/{data,logs,config/jvm.options.d}
 
     edo chown -R ${MY_PN}:${MY_PN} "${IMAGE}/opt/${MY_PN}-${SLOT}/config"
