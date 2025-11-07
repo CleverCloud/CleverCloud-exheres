@@ -66,13 +66,14 @@ elasticsearch-bin_pkg_setup() {
 }
 
 elasticsearch-bin_src_install() {
-    default
-
     edo mkdir "${IMAGE}"/opt
     edo cd "${WORKBASE}"
     edo mv ${MY_PNV} "${IMAGE}"/opt/${MY_PN}-${SLOT}
 
+    emagicdocs
+
     install_systemd_files
+
     insinto /usr/$(exhost --target)/lib/sysctl.d
     doins "${FILES}"/sysctl/*-${SLOT}*
     insinto /etc/sysconfig
