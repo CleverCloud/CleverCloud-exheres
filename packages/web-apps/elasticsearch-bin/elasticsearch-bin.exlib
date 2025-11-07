@@ -66,9 +66,11 @@ elasticsearch-bin_pkg_setup() {
 }
 
 elasticsearch-bin_src_install() {
-    edo mkdir "${IMAGE}"/opt
-    edo cd "${WORKBASE}"
-    edo mv ${MY_PNV} "${IMAGE}"/opt/${MY_PN}-${SLOT}
+    dodir /opt/${MY_PN}-${SLOT}
+    # Could use dobin/doins, but there are some executables in a subdir
+    # of modules that we don’t want to explicit here in case they
+    # change later
+    edo mv bin lib modules "${IMAGE}"/opt/${MY_PN}-${SLOT}/
 
     emagicdocs
 
@@ -90,15 +92,17 @@ EOF
             edo sed -e "s@#JAVA_HOME=@JAVA_HOME=/usr/$(exhost --target)/lib/jdk@" \
                 -i "${IMAGE}/etc/sysconfig/${MY_PN}-${SLOT}"
         fi
-        edo rm -rf "${IMAGE}"/opt/${MY_PN}-${SLOT}/jdk
+    else
+        doins -r jdk
     fi
 
-    edo rmdir "${IMAGE}/opt/${MY_PN}-${SLOT}/plugins"
-
     diropts -m 0750 -o ${MY_PN} -g ${MY_PN}
-    keepdir /opt/${MY_PN}-${SLOT}/{data,logs,config/jvm.options.d}
+    insopts -m 0640 -o root -g ${MY_PN}
+    dodir /opt/${MY_PN}-${SLOT}/config
+    insinto /opt/${MY_PN}-${SLOT}/config
+    doins -r config/*
 
-    edo chown -R ${MY_PN}:${MY_PN} "${IMAGE}/opt/${MY_PN}-${SLOT}/config"
+    keepdir /opt/${MY_PN}-${SLOT}/{data,logs,config/jvm.options.d}
 }
 
 elasticsearch-bin_pkg_postinst() {
