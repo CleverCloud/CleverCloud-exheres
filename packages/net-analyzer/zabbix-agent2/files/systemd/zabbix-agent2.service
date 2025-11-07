@@ -1,0 +1,13 @@
+[Unit]
+Description=Zabbix Agent 2
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/zabbix_agent2 -f -c /etc/zabbix/zabbix_agent2.conf
+RuntimeDirectory=zabbix
+PIDFile=/run/zabbix/zabbix_agent2.pid
+User=zabbix
+
+[Install]
+WantedBy=multi-user.target

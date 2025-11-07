@@ -1,0 +1,48 @@
+# Distributed under the terms of the GNU General Public License v2
+
+require zabbix-common [ bin_name=zabbix_agent2 ]
+
+export_exlib_phases src_compile src_test
+
+RESTRICT="test"
+
+SYSTEMD_SERVICE_FILES=( "${FILES}/systemd/zabbix-agent2.service" )
+
+DEPENDENCIES+="
+    build:
+        dev-lang/go[>=1.23]
+    build+run:
+        sys-libs/zlib
+        group/zabbix
+        user/zabbix
+"
+
+DEFAULT_SRC_CONFIGURE_PARAMS+=(
+    --disable-agent
+    --disable-server
+    --disable-proxy
+    --disable-webservice
+    --disable-java
+    --enable-agent2
+)
+
+ZABBIX_SRC_INSTALL_KEEPDIRS=(
+    /etc/zabbix/zabbix_agent2.conf.d
+    /var/log/zabbix
+)
+
+zabbix-agent2_src_compile() {
+    emake AR="${AR}" RANLIB="${RANLIB}"
+}
+
+zabbix-agent2_src_test() {
+    TZ=UTC emake -C src/go AR="${AR}" RANLIB="${RANLIB}" check
+}
+
+zabbix_src_install_default() {
+    dobin src/go/bin/zabbix_agent2
+
+    insinto /etc/zabbix
+    insopts -m 0640 -o zabbix -g zabbix
+    doins src/go/conf/zabbix_agent2.conf
+}
