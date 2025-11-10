@@ -1,9 +1,9 @@
 # Copyright 2025 David Legrand <david.legrand@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-FERRETDB_COMMIT="0ad2ad90fa7419d1fbb0db41ec05faa36e312add"
+FERRETDB_COMMIT="0d5eb3343a50b800634cc08ace608bb6f3a3f74b"
 
-require github [ tag=v${PV} ] go [ go_minimum_version=1.24.0 bin_name="bin/ferretdb" package_path="./cmd/ferretdb" ]
+require github [ tag=v${PV} ] go [ go_minimum_version=1.25.0 bin_name="bin/ferretdb" package_path="./cmd/ferretdb" ]
 
 SUMMARY="A truly open source MongoDB alternative"
 
