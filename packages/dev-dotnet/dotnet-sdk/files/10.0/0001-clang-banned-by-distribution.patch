@@ -1,0 +1,431 @@
+From 656a92f19c2290acebd1488e7e002962ced1c959 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?S=C3=A9bastien=20Brunat?=
+ <sebastien.brunat@clever-cloud.com>
+Date: Wed, 23 Jul 2025 12:03:01 +0200
+Upstream: no
+Reason: clang banned by distribution
+
+---
+ eng/common/native/init-compiler.sh                              | 2 +-
+ src/arcade/eng/common/native/init-compiler.sh                   | 2 +-
+ src/aspnetcore/eng/common/native/init-compiler.sh               | 2 +-
+ src/cecil/eng/common/native/init-compiler.sh                    | 2 +-
+ src/command-line-api/eng/common/native/init-compiler.sh         | 2 +-
+ src/deployment-tools/eng/common/native/init-compiler.sh         | 2 +-
+ src/diagnostics/eng/common/native/init-compiler.sh              | 2 +-
+ src/efcore/eng/common/native/init-compiler.sh                   | 2 +-
+ src/emsdk/eng/common/native/init-compiler.sh                    | 2 +-
+ src/fsharp/eng/common/native/init-compiler.sh                   | 2 +-
+ src/msbuild/eng/common/native/init-compiler.sh                  | 2 +-
+ src/nuget-client/eng/common/native/init-compiler.sh             | 2 +-
+ src/razor/eng/common/native/init-compiler.sh                    | 2 +-
+ src/roslyn/eng/common/native/init-compiler.sh                   | 2 +-
+ src/runtime/eng/common/native/init-compiler.sh                  | 2 +-
+ src/runtime/eng/native/build-commons.sh                         | 2 +-
+ src/runtime/src/coreclr/build-runtime.sh                        | 2 +-
+ src/runtime/src/native/corehost/build.sh                        | 2 +-
+ src/runtime/src/native/libs/build-native.sh                     | 2 +-
+ src/scenario-tests/eng/common/native/init-compiler.sh           | 2 +-
+ src/sdk/eng/common/native/init-compiler.sh                      | 2 +-
+ .../eng/common/native/init-compiler.sh                          | 2 +-
+ src/sourcelink/eng/common/native/init-compiler.sh               | 2 +-
+ src/symreader/eng/common/native/init-compiler.sh                | 2 +-
+ src/templating/eng/common/native/init-compiler.sh               | 2 +-
+ src/vstest/eng/common/native/init-compiler.sh                   | 2 +-
+ src/windowsdesktop/eng/common/native/init-compiler.sh           | 2 +-
+ src/winforms/eng/common/native/init-compiler.sh                 | 2 +-
+ src/wpf/eng/common/native/init-compiler.sh                      | 2 +-
+ src/xdt/eng/common/native/init-compiler.sh                      | 2 +-
+ 30 files changed, 30 insertions(+), 30 deletions(-)
+
+diff --git a/eng/common/native/init-compiler.sh b/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/eng/common/native/init-compiler.sh
++++ b/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/arcade/eng/common/native/init-compiler.sh b/src/arcade/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/arcade/eng/common/native/init-compiler.sh
++++ b/src/arcade/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/aspnetcore/eng/common/native/init-compiler.sh b/src/aspnetcore/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/aspnetcore/eng/common/native/init-compiler.sh
++++ b/src/aspnetcore/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/cecil/eng/common/native/init-compiler.sh b/src/cecil/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100755
+--- a/src/cecil/eng/common/native/init-compiler.sh
++++ b/src/cecil/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/command-line-api/eng/common/native/init-compiler.sh b/src/command-line-api/eng/common/native/init-compiler.sh
+index 2d5660642b..48ee7fffd0 100644
+--- a/src/command-line-api/eng/common/native/init-compiler.sh
++++ b/src/command-line-api/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/deployment-tools/eng/common/native/init-compiler.sh b/src/deployment-tools/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/deployment-tools/eng/common/native/init-compiler.sh
++++ b/src/deployment-tools/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/diagnostics/eng/common/native/init-compiler.sh b/src/diagnostics/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/diagnostics/eng/common/native/init-compiler.sh
++++ b/src/diagnostics/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/efcore/eng/common/native/init-compiler.sh b/src/efcore/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/efcore/eng/common/native/init-compiler.sh
++++ b/src/efcore/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/emsdk/eng/common/native/init-compiler.sh b/src/emsdk/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/emsdk/eng/common/native/init-compiler.sh
++++ b/src/emsdk/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/fsharp/eng/common/native/init-compiler.sh b/src/fsharp/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/fsharp/eng/common/native/init-compiler.sh
++++ b/src/fsharp/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/msbuild/eng/common/native/init-compiler.sh b/src/msbuild/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/msbuild/eng/common/native/init-compiler.sh
++++ b/src/msbuild/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/nuget-client/eng/common/native/init-compiler.sh b/src/nuget-client/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/nuget-client/eng/common/native/init-compiler.sh
++++ b/src/nuget-client/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/razor/eng/common/native/init-compiler.sh b/src/razor/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/razor/eng/common/native/init-compiler.sh
++++ b/src/razor/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/roslyn/eng/common/native/init-compiler.sh b/src/roslyn/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/roslyn/eng/common/native/init-compiler.sh
++++ b/src/roslyn/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/runtime/eng/common/native/init-compiler.sh b/src/runtime/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/runtime/eng/common/native/init-compiler.sh
++++ b/src/runtime/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/runtime/eng/native/build-commons.sh b/src/runtime/eng/native/build-commons.sh
+index 2cf33442a9..98958e00da 100755
+--- a/src/runtime/eng/native/build-commons.sh
++++ b/src/runtime/eng/native/build-commons.sh
+@@ -358,7 +358,7 @@ while :; do
+             ;;
+
+         clang*|-clang*)
+-            __Compiler="$lowerI"
++            __Compiler=${CC}
+             ;;
+
+         cmakeargs|-cmakeargs)
+diff --git a/src/runtime/src/coreclr/build-runtime.sh b/src/runtime/src/coreclr/build-runtime.sh
+index 58d1d2eb00..e3fe84d20d 100755
+--- a/src/runtime/src/coreclr/build-runtime.sh
++++ b/src/runtime/src/coreclr/build-runtime.sh
+@@ -83,7 +83,7 @@ __BuildType=Debug
+ __CodeCoverage=0
+
+ # Set the various build properties here so that CMake and MSBuild can pick them up
+-__Compiler=clang
++__Compiler=${CC}
+ __CommonMSBuildArgs=
+ __ConfigureOnly=0
+ __CrossBuild=0
+diff --git a/src/runtime/src/native/corehost/build.sh b/src/runtime/src/native/corehost/build.sh
+index 6d112876e9..d5df1a1c9d 100755
+--- a/src/runtime/src/native/corehost/build.sh
++++ b/src/runtime/src/native/corehost/build.sh
+@@ -15,7 +15,7 @@ __TargetArch=x64
+ __TargetOS=linux
+ __BuildType=Debug
+ __CMakeArgs=""
+-__Compiler=clang
++__Compiler=${CC}
+ __CrossBuild=0
+ __PortableBuild=1
+ __RootBinDir="$__RepoRootDir/artifacts"
+diff --git a/src/runtime/src/native/libs/build-native.sh b/src/runtime/src/native/libs/build-native.sh
+index 5169732c2d..d3a4cd935d 100755
+--- a/src/runtime/src/native/libs/build-native.sh
++++ b/src/runtime/src/native/libs/build-native.sh
+@@ -39,7 +39,7 @@ __TargetArch=x64
+ __TargetOS=linux
+ __BuildType=Debug
+ __CMakeArgs=""
+-__Compiler=clang
++__Compiler=${CC}
+ __CrossBuild=0
+ __PortableBuild=1
+ __RootBinDir="$__RepoRootDir/artifacts"
+diff --git a/src/scenario-tests/eng/common/native/init-compiler.sh b/src/scenario-tests/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100755
+--- a/src/scenario-tests/eng/common/native/init-compiler.sh
++++ b/src/scenario-tests/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/sdk/eng/common/native/init-compiler.sh b/src/sdk/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/sdk/eng/common/native/init-compiler.sh
++++ b/src/sdk/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/source-build-reference-packages/eng/common/native/init-compiler.sh b/src/source-build-reference-packages/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/source-build-reference-packages/eng/common/native/init-compiler.sh
++++ b/src/source-build-reference-packages/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/sourcelink/eng/common/native/init-compiler.sh b/src/sourcelink/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/sourcelink/eng/common/native/init-compiler.sh
++++ b/src/sourcelink/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/symreader/eng/common/native/init-compiler.sh b/src/symreader/eng/common/native/init-compiler.sh
+index 62900e12b2..7a2aa0461e 100644
+--- a/src/symreader/eng/common/native/init-compiler.sh
++++ b/src/symreader/eng/common/native/init-compiler.sh
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/templating/eng/common/native/init-compiler.sh b/src/templating/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/templating/eng/common/native/init-compiler.sh
++++ b/src/templating/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/vstest/eng/common/native/init-compiler.sh b/src/vstest/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/vstest/eng/common/native/init-compiler.sh
++++ b/src/vstest/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/windowsdesktop/eng/common/native/init-compiler.sh b/src/windowsdesktop/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/windowsdesktop/eng/common/native/init-compiler.sh
++++ b/src/windowsdesktop/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/winforms/eng/common/native/init-compiler.sh b/src/winforms/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100755
+--- a/src/winforms/eng/common/native/init-compiler.sh
++++ b/src/winforms/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/wpf/eng/common/native/init-compiler.sh b/src/wpf/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/wpf/eng/common/native/init-compiler.sh
++++ b/src/wpf/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+diff --git a/src/xdt/eng/common/native/init-compiler.sh b/src/xdt/eng/common/native/init-compiler.sh
+index 9a0e1f2b45..aab5eeef95 100644
+--- a/src/xdt/eng/common/native/init-compiler.sh
++++ b/src/xdt/eng/common/native/init-compiler.sh
+@@ -22,7 +22,7 @@ case "$compiler" in
+
+         # LLVM based on v18 released in early 2024, with two releases per year
+         maxVersion="$((18 + ((($(date +%Y) - 2024) * 12 + $(date +%-m) - 3) / 6)))"
+-        compiler=clang
++        compiler=${CC}
+         ;;
+
+     gcc*|-gcc*|--gcc*)
+--
+2.50.1
