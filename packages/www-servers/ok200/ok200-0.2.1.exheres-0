@@ -1,0 +1,17 @@
+# Copyright 2025 David Legrand <david.legrand@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=CleverCloud ]
+
+SUMMARY="A minimal HTTP server that never disagrees"
+
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64 ~armv8"
+MYOPTIONS=""
+
+DEFAULT_SRC_INSTALL_PARAMS=(
+    DESTDIR="${IMAGE}"
+    PREFIX="/usr/$(exhost --target)"
+    BINARY_REL="bin"
+)
