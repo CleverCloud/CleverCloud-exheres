@@ -80,6 +80,7 @@ elasticsearch-bin_src_install() {
     doins "${FILES}"/sysctl/*-${SLOT}*
     insinto /etc/sysconfig
     doins "${FILES}"/sysconfig/*-${SLOT}*
+
     hereenvd 99${MY_PN}-${SLOT} <<EOF
 CONFIG_PROTECT="/opt/${MY_PN}-${SLOT}/config"
 EOF
@@ -93,7 +94,18 @@ EOF
                 -i "${IMAGE}/etc/sysconfig/${MY_PN}-${SLOT}"
         fi
     else
-        doins -r jdk
+        # Install bundled JDK using proper exherbo functions
+        # Install JDK data directories first
+        insinto /opt/${MY_PN}-${SLOT}/jdk
+        doins -r jdk/conf jdk/include jdk/jmods jdk/legal jdk/lib jdk/release
+
+        # Install JDK executables from bin (after doins to set correct permissions)
+        exeinto /opt/${MY_PN}-${SLOT}/jdk/bin
+        doexe jdk/bin/*
+
+        # Install critical lib executables (jspawnhelper needed for process spawning)
+        exeinto /opt/${MY_PN}-${SLOT}/jdk/lib
+        doexe jdk/lib/jspawnhelper jdk/lib/jexec
     fi
 
     diropts -m 0750 -o ${MY_PN} -g ${MY_PN}
