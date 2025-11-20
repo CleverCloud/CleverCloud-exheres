@@ -4,13 +4,15 @@
 require github [ user="npm" tag="v${PV}" ]
 
 SUMMARY="The semver parser for node (the one npm uses)"
-PLATFORMS="~amd64 ~x86"
-SLOT="0"
+
 LICENCES="ISC"
+SLOT="0"
+PLATFORMS="~amd64 ~x86"
+MYOPTIONS=""
+
 DEPENDENCIES="
     run:
-	dev-node/node-lru-cache
-        dev-lang/node
+        dev-lang/node[>=10]
 "
 
 src_unpack() {
@@ -26,6 +28,7 @@ src_unpack() {
 }
 
 src_test() {
+    edo npx template-oss-apply --force
     edo npm test
 
     # Clean up tests reports
@@ -38,7 +41,7 @@ src_install() {
 
     edo mkdir -p "${IMAGE}"/${node_modules}
     edo mkdir -p "${IMAGE}"/${target}
-    edo rm "${WORKBASE}/${PNV}"/{node_modules,.gitignore,.travis.yml,test,package-lock.json} -r
+    edo rm -r "${WORKBASE}/${PNV}"/{.*,node_modules,test}
     edo mv "${WORKBASE}/${PNV}" "${IMAGE}"/${node_modules}/semver
 
     dosym ${node_modules}/semver/bin/semver.js ${target}/semver
