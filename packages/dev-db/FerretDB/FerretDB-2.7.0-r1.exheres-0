@@ -4,6 +4,7 @@
 FERRETDB_COMMIT="0d5eb3343a50b800634cc08ace608bb6f3a3f74b"
 
 require github [ tag=v${PV} ] go [ go_minimum_version=1.25.0 bin_name="bin/ferretdb" package_path="./cmd/ferretdb" ]
+require systemd-service [ systemd_files=[ build/ferretdb.service ] ]
 
 SUMMARY="A truly open source MongoDB alternative"
 
@@ -26,5 +27,11 @@ src_test() {
     edo pushd cmd/ferretdb
     edo go test -c -o /dev/null ./...
     popd
+}
+
+src_install() {
+    go_src_install
+
+    install_systemd_files
 }
 
