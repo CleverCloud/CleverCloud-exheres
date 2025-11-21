@@ -1,7 +1,7 @@
 # Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require php-pecl [ module=module php_abis=[ 8.4 ] ]
+require php-pecl [ module=module php_abis=[ 8.4 8.5 ] ]
 
 SUMMARY="This extension allows you to check the spelling of a word and offer suggestions"
 PLATFORMS="~amd64"
