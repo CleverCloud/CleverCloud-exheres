@@ -1,7 +1,7 @@
 # Copyright 2024 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require php-pecl [ module=module php_abis=[ 8.1 8.2 8.3 8.4 ] ]
+require php-pecl [ module=module php_abis=[ 8.1 8.2 8.3 8.4 8.5 ] ]
 
 SUMMARY="YAML-1.1 parser and emitter"
 PLATFORMS="~amd64"
