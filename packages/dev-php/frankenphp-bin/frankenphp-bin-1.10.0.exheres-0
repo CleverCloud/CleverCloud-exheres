@@ -20,6 +20,10 @@ MYOPTIONS="
 
 DEPENDENCIES=""
 
+RESTRICT="
+    platform:amd64? ( strip )
+"
+
 WORK="${WORKBASE}"
 
 src_install() {
