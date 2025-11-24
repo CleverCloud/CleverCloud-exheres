@@ -1,7 +1,7 @@
 # Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require php-pecl [ module=module php_abis=[ 7.0 7.1 7.2 7.3 7.4 8.0 8.1 8.2 8.3 8.4 ] ]
+require php-pecl [ module=module php_abis=[ 7.0 7.1 7.2 7.3 7.4 8.0 8.1 8.2 8.3 8.4 8.5 ] ]
 
 SUMMARY="A high performance, open source, general RPC framework that puts mobile and HTTP/2 first"
 PLATFORMS="~amd64"
@@ -10,7 +10,10 @@ SLOT="0"
 
 MYOPTIONS=""
 DEPENDENCIES="
-    run: 
+    run:
         dev-libs/grpc
 "
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/40842-php8.5-support.patch
+)
