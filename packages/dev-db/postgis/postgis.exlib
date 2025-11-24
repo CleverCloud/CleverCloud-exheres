@@ -2,8 +2,8 @@
 # Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-myexparam min_version
-myexparam max_version
+myexparam min_version=
+myexparam max_version=
 
 require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" ]
 
@@ -54,4 +54,3 @@ configure_one_multibuild() {
 
     econf "${options[@]}"
 }
-
