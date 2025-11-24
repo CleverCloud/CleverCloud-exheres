@@ -1,8 +1,8 @@
 # Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-myexparam min_version
-myexparam max_version
+myexparam min_version=
+myexparam max_version=
 exparam -v MIN_VERSION min_version
 exparam -v MAX_VERSION max_version
 
@@ -45,4 +45,3 @@ compile_one_multibuild() {
 install_one_multibuild() {
     edo cd build && default
 }
-
