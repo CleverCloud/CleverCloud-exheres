@@ -1,8 +1,8 @@
 # Copyright 2025 Aurélien Hébert <aurelien.hebert@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-myexparam min_version
-myexparam max_version
+myexparam min_version=
+myexparam max_version=
 
 require github [ user=pgaudit tag="${PV}" ]
 require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" ]
