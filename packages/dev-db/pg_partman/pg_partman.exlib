@@ -1,8 +1,8 @@
 # Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-myexparam min_version
-myexparam max_version
+myexparam min_version=
+myexparam max_version=
 
 require github [ user="pgpartman" tag="v${PV}" ]
 require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" ]
@@ -12,4 +12,3 @@ LICENCES="PostgreSQL"
 SLOT="$(ever major)"
 
 DEPENDENCIES=""
-

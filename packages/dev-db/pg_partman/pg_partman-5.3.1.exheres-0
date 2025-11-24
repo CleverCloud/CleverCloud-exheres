@@ -1,7 +1,6 @@
 # Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require pg_partman [ min_version=13 max_version=13 ]
+require pg_partman
 
 PLATFORMS="~amd64"
-
