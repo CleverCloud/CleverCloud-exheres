@@ -1,6 +1,6 @@
 # Copyright 2025 Aurélien Hébert <aurelien.hebert@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require rum [ min_version="13" max_version="17" ]
+require rum
 
 PLATFORMS="~amd64"
