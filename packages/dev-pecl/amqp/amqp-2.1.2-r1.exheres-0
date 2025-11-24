@@ -5,3 +5,6 @@ require amqp
 
 PLATFORMS="~amd64"
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/595-php8.5-support.patch
+)
