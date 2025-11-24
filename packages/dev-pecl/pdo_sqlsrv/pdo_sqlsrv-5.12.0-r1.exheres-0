@@ -1,7 +1,7 @@
 # Copyright 2025 Tristan Charbonneau <tristan.charbonneau@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require php-pecl [ module=module php_abis=[ 8.1 8.2 8.3 8.4 ] ]
+require php-pecl [ module=module php_abis=[ 8.1 8.2 8.3 8.4 8.5 ] ]
 
 SUMMARY="Microsoft Drivers for PHP for SQL Server (PDO_SQLSRV)"
 PLATFORMS="~amd64"
@@ -15,3 +15,6 @@ DEPENDENCIES="
         dev-db/msodbcsql
 "
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/1543-php8.5-support.patch
+)
