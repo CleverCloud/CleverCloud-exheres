@@ -4,6 +4,7 @@ require zabbix-common [ bin_name=zabbix_agent2 ]
 
 export_exlib_phases src_compile src_test
 
+SLOT="0"
 RESTRICT="test"
 
 SYSTEMD_SERVICE_FILES=( "${FILES}/systemd/zabbix-agent2.service" )
