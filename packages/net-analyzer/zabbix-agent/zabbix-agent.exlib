@@ -4,10 +4,15 @@
 
 require zabbix-common [ bin_name=${PN}d ]
 
+export_exlib_phases src_install
+
 SLOT="0"
 MYOPTIONS=""
 
-DEPENDENCIES=""
+DEPENDENCIES="
+    build+run:
+        net-analyzer/zabbix-sender:"$(ever major)"
+"
 
 DEFAULT_SRC_CONFIGURE_PARAMS+=(
     --enable-agent
@@ -20,3 +25,8 @@ ZABBIX_SRC_INSTALL_KEEPDIRS=(
     /etc/zabbix/zabbix_agentd.conf.d
 )
 
+zabbix-agent_src_install() {
+    zabbix-common_src_install
+    edo rm "${IMAGE}"/usr/$(exhost --target)/bin/zabbix_sender
+    edo rm "${IMAGE}"/usr/share/man/man1/zabbix_sender.1
+}

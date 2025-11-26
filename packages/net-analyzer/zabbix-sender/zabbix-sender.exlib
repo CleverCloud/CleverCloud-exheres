@@ -1,0 +1,27 @@
+# Distributed under the terms of the GNU General Public License v2
+
+require zabbix-common [ bin_name=zabbix_sender ]
+require alternatives
+
+export_exlib_phases src_install
+
+SUMMARY="Zabbix sender - command line utility to send monitoring data"
+SLOT="$(ever major)"
+
+
+DEFAULT_SRC_CONFIGURE_PARAMS+=(
+    --enable-agent
+    --disable-server
+    --disable-proxy
+)
+
+zabbix-sender_src_install() {
+    newbin src/zabbix_sender/zabbix_sender zabbix_sender-${SLOT}
+    newman man/zabbix_sender.man zabbix_sender-${SLOT}.1
+
+    alternatives_for zabbix_sender ${SLOT} ${SLOT} \
+        /usr/$(exhost --target)/bin/zabbix_sender zabbix_sender-${SLOT} \
+        /usr/share/man/man1/zabbix_sender.1 zabbix_sender-${SLOT}.1
+
+    emagicdocs
+}
