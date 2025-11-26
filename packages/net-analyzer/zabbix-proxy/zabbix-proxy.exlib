@@ -3,6 +3,8 @@
 
 require zabbix-common [ bin_name=${PN} ]
 
+SLOT="0"
+
 MYOPTIONS=""
 
 DEPENDENCIES="

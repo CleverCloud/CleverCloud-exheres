@@ -4,6 +4,7 @@
 
 require zabbix-common [ bin_name=${PN}d ]
 
+SLOT="0"
 MYOPTIONS=""
 
 DEPENDENCIES=""

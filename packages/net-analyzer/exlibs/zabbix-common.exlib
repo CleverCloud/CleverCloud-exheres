@@ -13,7 +13,6 @@ HOMEPAGE="https://www.zabbix.com"
 DOWNLOADS="https://cdn.zabbix.com/zabbix/sources/stable/$(ever range 1-2)/zabbix-${PV}.tar.gz"
 
 LICENCES="GPL-2"
-SLOT="0"
 MYOPTIONS="
     snmp
     ( providers: libressl openssl ) [[ number-selected = exactly-one ]]

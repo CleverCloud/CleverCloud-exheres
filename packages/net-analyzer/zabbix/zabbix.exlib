@@ -9,6 +9,8 @@ MYOPTIONS="
     java [[ description = [ Install the Java Gateway for JMX monitoring ] ]]
 "
 
+SLOT="0"
+
 DEPENDENCIES="
     build+run:
         dev-db/postgresql-client
