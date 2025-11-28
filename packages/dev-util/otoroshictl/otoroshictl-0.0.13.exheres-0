@@ -1,0 +1,14 @@
+# Copyright 2025 David Legrand <david.legrand@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cargo
+
+SUMMARY="A CLI to manage your Otoroshi clusters with style"
+HOMEPAGE="https://cloud-apim.github.io/otoroshictl"
+
+LICENCES="Apache-2.0 MIT"
+SLOT="0"
+PLATFORMS="~amd64 ~armv8"
+
+DEPENDENCIES=""
+
