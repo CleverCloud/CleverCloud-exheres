@@ -10,8 +10,8 @@ SLOT="0"
 MYOPTIONS=""
 
 DEPENDENCIES="
-    build+run:
-        net-analyzer/zabbix-sender:"$(ever major)"
+    post:
+        net-analyzer/zabbix-sender:$(ever major)
 "
 
 DEFAULT_SRC_CONFIGURE_PARAMS+=(

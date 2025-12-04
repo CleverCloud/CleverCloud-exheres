@@ -8,6 +8,16 @@ export_exlib_phases src_install
 SUMMARY="Zabbix sender - command line utility to send monitoring data"
 SLOT="$(ever major)"
 
+DEPENDENCIES="
+    run:
+        (
+            !net-analyzer/zabbix-agent[<4.0.3-r2]
+            !net-analyzer/zabbix-agent[>=7&<7.0.21-r1]
+        ) [[
+            *description = [ split executable ]
+            *resolution = upgrade-blocked-before
+        ]]
+"
 
 DEFAULT_SRC_CONFIGURE_PARAMS+=(
     --enable-agent

@@ -25,6 +25,8 @@ DEPENDENCIES="
         group/zabbix
         user/zabbix
         snmp? ( net/net-snmp )
+    post:
+        net-analyzer/zabbix-sender:$(ever major)
 "
 
 DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( 'ipv6')
@@ -43,6 +45,9 @@ WORK="${WORKBASE}"/zabbix-${PV}
 
 src_install() {
     default
+
+    edo rm "${IMAGE}"/usr/$(exhost --target)/bin/zabbix_sender
+    edo rm "${IMAGE}"/usr/share/man/man1/zabbix_sender.1
 
     install_systemd_files
     insinto /usr/$(exhost --target)/lib/tmpfiles.d
