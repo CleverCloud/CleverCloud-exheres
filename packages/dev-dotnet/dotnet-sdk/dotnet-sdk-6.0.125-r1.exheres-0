@@ -8,5 +8,5 @@ require dotnet-sdk [ dotnet_project="installer" \
     dotnet_tag="v${PV}" \
     dotnet_tarball="${WORKBASE}/dotnet-sources/artifacts/x64/Release/${PNV}-exherbo-x64.tar.gz" \
     dotnet_runtime="${SLOT}.25" \
-    llvm_slot=15 ]
+    llvm_slots=[ 15 ] ]
 
