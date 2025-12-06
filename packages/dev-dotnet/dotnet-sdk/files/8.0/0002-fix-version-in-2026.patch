@@ -1,0 +1,18 @@
+Written by: Pierre Lejeune <superheron@gmail.com>
+Upstream: no, adapted for dotnet-sdk:8.0 from PR 4043
+Reason: Fix versions calculcations when building in 2026+
+
+--- /dev/null
++++ b/src/source-build-externals/patches/azure-activedirectory-identitymodel-extensions-for-dotnet/0003-Fix-assembly-version-calculation-in-2026.patch
+@@ -0,0 +1,11 @@
++--- a/updateAssemblyInfo.sh	2026-01-12 18:31:59.484761088 +0100
+++++ b/updateAssemblyInfo.sh	2026-01-12 18:57:02.076874128 +0100
++@@ -10,7 +10,7 @@
++ dateTimeStamp=$(echo $((10#${date:0:2}-19)))${date:2}
++ 
++ assemblyVersion=$(sed -n 's/.*<assemblyVersion>\([^<]*\)<.*/\1/p' ${scriptroot}/buildConfiguration.xml)
++-assemblyFileVersion="$assemblyVersion.${dateTimeStamp::$((${#dateTimeStamp} - 6))}" # Trim minutes/seconds
+++assemblyFileVersion="$assemblyVersion.$((61232 + ${dateTimeStamp:0:1} * 416 + ${dateTimeStamp:1:2} * 32 + ${dateTimeStamp:3:2}))"
++ assemblyInformationalVersion="$assemblyVersion.$dateTimeStamp"
++ 
++ echo "assemblyVersion: $assemblyVersion"
