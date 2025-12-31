@@ -8,7 +8,7 @@ export_exlib_phases src_unpack src_configure src_compile src_test src_install
 
 SUMMARY="PowerDNS Recursive Server"
 HOMEPAGE="https://www.powerdns.com"
-DOWNLOADS="https://downloads.powerdns.com/releases/${PNV}.tar.bz2"
+DOWNLOADS="https://downloads.powerdns.com/releases/${PNV}.tar.xz"
 
 LICENCES="GPL-2"
 SLOT="0"
@@ -56,7 +56,7 @@ DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=( systemd )
 pdns-recursor_src_unpack() {
     default
 
-    edo pushd "${WORK}"/settings/rust
+    edo pushd "${WORK}"/rec-rust-lib/rust
     ecargo_fetch
     edo popd
 }
