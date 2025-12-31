@@ -7,7 +7,7 @@ export_exlib_phases src_configure src_install
 
 SUMMARY="A highly DNS-, DoS- and abuse-aware loadbalancer. By the PowerDNS folks."
 HOMEPAGE="https://dnsdist.org"
-DOWNLOADS="https://downloads.powerdns.com/releases/${PNV}.tar.bz2"
+DOWNLOADS="https://downloads.powerdns.com/releases/${PNV}.tar.xz"
 
 LICENCES="GPL-2"
 SLOT="0"

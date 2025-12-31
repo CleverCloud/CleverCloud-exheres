@@ -5,3 +5,7 @@ require dnsdist
 
 PLATFORMS="~amd64"
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/a279a1453094d0abfc847aa790bc82addc14cc62.patch
+)
+
