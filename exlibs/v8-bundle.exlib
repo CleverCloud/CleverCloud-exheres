@@ -31,7 +31,7 @@ scm_deps_repositories=(
     "https://gn.googlesource.com/gn"
     "https://chromium.googlesource.com/chromium/src/build"
     "https://chromium.googlesource.com/chromium/src/buildtools"
-    "https://chromium.googlesource.com/chromium/llvm-project/cfe/tools/clang-format"
+    "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format"
     "https://chromium.googlesource.com/chromium/tools/depot_tools"
     "https://chromium.googlesource.com/chromium/deps/icu"
     "https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libcxx"
@@ -65,6 +65,9 @@ SCM_NO_AUTOMATIC_FINALISE=1
 SCM_SECONDARY_REPOSITORIES="${scm_deps[@]}"
 
 require scm-git providers
+require dependencies-helpers
+require python [ has_lib=false ]
+require versionator
 
 # We need to set that for submodules to be put in the correct place
 SCM_REPOSITORY=https://github.com/v8/v8
@@ -82,6 +85,16 @@ done
 
 scm_finalise
 
+# Build V8 bundle supported Python slots (3.x where x < 12)
+# Sorted highest first so get_best_slot_dependency returns the newest
+V8_BUNDLE_SUPPORTED_PYTHON_SLOTS=( $(
+    for slot in $(version_sort_highest_first ${PYTHON_AVAILABLE_ABIS}); do
+        if ever at_least 3 ${slot} && ! ever at_least 3.12 ${slot}; then
+            echo ${slot}
+        fi
+    done
+) )
+
 MYOPTIONS="
     platform:
         x86
@@ -90,7 +103,7 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build:
-        dev-lang/python:*[<3]
+        $(print_slot_dependencies dev-lang/python "${V8_BUNDLE_SUPPORTED_PYTHON_SLOTS[@]}")
 "
 
 RESTRICT="test"
@@ -103,6 +116,12 @@ v8_platform() {
     fi
 }
 
+v8-bundle_set_python_providers() {
+    providers_set 'python 3'
+    local python3_slot=$(get_best_slot_dependency dev-lang/python "${V8_BUNDLE_SUPPORTED_PYTHON_SLOTS[@]}")
+    providers_set "python3 ${python3_slot}"
+}
+
 export_exlib_phases src_unpack src_prepare src_compile src_test
 
 scm_multiunpack_hook() {
@@ -111,12 +130,6 @@ scm_multiunpack_hook() {
 
 v8-bundle_unpack() {
     scm_src_unpack
-
-    pushd "${V8_WORK}"
-    esandbox disable_net
-    edo third_party/depot_tools/vpython -vpython-tool install
-    esandbox enable_net
-    popd
 }
 
 v8-bundle_src_unpack() {
@@ -156,12 +169,13 @@ v8-bundle_src_prepare() {
 
 v8-bundle_compile() {
 (
-    providers_set 'python 2'
+    v8-bundle_set_python_providers
+
     export PATH="${V8_WORK}/third_party/depot_tools:${PATH}"
 
     pushd "${V8_WORK}"
     pushd gn
-    python build/gen.py
+    CXXFLAGS="${CXXFLAGS} -Wno-error=redundant-move -Wno-template-id-cdtor" python build/gen.py
     edo ninja -v -j${EXJOBS:-1} -C out
     edo cp out/gn "${V8_WORK}"/buildtools/linux64
     popd
@@ -184,12 +198,16 @@ v8_enable_verify_heap = true
 v8_enable_i18n_support = true
 v8_monolithic=true
 v8_use_external_startup_data=false
-v8_enable_pointer_compression=true
+v8_enable_pointer_compression=false
+v8_enable_pointer_compression_shared_cage=false
+cppgc_enable_pointer_compression=false
 is_clang = false
 use_sysroot = false
 use_custom_libcxx=false
 use_goma = false
 goma_dir = "None"
+use_gold = false
+treat_warnings_as_errors = false
 EOF
 
     edo gn gen out/$(v8_platform).release
@@ -208,7 +226,7 @@ v8-bundle_src_compile() {
 
 v8-bundle_test() {
 (
-    providers_set 'python 2'
+    v8-bundle_set_python_providers
     edo tools/dev/gm.py $(v8_platform).release.check
 )
 }

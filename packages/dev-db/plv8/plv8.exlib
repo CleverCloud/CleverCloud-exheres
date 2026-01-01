@@ -4,21 +4,21 @@
 
 # Revisions for SCM dependencies
 # These deps can be found in the DEPS file at the root of the v8 project
-v8_revision="6ababec33dea8a86e3477a727a5ecaaa310708ab"
-gn_revision="eea3906f0e2a8d3622080127d2005ff214d51383"
-build_revision="bbf7f0ed65548c4df862d2a2748e3a9b908a3217"
-buildtools_revision="b00ad0af636401e5eb4b5d0ab01b65164dca1914"
-script_revision="96636aa0e9f047f17447f2d45a094d0b59ed7917"
-depot_tools_revision="25f1303ed83e97fe62c5365be597cef269612c65"
-icu_revision="75e34bcccea0be165c31fdb278b3712c516c5876"
-libc_revision="d9040c75cfea5928c804ab7c235fed06a63f743a"
-libcabi_revision="196ba1aaa8ac285d94f4ea8d9836390a45360533"
-trace_event_revision="3da1e2fcf66acd5c7194497b4285ac163f32e239"
-zlib_revision="563140dd9c24f84bf40919196e9e7666d351cc0d"
-googletest_revision="47f819c3ca54fb602f432904443e00a0a1fe2f42"
-google_benchmark_revision="7f27afe83b82f3a98baf58ef595814b9d42a5b2b"
-jinja2_revision="ee69aa00ee8536f61db6a451f3858745cf587de6"
-markupsafe_revision="1b882ef6372b58bfd55a3285f37ed801be9137cd"
+v8_revision="07c05c4b8c5e8916e604c09692d7b6e1813c606e"
+gn_revision="e9e83d9095d3234adf68f3e2866f25daf766d5c7"
+build_revision="7f93a1e7ae8de96f113834f37d01b869a74b7dd3"
+buildtools_revision="5d2ccbf93c7d956a9aff1d0acd21155e6b515ceb"
+script_revision="f97059df7f8b205064625cdb5f97b56668a125ef"
+depot_tools_revision="4d73c057d82ac5994d992f0b1f57ca6d513c3554"
+icu_revision="a2961dc659b4ae847a9c6120718cc2517ee57d9e"
+libc_revision="f8279b01085b800724f5c5629dc365b9f040dc53"
+libcabi_revision="982e218cb8a2d11979e241f483fff904468f6057"
+trace_event_revision="147f65333c38ddd1ebf554e89965c243c8ce50b3"
+zlib_revision="14dd4c4455602c9b71a1a89b5cafd1f4030d2e3f"
+googletest_revision="af29db7ec28d6df1c7f0f745186884091e602e07"
+google_benchmark_revision="b177433f3ee2513b1075140c723d73ab8901790f"
+jinja2_revision="264c07d7e64f2874434a3b8039e101ddf1b01e7e"
+markupsafe_revision="13f4e8c9e206567eeb13bf585406ddc574005748"
 
 require github [ tag=v${PV} ]
 require postgresql
@@ -33,6 +33,10 @@ DEPENDENCIES="
     build+run:
         dev-libs/icu:*
 "
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/bypass-v8-cmake.patch
+)
 
 export_exlib_phases src_unpack src_prepare src_compile
 
@@ -49,9 +53,10 @@ plv8_src_prepare() {
 prepare_one_multibuild() {
     default
     postgresql_prepare_one_multilib
-    edo sed \
-        -e '/Makefile.linux/d' \
-        -i Makefile
+
+    # Link V8 headers from our build
+    edo mkdir -p deps/v8-cmake/v8
+    edo ln -sf "${V8_WORK}/include" deps/v8-cmake/v8/include
 }
 
 plv8_src_compile() {
@@ -60,7 +65,10 @@ plv8_src_compile() {
 }
 
 compile_one_multibuild() {
-    emake CUSTOM_CC=$(exhost --tool-prefix)g++ V8_OUTDIR="${V8_WORK}/out/$(v8_platform).release/obj" AUTOV8_OUT="${V8_WORK}/out/$(v8_platform).release/obj" AUTOV8_DIR="${V8_WORK}" AUTOV8_STATIC_LIBS=-lv8_monolith all
+    emake \
+        CUSTOM_CC=$(exhost --tool-prefix)g++ \
+        V8_LIB_PATH="${V8_WORK}/out/$(v8_platform).release/obj" \
+        all
 }
 
 install_one_multibuild() {

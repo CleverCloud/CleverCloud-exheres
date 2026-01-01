@@ -1,0 +1,22 @@
+From: Aurélien Hébert <aurelien.hebert@clever-cloud.com>
+Date: Thu, 2 Jan 2025 00:00:00 +0100
+Subject: [PATCH] cppgc: Fix include
+Upstream: no
+
+Add <algorithm> to cover for std::remove.
+
+GCC 14 requires explicit includes due to stricter C++20 compliance.
+---
+ src/heap/cppgc/stats-collector.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/heap/cppgc/stats-collector.h b/src/heap/cppgc/stats-collector.h
+--- a/src/heap/cppgc/stats-collector.h
++++ b/src/heap/cppgc/stats-collector.h
+@@ -9,6 +9,7 @@
+ #include <stdint.h>
+
++#include <algorithm>
+ #include <atomic>
+ #include <vector>
+
