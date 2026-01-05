@@ -1,11 +1,10 @@
 # Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-MY_PV="${PV//./_}"
-
-require github [ user="pgpool" tag="V${MY_PV}" ]
-require postgresql [ work="${PN}-${MY_PV}" multibuild=false ]
+require postgresql [ work="pgpool-II-${PV}" multibuild=false ]
 require systemd-service [ systemd_files=[ ${FILES}/systemd/${PN}.service ] ]
+
+DOWNLOADS="https://www.pgpool.net/mediawiki/download.php?f=pgpool-II-${PV}.tar.gz -> ${PNV}.tar.gz"
 
 DESCRIPTION="Pgpool-II is a middleware that works between PostgreSQL servers and a PostgreSQL database client"
 SUMMARY="Connection pool server for PostgreSQL"
