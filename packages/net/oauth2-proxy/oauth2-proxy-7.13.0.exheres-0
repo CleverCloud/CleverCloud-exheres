@@ -1,0 +1,21 @@
+# Copyright 2026 David Legrand <david.legrand@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require go [ go_minimum_version=1.25.5 ] github [ tag=v${PV} ]
+
+SUMMARY="A reverse proxy that provides authentication with Google, Azure, OpenID Connect and many more identity providers"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64 ~armv8"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+# LDFLAGS from Makefile
+GO_SRC_COMPILE_LDFLAGS=(
+    "-s"
+    "-w"
+    "-X github.com/oauth2-proxy/oauth2-proxy/v7/pkg/version.VERSION=${PV}"
+)
+
