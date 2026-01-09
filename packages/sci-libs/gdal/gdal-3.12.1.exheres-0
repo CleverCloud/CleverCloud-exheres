@@ -5,3 +5,7 @@ require gdal
 
 PLATFORMS="~amd64"
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/979604d97720287416742ef264977f0e53a84aa8.patch
+)
+
