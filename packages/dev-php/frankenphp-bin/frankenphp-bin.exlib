@@ -1,0 +1,33 @@
+# Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+export_exlib_phases src_install
+
+SUMMARY="The modern PHP app server"
+HOMEPAGE="https://frankenphp.dev/"
+
+MY_PN="frankenphp"
+
+DOWNLOADS="
+    platform:amd64? ( https://github.com/php/frankenphp/releases/download/v${PV}/frankenphp-linux-x86_64-gnu -> ${PNV} )
+    platform:armv8? ( https://github.com/php/frankenphp/releases/download/v${PV}/frankenphp-linux-aarch64-gnu  -> ${PNV} )
+"
+
+LICENCES="MIT"
+SLOT="0"
+MYOPTIONS="
+    ( platform: amd64 armv8 )
+"
+
+DEPENDENCIES=""
+
+RESTRICT="
+    platform:amd64? ( strip )
+"
+
+WORK="${WORKBASE}"
+
+frankenphp-bin_src_install() {
+    newbin "${FETCHEDDIR}"/${PNV} ${MY_PN}
+}
+
