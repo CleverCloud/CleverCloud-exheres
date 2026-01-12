@@ -1,6 +1,8 @@
 # Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
+require alternatives
+
 export_exlib_phases src_install
 
 SUMMARY="The modern PHP app server"
@@ -14,12 +16,19 @@ DOWNLOADS="
 "
 
 LICENCES="MIT"
-SLOT="0"
+SLOT="$(ever range 1-2)"
 MYOPTIONS="
     ( platform: amd64 armv8 )
 "
 
-DEPENDENCIES=""
+DEPENDENCIES="
+    build+run:
+        !${CATEGORY}/${PN}:0 [[
+            description = [ Slotify frankenphp-bin ]
+            resolution = uninstall-blocked-before
+        ]]
+
+"
 
 RESTRICT="
     platform:amd64? ( strip )
@@ -28,6 +37,9 @@ RESTRICT="
 WORK="${WORKBASE}"
 
 frankenphp-bin_src_install() {
-    newbin "${FETCHEDDIR}"/${PNV} ${MY_PN}
+    newbin "${FETCHEDDIR}"/${PNV} ${MY_PN}-${SLOT}
+
+    alternatives_for "${MY_PN}" "${SLOT}" "${SLOT}" \
+        /usr/$(exhost --target)/bin/${MY_PN} ${MY_PN}-${SLOT}
 }
 
