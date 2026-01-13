@@ -1,0 +1,58 @@
+# Copyright 2025 Lisa Carrier <lisa.carrier@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ release=v${PV} suffix=tar.gz ]
+
+SUMMARY="AIDE (Advanced Intrusion Detection Environment) is a file integrity checker"
+HOMEPAGE+=" https://aide.github.io/"
+
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS="
+    audit [[ description = [ Log AIDE operations to Linux audit subsystem ] ]] 
+    selinux
+    ( providers: libgcrypt nettle ) [[ number-selected = exactly-one ]]
+"
+
+DEPENDENCIES="
+    build:
+        sys-devel/bison
+        sys-devel/flex
+        virtual/pkg-config
+    build+run:
+        dev-libs/pcre2
+        net-misc/curl
+        sys-apps/acl
+        sys-apps/attr
+        sys-fs/e2fsprogs
+        sys-libs/zlib
+        audit? ( app-admin/audit )
+        providers:libgcrypt? ( dev-libs/libgcrypt:= )
+        providers:nettle? ( dev-libs/nettle:= )
+        selinux? ( security/libselinux[>=3.4] )
+"
+
+DEFAULT_SRC_CONFIGURE_OPTION_WITHS=( 
+    audit
+    'providers:nettle nettle'
+    'providers:libgcrypt gcrypt'
+    selinux
+)
+
+DEFAULT_SRC_CONFIGURE_PARAMS=( 
+    --with-posix-acl
+    --with-curl
+    --with-e2fsattrs
+    --with-xattr
+)
+
+src_install() {
+    default
+
+    insinto /etc/${PN}
+    doins "${FILES}"/aide.conf
+
+    keepdir /var/lib/${PN}
+    keepdir /var/log/${PN}
+}
