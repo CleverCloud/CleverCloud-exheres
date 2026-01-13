@@ -5,7 +5,7 @@ export_exlib_phases src_prepare pkg_setup src_compile src_test src_install
 
 SCM_SECONDARY_REPOSITORIES="vc tcc markdown"
 SCM_vc_REPOSITORY="https://github.com/vlang/vc"
-SCM_vc_REVISION="e377b42e26eb9c703ccaf65f37d700a7369ac3db"
+SCM_vc_REVISION="294bff4ef87427743d0b35c0f7eb1b34a6dd061b"
 SCM_tcc_REPOSITORY="https://github.com/vlang/tccbin"
 SCM_markdown_REPOSITORY="https://github.com/vlang/markdown"
 
