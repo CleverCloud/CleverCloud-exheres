@@ -1,0 +1,30 @@
+# Copyright 2025 Aurélien Hébert <aurelien.hebert@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+myexparam min_version=
+myexparam max_version=
+
+require github [ user=DataDog tag="v${PV}" ]
+require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" ]
+
+SUMMARY="PostgreSQL extension that generates tracing spans from SQL queries"
+
+LICENCES="MIT"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build+run:
+        net-misc/curl
+"
+
+# drop upstream -Werror
+DEFAULT_SRC_COMPILE_PARAMS=( PG_CFLAGS='' )
+
+prepare_one_multibuild() {
+    default
+
+    postgresql_prepare_one_multilib
+    # upstream sets PG_CONFIG in common.mk, not in Makefile
+    edo sed -i 's/^PG_CONFIG\s*=.*/PG_CONFIG ?= pg_config/' common.mk
+}

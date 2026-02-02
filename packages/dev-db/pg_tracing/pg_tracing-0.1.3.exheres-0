@@ -1,0 +1,7 @@
+# Copyright 2025 Aurélien Hébert <aurelien.hebert@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+# PG 18: ExecutorStart API change, fixed upstream in e8b5909c5b (unreleased)
+require pg_tracing [ max_version="17" ]
+
+PLATFORMS="~amd64"
