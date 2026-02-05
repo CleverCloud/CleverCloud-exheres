@@ -32,6 +32,7 @@ MYOPTIONS="
     orc [[ description = [ Runtime compiler support to accelerate some operations ] ]]
     pango [[ description = [ Support for Pango-based text rendering ] ]]
     pdf [[ description = [ Support for PDF load with poppler-glib ] ]]
+    raw [[ description = [ RAW format support through libraw ] ]]
     svg
     tiff
     webp
@@ -81,10 +82,15 @@ DEPENDENCIES="
         )
         providers:ijg-jpeg? ( media-libs/jpeg:= )
         providers:jpeg-turbo? ( media-libs/libjpeg-turbo )
+        raw? ( media-libs/libraw[>=0.14] )
         svg? ( gnome-desktop/librsvg:2[>=2.40.3] )
         tiff? ( media-libs/tiff:=[>=4.0.10][webp?] )
         webp? ( media-libs/libwebp:=[>=0.6][tiff?] )
 "
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/abb4dfad9e446e77396de9e93003af5be7aa18da.patch
+)
 
 # All tests are run, even if an option is disabled.
 RESTRICT="test"
@@ -109,6 +115,7 @@ MESON_SRC_CONFIGURE_PARAMS=(
     -Dquantizr=disabled
     -Dradiance=true
     -Dspng=disabled
+    -Duhdr=disabled
     -Dzlib=enabled
 )
 
@@ -135,6 +142,7 @@ MESON_SRC_CONFIGURE_OPTION_FEATURES=(
     orc
     'pango pangocairo'
     'pdf poppler'
+    raw
     'svg rsvg'
     tiff
     webp
