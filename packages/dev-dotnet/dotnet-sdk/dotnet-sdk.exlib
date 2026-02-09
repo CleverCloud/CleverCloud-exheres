@@ -99,7 +99,7 @@ dotnet-sdk_src_compile() {
     esandbox allow_net --connect 'unix:/tmp/*'
 
     if ever at_least 10; then
-        edo bash build.sh --branding rtm -sb -cwb
+        edo bash build.sh -sb -cwb
     elif ever at_least 9; then
         edo bash build.sh -sb
     else
