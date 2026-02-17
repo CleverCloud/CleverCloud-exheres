@@ -12,5 +12,4 @@ require dotnet-sdk [ dotnet_project="dotnet" \
 
 DEFAULT_SRC_PREPARE_PATCHES=(
     "${FILES}/${SLOT}/0001-clang-banned-by-distribution.patch"
-    "${FILES}/${SLOT}/0002-fix-version-in-2026.patch"
 )
