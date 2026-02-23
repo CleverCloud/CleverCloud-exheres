@@ -4,7 +4,7 @@
 myexparam min_version=
 myexparam max_version=
 
-require github [ user=jimjonesbr tag="${PV}" ]
+require github [ user=jimjonesbr tag="v${PV}" ]
 require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" ]
 
 SUMMARY="Triplestore Foreign Data Wrapper for PostgreSQL"
@@ -14,12 +14,14 @@ SLOT="0"
 MYOPTIONS=""
 
 DEPENDENCIES="
+    build:
+        virtual/pkg-config
     build+run:
+        dev-libs/libxml2:2.0
         net-misc/curl[>=7.74.0]
-        dev-libs/redland[>=1.0.17]
 "
 
-DEFAULT_SRC_COMPILE_PARAMS=( OPTFLAGS='' )
+DEFAULT_SRC_COMPILE_PARAMS=( OPTFLAGS='' SHLIB_LINK='-lcurl -lxml2' )
 
 prepare_one_multibuild() {
     default
