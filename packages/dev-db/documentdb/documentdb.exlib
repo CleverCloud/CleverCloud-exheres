@@ -28,10 +28,10 @@ DEPENDENCIES="
         dev-libs/libbson[=1.30.5]
         dev-libs/IntelRDFPMathLib
     run:
-        dev-db/pg_cron[postgresql_servers:*(-)]
-        dev-db/pgvector[postgresql_servers:*(-)]
-        dev-db/postgis:*[postgresql_servers:*(-)]
-        dev-db/rum[postgresql_servers:*(-)]
+        dev-db/pg_cron[postgresql_servers:*(-)?]
+        dev-db/pgvector[postgresql_servers:*(-)?]
+        dev-db/postgis:*[postgresql_servers:*(-)?]
+        dev-db/rum[postgresql_servers:*(-)?]
 "
 
 # Some tests are failing due to some spaces differences on the output format
