@@ -29,7 +29,7 @@ DEPENDENCIES="
         dev-libs/IntelRDFPMathLib
     run:
         dev-db/pg_cron[postgresql_servers:*(-)?]
-        dev-db/pgvector[postgresql_servers:*(-)?]
+        dev-db/pgvector:0[postgresql_servers:*(-)?]
         dev-db/postgis:*[postgresql_servers:*(-)?]
         dev-db/rum[postgresql_servers:*(-)?]
 "
