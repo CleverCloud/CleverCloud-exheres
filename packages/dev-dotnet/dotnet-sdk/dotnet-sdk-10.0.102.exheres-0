@@ -8,7 +8,7 @@ require dotnet-sdk [ dotnet_project="dotnet" \
     dotnet_tag="v${PV}" \
     dotnet_tarball="${WORK}/artifacts/assets/Release/${PNV}-exherbo-x64.tar.gz" \
     dotnet_runtime="${SLOT}.1" \
-    llvm_slots=[ 20 19 18 17 16 15 ] ]
+    llvm_slots=[ 21 20 19 18 17 16 15 ] ]
 
 DEFAULT_SRC_PREPARE_PATCHES=(
     "${FILES}/${SLOT}/0001-clang-banned-by-distribution.patch"
