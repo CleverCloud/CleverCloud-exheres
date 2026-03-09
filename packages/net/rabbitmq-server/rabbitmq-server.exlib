@@ -1,7 +1,13 @@
 # Copyright 2012, 2013 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require systemd-service python [ multibuild=false blacklist=none ] github [ user=rabbitmq suffix=tar.xz release=v${PV} ] utf8-locale
+myexparam blacklist=none
+myexparam min_versions=
+
+require python [ multibuild=false blacklist=none ]
+require github [ user=rabbitmq suffix=tar.xz release=v${PV} ]
+require erlang [ blacklist="$(exparam blacklist)" min_versions="$(exparam min_versions)" ]
+require systemd-service utf8-locale
 
 MIX_TASK_ARCHIVE_DEPS_VERSION=1.0.0
 MIX_TASK_ARCHIVE_DEPS_DISTFILE=mix_task_archive_deps-${MIX_TASK_ARCHIVE_DEPS_VERSION}.ez
@@ -19,9 +25,7 @@ MYOPTIONS=""
 DEPENDENCIES="
     build:
         app-arch/zip
-    build+run:
-        dev-lang/elixir:=[>=1.14]
-        dev-lang/erlang:=[>=25]
+        dev-lang/elixir:*[>=1.14]
     run:
         net-misc/socat
         group/rabbitmq
