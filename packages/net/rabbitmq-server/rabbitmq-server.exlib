@@ -7,7 +7,7 @@ myexparam min_versions=
 require python [ multibuild=false blacklist=none ]
 require github [ user=rabbitmq suffix=tar.xz release=v${PV} ]
 require erlang [ blacklist="$(exparam blacklist)" min_versions="$(exparam min_versions)" ]
-require systemd-service utf8-locale
+require systemd-service utf8-locale providers
 
 MIX_TASK_ARCHIVE_DEPS_VERSION=1.0.0
 MIX_TASK_ARCHIVE_DEPS_DISTFILE=mix_task_archive_deps-${MIX_TASK_ARCHIVE_DEPS_VERSION}.ez
@@ -44,11 +44,13 @@ DEFAULT_SRC_INSTALL_PARAMS=(
 
 RESTRICT=test
 
-export_exlib_phases pkg_setup src_unpack src_install
+export_exlib_phases pkg_setup src_unpack src_prepare src_install
 
 rabbitmq-server_pkg_setup() {
     # elixir requires utf8
     require_utf8_locale
+
+    providers_set "erlang $(erlang_get_abi)"
 
     export MIX_ENV=prod
     export MIX_HOME="${TEMP}"/.mix
@@ -74,6 +76,18 @@ rabbitmq-server_src_unpack() {
 
     esandbox enable_net
     edo popd
+}
+
+rabbitmq-server_src_prepare() {
+    default
+
+    edo sed -i \
+        -e '/escript:/s|\[|&shebang: "#! /usr/bin/env escript-'$(erlang_get_abi)'\\n", |' \
+        deps/rabbitmq_cli/mix.exs
+
+    edo sed -i \
+        -e "s:exec erl :exec erl-$(erlang_get_abi) :" \
+        deps/rabbit/scripts/rabbitmq-server
 }
 
 rabbitmq-server_src_install() {
