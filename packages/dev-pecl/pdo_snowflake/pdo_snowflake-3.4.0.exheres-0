@@ -1,0 +1,20 @@
+# Copyright 2025 Tristan Charbonneau <tristan.charbonneau@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require php-pecl [ module=module pn="pdo_snowflake" php_abis=[ 8.0 8.1 8.2 8.3 8.4 ] ]
+
+SUMMARY="PHP bindings for snowflake"
+PLATFORMS="~amd64"
+LICENCES="LGPL-2"
+SLOT="0"
+
+HOMEPAGE="https://github.com/snowflakedb/pdo_snowflake/"
+DOWNLOADS="https://github.com/snowflakedb/pdo_snowflake/archive/v${PV}.tar.gz -> ${PNV}.tar.gz"
+
+# Requires a running database
+RESTRICT="test"
+
+DEPENDENCIES="
+    build+run:
+"
+
