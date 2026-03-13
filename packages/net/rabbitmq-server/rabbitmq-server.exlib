@@ -82,11 +82,11 @@ rabbitmq-server_src_prepare() {
     default
 
     edo sed -i \
-        -e '/escript:/s|\[|&shebang: "#! /usr/bin/env escript-'$(erlang_get_abi)'\\n", |' \
+        -e '/escript:/s|\[|&shebang: "#! /usr/'$(exhost --target)'/lib/erlang-'$(erlang_get_abi)'/bin/escript\\n", |' \
         deps/rabbitmq_cli/mix.exs
 
     edo sed -i \
-        -e "s:exec erl :exec erl-$(erlang_get_abi) :" \
+        -e "s:exec erl :exec /usr/$(exhost --target)/lib/erlang-$(erlang_get_abi)/bin/erl :" \
         deps/rabbit/scripts/rabbitmq-server
 }
 
