@@ -59,9 +59,7 @@ DEFAULT_SRC_INSTALL_PARAMS=(
 
 WORK=${WORKBASE}/zabbix-${PV}
 
-zabbix-common_src_install() {
-    default
-
+zabbix-common_install() {
     install_systemd_files
 
     if [[ -n "${ZABBIX_SRC_INSTALL_DATABASE}" ]]; then
@@ -99,5 +97,10 @@ zabbix-common_src_install() {
 
     # Remove empty dirs
     edo find "${IMAGE}" -type d -empty -delete
+}
+
+zabbix-common_src_install() {
+    default
+    zabbix-common_install
 }
 

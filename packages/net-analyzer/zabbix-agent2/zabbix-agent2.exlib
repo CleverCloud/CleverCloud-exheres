@@ -2,7 +2,7 @@
 
 require zabbix-common [ bin_name=zabbix_agent2 ]
 
-export_exlib_phases src_compile src_test
+export_exlib_phases src_compile src_test src_install
 
 SLOT="0"
 RESTRICT="test"
@@ -40,10 +40,18 @@ zabbix-agent2_src_test() {
     TZ=UTC emake -C src/go AR="${AR}" RANLIB="${RANLIB}" check
 }
 
-zabbix_src_install_default() {
+zabbix-agent2_src_install() {
     dobin src/go/bin/zabbix_agent2
+    newman man/zabbix_agent2.man zabbix_agent2.8
 
-    insinto /etc/zabbix
-    insopts -m 0640 -o zabbix -g zabbix
-    doins src/go/conf/zabbix_agent2.conf
+    (
+        insinto /etc/zabbix
+        insopts -m 0640 -o zabbix -g zabbix
+        doins src/go/conf/zabbix_agent2.conf
+        doins -r src/go/conf/zabbix_agent2.d
+    )
+
+    zabbix-common_install
+
+    emagicdocs
 }
