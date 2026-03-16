@@ -88,6 +88,7 @@ zabbix-common_src_install() {
             doins "${FILES}"/tmpfiles.d/${f}
         fi
     done
+    edo popd
 
     keepdir "${ZABBIX_SRC_INSTALL_KEEPDIRS[@]}"
 
