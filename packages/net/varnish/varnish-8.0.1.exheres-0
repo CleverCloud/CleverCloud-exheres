@@ -2,12 +2,12 @@
 # Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
+require github [ release=${PNV} suffix=tar.gz ]
 require autotools [ supported_autoconf=[ 2.7 ] supported_automake=[ 1.18 ] ]
 require systemd-service
 
 SUMMARY="Varnish Cache, the high-performance HTTP accelerator"
-HOMEPAGE="https://www.varnish-cache.org"
-DOWNLOADS="${HOMEPAGE}/downloads/${PNV}.tgz"
+HOMEPAGE+=" https://www.varnish.org"
 
 BUGS_TO="keruspe@exherbo.org"
 
