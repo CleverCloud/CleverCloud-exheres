@@ -16,6 +16,7 @@ SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS="
     doc
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
 # Way too much networking
@@ -26,6 +27,8 @@ DEPENDENCIES="
         dev-lang/python:*[>=3]
         dev-python/Sphinx
         dev-python/docutils
+        sys-devel/bison
+        sys-devel/flex
         virtual/pkg-config
     build+run:
         user/varnish
@@ -34,6 +37,8 @@ DEPENDENCIES="
         dev-libs/pcre2
         sys-libs/ncurses
         sys-libs/readline:=
+        providers:libressl? ( dev-libs/libressl:= )
+        providers:openssl? ( dev-libs/openssl:= )
     suggestion:
         net/varnish-modules [[
             description = [ A collection of modules (vmods) extending Varnish VCL ]
