@@ -5,3 +5,7 @@ require libgeotiff
 
 PLATFORMS="~amd64"
 
+DEFAULT_SRC_PREPARE_PATCHES+=(
+    -p2 "${FILES}"/${PNV}-testlistgeo-make-it-robust-to-PROJ-9.8-changes.patch
+)
+
