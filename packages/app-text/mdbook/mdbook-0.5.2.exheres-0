@@ -1,0 +1,52 @@
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+#require github [ user=rust-lang force_git_clone=true tag=v${PV} ]
+require cargo [ rust_minimum_version=1.88.0 ]
+require bash-completion zsh-completion
+
+SUMMARY="mdBook is a utility to create modern online books from Markdown files"
+PLATFORMS="~amd64 ~armv8"
+LICENCES="MPL-2.0"
+SLOT="0"
+MYOPTIONS=""
+DEPENDENCIES=""
+
+CARGO_SRC_TEST_PARAMS=( --
+    --skip remove_emphasis_works
+    # Unfortunately these seem confused about our target != rust's target
+    --skip config::env_entire_output_preprocessor_table
+    --skip config::output_cfg_from_env
+    --skip config::preprocessor_cfg_from_env
+    --skip preprocessor::example_supports_whatever
+    --skip preprocessor::extension_compatibility
+    --skip preprocessor::failing_preprocessor
+    --skip preprocessor::nop_preprocessor
+    --skip preprocessor::relative_command_path
+    --skip renderer::backends_receive_render_context_via_stdin
+    --skip renderer::failing_command
+    --skip renderer::relative_command_path
+    --skip renderer::renderer_with_arguments
+    --skip test::failing_tests
+    --skip test::passing_tests
+    --skip test::test_individual_chapter
+)
+
+
+src_compile() {
+    cargo_src_compile
+
+    option bash-completion && \
+        edo target/$(rust_target_arch_name)/release/mdbook completions bash > ${PN}.bash
+
+    option zsh-completion && \
+        edo target/$(rust_target_arch_name)/release/mdbook completions zsh > _${PN}
+}
+
+src_install() {
+    cargo_src_install
+
+    dobashcompletion ${PN}.bash
+    dozshcompletion _${PN}
+}
+
