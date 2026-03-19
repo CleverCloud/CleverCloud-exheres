@@ -88,10 +88,6 @@ DEPENDENCIES="
         webp? ( media-libs/libwebp:=[>=0.6][tiff?] )
 "
 
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/abb4dfad9e446e77396de9e93003af5be7aa18da.patch
-)
-
 # All tests are run, even if an option is disabled.
 RESTRICT="test"
 
