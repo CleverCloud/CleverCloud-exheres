@@ -1,0 +1,41 @@
+# Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require cargo [ rust_minimum_version=1.91 ]
+require github [ user=jdx tag=v${PV} ]
+
+SUMMARY="dev tools, env vars, task runner"
+HOMEPAGE="https://mise.jdx.dev/"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64 ~armv8"
+MYOPTIONS="providers: ( libressl openssl ) [[ number-selected = exactly-one ]]"
+
+# function of openssl-sys 0.9.115, which is what is specified by the Cargo.lock of mise-2026.5.3.
+# See: https://github.com/sfackler/rust-openssl/blob/openssl-sys-v0.9.115/openssl-sys/build/main.rs#L420
+DEPENDENCIES="
+    build+run:
+        providers:libressl? ( dev-libs/libressl:=[>=3.5&<4.4] )
+        providers:openssl?  ( dev-libs/openssl:= )
+"
+
+# Don't let the openssl-sys crate use a vendored openssl
+OPENSSL_NO_VENDOR=1
+
+src_prepare() {
+    default
+
+    # indexmap 1.9.3's build.rs probes for std via autocfg::emit_sysroot_crate("std"),
+    # which fails silently with rustc >= 1.94 and leaves cfg(has_std) unset. Without
+    # it, IndexMap's `S = RandomState` default disappears and envmnt 0.10.4 (which
+    # writes IndexMap<String, String>) no longer compiles. Force-enable the std
+    # feature on the vendored crate so build.rs takes the CARGO_FEATURE_STD branch.
+    local indexmap_dir="${WORKBASE}/ecargo-vendor/indexmap-1.9.3"
+    edo sed -i '/^\[features\]$/a default = ["std"]' "${indexmap_dir}/Cargo.toml"
+    local new_sum
+    new_sum=$(sha256sum "${indexmap_dir}/Cargo.toml" | cut -d' ' -f1)
+    edo sed -i "s|\"Cargo.toml\":\"[a-f0-9]*\"|\"Cargo.toml\":\"${new_sum}\"|" \
+        "${indexmap_dir}/.cargo-checksum.json"
+}
+
