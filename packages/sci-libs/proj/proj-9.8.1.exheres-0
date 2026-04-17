@@ -7,3 +7,7 @@ require proj
 SLOT="25"
 PLATFORMS="~amd64"
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/${PNV}-Workaround-sqlite-3.53.0-regression-on-sqlite3_mprin.patch
+)
+
