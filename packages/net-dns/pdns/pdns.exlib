@@ -43,6 +43,7 @@ DEPENDENCIES="
         dev-libs/protobuf:=
         dev-util/ragel
         net/net-snmp
+        net-misc/curl
         modules:mysql? (
             providers:mariadb? ( dev-db/mariadb )
             providers:percona? ( dev-db/Percona-Server:= )
@@ -50,7 +51,7 @@ DEPENDENCIES="
         modules:postgres? ( dev-db/postgresql-client )
         systemd? ( sys-apps/systemd )
     suggestion:
-        modules:postgres? ( dev-db/postgresql )
+        modules:postgres? ( dev-db/postgresql:* )
 "
 
 pdns_src_configure() {
