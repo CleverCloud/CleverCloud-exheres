@@ -5,7 +5,7 @@ require github [ user=${PN} tag=v${PV} ] cmake [ api=2 ]
 
 OPENCENSUS_VERSION=0.3.0
 
-export_exlib_phases src_unpack src_install
+export_exlib_phases src_unpack src_configure src_install
 
 SUMMARY="High performance, open source, general RPC framework"
 DOWNLOADS+=" https://github.com/census-instrumentation/opencensus-proto/archive/v${OPENCENSUS_VERSION}.tar.gz -> opencensus-proto-${OPENCENSUS_VERSION}.tar.gz"
@@ -13,62 +13,66 @@ DOWNLOADS+=" https://github.com/census-instrumentation/opencensus-proto/archive/
 LICENCES="Apache-2.0"
 SLOT="0"
 MYOPTIONS="
+    systemd
     ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
 DEPENDENCIES="
     build:
-        dev-cpp/abseil[>=20240722.0]
+        systemd? ( virtual/pkg-config )
     build+run:
+        dev-cpp/abseil[>=20240722.0]
         dev-libs/protobuf:=[>=3.29]
         dev-libs/re2:=
         net-dns/c-ares[>=1.13.0]
         sys-libs/zlib
         providers:libressl? ( dev-libs/libressl:= )
         providers:openssl? ( dev-libs/openssl:= )
+        systemd? ( sys-apps/systemd )
     test:
-        dev-libs/gflags
+        dev-cpp/benchmark
 "
 
-# Tests require benchmark package
+# Tests require a bunch of additional third_party submodules
 RESTRICT="test"
 
 grpc_src_unpack() {
     cmake_src_unpack
+
     edo rmdir "${CMAKE_SOURCE}"/third_party/opencensus-proto
     edo ln -sTf "${WORKBASE}"/opencensus-proto-${OPENCENSUS_VERSION} "${CMAKE_SOURCE}"/third_party/opencensus-proto
 }
 
-CMAKE_SRC_CONFIGURE_PARAMS=(
-    -DgRPC_BUILD_CODEGEN:BOOL=ON
-    -DgRPC_BUILD_CSHARP_EXT:BOOL=OFF
-    -DgRPC_BACKWARDS_COMPATIBILITY_MODE:BOOL=OFF
+grpc_src_configure() {
+    local cmakeparams=(
+        -DgRPC_BUILD_CODEGEN:BOOL=ON
 
-    # Language plugins
-    -DgRPC_BUILD_GRPC_CPP_PLUGIN:BOOL=ON
-    -DgRPC_BUILD_GRPC_CSHARP_PLUGIN:BOOL=OFF
-    -DgRPC_BUILD_GRPC_NODE_PLUGIN:BOOL=OFF
-    -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN:BOOL=OFF
-    -DgRPC_BUILD_GRPC_PHP_PLUGIN:BOOL=OFF
-    -DgRPC_BUILD_GRPC_PYTHON_PLUGIN:BOOL=OFF
-    -DgRPC_BUILD_GRPC_RUBY_PLUGIN:BOOL=OFF
+        # Language plugins
+        -DgRPC_BUILD_GRPC_CPP_PLUGIN:BOOL=ON
+        -DgRPC_BUILD_GRPC_CSHARP_PLUGIN:BOOL=OFF
+        -DgRPC_BUILD_GRPC_NODE_PLUGIN:BOOL=OFF
+        -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN:BOOL=OFF
+        -DgRPC_BUILD_GRPC_PHP_PLUGIN:BOOL=OFF
+        -DgRPC_BUILD_GRPC_PYTHON_PLUGIN:BOOL=OFF
+        -DgRPC_BUILD_GRPC_RUBY_PLUGIN:BOOL=OFF
 
-    # Use system libs
-    -DgRPC_ZLIB_PROVIDER=package
-    -DgRPC_CARES_PROVIDER=package
-    -DgRPC_RE2_PROVIDER=package
-    -DgRPC_SSL_PROVIDER=package
-    -DgRPC_PROTOBUF_PROVIDER=package
-    -DgRPC_GFLAGS_PROVIDER=package
-    # benchmark is unpackaged
-    -DgRPC_BENCHMARK_PROVIDER=module
-    # absl is unpackaged
-    -DgRPC_ABSL_PROVIDER=package
-)
+        # Use system libs
+        -DgRPC_ABSL_PROVIDER:STRING=package
+        -DgRPC_CARES_PROVIDER:STRING=package
+        -DgRPC_PROTOBUF_PROVIDER:STRING=package
+        -DgRPC_RE2_PROVIDER:STRING=package
+        -DgRPC_SSL_PROVIDER:STRING=package
+        -DgRPC_USE_SYSTEMD:STRING=$(option systemd ON OFF)
+        -DgRPC_ZLIB_PROVIDER:STRING=package
 
-CMAKE_SRC_CONFIGURE_TESTS=(
-    '-DgRPC_BUILD_TESTS:BOOL=ON -DgRPC_BUILD_TESTS:BOOL=OFF'
-)
+        # Use system libs (required for tests)
+        -DgRPC_BENCHMARK_PROVIDER:STRING=package
+
+        -DgRPC_BUILD_TESTS:STRING=$(expecting_tests ON OFF)
+    )
+
+    ecmake "${cmakeparams[@]}"
+}
 
 grpc_src_install() {
     cmake_src_install
