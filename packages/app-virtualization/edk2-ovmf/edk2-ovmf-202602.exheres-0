@@ -4,14 +4,20 @@
 require github [ user=tianocore project=edk2 tag=edk2-stable${PV:0:6} ]
 
 SUMMARY="A modern, feature-rich, cross-platform firmware development environment for the UEFI"
-HOMEPAGE="http://www.tianocore.org/edk2/"
+HOMEPAGE+=" https://www.tianocore.org/tianocore-wiki.github.io/"
 
-# See openssl submodule in https://github.com/tianocore/edk2/tree/master/CryptoPkg/Library/OpensslLib
-OPENSSL_VERSION="1.1.1n"
-BROTLI_COMMIT=f4153a09f87cbb9c826d8fc12c74642bb2d879ea
+# See submodules in https://github.com/tianocore/edk2/blob/master/.gitmodules
+OPENSSL_VERSION="3.5.1"
+MBEDTLS_VERSION="3.6.5"
+BROTLI_COMMIT="e230f474b87134e8c6c85b630084c612057f253e"
+PUBLIC_MIPI_SYS_T_COMMIT="370b5944c046bab043dd8b133727b2135af7747a"
+LIBSPDM_COMMIT="1be116c7b7713fa9003e1bd53b53a34758549eb9"
 DOWNLOADS+="
     https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz
+    https://github.com/Mbed-TLS/mbedtls/releases/download/mbedtls-${MBEDTLS_VERSION}/mbedtls-${MBEDTLS_VERSION}.tar.bz2
     https://github.com/google/brotli/archive/${BROTLI_COMMIT}.tar.gz
+    https://github.com/MIPI-Alliance/public-mipi-sys-t/archive/${PUBLIC_MIPI_SYS_T_COMMIT}.tar.gz
+    https://github.com/DMTF/libspdm/archive/${LIBSPDM_COMMIT}.tar.gz
 "
 
 LICENCES="BSD-2"
@@ -30,21 +36,40 @@ OVMF_ARCH="X64"
 OVMF_BUILD="RELEASE"
 
 src_prepare() {
+    default
+
+    # openssl
     local openssl_dir=CryptoPkg/Library/OpensslLib/openssl
+    edo rmdir ${openssl_dir}
+    edo ln -s "${WORKBASE}"/openssl-${OPENSSL_VERSION} ${openssl_dir}
+
+    # mbedtls
+    local mbedtls_dir=CryptoPkg/Library/MbedTlsLib/mbedtls
+    edo rmdir ${mbedtls_dir}
+    edo ln -s "${WORKBASE}"/mbedtls-${MBEDTLS_VERSION} ${mbedtls_dir}
+
+    # brotli
     local brotli_dir
     local brotli_dirs=(
         BaseTools/Source/C/BrotliCompress/brotli
         MdeModulePkg/Library/BrotliCustomDecompressLib/brotli
     )
-
-    default
-    edo rmdir ${openssl_dir}
-    edo ln -s "${WORKBASE}"/openssl-${OPENSSL_VERSION} ${openssl_dir}
     for brotli_dir in "${brotli_dirs[@]}"; do
         edo rmdir ${brotli_dir}
         edo ln -s "${WORKBASE}"/brotli-${BROTLI_COMMIT} ${brotli_dir}
     done
 
+    # public-mipi-sys-t
+    local public_mipi_sys_t_dir=MdePkg/Library/MipiSysTLib/mipisyst
+    edo rmdir ${public_mipi_sys_t_dir}
+    edo ln -s "${WORKBASE}"/public-mipi-sys-t-${PUBLIC_MIPI_SYS_T_COMMIT} ${public_mipi_sys_t_dir}
+
+    # libspdm
+    local libspdm_dir=SecurityPkg/DeviceSecurity/SpdmLib/libspdm
+    edo rmdir ${libspdm_dir}
+    edo ln -s "${WORKBASE}"/libspdm-${LIBSPDM_COMMIT} ${libspdm_dir}
+
+    # symlink build tools
     local dir="${WORKBASE}"/symlinked-build-tools
     local tool
     edo mkdir -p "${dir}"
@@ -65,3 +90,4 @@ src_install() {
     doins Build/Ovmf${OVMF_ARCH}/${OVMF_BUILD}_GCC*/FV/OVMF*.fd
     emagicdocs
 }
+
