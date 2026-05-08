@@ -20,7 +20,6 @@ MYOPTIONS="
 DEPENDENCIES="
     build+run:
         dev-libs/openssl:=
-        sys-apps/systemd
         sys-libs/zlib
         !libc:musl? ( dev-libs/libxcrypt:= )
     run:
@@ -37,10 +36,19 @@ DEFAULT_SRC_COMPILE_PARAMS=(
     USE_REGPARM=1
     USE_GETADDRINFO=1
     USE_OPENSSL=1
-    USE_SYSTEMD=1
     USE_ZLIB=1
     CC=${CC}
 )
+
+if ! ever at_least 3.2.0; then
+    DEPENDENCIES+="
+        build+run:
+            sys-apps/systemd
+    "
+    DEFAULT_SRC_COMPILE_PARAMS+=(
+        USE_SYSTEMD=1
+    )
+fi
 
 if ever at_least 2.8.4; then
     DEPENDENCIES+="
