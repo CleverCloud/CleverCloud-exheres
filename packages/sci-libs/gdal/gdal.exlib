@@ -19,6 +19,7 @@ MYOPTIONS="
     jpegxl
     lz4
     openexr
+    openmp [[ description = [ Support for Open Multi-Processing ] ]]
     pdf
     postgresql
     zstd
@@ -53,6 +54,7 @@ DEPENDENCIES="
             media-libs/imath
             media-libs/openexr[>=3]
         )
+        openmp? ( sys-libs/libgomp:= )
         pdf? ( app-text/poppler[>=0.86] )
         postgresql? ( dev-db/postgresql-client )
         providers:ijg-jpeg? ( media-libs/jpeg:= )
@@ -67,7 +69,9 @@ CMAKE_SRC_CONFIGURE_PARAMS=(
     -DBASH_COMPLETIONS_DIR:PATH=""
     # Would need python and swig
     -DBUILD_PYTHON_BINDINGS:BOOL=FALSE
+    -DBUILD_PYTHON_STUBS:BOOL=FALSE
     -DCMAKE_DISABLE_FIND_PACKAGE_CSharp:BOOL=TRUE
+    -DCMAKE_DISABLE_FIND_PACKAGE_Grok:BOOL=TRUE
     -DCMAKE_DISABLE_FIND_PACKAGE_Java:BOOL=TRUE
     -DCMAKE_DISABLE_FIND_PACKAGE_JNI:BOOL=TRUE
     -DCMAKE_DISABLE_FIND_PACKAGE_LibKML:BOOL=TRUE
@@ -86,6 +90,7 @@ CMAKE_SRC_CONFIGURE_PARAMS=(
     -DGDAL_USE_GEOS:BOOL=TRUE
     -DGDAL_USE_GEOTIFF:BOOL=TRUE
     -DGDAL_USE_GIF:BOOL=FALSE
+    -DGDAL_USE_GROK:BOOL=FALSE
     -DGDAL_USE_HDF5:BOOL=FALSE
     -DGDAL_USE_JPEG:BOOL=TRUE
     -DGDAL_USE_JSONC:BOOL=TRUE
@@ -128,6 +133,7 @@ CMAKE_SRC_CONFIGURE_OPTIONS=(
     'jpegxl GDAL_USE_JXL'
     'lz4 GDAL_USE_LZ4'
     'openexr GDAL_USE_OPENEXR'
+    'openmp GDAL_USE_OPENMP'
     'pdf GDAL_USE_POPPLER'
     'postgresql GDAL_USE_POSTGRESQL'
     'zstd GDAL_USE_ZSTD'
