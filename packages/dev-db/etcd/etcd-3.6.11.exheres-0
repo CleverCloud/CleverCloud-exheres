@@ -15,7 +15,7 @@ RESTRICT="test"
 
 DEPENDENCIES="
     build:
-        dev-lang/go[>=1.19]
+        dev-lang/go[>=1.25.0]
     build+run:
         group/${PN}
         user/${PN}
@@ -33,9 +33,6 @@ src_unpack() {
 
     edo pushd "${WORK}" 
     edo go mod download -x
-    # manually get additional modules to fix build, last checked: 3.5.9
-    edo go get google.golang.org/genproto@v0.0.0-20210602131652-f16073e35f0c
-    edo go get github.com/urfave/cli@v1.22.4
     edo popd
 
     esandbox enable_net
