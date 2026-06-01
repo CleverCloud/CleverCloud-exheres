@@ -3,7 +3,6 @@
 
 require systemd-service [ systemd_files=[ etc/${PN}.{service,socket} ] ]
 
-
 export_exlib_phases src_prepare src_install
 
 SUMMARY="Lightweight connection pooler for PostgreSQL"
