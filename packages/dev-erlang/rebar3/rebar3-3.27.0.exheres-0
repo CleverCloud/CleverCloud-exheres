@@ -1,0 +1,31 @@
+# Copyright 2026 Morgane “Sardem FF7” Glidic <sardemff7@exherbo.org>
+# Distributed under the terms of the GNU General Public License v2
+
+require erlang
+require github [ user=erlang tag=${PV} ]
+require providers
+
+SUMMARY="Erlang build tool that makes it easy to compile and test Erlang applications"
+HOMEPAGE="https://www.rebar3.org"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+src_configure() {
+    providers_set "erlang $(erlang_get_abi)"
+    edo tee -a rebar.config <<CONFIG
+{escript_shebang, "#!/usr/x86_64-pc-linux-gnu/lib/erlang-$(erlang_get_abi)/bin/escript\n"}.
+CONFIG
+}
+
+src_compile() {
+    edo ./bootstrap --offline
+}
+
+src_install() {
+    dobin ${PN}
+}
