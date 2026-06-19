@@ -3,13 +3,13 @@
 
 require gitlab [ user=gitlab-org pn=cli tag=v${PV} new_download_scheme=true ]
 require go [ go_minimum_version=1.26.4 bin_path="bin/${PN}" package_path="./cmd/${PN}" ]
+require bash-completion zsh-completion
 
 SUMMARY="A GitLab CLI tool bringing GitLab to your terminal"
 
 LICENCES="MIT"
 SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS=""
 
 DEPENDENCIES=""
 
@@ -21,7 +21,21 @@ GO_SRC_COMPILE_LDFLAGS=(
     "-X main.version=${PV}"
 )
 
+src_compile() {
+    go_src_compile
+
+    edo go run ./cmd/glab completion -s bash | edo tee glab.bash-completion > /dev/null
+    edo go run ./cmd/glab completion -s zsh | edo tee _glab > /dev/null
+}
+
 src_unpack() {
     gitlab_src_unpack
     go_mod_download
+}
+
+src_install() {
+    go_src_install
+
+    dobashcompletion glab.bash-completion
+    dozshcompletion _glab
 }
