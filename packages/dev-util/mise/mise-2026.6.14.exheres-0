@@ -12,8 +12,8 @@ SLOT="0"
 PLATFORMS="~amd64 ~armv8"
 MYOPTIONS="providers: ( libressl openssl ) [[ number-selected = exactly-one ]]"
 
-# function of openssl-sys 0.9.116, which is what is specified by the Cargo.lock of mise-2026.6.0.
-# See: https://github.com/sfackler/rust-openssl/blob/openssl-sys-v0.9.116/openssl-sys/build/main.rs#L415
+# function of openssl-sys 0.9.116, which is what is specified by the Cargo.lock of mise-2026.6.14.
+# See: https://github.com/sfackler/rust-openssl/blob/openssl-sys-v0.9.117/openssl-sys/build/main.rs#L415
 DEPENDENCIES="
     build+run:
         providers:libressl? ( dev-libs/libressl:=[>=3.5&<4.4] )
