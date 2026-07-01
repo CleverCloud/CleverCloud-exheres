@@ -20,6 +20,7 @@ MYOPTIONS="
 DEPENDENCIES="
     build+run:
         dev-libs/openssl:=
+        dev-libs/pcre2
         sys-libs/zlib
         !libc:musl? ( dev-libs/libxcrypt:= )
     run:
@@ -36,6 +37,8 @@ DEFAULT_SRC_COMPILE_PARAMS=(
     USE_REGPARM=1
     USE_GETADDRINFO=1
     USE_OPENSSL=1
+    USE_PCRE2=1
+    USE_PCRE2_JIT=1
     USE_ZLIB=1
     CC=${CC}
 )
@@ -47,26 +50,6 @@ if ! ever at_least 3.2.0; then
     "
     DEFAULT_SRC_COMPILE_PARAMS+=(
         USE_SYSTEMD=1
-    )
-fi
-
-if ever at_least 2.8.4; then
-    DEPENDENCIES+="
-        build+run:
-            dev-libs/pcre2
-    "
-    DEFAULT_SRC_COMPILE_PARAMS+=(
-        USE_PCRE2=1
-        USE_PCRE2_JIT=1
-    )
-else
-    DEPENDENCIES+="
-        build+run:
-            dev-libs/pcre[>=8.32]
-    "
-    DEFAULT_SRC_COMPILE_PARAMS+=(
-        USE_PCRE=1
-        USE_PCRE_JIT=1
     )
 fi
 
