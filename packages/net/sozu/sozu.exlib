@@ -5,9 +5,11 @@
 require alternatives
 require github [ user=sozu-proxy force_git_clone=true tag="${PV/rc/-rc.}" ]
 require systemd-service [ systemd_files=[ "${FILES}/systemd/${PN}-${SLOT}.service" ] ]
-require cargo [ crate_path=bin ]
+# disable_default_features so the crypto provider group below decides which
+# backend is compiled in, instead of the crate's default crypto-ring.
+require cargo [ crate_path=bin disable_default_features=true ]
 
-export_exlib_phases src_install
+export_exlib_phases src_install src_test
 
 SUMMARY="Sōzu reverse proxy"
 DESCRIPTION="Sōzu is a lightweight, fast, always-up reverse proxy server."
@@ -32,11 +34,47 @@ DEPENDENCIES="
         ]]
 "
 
+ECARGO_FEATURES=( jemallocator opentelemetry )
+
 ECARGO_FEATURE_ENABLES=(
     'logs-debug logs-debug'
     'logs-trace logs-trace'
     'tolerant-http1-parser tolerant-http1-parser'
 )
+
+# These cargo features don't exist in the still-supported 1.1 slot.
+if [[ $(ever range 1-1) -ge 2 ]]; then
+    ECARGO_FEATURES+=( simd splice )
+
+    MYOPTIONS+="
+        (
+            providers:
+            ring [[ description = [ Cryptography backend based on ring ] ]]
+            aws-lc-rs [[ description = [ Cryptography backend based on aws-lc-rs ] ]]
+            openssl
+            fips [[ description = [ Build the aws-lc-rs backend in FIPS 140 mode ] ]]
+        ) [[ number-selected = exactly-one ]]
+        tui [[ description = [ Interactive terminal UI ] ]]
+    "
+
+    DEPENDENCIES+="
+        build:
+            providers:fips? (
+                dev-lang/go
+                dev-lang/perl
+                dev-util/cmake
+            )
+            providers:openssl? ( dev-libs/openssl:= )
+    "
+
+    ECARGO_FEATURE_ENABLES+=(
+        'providers:ring crypto-ring'
+        'providers:aws-lc-rs crypto-aws-lc-rs'
+        'providers:openssl crypto-openssl'
+        providers:fips
+        tui
+    )
+fi
 
 sozu_src_install() {
     cargo_src_install
@@ -60,4 +98,14 @@ sozu_src_install() {
 
     alternatives_for "${PN}" "${SLOT}" "50" \
         "/usr/$(exhost --target)/bin/${PN}" "${PN}.${SLOT}"
+}
+
+sozu_src_test() {
+    # The bin crate's command server tests bind a Unix socket named test.sock
+    # inside a tempfile::tempdir() directory.
+    esandbox allow_net unix:"${TEMP}/.tmp*/test.sock"
+
+    default
+
+    esandbox disallow_net unix:"${TEMP}/.tmp*/test.sock"
 }
