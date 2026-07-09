@@ -22,6 +22,7 @@ MYOPTIONS="
         description = [ Add support for TRACE logs level ]
         requires = logs-debug
     ]]
+    opentelemetry [[ description = [ Export metrics and traces through OpenTelemetry ] ]]
     tolerant-http1-parser [[ description = [ Enable a more tolerant parser for HTTP1 requests ] ]]
 "
 
@@ -35,8 +36,39 @@ DEPENDENCIES="
 ECARGO_FEATURE_ENABLES=(
     'logs-debug logs-debug'
     'logs-trace logs-trace'
+    'opentelemetry opentelemetry'
     'tolerant-http1-parser tolerant-http1-parser'
 )
+
+# The FIPS crypto backend (fips), SIMD-accelerated HTTP/1 parsing (simd) and
+# zero-copy splice(2) TCP proxying (splice) cargo features were introduced in
+# Sōzu 2.x and do not exist in the 1.x crates. Only expose them for the 2 slot
+# so the shared 1 slot stays buildable. fips layers aws-lc-rs on top of the
+# default crypto-ring provider; crypto.rs selects it deterministically
+# (fips > ring > aws-lc-rs > openssl) and its aws-lc FIPS module is built from
+# source, which needs cmake, go and perl.
+if [[ $(ever range 1-1) -ge 2 ]]; then
+    MYOPTIONS+="
+        fips [[ description = [ Build the aws-lc-rs crypto backend in FIPS 140 mode ] ]]
+        simd [[ description = [ Enable SIMD-accelerated HTTP/1 parsing ] ]]
+        splice [[ description = [ Enable zero-copy TCP proxying through the Linux splice(2) syscall ] ]]
+    "
+
+    DEPENDENCIES+="
+        build:
+            fips? (
+                dev-lang/go
+                dev-lang/perl
+                dev-util/cmake
+            )
+    "
+
+    ECARGO_FEATURE_ENABLES+=(
+        'fips fips'
+        'simd simd'
+        'splice splice'
+    )
+fi
 
 sozu_src_install() {
     cargo_src_install
