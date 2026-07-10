@@ -42,8 +42,7 @@ ECARGO_FEATURE_ENABLES=(
     'tolerant-http1-parser tolerant-http1-parser'
 )
 
-# These cargo features don't exist in the still-supported 1.1 slot.
-if [[ $(ever range 1-1) -ge 2 ]]; then
+if ever at_least 2; then
     ECARGO_FEATURES+=( simd splice )
 
     MYOPTIONS+="
