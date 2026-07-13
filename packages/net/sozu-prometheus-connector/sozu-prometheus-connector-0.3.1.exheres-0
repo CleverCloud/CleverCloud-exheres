@@ -3,6 +3,6 @@
 # Distributed under the terms of the GNU General Public License v2
 
 PLATFORMS="~amd64"
-SLOT="0.15"
+SLOT="2.1"
 
-require sozu-pki-connector [ slot="${SLOT}" ]
+require sozu-prometheus-connector [ slot="${SLOT}" ]
