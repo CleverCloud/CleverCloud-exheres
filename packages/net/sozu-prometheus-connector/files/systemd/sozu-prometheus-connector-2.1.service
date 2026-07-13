@@ -1,6 +1,6 @@
 [Unit]
-Description = Sōzu pki connector - Retrieves Public Key Infrastructure (PKI) from a directory and transmits to Sōzu.
-Documentation = https://github.com/CleverCloud/sozu-pki-connector
+Description = Sōzu prometheus connector - Exposes Sōzu metrics in a prometheus format on HTTP.
+Documentation = https://github.com/CleverCloud/sozu-prometheus-connector
 After=network-online.target local-fs.target remote-fs.target time-sync.target
 Wants=network-online.target local-fs.target remote-fs.target time-sync.target
 
@@ -10,7 +10,7 @@ StartLimitBurst=64
 [Service]
 Type=simple
 
-ExecStart=/usr/libexec/sozu-pki-connector.0.15 --config /etc/sozu/0.15/connector/pki.toml
+ExecStart=/usr/libexec/sozu-prometheus-connector.1.1 --config /etc/sozu/1.1/connector/prometheus.toml
 Restart=always
 
 TimeoutStopSec=30
@@ -22,4 +22,4 @@ StartLimitInterval=30
 StartLimitBurst=64
 
 [Install]
-WantedBy=sozu-0.15.service
+WantedBy=sozu-1.1.service
