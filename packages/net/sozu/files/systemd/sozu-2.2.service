@@ -10,12 +10,12 @@ StartLimitBurst=5
 [Service]
 Type=simple
 
-RuntimeDirectory=sozu.2.1
-PIDFile=/run/sozu.2.1/sozu.pid
+RuntimeDirectory=sozu.2.2
+PIDFile=/run/sozu.2.2/sozu.pid
 
-ExecStartPre=/usr/bin/sozu.2.1 config check --config /etc/sozu/2.1/config.toml
-ExecStart=/usr/bin/sozu.2.1 start --config /etc/sozu/2.1/config.toml
-ExecReload=/usr/bin/sozu.2.1 reload --config /etc/sozu/2.1/config.toml
+ExecStartPre=/usr/bin/sozu.2.2 config check --config /etc/sozu/2.2/config.toml
+ExecStart=/usr/bin/sozu.2.2 start --config /etc/sozu/2.2/config.toml
+ExecReload=/usr/bin/sozu.2.2 reload --config /etc/sozu/2.2/config.toml
 Restart=on-failure
 
 LimitNOFILE=65536
