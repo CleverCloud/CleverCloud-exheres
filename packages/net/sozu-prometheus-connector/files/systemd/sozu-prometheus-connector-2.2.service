@@ -3,6 +3,7 @@ Description = Sōzu prometheus connector - Exposes Sōzu metrics in a prometheus
 Documentation = https://github.com/CleverCloud/sozu-prometheus-connector
 After=network-online.target local-fs.target remote-fs.target time-sync.target
 Wants=network-online.target local-fs.target remote-fs.target time-sync.target
+Requires=sozu-2.2.service
 
 StartLimitIntervalSec=30
 StartLimitBurst=64
@@ -10,7 +11,7 @@ StartLimitBurst=64
 [Service]
 Type=simple
 
-ExecStart=/usr/libexec/sozu-prometheus-connector.1.1 --config /etc/sozu/1.1/connector/prometheus.toml
+ExecStart=/usr/libexec/sozu-prometheus-connector.2.2 --config /etc/sozu/1.1/connector/prometheus.toml
 Restart=always
 
 TimeoutStopSec=30
@@ -22,4 +23,4 @@ StartLimitInterval=30
 StartLimitBurst=64
 
 [Install]
-WantedBy=sozu-1.1.service
+WantedBy=sozu-2.2.service
