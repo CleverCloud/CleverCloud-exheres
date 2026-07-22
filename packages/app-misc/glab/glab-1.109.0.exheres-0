@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 require gitlab [ user=gitlab-org pn=cli tag=v${PV} new_download_scheme=true ]
-require go [ go_minimum_version=1.26.4 bin_path="bin/${PN}" package_path="./cmd/${PN}" ]
+require go [ go_minimum_version=1.26.5 bin_path="bin/${PN}" package_path="./cmd/${PN}" ]
 require bash-completion zsh-completion
 
 SUMMARY="A GitLab CLI tool bringing GitLab to your terminal"
