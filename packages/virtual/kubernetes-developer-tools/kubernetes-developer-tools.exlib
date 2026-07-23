@@ -4,6 +4,10 @@
 SUMMARY="Meta-package to provides kubernetes developer tools"
 
 SLOT="$(ever range 1-2)"
+
+# kubernetes/yamlfmt is deliberately not listed: cmd/yamlfmt was removed from
+# kubernetes/kubernetes during the 1.34 cycle (replaced by sigs.k8s.io/yaml),
+# so it cannot be provided for slots >= 1.34
 DEPENDENCIES="
     run:
         kubernetes/clicheck:${SLOT}
@@ -17,5 +21,4 @@ DEPENDENCIES="
         kubernetes/importverifier:${SLOT}
         kubernetes/preferredimports:${SLOT}
         kubernetes/prune-junit-xml:${SLOT}
-        kubernetes/yamlfmt:${SLOT}
 "
