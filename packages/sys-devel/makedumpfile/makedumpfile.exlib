@@ -35,6 +35,10 @@ DEFAULT_SRC_INSTALL_PARAMS=(
     SBINDIR=/usr/$(exhost --target)/bin
 )
 
+DEFAULT_SRC_INSTALL_EXTRA_DOCS=(
+    supported-linux-versions
+)
+
 export_exlib_phases src_compile
 
 makedumpfile_src_compile() {
@@ -45,5 +49,8 @@ makedumpfile_src_compile() {
         opts+=( USEZSTD=on )
     fi
     emake "${opts[@]}"
+
+    # We generate an extra file we install as a doc, containing the Linux versions supported
+    edo ${CPP} -I . "${FILES}"/supported-linux-versions.h | tail -2 | edo tee supported-linux-versions > /dev/null
 }
 
