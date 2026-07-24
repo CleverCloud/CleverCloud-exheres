@@ -1,0 +1,13 @@
+[Unit]
+Description=DocumentDB gateway (MongoDB wire protocol for PostgreSQL)
+After=network.target postgresql.service
+Wants=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/host/bin/documentdb_gateway run
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

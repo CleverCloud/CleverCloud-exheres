@@ -1,0 +1,33 @@
+# Copyright 2026 Yohann Vinez <yohann.vinez@clever.cloud>
+# Distributed under the terms of the GNU General Public License v2
+
+MY_PV=${PV/_/-}
+
+require github [ user=documentdb project=documentdb tag=v${MY_PV} force_git_clone=true ]
+require cargo [ crate_path=pg_documentdb_gw/documentdb_gateway ]
+require systemd-service [ systemd_files=[ "${FILES}"/systemd/documentdb-gateway.service ] ]
+
+SUMMARY="A MongoDB wire-protocol gateway backed by PostgreSQL"
+HOMEPAGE="https://documentdb.io"
+
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+DEPENDENCIES="
+    build:
+        virtual/pkg-config
+    build+run:
+        dev-libs/openssl:=
+"
+
+# Integration tests need a running PostgreSQL and gateway, unavailable in the sandbox
+RESTRICT="test"
+
+BUGS_TO="yohann.vinez@clever.cloud"
+
+src_install() {
+    cargo_src_install
+    install_systemd_files
+}
