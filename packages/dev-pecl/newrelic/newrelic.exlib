@@ -1,12 +1,13 @@
 # Copyright 2015 Julien Durillon <julien.durillon@gmail.com>
 # Distributed under the terms of the GNU General Public License v2
 
-myexparam php_abis=[ 7.2 7.3 7.4 8.0 8.1 8.2 8.3 8.4 ]
+myexparam php_abis=[ 7.2 7.3 7.4 8.0 8.1 8.2 8.3 8.4 8.5 ]
 
 require php-pecl [ module=module work=${PN}-php5-${PV}-linux php_abis=[ $(exparam php_abis[@]) ] ]
 
 SUMMARY="Newrelic Agent for PHP"
 HOMEPAGE="http://www.newrelic.com/"
+DOWNLOADS="https://download.newrelic.com/php_agent/archive/${PV}/${PN}-php5-${PV}-linux.tar.gz"
 LICENCES="Apache-2.0 BSD-2 BSD-3 BSD-4 MIT PHP-3 newrelic"
 SLOT="$(ever range 1-2)"
 
