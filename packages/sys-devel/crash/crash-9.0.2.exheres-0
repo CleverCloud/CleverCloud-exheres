@@ -1,7 +1,7 @@
 # Copyright 2023 Morgane “Sardem FF7” Glidic <sardemff7@exherbo.org>
 # Distributed under the terms of the GNU General Public License v2
 
-require crash [ gdb=10.2 ]
+require crash [ gdb=16.2 ]
 
 PLATFORMS="~amd64"
 

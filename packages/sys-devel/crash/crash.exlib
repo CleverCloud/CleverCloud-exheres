@@ -35,10 +35,13 @@ export_exlib_phases pkg_setup src_prepare src_configure src_compile src_install
 
 DEFAULT_SRC_PREPARE_PATCHES=(
     "${FILES}"/prefix-ar.patch
-    "${FILES}"/1add37b567a7dee39d99f37b37802034c3fce9c4.patch
 )
 EMAKE_OPTS=(
     GDB=gdb-${GDB_VERSION}
+    CROSS_COMPILE=$(exhost --tool-prefix)
+    CC=$(exhost --tool-prefix)cc
+    CXX=$(exhost --tool-prefix)c++
+    HOSTCC=$(exhost --build)-cc
     pkg_config_prog_path=/usr/$(exhost --build)/bin/$(exhost --tool-prefix)pkg-config
 )
 
@@ -50,6 +53,11 @@ crash_pkg_setup() {
 }
 
 crash_src_prepare() {
+    edo sed -i -r \
+        -e '/^CC +=/s:=:?=:' \
+        -e '/^CXX +=/s:=:?=:' \
+        -e '/^HOSTCC +=/s:=:?=:' \
+        Makefile
     edo mv "${WORKBASE}"/gdb-${GDB_VERSION} gdb-${GDB_VERSION}
     echo "../../${PN} ../../${PN}lib.a" | edo tee gdb-${GDB_VERSION}/gdb/mergeobj
     emake gdb_patch "${EMAKE_OPTS[@]}"
