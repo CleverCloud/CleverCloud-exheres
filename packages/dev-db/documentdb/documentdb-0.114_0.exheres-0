@@ -1,0 +1,9 @@
+# Copyright 2025 Aurélien Hébert <aurelien.hebert@clever-cloud.com>
+# Copyright 2026 Yohann Vinez <yohann.vinez@clever.cloud>
+# Distributed under the terms of the GNU General Public License v2
+
+require documentdb [ min_version="17" max_version="18" ]
+
+PLATFORMS="~amd64"
+
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/${PNV}-skip-rum-export-validation.patch )

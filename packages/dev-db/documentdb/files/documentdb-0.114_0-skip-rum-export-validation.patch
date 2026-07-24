@@ -1,0 +1,15 @@
+Upstream: no (downstream workaround; the underlying symbol-name mismatch should be reported to documentdb)
+Reason: the extended_rum "all" target runs validate_rum_core_exports.sh, which expects an exported symbol named documentdb_rumhandler while the RMGR macro actually exports builtin_rmgr_documentdb_rumhandler; on 0.114 the check is a false positive that aborts the build. Skip running it.
+Author: Yohann Vinez <yohann.vinez@clever.cloud>
+
+--- a/pg_documentdb_extended_rum/Makefile
++++ b/pg_documentdb_extended_rum/Makefile
+@@ -85,7 +85,7 @@
+ all: validate_exports
+
+ validate_exports: $(RUM_CORE_LIB) $(RUM_CORE_BUILTIN_RMGR_LIB)
+-	$(CURDIR)/validate_rum_core_exports.sh $(RUM_CORE_LIB) $(RUM_CORE_BUILTIN_RMGR_LIB)
++	@true
+
+ $(generated_sql_files): build/%: %
+ 	@mkdir -p $(SQL_DEPDIR) $(SQL_BUILDDIR)
