@@ -16,7 +16,11 @@ MY_PNV=${PN,,}-${MY_PV}
 
 # In order to provide a stable code base, MySQL depends on a specific version of Boost.
 # Currently only Boost.Geometry headers are used and boost is just required at build time.
-if ever at_least 8; then
+# Since 8.4 the required Boost (1.84) is bundled in extra/boost/ and the build
+# system uses it unconditionally, ignoring WITH_BOOST: no external download.
+if ever at_least 8.4; then
+    BOOST_PV=
+elif ever at_least 8; then
     BOOST_PV="1.77.0"
 else
     BOOST_PV="1.59.0"
@@ -26,8 +30,13 @@ SUMMARY="A relational database management system (RDBMS)"
 HOMEPAGE="https://www.percona.com/"
 DOWNLOADS="
     https://downloads.percona.com/downloads/${PN}-${MYSQL_MAJOR_VERSION}/${PN}-${MY_PV}/source/tarball/${MY_PNV}.tar.gz
+"
+
+if [[ -n ${BOOST_PV} ]]; then
+    DOWNLOADS+="
     mirror://sourceforge/boost/boost_${BOOST_PV//./_}.tar.bz2
 "
+fi
 
 LICENCES="GPL-2" # with-exceptions
 MYOPTIONS="
@@ -203,9 +212,6 @@ CMAKE_SRC_CONFIGURE_PARAMS=(
     -DWITH_LIBEVENT:STRING=bundled
     -DWITH_NUMA:BOOL=FALSE
     -DWITH_SSL:STRING=system
-    -DBOOST_INCLUDE_DIR:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
-    -DLOCAL_BOOST_DIR:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
-    -DWITH_BOOST:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
     -DWITH_CLIENT_PROTOCOL_TRACING:BOOL=FALSE
     -DWITH_LZ4:STRING=system
     -DWITH_MSAN:BOOL=FALSE
@@ -236,6 +242,14 @@ CMAKE_SRC_CONFIGURE_OPTION_WITHS=(
     'memcached INNODB_MEMCACHED'
     'systemd SYSTEMD'
 )
+
+if [[ -n ${BOOST_PV} ]]; then
+    CMAKE_SRC_CONFIGURE_PARAMS+=(
+        -DBOOST_INCLUDE_DIR:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
+        -DLOCAL_BOOST_DIR:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
+        -DWITH_BOOST:PATH="${WORKBASE}"/boost_${BOOST_PV//./_}
+    )
+fi
 
 if ever at_least 8; then
     CMAKE_SRC_CONFIGURE_PARAMS+=(
