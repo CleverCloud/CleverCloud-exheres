@@ -4,7 +4,7 @@
 require postgresql [ work="pgpool-II-${PV}" multibuild=false ]
 require systemd-service [ systemd_files=[ ${FILES}/systemd/${PN}.service ] ]
 
-DOWNLOADS="https://www.pgpool.net/mediawiki/download.php?f=pgpool-II-${PV}.tar.gz -> ${PNV}.tar.gz"
+DOWNLOADS="https://www.pgpool.net/source/pgpool-II-${PV}.tar.gz -> ${PNV}.tar.gz"
 
 DESCRIPTION="Pgpool-II is a middleware that works between PostgreSQL servers and a PostgreSQL database client"
 SUMMARY="Connection pool server for PostgreSQL"
