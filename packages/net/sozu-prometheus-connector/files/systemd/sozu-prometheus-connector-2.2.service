@@ -11,7 +11,7 @@ StartLimitBurst=64
 [Service]
 Type=simple
 
-ExecStart=/usr/libexec/sozu-prometheus-connector.2.2 --config /etc/sozu/1.1/connector/prometheus.toml
+ExecStart=/usr/libexec/sozu-prometheus-connector.2.2 --config /etc/sozu/2.2/connector/prometheus.toml
 Restart=always
 
 TimeoutStopSec=30
