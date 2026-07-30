@@ -1,0 +1,26 @@
+Written by: Eric St. John <ericstj@microsoft.com>
+Upstream: yes, part of PR 4043 in dotnet/dotnet, but dropped from the 10.0 release branch
+Reason: crossgen2 crashes on Microsoft.VisualStudio.TestPlatform.Common.dll when
+publishing Microsoft.CodeAnalysis.LanguageServer during source-build
+(https://github.com/dotnet/dotnet/issues/3995)
+
+---
+ .../Microsoft.CodeAnalysis.LanguageServer.csproj               | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/roslyn/src/LanguageServer/Microsoft.CodeAnalysis.LanguageServer/Microsoft.CodeAnalysis.LanguageServer.csproj b/src/roslyn/src/LanguageServer/Microsoft.CodeAnalysis.LanguageServer/Microsoft.CodeAnalysis.LanguageServer.csproj
+index c32f01a..fd8df01 100644
+--- a/src/roslyn/src/LanguageServer/Microsoft.CodeAnalysis.LanguageServer/Microsoft.CodeAnalysis.LanguageServer.csproj
++++ b/src/roslyn/src/LanguageServer/Microsoft.CodeAnalysis.LanguageServer/Microsoft.CodeAnalysis.LanguageServer.csproj
+@@ -73,6 +73,9 @@
+   <ItemGroup>
+     <!-- Include MIBC data if available.  This is produced by a separate profiling pipeline for the C# extension, and injected in official builds -->
+     <PublishReadyToRunPgoFiles Condition="'$(VSCodeOptimizationDataRoot)'!=''" Include="$(VSCodeOptimizationDataRoot)\*.mibc" />
++
++    <!-- Workaround https://github.com/dotnet/dotnet/issues/3995 -->
++    <PublishReadyToRunExclude Include="Microsoft.VisualStudio.TestPlatform.Common.dll" />
+   </ItemGroup>
+ 
+   <Target Name="SetCrossgen2ExtraArgs" BeforeTargets="ResolveReadyToRunCompilers" Condition="'$(PublishReadyToRun)' == 'true'">
+-- 
+2.52.0

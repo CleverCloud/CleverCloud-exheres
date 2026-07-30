@@ -7,11 +7,10 @@ PLATFORMS="~amd64"
 require dotnet-sdk [ dotnet_project="dotnet" \
     dotnet_tag="v${PV}" \
     dotnet_tarball="${WORK}/artifacts/x64/Release/${PNV}-exherbo-x64.tar.gz" \
-    dotnet_runtime="${SLOT}.22" \
+    dotnet_runtime="${SLOT}.28" \
     llvm_slots=[ 21 15 ] ]
 
 DEFAULT_SRC_PREPARE_PATCHES=(
     "${FILES}/${SLOT}/0001-clang-banned-by-distribution.patch"
-    "${FILES}/${SLOT}/0002-fix-version-in-2026.patch"
 )
 
