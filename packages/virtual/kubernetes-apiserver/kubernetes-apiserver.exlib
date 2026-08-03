@@ -7,5 +7,6 @@ SLOT="$(ever range 1-2)"
 DEPENDENCIES="
     run:
         kubernetes/kube-apiserver:${SLOT}
+        kubernetes/konnectivity-server:0.$(ever range 2)
         virtual/kubernetes-clients:${SLOT}
 "

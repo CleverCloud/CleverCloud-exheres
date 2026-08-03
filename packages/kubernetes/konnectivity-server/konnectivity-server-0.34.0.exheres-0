@@ -1,0 +1,6 @@
+# Copyright 2026 Antoine Mace <antoine.mace@clever.cloud>
+# Distributed under the terms of the GNU General Public License v2
+
+require konnectivity-server [ go_minimum_version=1.24.7 ]
+
+PLATFORMS="~amd64"

@@ -1,0 +1,18 @@
+# Copyright 2026 Antoine Mace <antoine.mace@clever.cloud>
+# Distributed under the terms of the GNU General Public License v2
+
+myexparam go_minimum_version
+
+require alternatives
+require github [ user="kubernetes-sigs" project="apiserver-network-proxy" tag=v${PV} ] go [ go_minimum_version="$(exparam go_minimum_version)" package_path="./cmd/server" ]
+
+SUMMARY="Konnectivity server, the API server side proxy of the Kubernetes apiserver-network-proxy"
+
+LICENCES="Apache-2.0"
+SLOT="$(ever range 1-2)"
+
+src_install() {
+    go_src_install
+
+    alternatives_for "${PN}" "${SLOT}" "50" "/usr/$(exhost --target)/bin/${PN}" "${PN}-${SLOT}"
+}
