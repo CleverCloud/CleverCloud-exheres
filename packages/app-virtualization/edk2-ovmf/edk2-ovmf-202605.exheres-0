@@ -8,7 +8,7 @@ HOMEPAGE+=" https://www.tianocore.org/tianocore-wiki.github.io/"
 
 # See submodules in https://github.com/tianocore/edk2/blob/master/.gitmodules
 OPENSSL_VERSION="3.5.1"
-MBEDTLS_VERSION="3.6.5"
+MBEDTLS_VERSION="3.6.6"
 BROTLI_COMMIT="e230f474b87134e8c6c85b630084c612057f253e"
 PUBLIC_MIPI_SYS_T_COMMIT="370b5944c046bab043dd8b133727b2135af7747a"
 LIBSPDM_COMMIT="1be116c7b7713fa9003e1bd53b53a34758549eb9"
