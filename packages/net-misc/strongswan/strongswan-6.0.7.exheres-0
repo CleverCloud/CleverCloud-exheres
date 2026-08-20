@@ -38,6 +38,7 @@ MYOPTIONS="
     pam
     pkcs11
     sqlite
+    stroke [[ description = [ Legacy stroke configuration backend (ipsec.conf, ipsec command) ] ]]
     systemd
     ( plugins:
         blowfish
@@ -48,14 +49,14 @@ MYOPTIONS="
         ipseckey [[ description = [ IPSECKEY authentication plugin ] ]]
         led [[ description = [ Control LEDs on IKEv2 activity using the kernel LED subsystem ] ]]
         lookip [[ description = [ Fast virtual IP lookup and notification plugin ] ]]
-        ntru [[ description = [ Quantum-resistent NTRU crypto plugin ] ]]
+        ml [[ description = [ Module-Lattice-based (ML-KEM) post-quantum key exchange plugin ] ]]
         padlock [[ description = [ VIA Padlock crypto plugin ] ]]
         rdrand [[ description = [ Intel RDRAND random generator plugin ] ]]
         systime-fix [[ description = [ Handle cert lifetimes with invalid system time gracefully ] ]]
         unity [[ description = [ Cisco Unity extension plugin ] ]]
         whitelist
     )
-    ( providers: libressl openssl ) [[ number-selected = at-most-one ]]
+    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
 "
 
 DEPENDENCIES="
@@ -122,6 +123,7 @@ DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
     'eap eap-md5'
     'eap eap-aka'
     'eap eap-aka-3gpp2'
+    'eap fips-prf'
     'eap md4'
     'eap eap-mschapv2'
     'eap eap-radius'
@@ -141,6 +143,7 @@ DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
     sqlite
     'sqlite attr-sql'
     'sqlite sql'
+    stroke
     systemd
     plugins:led
     plugins:lookip
@@ -152,7 +155,7 @@ DEFAULT_SRC_CONFIGURE_OPTION_ENABLES=(
     plugins:gcm
     plugins:ha
     plugins:ipseckey
-    plugins:ntru
+    plugins:ml
     plugins:padlock
     plugins:rdrand
     plugins:whitelist
@@ -165,7 +168,9 @@ src_install() {
 
     edo find "${IMAGE}"/usr/$(exhost --target) -name '*.la' -delete
 
-    keepdir /etc/ipsec.d/{aacerts,acerts,cacerts,certs,crls,ocspcerts,private,reqs}
-    keepdir /etc/swanctl/{bliss,conf.d,ecdsa,pkcs12,pkcs8,private,pubkey,rsa,x509,x509aa,x509ac,x509ca,x509crl,x509ocsp}
+    if option stroke ; then
+        keepdir /etc/ipsec.d/{aacerts,acerts,cacerts,certs,crls,ocspcerts,private,reqs}
+    fi
+    keepdir /etc/swanctl/{conf.d,ecdsa,pkcs12,pkcs8,private,pubkey,rsa,x509,x509aa,x509ac,x509ca,x509crl,x509ocsp}
 }
 
