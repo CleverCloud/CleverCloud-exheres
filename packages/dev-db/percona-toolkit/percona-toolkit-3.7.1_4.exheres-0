@@ -1,7 +1,10 @@
 # Copyright 2014 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require go
+require go [ go_minimum_version=1.26.4 ]
+
+MY_PV=${PV/_/-}
+MY_PNV=${PN}-${PV%_*}
 
 SUMMARY="Toolkit to manage Percona-Server"
 DESCRIPTION="
@@ -10,7 +13,7 @@ Support staff to perform a variety of MySQL server and system tasks that are too
 complex to perform manually, including
 "
 HOMEPAGE="http://www.percona.com/software/${PN}"
-DOWNLOADS="https://downloads.percona.com/downloads/${PN}/${PV}/source/tarball/${PNV}.tar.gz"
+DOWNLOADS="https://downloads.percona.com/downloads/${PN}/${MY_PV}/source/tarball/${MY_PNV}.tar.gz"
 
 LICENCES="GPL-2"
 SLOT="0"
@@ -25,6 +28,8 @@ DEPENDENCIES="
 "
 
 BUGS_TO="aurelien.hebert@clever.cloud"
+
+WORK=${WORKBASE}/${MY_PNV}
 
 src_prepare() {
     export GOPROXY=off
