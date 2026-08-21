@@ -1,0 +1,26 @@
+# Copyright 2026 Yohann Vinez <yohann.vinez@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require Percona-Server
+
+PLATFORMS="~amd64 ~x86"
+
+CMAKE_SRC_CONFIGURE_PARAMS+=(
+    -DDEFAULT_CHARSET:STRING=utf8mb4
+    -DDEFAULT_COLLATION:STRING=utf8mb4_0900_ai_ci
+)
+
+src_configure() {
+    cmake_src_configure
+
+    edo mkdir -p share/${PN}-${SLOT}
+    edo cp -r "${CMAKE_SOURCE}"/share/charsets share/${PN}-${SLOT}/
+}
+
+src_install() {
+    Percona-Server_src_install
+
+    edo mv "${IMAGE}"/usr/bin/mysqlrouter_bootstrap \
+        "${IMAGE}"/usr/$(exhost --target)/libexec/${PN}-${SLOT}/
+    edo rmdir "${IMAGE}"/usr/bin
+}
