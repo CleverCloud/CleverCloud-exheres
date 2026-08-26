@@ -8,6 +8,7 @@ PLATFORMS="~amd64 ~x86"
 CMAKE_SRC_CONFIGURE_PARAMS+=(
     -DDEFAULT_CHARSET:STRING=utf8mb4
     -DDEFAULT_COLLATION:STRING=utf8mb4_0900_ai_ci
+    -DINSTALL_PRIV_LIBDIR:PATH=$(exhost --target)/lib/${PN}-${SLOT}/private
 )
 
 src_configure() {
