@@ -1,0 +1,8 @@
+# Copyright 2022 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require kubernetes
+
+SUMMARY="Kubernetes - a performance testing tool which allows users to run experiments on simulated clusters"
+PLATFORMS="~amd64"
+
