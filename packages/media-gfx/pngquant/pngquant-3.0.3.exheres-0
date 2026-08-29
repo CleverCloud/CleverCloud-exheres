@@ -2,35 +2,35 @@
 # Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user="kornelski" tag=${PV} ]
+require cargo [ debug=true rust_minimum_version=1.67 ]
 
 SUMMARY="pngquant is a PNG compressor that significantly reduces file sizes by converting images to a more efficient 8-bit PNG format with alpha channel"
 HOMEPAGE="https://pngquant.org"
+# Will be included with the next release, cf.
+# 80beb562f734b6f8d9dcc8bba1befa28878c2b87
+man_sha1="4140cc5bc9f48f4df044754bef6cf784e1f645f8"
+DOWNLOADS+="
+    https://github.com/kornelski/${PN}/raw/${man_sha1}/${PN}.1 -> ${PN}-${man_sha1}.1
+"
 
 LICENCES="GPL-3"
 SLOT="0"
 PLATFORMS="~amd64"
-MYOPTIONS="debug openmp"
+MYOPTIONS=""
 DEPENDENCIES="
     build:
+        sys-libs/zlib
         virtual/pkg-config
     build+run:
-        media-gfx/libimagequant 
         media-libs/lcms2
         media-libs/libpng:=
-        openmp? ( sys-libs/openmp )
-        sys-libs/zlib
 "
 
-src_configure() {
-    local myconf=(
-        --prefix=/usr/$(exhost --target)
-    )
+CARGO_FEATURES=( lcms2 )
 
-    option debug && myconf+=( --enable-debug )
-    option openmp && myconf+=( --with-openmp )
+src_install() {
+    cargo_src_install
 
-    edo ./configure "${myconf[@]}"
+    newman "${FETCHEDDIR}"/${PN}-${man_sha1}.1 ${PN}.1
 }
-
 
