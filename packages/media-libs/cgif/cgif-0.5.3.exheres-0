@@ -1,0 +1,31 @@
+# Copyright 2022 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user="dloebl" tag="v${PV}" ] meson
+
+SUMMARY="GIF encoder written in C"
+LICENCES="MIT"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS=""
+DEPENDENCIES=""
+
+MESON_SRC_CONFIGURE_PARAMS=(
+    -Dexamples=false
+    -Dfuzzer=false
+)
+MESON_SRC_CONFIGURE_TESTS=(
+    '-Dtests=true -Dtests=false'
+)
+
+src_prepare() {
+    meson_src_prepare
+
+    # These two files don't exist with -Dexamples=false
+    edo sed \
+        -e '/  example_cgif.gif/d' \
+        -e '/  example_video_cgif.gif/d' \
+        -i tests/tests.sha256
+}
+
