@@ -12,5 +12,13 @@ SLOT="0"
 PLATFORMS="~amd64"
 
 MYOPTIONS=""
-DEPENDENCIES=""
+DEPENDENCIES="
+    test:
+        dev-util/cunit
+"
+
+MESON_SRC_CONFIGURE_PARAMS=(
+    # Comes with additional deps (e.g. asciidoc, xmlto)
+    -Ddoc=false
+)
 
