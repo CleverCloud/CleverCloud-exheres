@@ -1,0 +1,42 @@
+# Copyright 2024 Arnaud Lefebvre <a.lefebvre@outlook.fr>
+# Distributed under the terms of the GNU General Public License v3
+
+require meson
+require bash-completion
+
+SUMMARY="Linux kernel trace file system library"
+HOMEPAGE="https://trace-cmd.org/"
+DOWNLOADS="https://git.kernel.org/pub/scm/libs/libtrace/${PN}.git/snapshot/${PNV}.tar.gz"
+
+LICENCES="GPL-2 LGPL-2.1"
+SLOT="0"
+PLATFORMS="~amd64"
+
+MYOPTIONS=""
+DEPENDENCIES="
+    build:
+        sys-devel/bison
+        sys-devel/flex
+    build+run:
+        dev-libs/libtraceevent[>=1.8.1]
+    test:
+        dev-util/cunit
+"
+
+# Tests need root due to /sys/kernel/tracing
+RESTRICT="test"
+
+MESON_SRC_CONFIGURE_PARAMS=(
+    # Comes with additional deps (e.g. asciidoc, xmlto)
+    -Ddoc=false
+)
+MESON_SRC_CONFIGURE_TESTS=(
+    '-Dutest=true -Dutest=false'
+)
+
+src_install() {
+    meson_src_install
+
+    option bash-completion || edo rm -r "${IMAGE}"/usr/share/bash-completion
+}
+
