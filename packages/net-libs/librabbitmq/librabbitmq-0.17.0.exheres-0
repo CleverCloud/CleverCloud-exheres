@@ -18,7 +18,7 @@ DEPENDENCIES="
         app-text/xmlto  [[ note = [ for tools docs ] ]]
         virtual/pkg-config
     build+run:
-        dev-libs/popt  [[ note = [ for tools ] ]]
+        dev-libs/popt[>=1.14]  [[ note = [ for tools ] ]]
         providers:openssl? ( dev-libs/openssl:=[>=1.1.1] )
         providers:libressl? ( dev-libs/libressl:= )
 "
