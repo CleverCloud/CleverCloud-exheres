@@ -5,15 +5,20 @@ export_exlib_phases src_prepare pkg_setup src_compile src_test src_install
 
 SCM_SECONDARY_REPOSITORIES="vc tcc markdown"
 SCM_vc_REPOSITORY="https://github.com/vlang/vc"
-SCM_vc_REVISION="f461dfebcdfac3c75fdf28fec80c07f0a7a9a53d"
+SCM_vc_REVISION="7eb8c54a3843e5107d5af06d7a8c3e928f322475"
 SCM_tcc_REPOSITORY="https://github.com/vlang/tccbin"
-SCM_tcc_REVISION="b12df47eda0dffdbf5c4276d5bbf3445fc12c6c8"
 SCM_markdown_REPOSITORY="https://github.com/vlang/markdown"
 
+# Prebuilt tcc binaries live on one branch per platform, pin each one
 case "${PLATFORM}" in
-  "amd64") SCM_tcc_BRANCH="thirdparty-linux-amd64" ;;
-  "armv7") SCM_tcc_BRANCH="thirdparty-linux-arm" ;;
-  "armv8") SCM_tcc_BRANCH="thirdparty-linux-aarch64" ;;
+  "amd64")
+    SCM_tcc_BRANCH="thirdparty-linux-amd64"
+    SCM_tcc_REVISION="b12df47eda0dffdbf5c4276d5bbf3445fc12c6c8"
+    ;;
+  "armv8")
+    SCM_tcc_BRANCH="thirdparty-linux-aarch64"
+    SCM_tcc_REVISION="ecc2f67a0e0cc85878323d5796ef3dd63ca49e34"
+    ;;
 esac
 
 require github [ user=vlang tag=${PV} force_git_clone=true ] scm-git
@@ -51,12 +56,9 @@ MYOPTIONS="
 
 DEPENDENCIES="
     build+run:
+        dev-db/sqlite:3
         X? ( x11-libs/libX11 )
 "
-
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/${PNV}-tcc-atomic-thread-fence.patch
-)
 
 DEFAULT_SRC_COMPILE_PARAMS=(
     local=1
@@ -75,6 +77,7 @@ SUBTOOLS=(
   vcreate
   vdoc
   vpm
+  vsqlite
   vsymlink
   vvet
   vwhere
@@ -178,10 +181,13 @@ v_src_install () {
     scanner_speed
     show_ancient_deprecations
     test_if_v_test_system_works
+    test_os_args
     test_os_process
     translate
     vbin2v
     vbug
+    vbug-report
+    vbug-report-send
     vbuild-examples
     vbuild-tools
     vbuild-vbinaries
@@ -193,15 +199,18 @@ v_src_install () {
     vdoctor
     vdownload
     vfmt
+    vgit-fmt-hook
     vgret
     vls
     vmissdoc
+    vquest
     vreduce
     vrepeat
     vrepl
     vretry
     vrun
     vscan
+    vschannel_16kb_httpbin_probe
     vself
     vsetup-freetype
     vshader
@@ -229,10 +238,7 @@ v_src_install () {
   # List can be found in cmd/tools/builders
   local builders=(
     c_builder
-    golang_builder
-    interpret_builder
     js_builder
-    native_builder
     wasm_builder
   )
 
