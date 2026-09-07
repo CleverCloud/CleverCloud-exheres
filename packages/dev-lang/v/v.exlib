@@ -7,6 +7,7 @@ SCM_SECONDARY_REPOSITORIES="vc tcc markdown"
 SCM_vc_REPOSITORY="https://github.com/vlang/vc"
 SCM_vc_REVISION="f461dfebcdfac3c75fdf28fec80c07f0a7a9a53d"
 SCM_tcc_REPOSITORY="https://github.com/vlang/tccbin"
+SCM_tcc_REVISION="b12df47eda0dffdbf5c4276d5bbf3445fc12c6c8"
 SCM_markdown_REPOSITORY="https://github.com/vlang/markdown"
 
 case "${PLATFORM}" in
@@ -52,6 +53,10 @@ DEPENDENCIES="
     build+run:
         X? ( x11-libs/libX11 )
 "
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/${PNV}-tcc-atomic-thread-fence.patch
+)
 
 DEFAULT_SRC_COMPILE_PARAMS=(
     local=1
