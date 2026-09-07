@@ -28,6 +28,8 @@ DEPENDENCIES="
 	dev-libs/openssl:=
 	sys-libs/zlib
 	zstd? ( app-arch/zstd )
+    test:
+        dev-db/postgresql:*
 "
 
 MESON_SRC_CONFIGURE_PARAMS=(
