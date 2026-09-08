@@ -8,7 +8,7 @@ HOMEPAGE="http://www.gunicorn.org/"
 
 LICENCES="MIT"
 SLOT="0"
-PLATFORMS="~amd64 ~x86"
+PLATFORMS="~amd64 ~armv8 ~x86"
 
 # Tests are failing with sandbox
 RESTRICT="test"
