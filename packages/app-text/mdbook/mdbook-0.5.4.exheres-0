@@ -6,10 +6,12 @@ require cargo [ rust_minimum_version=1.88.0 ]
 require bash-completion zsh-completion
 
 SUMMARY="mdBook is a utility to create modern online books from Markdown files"
-PLATFORMS="~amd64 ~armv8"
+
 LICENCES="MPL-2.0"
 SLOT="0"
+PLATFORMS="~amd64 ~armv8"
 MYOPTIONS=""
+
 DEPENDENCIES=""
 
 CARGO_SRC_TEST_PARAMS=( --
