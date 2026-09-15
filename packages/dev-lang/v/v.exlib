@@ -21,6 +21,7 @@ case "${PLATFORM}" in
     ;;
 esac
 
+require flag-o-matic
 require github [ user=vlang tag=${PV} force_git_clone=true ] scm-git
 
 SUMMARY="Simple, fast, safe, compiled language for developing maintainable software"
@@ -110,6 +111,11 @@ v_pkg_setup() {
 
   # Skip tests/phases using network or an embedded compiler
   export VTEST_SANDBOXED_PACKAGING=1
+
+  # V pairs -fno-strict-aliasing with optimisation only in -prod builds, so the
+  # bootstrap gets our -O2 without it and gcc >= 15 miscompiles the v2 compiler.
+  # See https://github.com/vlang/v/issues/26512
+  append-flags -fno-strict-aliasing
 }
 
 v_src_compile() {
