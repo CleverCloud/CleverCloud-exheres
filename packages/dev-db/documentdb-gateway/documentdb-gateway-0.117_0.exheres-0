@@ -3,8 +3,8 @@
 
 MY_PV=${PV/_/-}
 
-require github [ user=documentdb project=documentdb tag=v${MY_PV} force_git_clone=true ]
 require cargo [ crate_path=pg_documentdb_gw/documentdb_gateway ]
+require github [ user=documentdb project=documentdb tag=v${MY_PV} ]
 require systemd-service [ systemd_files=[ "${FILES}"/systemd/documentdb-gateway.service ] ]
 
 SUMMARY="A MongoDB wire-protocol gateway backed by PostgreSQL"

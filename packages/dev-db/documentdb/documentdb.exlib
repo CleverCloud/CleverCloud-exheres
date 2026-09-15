@@ -8,8 +8,8 @@ myexparam max_version
 MY_PV=${PV/_/-}
 MY_PNV=${PN}-${MY_PV}
 
-require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" postgresql_opts='[postgresql_extensions:tsm_system_rows]' ]
-require github [ tag=v${MY_PV} force_git_clone=true ]
+require github [ tag=v${MY_PV} ]
+require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" postgresql_opts='[postgresql_extensions:tsm_system_rows]' work="${MY_PNV}" ]
 require flag-o-matic
 
 export_exlib_phases pkg_setup
