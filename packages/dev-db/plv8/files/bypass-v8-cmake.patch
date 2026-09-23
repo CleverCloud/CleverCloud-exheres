@@ -38,16 +38,16 @@ diff --git a/Makefile b/Makefile
 
 -deps/v8-cmake/README.md:
 -	@git submodule update --init --recursive
--	$(foreach patch,$(PATCH_V8),cd deps/v8-cmake && patch -p1 <../../$(patch);)
+-	cd deps/v8-cmake && $(foreach patch,$(PATCH_V8),patch -p1 <../../$(patch) &&) true
 
 -deps/v8-cmake/build/libv8_libbase.a: deps/v8-cmake/README.md
--	@cd deps/v8-cmake && mkdir -p build && cd build && cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -Denable-fPIC=ON -DCMAKE_BUILD_TYPE=Release ../ && make -j $(NUMPROC)
+-	@cd deps/v8-cmake && mkdir -p build && cd build && cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -Denable-fPIC=ON -DCMAKE_BUILD_TYPE=Release $(V8_CMAKE_ARGS) ../ && make -j $(NUMPROC)
 -
 -v8: deps/v8-cmake/build/libv8_libbase.a
 +v8:
 
- # enable direct jsonb conversion by default
- CCFLAGS += -DJSONB_DIRECT_CONVERSION
+ # Extra arguments for the v8-cmake configure step, for example
+ # V8_CMAKE_ARGS='-DCMAKE_CXX_FLAGS=-fstack-protector-strong'.
 @@ -76,7 +70,7 @@
  	REGRESS += bigint_graceful
  endif
