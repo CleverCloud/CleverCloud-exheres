@@ -1,0 +1,19 @@
+# Copyright 2026 Aurélien Hébert <aurelien.hebert@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+myexparam min_version=
+myexparam max_version=
+
+require github [ user=eradman tag=${PV} ]
+require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam max_version)" ]
+
+SUMMARY="PostgreSQL module that requires a WHERE clause for UPDATE and DELETE"
+
+LICENCES="ISC"
+SLOT="0"
+MYOPTIONS=""
+
+DEPENDENCIES=""
+
+# tests require ruby and unpackaged pg_tmp (ephemeralpg)
+RESTRICT="test"
