@@ -7,15 +7,28 @@ require cmake
 SUMMARY="DuckDB: an in-process SQL OLAP database management system"
 HOMEPAGE="https://duckdb.org"
 
-LICENCES="MIT"
+LICENCES="MIT icu? ( icu )"
 PLATFORMS="~amd64"
 SLOT="0"
+MYOPTIONS="
+  icu [[ description = [ Build the bundled ICU extension (time zones, collations) into libduckdb ] ]]
+  json [[ description = [ Build the JSON extension into libduckdb ] ]]
+"
 
 CMAKE_SRC_CONFIGURE_PARAMS=(
   -DOVERRIDE_GIT_DESCRIBE:STRING="v${PV}"
   -DGIT_COMMIT_HASH:STRING="v${PV}"
   -DBUILD_MAIN_DUCKDB_LIBRARY:BOOL=TRUE
 )
+
+src_configure() {
+  local extensions=()
+  option icu && extensions+=( icu )
+  option json && extensions+=( json )
+
+  # Added to core_functions and parquet, always built by extension/extension_config.cmake
+  cmake_src_configure -DBUILD_EXTENSIONS:STRING="$(IFS=';'; echo "${extensions[*]}")"
+}
 
 src_install() {
   cmake_src_install
