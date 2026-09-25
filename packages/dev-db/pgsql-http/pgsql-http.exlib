@@ -9,7 +9,7 @@ require postgresql [ min_version="$(exparam min_version)" max_version="$(exparam
 
 SUMMARY="A PostgreSQL extension that enables synchronous (blocking) HTTP/HTTPS requests with SQL."
 
-LICENCES="PostgreSQL"
+LICENCES="MIT"
 SLOT="0"
 MYOPTIONS=""
 
