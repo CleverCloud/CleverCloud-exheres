@@ -13,6 +13,9 @@ LICENCES="MIT"
 SLOT="0"
 MYOPTIONS=""
 
-DEPENDENCIES=""
+DEPENDENCIES="
+    build+run:
+        net-misc/curl
+"
 
 DEFAULT_SRC_COMPILE_PARAMS=( OPTFLAGS='' )
