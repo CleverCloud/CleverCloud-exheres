@@ -1,7 +1,7 @@
 # Copyright 2024 David Legrand <david.legrand@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require cargo [ rust_minimum_version=1.91 ]
+require cargo [ rust_minimum_version=1.95 ]
 require github [ user=jdx tag=v${PV} ]
 
 SUMMARY="dev tools, env vars, task runner"
@@ -12,9 +12,11 @@ SLOT="0"
 PLATFORMS="~amd64 ~armv8"
 MYOPTIONS="providers: ( libressl openssl ) [[ number-selected = exactly-one ]]"
 
-# function of openssl-sys 0.9.116, which is what is specified by the Cargo.lock of mise-2026.6.14.
-# See: https://github.com/sfackler/rust-openssl/blob/openssl-sys-v0.9.117/openssl-sys/build/main.rs#L415
+# function of openssl-sys 0.9.117, which is what is specified by the Cargo.lock of mise-2026.9.16.
+# See: https://github.com/sfackler/rust-openssl/blob/openssl-sys-v0.9.117/openssl-sys/build/main.rs#L466
 DEPENDENCIES="
+    build:
+        sys-devel/cmake [[ note = [ libz-ng-sys builds a bundled zlib-ng ] ]]
     build+run:
         providers:libressl? ( dev-libs/libressl:=[>=3.5&<4.4] )
         providers:openssl?  ( dev-libs/openssl:= )
@@ -22,6 +24,30 @@ DEPENDENCIES="
 
 # Don't let the openssl-sys crate use a vendored openssl
 OPENSSL_NO_VENDOR=1
+
+# Tests which don't work in the build sandbox (Last checked: 2026.9.16)
+CARGO_SRC_TEST_PARAMS=(
+    # the only integration test (tests/aube_node_gyp_bootstrap.rs) fetches node-gyp from npm
+    --bins
+    --
+    # refuse to run from a non-root-owned or world-writable directory like /var/tmp
+    --skip system::managed_files::tests::strict_directory_operations_match_the_by_path_versions
+    --skip system_install
+    # Homebrew: refuse /var/tmp, or need Homebrew's Ruby environment
+    --skip system::packages::brew
+    # need network access
+    --skip github_relay::unix
+    --skip system::files::tests::absent_refuses_special_files
+    # need a git checkout or git credentials
+    --skip system::remote
+    # expect files, directories or tools of upstream's test environment
+    --skip system::packages::pacman::tests::test_pacman_query_file_advisory
+    --skip task::deps
+    --skip task::tests::test_from_path
+    --skip task::workspace::tests::discovery_context_preserves_current_and_parent_components
+    --skip tera::tests
+    --skip uv::tests::test_resolve_uv_venv_path
+)
 
 src_prepare() {
     default
