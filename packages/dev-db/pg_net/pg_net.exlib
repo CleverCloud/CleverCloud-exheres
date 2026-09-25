@@ -15,7 +15,10 @@ LICENCES="Apache-2.0"
 SLOT="0"
 MYOPTIONS=""
 
-DEPENDENCIES=""
+DEPENDENCIES="
+    build+run:
+        net-misc/curl[>=7.83]
+"
 
 DEFAULT_SRC_COMPILE_PARAMS=( OPTFLAGS='' )
 
