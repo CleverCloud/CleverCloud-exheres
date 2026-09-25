@@ -11,7 +11,7 @@ export_exlib_phases pkg_setup
 
 SUMMARY="A PostgreSQL extension that enables asynchronous (non-blocking) HTTP/HTTPS requests with SQL."
 
-LICENCES="PostgreSQL"
+LICENCES="Apache-2.0"
 SLOT="0"
 MYOPTIONS=""
 
