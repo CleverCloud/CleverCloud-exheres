@@ -13,3 +13,7 @@ DEPENDENCIES="
         dev-libs/libyaml
 "
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/74886-validate-merge-key-values.patch
+)
+

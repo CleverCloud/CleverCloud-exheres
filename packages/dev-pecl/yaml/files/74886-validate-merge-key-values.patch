@@ -1,0 +1,27 @@
+Upstream: yes, https://github.com/php/pecl-file_formats-yaml/commit/688b2d629ba6b86322869ce93e1621abea6f57f7 (not released yet, test file dropped as the PECL tarball lacks it)
+
+From 688b2d629ba6b86322869ce93e1621abea6f57f7 Mon Sep 17 00:00:00 2001
+From: Bryan Davis <bd808@bd808.com>
+Date: Sun, 28 Jun 2026 19:16:50 -0600
+Subject: [PATCH] Validate merge key values revisited
+
+Ensure that aliases used in merge key mappings reference arrays.
+
+Bug: 74886
+---
+ parse.c              |  2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/parse.c b/parse.c
+index c504cb3..1b08134 100644
+--- a/parse.c
++++ b/parse.c
+@@ -431,6 +431,8 @@ void handle_mapping(parser_state_t *state, zval *retval)
+ 				ZEND_HASH_FOREACH_VAL(HASH_OF(valptr), zvalp) {
+ 					if (Z_ISREF_P(zvalp)) {
+ 						ZVAL_DEREF(zvalp);
++					}
++					if (Z_TYPE_P(zvalp) == IS_ARRAY) {
+ 						zend_hash_merge(
+ 								Z_ARRVAL_P(arrval), Z_ARRVAL_P(zvalp),
+ 								zval_add_ref, 0);
