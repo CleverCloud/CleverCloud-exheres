@@ -15,6 +15,3 @@ DEPENDENCIES="
         dev-db/msodbcsql
 "
 
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/1543-php8.5-support.patch
-)
