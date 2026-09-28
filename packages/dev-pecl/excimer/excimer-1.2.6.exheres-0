@@ -11,7 +11,3 @@ PLATFORMS="~amd64"
 MYOPTIONS=""
 DEPENDENCIES=""
 
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/php-8.4-support-for-internal-frames.patch
-)
-
