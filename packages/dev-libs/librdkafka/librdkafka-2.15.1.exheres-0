@@ -1,28 +1,36 @@
 # Copyright 2016 Arnaud Lefebvre <a.lefebvre@outlook.fr>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=edenhill tag=v${PV} ]
+require github [ user=confluentinc tag=v${PV} ]
 
 SUMMARY="The Apache Kafka C/C++ library"
 
-LICENCES="BDS-2"
+LICENCES="BSD-2"
 SLOT="0"
 PLATFORMS="~amd64"
 
-MYOPTIONS="doc ssl sasl"
+MYOPTIONS="
+    doc
+    sasl
+    ssl
+    ssl? ( ( providers: libressl openssl ) [[ number-selected = exactly-one ]] )
+"
 
 DEPENDENCIES="
     build+run:
         app-arch/lz4
         app-arch/zstd
-    	net-misc/curl
+        net-misc/curl
         sys-libs/zlib
         doc? (
             app-doc/doxygen
             media-gfx/graphviz
         )
-        sasl? ( net-libs/gsasl )
-        ssl? ( dev-libs/openssl:= )
+        sasl? ( net-libs/cyrus-sasl )
+        ssl? (
+            providers:libressl? ( dev-libs/libressl:= )
+            providers:openssl? ( dev-libs/openssl:= )
+        )
 "
 
 src_configure(){
@@ -30,6 +38,10 @@ src_configure(){
         --hates=datarootdir \
         --hates=docdir \
         --hates=enable-fast-install \
+        --enable-curl \
+        --enable-lz4-ext \
+        --enable-zlib \
+        --enable-zstd \
         $(option_enable sasl) \
         $(option_enable ssl)
 }
@@ -51,3 +63,4 @@ src_install(){
         edo rmdir "${IMAGE}"/usr/share
     fi
 }
+
