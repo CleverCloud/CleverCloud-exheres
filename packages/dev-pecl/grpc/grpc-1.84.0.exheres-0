@@ -14,6 +14,3 @@ DEPENDENCIES="
         dev-libs/grpc
 "
 
-DEFAULT_SRC_PREPARE_PATCHES=(
-    "${FILES}"/40842-php8.5-support.patch
-)
