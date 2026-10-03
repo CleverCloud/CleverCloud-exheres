@@ -5,3 +5,7 @@ require Percona-Server
 
 PLATFORMS="~amd64 ~x86"
 
+DEPENDENCIES+="
+    build:
+        sys-libs/libquadmath:* [[ note = [ quadmath.h, included by the bundled boost 1.84 ] ]]
+"
