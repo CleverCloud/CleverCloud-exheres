@@ -1,0 +1,35 @@
+# Copyright 2023 Yannick Guern <yannick.guern@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require github [ user=charmbracelet tag=v${PV} ] go [ go_minimum_version=1.26.7 ]
+require bash-completion zsh-completion
+
+SUMMARY="A tool for glamorous shell scripts. Leverage the power of Bubbles and Lip Gloss in your scripts and aliases without writing any Go code!"
+LICENCES="MIT"
+PLATFORMS="~amd64 ~armv8"
+SLOT="0"
+DEPENDENCIES=""
+
+# Like upstream's releases, `gum version-check` can't parse the version otherwise
+GO_SRC_COMPILE_LDFLAGS=(
+    "-s"
+    "-w"
+    "-X main.Version=v${PV}"
+)
+
+src_compile() {
+    go_src_compile
+
+    edo ./${PN} completion bash > ${PN}.bash
+    edo ./${PN} completion zsh > _${PN}
+    edo ./${PN} man > ${PN}.1
+}
+
+src_install() {
+    go_src_install
+
+    doman ${PN}.1
+    dobashcompletion ${PN}.bash
+    dozshcompletion _${PN}
+}
+
