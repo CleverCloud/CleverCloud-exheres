@@ -1,0 +1,19 @@
+# Copyright 2020 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+MY_PV="11.0.100-rc.2.26504.105"
+
+SLOT="$(ever range 1-2)"
+PLATFORMS="~amd64"
+
+require dotnet-sdk [ dotnet_project="dotnet" \
+    dotnet_tag="v${MY_PV}" \
+    dotnet_tarball="${WORK}/artifacts/assets/Release/${PN}-${MY_PV}-exherbo-x64.tar.gz" \
+    dotnet_runtime="11.0.0-rc.2.26504.105" \
+    dotnet_official_build_id="20261004.5" \
+    llvm_slots=[ 22 21 20 19 18 17 16 15 ] ]
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/${SLOT}/0001-clang-banned-by-distribution.patch"
+    "${FILES}/${SLOT}/0002-disable-crossgen-testplatform-common.patch"
+)

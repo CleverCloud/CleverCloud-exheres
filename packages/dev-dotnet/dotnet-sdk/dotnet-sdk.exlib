@@ -5,12 +5,14 @@ myexparam dotnet_project
 myexparam dotnet_tag
 myexparam dotnet_tarball
 myexparam dotnet_runtime
+myexparam dotnet_official_build_id=
 myexparam llvm_slots[]
 
 exparam -v DOTNET_PROJECT dotnet_project
 exparam -v DOTNET_TAG dotnet_tag
 exparam -v DOTNET_TARBALL dotnet_tarball
 exparam -v DOTNET_RUNTIME dotnet_runtime
+exparam -v DOTNET_OFFICIAL_BUILD_ID dotnet_official_build_id
 exparam -v LLVM_SLOTS llvm_slots[@]
 
 SCM_CHECKOUT_TO="${FETCHEDDIR}/${PNV}"
@@ -98,8 +100,14 @@ dotnet-sdk_src_compile() {
     esandbox allow_net --bind 'unix:/tmp/*'
     esandbox allow_net --connect 'unix:/tmp/*'
 
+    # Without the release manifest (release.json, not part of the git tag), a pre-release
+    # build would get a dev version suffix: pass the official build id so the produced
+    # artifacts carry the upstream version (repo-projects adds 100 to the revision).
+    local build_args=()
+    [[ -n ${DOTNET_OFFICIAL_BUILD_ID} ]] && build_args+=( --official-build-id "${DOTNET_OFFICIAL_BUILD_ID}" )
+
     if ever at_least 10; then
-        edo bash build.sh -sb -cwb
+        edo bash build.sh -sb -cwb "${build_args[@]}"
     elif ever at_least 9; then
         edo bash build.sh -sb
     else
