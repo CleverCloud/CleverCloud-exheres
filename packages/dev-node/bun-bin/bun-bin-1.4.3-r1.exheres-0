@@ -1,6 +1,8 @@
 # Copyright 2025 David Legrand <david.legrand@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
+require bash-completion zsh-completion
+
 SUMMARY="Incredibly fast JavaScript runtime, bundler, test runner, and package manager all in one"
 HOMEPAGE="https://bun.sh/"
 
@@ -27,6 +29,17 @@ case "${PLATFORM}" in
   "armv8") PN_ARCH="linux-aarch64" ;;
 esac
 
+src_compile() {
+    SHELL=bash edo ${MY_PN}-${PN_ARCH}/${MY_PN} completions > ${MY_PN}.bash
+    SHELL=zsh edo ${MY_PN}-${PN_ARCH}/${MY_PN} completions > _${MY_PN}
+}
+
 src_install() {
     dobin ${MY_PN}-${PN_ARCH}/${MY_PN}
+    # bunx is bun itself, run under that name: the official installer creates the same symlink
+    dosym ${MY_PN} /usr/$(exhost --target)/bin/${MY_PN}x
+
+    dobashcompletion ${MY_PN}.bash ${MY_PN}
+    dozshcompletion _${MY_PN}
 }
+
