@@ -1,0 +1,71 @@
+# Copyright 2022 Florentin Dubois <florentin.dubois@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require systemd-service [ systemd_files=[ "contrib/systemd/etcd.service" "${FILES}/systemd" ] ]
+require github [ user="etcd-io" tag="v${PV}" ]
+
+SUMMARY="A distributed, reliable key-value store for the most critical data of a distributed system"
+
+LICENCES="Apache-2.0"
+SLOT="0"
+PLATFORMS="~amd64"
+MYOPTIONS=""
+
+RESTRICT="test"
+
+DEPENDENCIES="
+    build:
+        dev-lang/go[>=1.19]
+    build+run:
+        group/${PN}
+        user/${PN}
+"
+
+# TODO: Support go.mod in the Go exlib
+unset GOPATH
+
+src_unpack() {
+    default
+
+    export GOMODCACHE="${FETCHEDDIR}/go/pkg/mod"
+
+    esandbox disable_net
+
+    edo pushd "${WORK}" 
+    edo go mod download -x
+    # manually get additional modules to fix build, last checked: 3.5.9
+    edo go get google.golang.org/genproto@v0.0.0-20210602131652-f16073e35f0c
+    edo go get github.com/urfave/cli@v1.22.4
+    edo popd
+
+    esandbox enable_net
+}
+
+src_compile() {
+    edo mkdir bin
+    edo cd server
+    edo go build -v -installsuffix cgo -ldflags="-X=go.etcd.io/etcd/api/v3/version.GitSHA=v${PV}" -o "../bin/${PN}" .
+
+    edo cd ../etcdctl
+    edo go build -v -installsuffix cgo -ldflags="-X=go.etcd.io/etcd/api/v3/version.GitSHA=v${PV}" -o "../bin/${PN}ctl" .
+
+    edo cd ../etcdutl
+    edo go build -v -installsuffix cgo -ldflags="-X=go.etcd.io/etcd/api/v3/version.GitSHA=v${PV}" -o "../bin/${PN}utl" .
+}
+
+src_install() {
+    install_systemd_files
+
+    dobin "bin/${PN}"
+    dobin "bin/${PN}ctl"
+    dobin "bin/${PN}utl"
+
+    diropts -m 0700 -o "${PN}" -g "${PN}"
+    keepdir "/var/lib/${PN}"
+    keepdir "/var/lib/${PN}/snapshots"
+
+    edo mv etcd.conf.yml.sample conf.yml
+    insinto "/etc/${PN}"
+    doins conf.yml
+}
+
