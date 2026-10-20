@@ -3,7 +3,7 @@
 
 MY_PV=${PV/_/-}
 
-require cargo [ crate_path=pg_documentdb_gw/documentdb_gateway ]
+require cargo [ crate_path=pg_documentdb_gw/documentdb_gateway rust_minimum_version=1.95 ]
 require github [ user=documentdb project=documentdb tag=v${MY_PV} ]
 require systemd-service [ systemd_files=[ "${FILES}"/systemd/documentdb-gateway.service ] ]
 

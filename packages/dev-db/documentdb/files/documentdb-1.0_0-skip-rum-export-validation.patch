@@ -4,7 +4,7 @@ Author: Yohann Vinez <yohann.vinez@clever.cloud>
 
 --- a/pg_documentdb_extended_rum/Makefile
 +++ b/pg_documentdb_extended_rum/Makefile
-@@ -85,7 +85,7 @@
+@@ -91,7 +91,7 @@
  all: validate_exports
 
  validate_exports: $(RUM_CORE_LIB) $(RUM_CORE_BUILTIN_RMGR_LIB)
