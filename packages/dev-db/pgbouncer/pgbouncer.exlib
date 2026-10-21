@@ -48,6 +48,9 @@ DEFAULT_SRC_CONFIGURE_OPTION_WITHS=(
 pgbouncer_src_prepare() {
     default
 
+    # Man pages require pandoc
+    edo sed -e '/^dist_man_MANS =/d' -i Makefile
+
     edo sed \
         -e 's:/var/run:/run:g' \
         -e 's:unix_socket_dir = /tmp:unix_socket_dir = /run/postgresql:g' \
