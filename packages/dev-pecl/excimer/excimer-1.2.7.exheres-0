@@ -1,12 +1,15 @@
 # Copyright 2023 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require php-pecl [ module=module php_abis=[ 8.0 8.1 8.2 8.3 8.4 8.5 ] ]
+require php-pecl [ module=module pn="php-excimer" php_abis=[ 8.0 8.1 8.2 8.3 8.4 8.5 ] ]
 
 SUMMARY="Interrupting timer and low-overhead sampling profiler"
 LICENCES="Apache-2.0"
 SLOT="0"
 PLATFORMS="~amd64"
+
+HOMEPAGE="https://github.com/wikimedia/php-excimer"
+DOWNLOADS="https://github.com/wikimedia/php-excimer/archive/${PV}.tar.gz -> ${PNV}.tar.gz"
 
 MYOPTIONS=""
 DEPENDENCIES=""
