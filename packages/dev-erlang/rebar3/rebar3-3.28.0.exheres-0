@@ -8,7 +8,7 @@ require providers
 SUMMARY="Erlang build tool that makes it easy to compile and test Erlang applications"
 HOMEPAGE="https://www.rebar3.org"
 
-LICENCES="Apache-2.0"
+LICENCES="Apache-2.0 BSD-3 MIT"
 SLOT="0"
 PLATFORMS="~amd64"
 MYOPTIONS=""
@@ -29,3 +29,4 @@ src_compile() {
 src_install() {
     dobin ${PN}
 }
+
