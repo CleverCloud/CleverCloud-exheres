@@ -12,7 +12,7 @@ SLOT="0"
 PLATFORMS="~amd64 ~armv8"
 MYOPTIONS="providers: ( libressl openssl ) [[ number-selected = exactly-one ]]"
 
-# function of openssl-sys 0.9.117, which is what is specified by the Cargo.lock of mise-2026.10.17.
+# function of openssl-sys 0.9.117, which is what is specified by the Cargo.lock of mise-2026.10.19.
 # See: https://github.com/sfackler/rust-openssl/blob/openssl-sys-v0.9.117/openssl-sys/build/main.rs#L466
 DEPENDENCIES="
     build:
