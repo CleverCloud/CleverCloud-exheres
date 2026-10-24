@@ -12,3 +12,12 @@ PLATFORMS="~amd64 ~armv8"
 
 DEPENDENCIES=""
 
+src_test() {
+    # challenge and sidecar tests run local servers
+    esandbox allow_net --connect "inet:127.0.0.1@1024-65535"
+
+    cargo_src_test
+
+    esandbox disallow_net --connect "inet:127.0.0.1@1024-65535"
+}
+
