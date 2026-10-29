@@ -129,7 +129,9 @@ dotnet-sdk_src_install() {
 EOF
 
     dodir /opt/${PN}-${SLOT}
-    edo tar xf ${DOTNET_TARBALL} -C "${IMAGE}"/opt/${PN}-${SLOT}
+    # Source-built tarballs carry a fixed 2001:2001 owner since CVE-2026-114148: never
+    # restore ownership from the archive, everything under /opt must belong to root.
+    edo tar xf ${DOTNET_TARBALL} --no-same-owner -C "${IMAGE}"/opt/${PN}-${SLOT}
 
     local alternatives=(
         "/etc/dotnet" "/etc/${PN}-${SLOT}"
