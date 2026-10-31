@@ -1,11 +1,11 @@
 # Copyright 2018 Arnaud Lefebvre <arnaud.lefebvre@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user="tjko" tag="RELEASE.${PV}" ]
+require github [ user="tjko" tag="v${PV}" ]
 
 SUMMARY="Utility to optimize/compress JPEG files"
 
-LICENCES="GPL-2"
+LICENCES="GPL-3"
 SLOT="0"
 PLATFORMS="~amd64"
 
