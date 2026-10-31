@@ -1,0 +1,26 @@
+Source: David Legrand <david.legrand@clever.cloud>
+Upstream: under review, https://github.com/apache/pulsar-client-cpp/pull/622
+Reason: GCC 15 fails the test build with -Werror=stringop-truncation on strncpy
+
+From 4ba698eeb71528c2fb0e390866c059999ab560db Mon Sep 17 00:00:00 2001
+From: David Legrand <me@davlgd.com>
+Date: Sat, 31 Oct 2026 12:25:33 +0100
+Subject: [PATCH] Fix GCC -Werror=stringop-truncation in MessageTest
+
+---
+ tests/MessageTest.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/MessageTest.cc b/tests/MessageTest.cc
+index 7f1ae4d6..11734ef5 100644
+--- a/tests/MessageTest.cc
++++ b/tests/MessageTest.cc
+@@ -50,7 +50,7 @@ TEST(MessageTest, testAllocatedContents) {
+     MessageBuilder msgBuilder;
+     std::string str = "content";
+     char* content = new char[str.length() + 1];
+-    strncpy(content, str.c_str(), str.length());
++    memcpy(content, str.c_str(), str.length());
+     msgBuilder.setAllocatedContent(content, str.length());
+     Message msg = msgBuilder.build();
+     ASSERT_FALSE(strncmp("content", (char*)msg.getData(), msg.getLength()));

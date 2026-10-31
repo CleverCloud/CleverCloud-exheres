@@ -5,3 +5,7 @@ require pulsar-client-cpp
 
 PLATFORMS="~amd64"
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/${PNV}-messagetest-memcpy.patch
+)
+
