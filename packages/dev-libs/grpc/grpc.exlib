@@ -4,11 +4,13 @@
 require github [ user=${PN} tag=v${PV} ] cmake [ api=2 ]
 
 OPENCENSUS_VERSION=0.3.0
+GRPC_PROTO_REVISION=dd549fc4ed04b60b0fdd3866b82ef0a7c87c6e4f
 
 export_exlib_phases src_unpack src_configure src_install
 
 SUMMARY="High performance, open source, general RPC framework"
 DOWNLOADS+=" https://github.com/census-instrumentation/opencensus-proto/archive/v${OPENCENSUS_VERSION}.tar.gz -> opencensus-proto-${OPENCENSUS_VERSION}.tar.gz"
+DOWNLOADS+=" https://github.com/grpc/grpc-proto/archive/${GRPC_PROTO_REVISION}.tar.gz -> grpc-proto-${GRPC_PROTO_REVISION}.tar.gz"
 
 LICENCES="Apache-2.0"
 SLOT="0"
@@ -21,7 +23,7 @@ DEPENDENCIES="
     build:
         systemd? ( virtual/pkg-config )
     build+run:
-        dev-cpp/abseil[>=20240722.0]
+        dev-cpp/abseil[>=20260526.0]
         dev-libs/protobuf:=[>=3.29]
         dev-libs/re2:=
         net-dns/c-ares[>=1.13.0]
@@ -41,6 +43,8 @@ grpc_src_unpack() {
 
     edo rmdir "${CMAKE_SOURCE}"/third_party/opencensus-proto
     edo ln -sTf "${WORKBASE}"/opencensus-proto-${OPENCENSUS_VERSION} "${CMAKE_SOURCE}"/third_party/opencensus-proto
+    edo rmdir "${CMAKE_SOURCE}"/third_party/grpc-proto
+    edo ln -sTf "${WORKBASE}"/grpc-proto-${GRPC_PROTO_REVISION} "${CMAKE_SOURCE}"/third_party/grpc-proto
 }
 
 grpc_src_configure() {
