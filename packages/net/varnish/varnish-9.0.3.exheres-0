@@ -62,6 +62,9 @@ src_prepare() {
     edo sed \
         -e 's/-Werror//' \
         -i configure.ac
+    edo sed \
+        -e 's/rst: /rst: |/' \
+        -i doc/sphinx/Makefile.am
 
     autotools_src_prepare
 }
