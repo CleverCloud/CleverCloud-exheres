@@ -1,7 +1,7 @@
 # Copyright 2019 Arnaud Lefebvre <arnaud.lefebvre@clever-cloud.com)
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user="sysown" tag="${PV}" ] systemd-service [ systemd_files=[ "systemd/system/proxysql.service" ] ]
+require github [ user="sysown" tag="v${PV}" ] systemd-service [ systemd_files=[ "systemd/system/proxysql.service" ] ] flag-o-matic
 
 SUMMARY="High-performance MySQL proxy"
 DESCRIPTION="
@@ -31,6 +31,7 @@ DEPENDENCIES="
 "
 
 DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/${PNV}-btree-cstdint.patch"
     "${FILES}/libinjection-ar-cc-ld-python3.patch"
 )
 
@@ -41,6 +42,8 @@ pkg_setup() {
 src_prepare() {
     default
     unset CXXFLAGS
+    # GCC 15 defaults to C23, where () means (void): the bundled libconfig relies on K&R prototypes
+    append-cflags -std=gnu17
 
     sed "s@/usr/bin@/usr/$(exhost --target)/bin@" -i systemd/system/proxysql.service
     sed "s/ar /${AR} /" -i lib/Makefile

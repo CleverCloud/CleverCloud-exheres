@@ -1,0 +1,25 @@
+Source: Miro Stauder <miro@proxysql.com>
+Upstream: yes, https://github.com/sysown/proxysql/commit/5e7ab935ac3cfff6f32a177ffbaaaf86ff8f4b0f
+Reason: fix the build with GCC 15, include/btree.h uses uint8_t without <cstdint>
+
+From 5e7ab935ac3cfff6f32a177ffbaaaf86ff8f4b0f Mon Sep 17 00:00:00 2001
+From: Miro Stauder <miro@proxysql.com>
+Date: Thu, 2 Oct 2025 08:45:27 +0000
+Subject: [PATCH] fix new compiler issue in btree.h
+
+---
+ include/btree.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/btree.h b/include/btree.h
+index bb22e0cf33..cd54d2fbea 100644
+--- a/include/btree.h
++++ b/include/btree.h
+@@ -109,6 +109,7 @@
+ #include <iostream>
+ #include <iterator>
+ #include <limits>
++#include <cstdint>
+ #include <type_traits>
+ #include <new>
+ #include <ostream>
