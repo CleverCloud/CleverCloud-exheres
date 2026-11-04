@@ -19,7 +19,6 @@ MYOPTIONS="
     tracepoints [[ description = [ Support using tracepoints for capture, useful for multiple tools including perf trace ] ]]
     tui [[ description = [ Support an interactive terminal user interface ] ]]
 
-    ( providers: libressl openssl ) [[ number-selected = exactly-one ]]
     ( providers: libunwind llvm-libunwind ) [[ number-selected = exactly-one ]]
 "
 
@@ -41,10 +40,8 @@ DEPENDENCIES="
         gtk2? ( x11-libs/gtk+:2 )
         tracepoints? ( dev-libs/libtraceevent )
         tui? ( sys-libs/slang )
-        providers:libressl? ( dev-libs/libressl:= )
         providers:libunwind? ( dev-libs/libunwind )
         providers:llvm-libunwind? ( sys-libs/llvm-libunwind )
-        providers:openssl? ( dev-libs/openssl:= )
 "
 
 RESTRICT="test"
@@ -66,13 +63,15 @@ perf_make() {
         CROSS_COMPILE=$(exhost --tool-prefix)
 
         BUILD_BPF_SKEL=0 # requires libbpf
+        LIBPERL=1
         LIBUNWIND=1
         NO_CAPSTONE=1
         NO_JVMTI=1
-        NO_LIBBABELTRACE=1
+        NO_BABELTRACE2=1
         NO_LIBBPF=1
         NO_LIBLLVM=1
         NO_LIBPFM4=1
+        NO_RUST=1
         NO_SDT=1 # requires systemtap-sdt
         PYTHON=python$(python_get_abi)
 
