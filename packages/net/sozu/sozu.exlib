@@ -105,10 +105,13 @@ sozu_src_install() {
 
 sozu_src_test() {
     # The bin crate's command server tests bind a Unix socket named test.sock
-    # inside a tempfile::tempdir() directory.
+    # inside a tempfile::tempdir() directory; since 2.3, its CLI e2e tests bind
+    # a fake command socket named command.sock the same way.
     esandbox allow_net unix:"${TEMP}/.tmp*/test.sock"
+    esandbox allow_net unix:"${TEMP}/.tmp*/command.sock"
 
     default
 
+    esandbox disallow_net unix:"${TEMP}/.tmp*/command.sock"
     esandbox disallow_net unix:"${TEMP}/.tmp*/test.sock"
 }
