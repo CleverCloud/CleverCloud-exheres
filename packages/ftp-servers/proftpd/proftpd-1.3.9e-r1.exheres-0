@@ -5,3 +5,4 @@ require proftpd
 
 PLATFORMS="~amd64"
 
+DEFAULT_SRC_PREPARE_PATCHES=( "${FILES}"/933abc9ae115ffc59e4b2a98495ec267bf341d23.patch )
