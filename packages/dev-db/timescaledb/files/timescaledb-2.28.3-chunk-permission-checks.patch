@@ -1,0 +1,97 @@
+Source: https://github.com/timescale/timescaledb/commit/cb614b37bd6f51183fbbf18de8ecf2f89ca2aacf
+Upstream: yes, released in 2.29.1, which requires PostgreSQL 16 or newer
+Reason: GHSA-hcfx-29v5-2rcw, any role can drop a chunk of a hypertable it does not own
+
+Backported from 2.29.1 to 2.28.3: all code hunks apply with offsets only.
+Test hunks are dropped, the tsl/ hunks are kept although bindist does not build
+them.
+
+From cb614b37bd6f51183fbbf18de8ecf2f89ca2aacf Mon Sep 17 00:00:00 2001
+From: Sven Klemm <sven@tigerdata.com>
+Date: Wed, 29 Jul 2026 06:53:31 +0200
+Subject: [PATCH] Add missing permission checks to internal chunk functions
+
+---
+ src/chunk.c               |    7 +++++++
+ src/hypertable.c          |    6 ++++++
+ tsl/src/chunk.c           |    2 ++
+ tsl/src/compression/api.c |    1 +
+ 4 files changed, 16 insertions(+)
+
+diff --git a/src/chunk.c b/src/chunk.c
+--- a/src/chunk.c
++++ b/src/chunk.c
+@@ -4182,6 +4182,10 @@ ts_chunk_drop_single_chunk(PG_FUNCTION_ARGS)
+ 															   CurrentMemoryContext,
+ 															   true);
+ 	Assert(ch != NULL);
++
++	/* Only the hypertable owner may drop a chunk */
++	ts_hypertable_permissions_check(ch->hypertable_relid, GetUserId());
++
+ 	ts_chunk_validate_chunk_status_for_operation(ch, CHUNK_DROP, true /*throw_error */);
+ 
+ 	/* do not drop any chunk dependencies */
+@@ -5332,6 +5336,9 @@ ts_chunk_drop_osm_chunk(PG_FUNCTION_ARGS)
+ 	int32 osm_chunk_id = ts_chunk_get_osm_chunk_id(ht->fd.id);
+ 	Chunk *osm_chunk = ts_chunk_get_by_id(osm_chunk_id, true);
+ 
++	/* Only the hypertable owner may drop the OSM chunk */
++	ts_hypertable_permissions_check(ht->main_table_relid, GetUserId());
++
+ 	ts_chunk_validate_chunk_status_for_operation(osm_chunk, CHUNK_DROP, true);
+ 
+ 	/* do not drop any chunk dependencies */
+diff --git a/src/hypertable.c b/src/hypertable.c
+--- a/src/hypertable.c
++++ b/src/hypertable.c
+@@ -2566,6 +2566,9 @@ ts_hypertable_osm_range_update(PG_FUNCTION_ARGS)
+ 					   quote_identifier(NameStr(ht->fd.schema_name)),
+ 					   quote_identifier(NameStr(ht->fd.table_name))));
+ 	}
++
++	/* Only the hypertable owner may update the OSM chunk range */
++	ts_hypertable_permissions_check(ht->main_table_relid, GetUserId());
+ 	/*
+ 	 * range_start, range_end arguments must be converted to internal representation
+ 	 * a NULL start value is interpreted as INT64_MAX - 1 and a NULL end value is
+@@ -2734,6 +2737,9 @@ ts_lock_osm_chunk_dimension_slice(PG_FUNCTION_ARGS)
+ 					   quote_identifier(NameStr(ht->fd.table_name))));
+ 	}
+ 
++	/* Only the hypertable owner may lock the OSM chunk dimension slice */
++	ts_hypertable_permissions_check(ht->main_table_relid, GetUserId());
++
+ 	/*
+ 	 * Lock the OSM chunk's dimension slice tuple FOR UPDATE. The row lock is
+ 	 * held until the end of the current transaction.
+diff --git a/tsl/src/chunk.c b/tsl/src/chunk.c
+--- a/tsl/src/chunk.c
++++ b/tsl/src/chunk.c
+@@ -49,6 +49,7 @@ chunk_freeze_chunk(PG_FUNCTION_ARGS)
+ 	TS_PREVENT_FUNC_IF_READ_ONLY();
+ 	Chunk *chunk = ts_chunk_get_by_relid(chunk_relid, true);
+ 	Assert(chunk != NULL);
++	ts_hypertable_permissions_check(chunk->hypertable_relid, GetUserId());
+ 	if (chunk->relkind == RELKIND_FOREIGN_TABLE)
+ 	{
+ 		ereport(ERROR,
+@@ -77,6 +78,7 @@ chunk_unfreeze_chunk(PG_FUNCTION_ARGS)
+ 	TS_PREVENT_FUNC_IF_READ_ONLY();
+ 	Chunk *chunk = ts_chunk_get_by_relid(chunk_relid, true);
+ 	Assert(chunk != NULL);
++	ts_hypertable_permissions_check(chunk->hypertable_relid, GetUserId());
+ 	if (chunk->relkind == RELKIND_FOREIGN_TABLE)
+ 	{
+ 		ereport(ERROR,
+diff --git a/tsl/src/compression/api.c b/tsl/src/compression/api.c
+--- a/tsl/src/compression/api.c
++++ b/tsl/src/compression/api.c
+@@ -840,6 +840,7 @@ tsl_create_compressed_chunk(PG_FUNCTION_ARGS)
+ 	TS_PREVENT_FUNC_IF_READ_ONLY();
+ 
+ 	chunk = ts_chunk_get_by_relid(chunk_relid, true);
++	ts_hypertable_permissions_check(chunk->hypertable_relid, GetUserId());
+ 	hcache = ts_hypertable_cache_pin();
+ 	compresschunkcxt_init(&cxt, hcache, chunk->hypertable_relid, chunk_relid);
+ 

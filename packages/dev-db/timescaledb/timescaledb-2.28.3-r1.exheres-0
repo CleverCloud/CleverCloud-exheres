@@ -4,3 +4,7 @@
 require timescaledb [ min_version="15" max_version="15" ]
 
 PLATFORMS="~amd64"
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}"/timescaledb-2.28.3-chunk-permission-checks.patch
+)
