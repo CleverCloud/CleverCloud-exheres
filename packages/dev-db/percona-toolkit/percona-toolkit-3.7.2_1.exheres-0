@@ -1,7 +1,7 @@
 # Copyright 2014 Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require go [ go_minimum_version=1.26.4 ]
+require go [ go_minimum_version=1.27.3 ]
 
 MY_PV=${PV/_/-}
 MY_PNV=${PN}-${PV%_*}
