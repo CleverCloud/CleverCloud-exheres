@@ -11,10 +11,9 @@ SUMMARY="Spatial and Geographic objects for PostgreSQL"
 HOMEPAGE="https://postgis.net/"
 DOWNLOADS="https://download.osgeo.org/${PN}/source/${PNV}.tar.gz"
 LICENCES="GPL-2"
-SLOT="$(ever major)"
+SLOT="$(ever range 1-2)"
 
 MYOPTIONS="
-    address-standardizer
     lto
     protobuf
     topology
@@ -27,17 +26,30 @@ DEPENDENCIES="
         sci-libs/gdal[>=3.2.0]
         sci-libs/geos[>=3.11.0]
         sci-libs/proj:=[>=7.2.1]
-        address-standardizer? ( dev-libs/pcre2 )
         protobuf? ( dev-libs/protobuf-c[>=1.3.2] )
         !dev-db/postgis:0 [[
             description = [ slot move ]
             resolution = uninstall-blocked-before
         ]]
-        !dev-db/postgis:3[<3.5.0] [[
-            description = [ Removing alternatives causes file collisions. Please uninstall before proceeding. ]
-            resolution = manual
+        !dev-db/postgis:3 [[
+            description = [ slot move ]
+            resolution = uninstall-blocked-before
         ]]
 "
+
+# address_standardizer left the PostGIS tree in 3.7, see dev-db/address_standardizer
+if ever at_least 3.7; then
+    DEPENDENCIES+="
+        build+run:
+            dev-libs/gmp:=
+    "
+else
+    MYOPTIONS+=" address-standardizer"
+    DEPENDENCIES+="
+        build+run:
+            address-standardizer? ( dev-libs/pcre2 )
+    "
+fi
 
 RESTRICT="test"
 
@@ -47,10 +59,17 @@ configure_one_multibuild() {
         --with-pgconfig=/usr/$(exhost --target)/libexec/postgresql-${MULTIBUILD_TARGET}/pg_config
         --bindir=/usr/$(exhost --target)/libexec/postgresql-${MULTIBUILD_TARGET}
         $(option_enable lto)
-        $(option_with address-standardizer)
+        $(ever at_least 3.7 || option_with address-standardizer)
         $(option_with protobuf)
         $(option_with topology)
     )
 
     econf "${options[@]}"
+}
+
+install_one_multibuild() {
+    default
+
+    # same man pages as :3.7, which ships a superset of them
+    ever at_least 3.7 || edo rm -r "${IMAGE}"/usr/share/man
 }
