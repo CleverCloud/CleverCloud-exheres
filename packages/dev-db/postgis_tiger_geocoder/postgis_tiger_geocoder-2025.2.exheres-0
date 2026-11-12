@@ -1,0 +1,22 @@
+# Copyright 2026 Aurélien Hébert <aurelien.hebert@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+# Upstream supports PostgreSQL 16+ only, 14 and 15 keep the copy bundled in dev-db/postgis:3.6
+require postgresql [ min_version="16" postgresql_opts="[postgresql_extensions:fuzzystrmatch]" work="${PN}" ]
+
+SUMMARY="PostGIS geocoder and reverse geocoder for US Census TIGER data"
+HOMEPAGE="https://gitea.osgeo.org/postgis/${PN}"
+DOWNLOADS="${HOMEPAGE}/archive/${PV}.tar.gz -> ${PNV}.tar.gz"
+LICENCES="GPL-2"
+SLOT="0"
+PLATFORMS="~amd64"
+
+DEPENDENCIES="
+    build:
+        dev-lang/perl:*
+    run:
+        dev-db/address_standardizer[postgresql_servers:*(-)?]
+        dev-db/postgis:*[>=3.7][postgresql_servers:*(-)?]
+"
+
+RESTRICT="test"
