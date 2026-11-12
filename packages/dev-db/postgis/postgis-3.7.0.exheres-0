@@ -1,0 +1,9 @@
+# Copyright 2014 Kevin Decherf <kevin@kdecherf.com>
+# Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Copyright 2026 Aurélien Hébert <aurelien.hebert@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+require postgis [ min_version="16" ]
+
+PLATFORMS="~amd64"
+

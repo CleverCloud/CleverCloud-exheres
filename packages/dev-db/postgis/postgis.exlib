@@ -53,6 +53,13 @@ fi
 
 RESTRICT="test"
 
+prepare_one_multibuild() {
+    default
+
+    # utils/ runs one sub-make per topology script, they can rebuild topology.sql concurrently
+    edo sed -i -e '1i .NOTPARALLEL:' utils/Makefile.in
+}
+
 configure_one_multibuild() {
     local options=(
         CPPBIN=/usr/host/bin/$(exhost --tool-prefix)cpp
