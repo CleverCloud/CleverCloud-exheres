@@ -20,7 +20,7 @@ SCM_CHECKOUT_TO="${FETCHEDDIR}/${PNV}"
 require github [ user="dotnet" project="${DOTNET_PROJECT}" tag="${DOTNET_TAG}" force_git_clone=true ] alternatives providers flag-o-matic
 require llvm [ llvm_slots=[ ${LLVM_SLOTS[@]} ] additional_packages=[ 'dev-lang/clang' 'sys-devel/lld' ] ]
 
-export_exlib_phases pkg_setup src_prepare src_configure src_compile src_install
+export_exlib_phases pkg_setup src_configure src_compile src_install
 
 SUMMARY=".NET Core is a cross-platform version of .NET for building websites, services, and console apps."
 HOMEPAGE="https://dotnet.microsoft.com/"
@@ -55,14 +55,6 @@ dotnet-sdk_pkg_setup() {
     export CXX="$(exhost --tool-prefix)clang++"
 }
 
-dotnet-sdk_src_prepare() {
-    default
-
-    if ! ever at_least 8; then
-        edo cp -r "${FILES}"/${SLOT}/* "${WORK}"/src/SourceBuild/tarball/patches/runtime/
-    fi
-}
-
 dotnet-sdk_src_configure() {
     append-ldflags "-fuse-ld=lld"
 }
@@ -82,11 +74,6 @@ dotnet-sdk_src_compile() {
 
     # error : Unable to locate repository with working directory that contains directory '/var/cache/paludis/distfiles/scm/dotnet-sdk'
     edo git remote set-url origin "${SCM_REPOSITORY}"
-
-    if ! ever at_least 8; then
-        edo bash build.sh /p:ArcadeBuildTarball=true /p:TarballDir=${WORKBASE}/dotnet-sources
-        pushd ${WORKBASE}/dotnet-sources
-    fi
 
     if ever at_least 9; then
         edo bash prep-source-build.sh
