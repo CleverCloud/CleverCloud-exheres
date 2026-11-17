@@ -1,7 +1,7 @@
 # Copyright 2021 Maxime Sorin <maxime.sorin@clever-cloud.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user=troglobit release=${PV} suffix=tar.xz ]
+require github [ user=troglobit release=${PV} suffix=tar.gz ]
 
 SUMMARY="This is a small line editing library"
 
