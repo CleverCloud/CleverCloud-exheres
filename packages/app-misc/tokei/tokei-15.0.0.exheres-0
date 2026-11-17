@@ -1,7 +1,7 @@
 # Copyright 2020 Danilo Spinella <danyspin97@protonmail.com>
 # Distributed under the terms of the GNU General Public License v2
 
-require github [ user='XAMPPRocky' tag=v${PV} ] cargo
+require github [ user='XAMPPRocky' tag=v${PV} ] cargo [ rust_minimum_version=1.71 ]
 
 SUMMARY="Count your code, quickly."
 
