@@ -23,5 +23,7 @@ prepare_one_multibuild() {
     postgresql_prepare_one_multilib
 
     edo sed -i -e "s/pkg-config/$(exhost --tool-prefix)pkg-config/g" Makefile
+    # the server libdir comes first on the link line and holds this extension's own libversion.so on rebuilds
+    edo sed -i -e "s|^SHLIB_LINK = .*|SHLIB_LINK = $($(exhost --tool-prefix)pkg-config --variable=libdir libversion)/libversion.so|" Makefile
 }
 
