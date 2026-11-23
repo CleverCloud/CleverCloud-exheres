@@ -4,7 +4,7 @@
 require github [ user=unbit ]
 require alternatives setup-py [ import=setuptools blacklist=none ]
 
-export_exlib_phases src_unpack src_configure src_compile src_install
+export_exlib_phases src_unpack src_prepare src_configure src_compile src_install
 
 SUMMARY="Full stack for building (and hosting) network applications"
 HOMEPAGE="https://uwsgi-docs.readthedocs.io/en/latest/"
@@ -51,10 +51,17 @@ euwsgiplugins() {
     done
 }
 
+uwsgi_src_prepare() {
+    edo sed -i -e "/spcall/s:pkg-config:$(exhost --tool-prefix)&:" uwsgiconfig.py
+
+    setup-py_src_prepare
+}
+
 prepare_one_multibuild() {
     setup-py_prepare_one_multibuild
     # Handle this by hand or it gets compiled during install
     edo sed -e '/uwsgi_compiled/s/False/True/' -i setup.py
+    edo sed -i -e "/spcall/s:pkg-config:$(exhost --tool-prefix)&:" uwsgiconfig.py
 }
 
 uwsgi_src_configure() {
