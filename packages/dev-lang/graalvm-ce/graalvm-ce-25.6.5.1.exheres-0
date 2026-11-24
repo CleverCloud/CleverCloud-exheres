@@ -1,0 +1,12 @@
+# Copyright 2025 Maxime Sorin <maxime.sorin@clever-cloud.com>
+# Distributed under the terms of the GNU General Public License v2
+
+SLOT="25"
+PLATFORMS="~amd64"
+
+require graalvm-ce [ labsjdk="labsjdk-ce-25.0.5.1+2" jvmci="jvmci-25.6-b29" ]
+
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/no-such-file-or-directory-org-graalvm-toolchain-test-hello.patch"
+)
+

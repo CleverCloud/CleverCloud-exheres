@@ -10,33 +10,33 @@ Date: Thu, 10 Apr 2025 21:17:31 +0200
 Subject: [PATCH] no such file or directory: mxbuild/sdk/linux-amd64/src/org.graalvm.toolchain.test/hello
 
 ---
- sdk/mx.sdk/suite.py | 6 ------
- 1 file changed, 6 deletions(-)
+ sdk/mx.sdk/suite.py | 7 -------
+ 1 file changed, 7 deletions(-)
 
 diff --git a/sdk/mx.sdk/suite.py b/sdk/mx.sdk/suite.py
-index 20806182124..711d12b50ed 100644
 --- a/sdk/mx.sdk/suite.py
 +++ b/sdk/mx.sdk/suite.py
-@@ -442,11 +442,6 @@ suite = {
-       "jacoco" : "exclude",
-       "testProject" : True,
+@@ -700,12 +700,6 @@
+       },
+       "graalCompilerSourceEdition": "ignore",
      },
 -    "org.graalvm.toolchain.test" : {
 -      "class" : "ToolchainTestProject",
 -      "subDir" : "src",
 -      "buildDependencies" : ["LLVM_TOOLCHAIN"],
+-      "graalCompilerSourceEdition": "ignore",
 -    },
      "org.graalvm.shadowed.org.jline": {
-       # shaded JLINE_*
+       # shaded custom JLine bundle
        "subDir": "src",
-@@ -1143,7 +1138,6 @@ ML=<path:LLVM_TOOLCHAIN>\\bin\\llvm-ml
+@@ -1683,7 +1677,6 @@
        },
        "dependencies": [
          "LLVM_TOOLCHAIN",
 -        "org.graalvm.toolchain.test",
        ],
+       "graalCompilerSourceEdition": "ignore",
      },
-   },
 -- 
 2.48.1
 

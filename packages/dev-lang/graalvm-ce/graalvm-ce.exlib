@@ -12,13 +12,17 @@ exparam -v JVMCI jvmci
 SCM_REPOSITORY="https://github.com/oracle/graal.git"
 SCM_TAG="vm-${PV}"
 
-require scm-git java-jdk autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ]
+require scm-git java-jdk autotools [ supported_autoconf=[ 2.5 ] supported_automake=[ 1.16 ] ] utf8-locale
 
 SUMMARY="Run Programs Faster Anywhere"
 DESCRIPTION="GraalVM is a universal virtual machine for running applications written in JavaScript, Python, Ruby, R, JVM-based languages like Java, Scala, Clojure, Kotlin, and LLVM-based languages such as C and C++"
 HOMEPAGE="https://www.graalvm.org/"
 LICENCES="GPL-2-with-classpath-exception"
-DOWNLOADS="https://github.com/graalvm/labs-openjdk-${SLOT}/releases/download/${JVMCI}/${LABSJDK}-${JVMCI}-linux-amd64.tar.gz"
+if ever at_least 25 ; then
+    DOWNLOADS="https://github.com/graalvm/labs-openjdk/releases/download/${JVMCI}/${LABSJDK}-${JVMCI}-linux-amd64.tar.gz"
+else
+    DOWNLOADS="https://github.com/graalvm/labs-openjdk-${SLOT}/releases/download/${JVMCI}/${LABSJDK}-${JVMCI}-linux-amd64.tar.gz"
+fi
 
 MYOPTIONS="
     alsa 
@@ -28,8 +32,8 @@ MYOPTIONS="
 "
 DEPENDENCIES="
     build:
-        dev-java/mx[>=7.45.0]
-        dev-lang/python:2.7
+        dev-java/mx[>=7.88.4]
+        dev-lang/python:*[>=3.8]
         sys-devel/binutils[>=2.33.1]
         sys-devel/gcc:*[>=6.4.0]
         sys-devel/make[>=4.2.1]
@@ -65,22 +69,36 @@ src_prepare(){
     echo 
 
     edo sed -e /return/s/gcc/${CC}/ -i substratevm/src/com.oracle.svm.hosted/src/com/oracle/svm/hosted/c/libc/HostedGLibC.java
-    edo sed -e "s/objdump/$(exhost --tool-prefix)&/" -i substratevm/mx.substratevm/mx_substratevm.py
+    edo sed \
+        -e "s/objdump/$(exhost --tool-prefix)&/" \
+        -e "s/\['\(nm\|readelf\)', /['$(exhost --tool-prefix)\1', /" \
+        -i substratevm/mx.substratevm/mx_substratevm.py
 
     default
 }
 
 src_compile(){
+    # javac needs a UTF-8 sun.jnu.encoding to write class files with non-ASCII names
+    require_utf8_locale
+
     export JAVA_HOME=${WORKBASE}/${LABSJDK%+*}-${JVMCI}
     export MX_ALT_OUTPUT_ROOT=${WORK}/mxbuild
-    export DYNAMIC_IMPORTS=/substratevm,/tools,/sulong
-    export EXCLUDE_COMPONENTS=llp
-    export FORCE_BASH_LAUNCHERS=polyglot
+
+    local mx_args=( )
+    if ever at_least 25 ; then
+        # Languages are standalone distributions now, build the same
+        # components as the upstream GraalVM Community JDK
+        mx_args+=( --env ce )
+    else
+        export DYNAMIC_IMPORTS=/substratevm,/tools,/sulong
+        export EXCLUDE_COMPONENTS=llp
+        export FORCE_BASH_LAUNCHERS=polyglot
+    fi
 
     edo pushd vm
     esandbox disable_net
 
-    edo mx build
+    edo mx "${mx_args[@]}" build
 
     esandbox enable_net
     edo popd
@@ -91,7 +109,12 @@ src_install(){
 
     dodir "${java_home}"
 
-    edo cd vm/latest_graalvm_home
+    # The GraalVM distribution is registered by the sdk suite since 25
+    if ever at_least 25 ; then
+        edo cd sdk/latest_graalvm_home
+    else
+        edo cd vm/latest_graalvm_home
+    fi
 
     # Create files used as storage for system preferences.
     edo mkdir .systemPrefs
@@ -99,9 +122,9 @@ src_install(){
     edo touch .systemPrefs/.systemRootModFile
 
     # remove the bundled freetype library
-    edo rm -vf lib/*/libfreetype.*
+    edo rm -vf lib/libfreetype.* lib/*/libfreetype.*
 
-    option alsa || edo rm -vf lib/*/libjsoundalsa.*
+    option alsa || edo rm -vf lib/libjsound.* lib/*/libjsoundalsa.*
 
     option headless-awt && edo rm -vf lib/lib*{[jx]awt,splashscreen}* 
 
@@ -113,7 +136,10 @@ src_install(){
 
     # Install the JDK/JRE
     insinto "${java_home}"
-    doins -r bin conf include jmods languages lib tools
+    local dirs=( bin conf include jmods lib )
+    # Languages are standalone distributions since 25
+    ever at_least 25 || dirs+=( languages tools )
+    doins -r "${dirs[@]}"
 
     # Fix the executables' permissions.
     edo chmod 755 "${IMAGE}/${java_home}"/bin/*
