@@ -1,0 +1,97 @@
+Source: https://github.com/oracle/graal/commit/47edec0ee6eb6cdd2c117af979694d8424ae6f39
+Upstream: yes, backported to 23.0.2
+Reason: the distutils module was removed in Python 3.12
+
+From 47edec0ee6eb6cdd2c117af979694d8424ae6f39 Mon Sep 17 00:00:00 2001
+From: Doug Simon <doug.simon@oracle.com>
+Date: Thu, 10 Aug 2023 22:55:04 +0200
+Subject: [PATCH] remove usages of distutils module
+
+---
+diff --git a/substratevm/mx.substratevm/mx_substratevm.py b/substratevm/mx.substratevm/mx_substratevm.py
+--- a/substratevm/mx.substratevm/mx_substratevm.py
++++ b/substratevm/mx.substratevm/mx_substratevm.py
+@@ -33,7 +33,6 @@ import re
+ import tempfile
+ from glob import glob
+ from contextlib import contextmanager
+-from distutils.dir_util import mkpath, remove_tree  # pylint: disable=no-name-in-module
+ from os.path import join, exists, dirname, relpath
+ import pipes
+ from argparse import ArgumentParser
+@@ -565,7 +564,7 @@ def _native_junit(native_image, unittest_args, build_args=None, run_args=None, b
+ 
+     run_args = run_args or ['--verbose']
+     junit_native_dir = join(svmbuild_dir(), platform_name(), 'junit')
+-    mkpath(junit_native_dir)
++    mx.ensure_dir_exists(junit_native_dir)
+     junit_test_dir = junit_native_dir if preserve_image else tempfile.mkdtemp(dir=junit_native_dir)
+     try:
+         unittest_deps = []
+@@ -592,7 +591,7 @@ def _native_junit(native_image, unittest_args, build_args=None, run_args=None, b
+         mx.run([unittest_image] + run_args)
+     finally:
+         if not preserve_image:
+-            remove_tree(junit_test_dir)
++            mx.rmtree(junit_test_dir)
+ 
+ _mask_str = '#'
+ 
+@@ -717,8 +716,8 @@ def _cinterfacetutorial(native_image, args=None):
+ 
+     # clean / create output directory
+     if exists(build_dir):
+-        remove_tree(build_dir)
+-    mkpath(build_dir)
++        mx.rmtree(build_dir)
++    mx.ensure_dir_exists(build_dir)
+ 
+     # Build the shared library from Java code
+     native_image(['--shared', '-H:Path=' + build_dir, '-H:Name=libcinterfacetutorial', '-Dcom.oracle.svm.tutorial.headerfile=' + join(c_source_dir, 'mydata.h'),
+@@ -741,7 +740,7 @@ def _cinterfacetutorial(native_image, args=None):
+ 
+ 
+ def _helloworld(native_image, javac_command, path, build_only, args):
+-    mkpath(path)
++    mx.ensure_dir_exists(path)
+     hello_file = os.path.join(path, 'HelloWorld.java')
+     envkey = 'HELLO_WORLD_MESSAGE'
+     output = 'Hello from native-image!'
+@@ -801,7 +800,7 @@ def _helloworld(native_image, javac_command, path, build_only, args):
+             raise Exception('Unexpected output: ' + str(actual_output) + "  !=  " + str(expected_output))
+ 
+ def _debuginfotest(native_image, path, build_only, with_isolates_only, args):
+-    mkpath(path)
++    mx.ensure_dir_exists(path)
+     mx.log("path=%s"%path)
+     sourcepath = mx.project('com.oracle.svm.test').source_dirs()[0]
+     mx.log("sourcepath=%s"%sourcepath)
+@@ -856,7 +855,7 @@ def _debuginfotest(native_image, path, build_only, with_isolates_only, args):
+ 
+ def _javac_image(native_image, path, args=None):
+     args = [] if args is None else args
+-    mkpath(path)
++    mx.ensure_dir_exists(path)
+ 
+     # Build an image for the javac compiler, so that we test and gate-check javac all the time.
+     # Dynamic class loading code is reachable (used by the annotation processor), so -H:+ReportUnsupportedElementsAtRuntime is a necessary option
+@@ -1342,8 +1341,8 @@ def clinittest(args):
+ 
+         # clean / create output directory
+         if exists(build_dir):
+-            remove_tree(build_dir)
+-        mkpath(build_dir)
++            mx.rmtree(build_dir)
++        mx.ensure_dir_exists(build_dir)
+ 
+         # Build and run the example
+         native_image(
+@@ -1588,7 +1587,7 @@ JNIEXPORT void JNICALL {0}() {{
+     def clean(self, forBuild=False):
+         gen_src_dir = dirname(self.jvm_fallbacks_path)
+         if exists(gen_src_dir):
+-            remove_tree(gen_src_dir)
++            mx.rmtree(gen_src_dir)
+ 
+     def __str__(self):
+         return 'JvmFuncsFallbacksBuildTask {}'.format(self.subject)

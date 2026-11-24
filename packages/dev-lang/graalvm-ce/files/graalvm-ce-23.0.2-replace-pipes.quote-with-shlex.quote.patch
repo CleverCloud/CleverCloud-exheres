@@ -1,0 +1,74 @@
+Source: https://github.com/oracle/graal/commit/52d898d8bb6db8728e371d94fc5f87235f1ac202
+Upstream: yes, backported to 23.0.2
+Reason: the pipes module was removed in Python 3.13
+
+From 52d898d8bb6db8728e371d94fc5f87235f1ac202 Mon Sep 17 00:00:00 2001
+From: Andreas Woess <andreas.woess@oracle.com>
+Date: Thu, 10 Oct 2024 17:45:02 +0200
+Subject: [PATCH] Replace pipes.quote with shlex.quote.
+
+The pipes module has been removed in Python 3.13.
+---
+diff --git a/substratevm/mx.substratevm/mx_substratevm.py b/substratevm/mx.substratevm/mx_substratevm.py
+--- a/substratevm/mx.substratevm/mx_substratevm.py
++++ b/substratevm/mx.substratevm/mx_substratevm.py
+@@ -34,7 +34,7 @@ import tempfile
+ from glob import glob
+ from contextlib import contextmanager
+ from os.path import join, exists, dirname, relpath
+-import pipes
++import shlex
+ from argparse import ArgumentParser
+ import fnmatch
+ import collections
+@@ -587,7 +587,7 @@ def _native_junit(native_image, unittest_args, build_args=None, run_args=None, b
+         unittest_image = native_image(['-ea', '-esa'] + build_args + extra_image_args + [macro_junit + '=' + unittest_file, '-H:Path=' + junit_test_dir], env=custom_env)
+         image_pattern_replacement = unittest_image + ".exe" if mx.is_windows() else unittest_image
+         run_args = [arg.replace('${unittest.image}', image_pattern_replacement) for arg in run_args]
+-        mx.log('Running: ' + ' '.join(map(pipes.quote, [unittest_image] + run_args)))
++        mx.log('Running: ' + ' '.join(map(shlex.quote, [unittest_image] + run_args)))
+         mx.run([unittest_image] + run_args)
+     finally:
+         if not preserve_image:
+diff --git a/sulong/mx.sulong/mx_sulong.py b/sulong/mx.sulong/mx_sulong.py
+--- a/sulong/mx.sulong/mx_sulong.py
++++ b/sulong/mx.sulong/mx_sulong.py
+@@ -29,7 +29,7 @@
+ #
+ import sys
+ import os
+-import pipes
++import shlex
+ import tempfile
+ from os.path import join
+ import shutil
+@@ -173,7 +173,7 @@ mx_subst.path_substitutions.register_no_arg('jacoco', get_jacoco_setting)
+ def _subst_get_jvm_args(dep):
+     java = mx.get_jdk().java
+     main_class = mx.distribution(dep).mainClass
+-    jvm_args = [pipes.quote(arg) for arg in mx.get_runtime_jvm_args([dep])]
++    jvm_args = [shlex.quote(arg) for arg in mx.get_runtime_jvm_args([dep])]
+     cmd = [java] + jvm_args + [main_class]
+     return " ".join(cmd)
+ 
+diff --git a/sulong/mx.sulong/mx_sulong_suite_constituents.py b/sulong/mx.sulong/mx_sulong_suite_constituents.py
+--- a/sulong/mx.sulong/mx_sulong_suite_constituents.py
++++ b/sulong/mx.sulong/mx_sulong_suite_constituents.py
+@@ -32,7 +32,7 @@ from __future__ import print_function
+ 
+ import abc
+ import fnmatch
+-import pipes
++import shlex
+ 
+ import mx
+ import mx_cmake
+@@ -418,7 +418,7 @@ class BootstrapToolchainLauncherBuildTask(mx.BuildTask):
+     def contents(self, tool, exe):
+         # platform support
+         all_params = '%*' if mx.is_windows() else '"$@"'
+-        _quote = _quote_windows if mx.is_windows() else pipes.quote
++        _quote = _quote_windows if mx.is_windows() else shlex.quote
+         # build command line
+         java = mx.get_jdk().java
+         classpath_deps = [dep for dep in self.subject.buildDependencies if isinstance(dep, mx.ClasspathDependency)]

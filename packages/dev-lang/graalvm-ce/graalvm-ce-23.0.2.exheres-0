@@ -8,5 +8,7 @@ require graalvm-ce [ labsjdk="labsjdk-ce-${SLOT}.0.9+9" jvmci="jvmci-23.0-b22" ]
 
 DEFAULT_SRC_PREPARE_PATCHES=(
     "${FILES}/gcc-14-error-uintptr_t-was-not-declared-in-this-scope.patch"
+    "${FILES}/${PNV}-remove-usages-of-distutils-module.patch"
+    "${FILES}/${PNV}-replace-pipes.quote-with-shlex.quote.patch"
 )
 
