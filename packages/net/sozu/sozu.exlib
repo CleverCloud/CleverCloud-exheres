@@ -7,7 +7,7 @@ require github [ user=sozu-proxy force_git_clone=true tag="${PV/rc/-rc.}" ]
 require systemd-service [ systemd_files=[ "${FILES}/systemd/${PN}-${SLOT}.service" ] ]
 # disable_default_features so the crypto provider group below decides which
 # backend is compiled in, instead of the crate's default crypto-ring.
-require cargo [ crate_path=bin disable_default_features=true ]
+require cargo [ crate_path=bin disable_default_features=true rust_minimum_version=1.95 ]
 
 export_exlib_phases src_install src_test
 
