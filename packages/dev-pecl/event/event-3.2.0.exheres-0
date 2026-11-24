@@ -14,3 +14,11 @@ DEPENDENCIES="
         dev-libs/libevent:=
         dev-libs/openssl:=
 "
+
+configure_one_multibuild() {
+    local args=()
+    if ! ever at_least 8.1.0 $(php-pecl_get_abi); then
+        args+=( --without-event-openssl )
+    fi
+    php-pecl_configure_one_multibuild "${args[@]}"
+}
