@@ -5,3 +5,18 @@
 PLATFORMS="~amd64"
 
 require sozu
+
+src_test() {
+    # The command server and CLI tests bind named sockets under tempfile::tempdir().
+    local socket
+    local sockets=( test.sock command.sock rig.sock clamped-client.sock upgrade-snapshot.sock sozu.sock )
+    for socket in "${sockets[@]}"; do
+        esandbox allow_net "unix:${TEMP%/}/.tmp*/${socket}"
+    done
+
+    cargo_src_test
+
+    for socket in "${sockets[@]}"; do
+        esandbox disallow_net "unix:${TEMP%/}/.tmp*/${socket}"
+    done
+}
