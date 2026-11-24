@@ -14,11 +14,17 @@ DEPENDENCIES="
         dev-lang/python:*
 "
 
+DEFAULT_SRC_PREPARE_PATCHES=(
+    "${FILES}/${PNV}-checkcopy-fix-build-with-jdk-older-than-19.patch"
+)
+
 src_prepare() {
     edo sed -E 's|CC = <cc:[^>]+>|CC = '"${CC}"'|' -i ninja-toolchains/gcc.ninja_template
     edo sed -E 's|CXX = <cxx:[^>]+>|CXX = '"${CXX}"'|' -i ninja-toolchains/gcc.ninja_template
     edo sed -E 's|AR = <ar:[^>]+>|AR = '"${AR}"'|' -i ninja-toolchains/gcc.ninja_template
     edo sed -e '/add_debug_prefix(self.suite.vc_dir)/d' -i src/mx/_impl/mx_native.py
+
+    default
 }
 
 src_install() {

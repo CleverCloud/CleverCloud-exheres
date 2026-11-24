@@ -1,0 +1,27 @@
+Source: Maxime Sorin <maxime.sorin@clever.cloud>
+Upstream: no
+Reason: com.oracle.mxtool.checkcopy declares javaCompliance 1.8+ but closes a
+ThreadPoolExecutor with try-with-resources, ExecutorService is only AutoCloseable
+since JDK 19, which breaks mx builds of suites using JDK 17 (graalvm-ce:17)
+
+--- a/java/com.oracle.mxtool.checkcopy/src/com/oracle/mxtool/checkcopy/CheckCopyright.java
++++ b/java/com.oracle.mxtool.checkcopy/src/com/oracle/mxtool/checkcopy/CheckCopyright.java
+@@ -748,7 +748,8 @@
+ 
+         Set<String> stagedFiles = vc.getStagedFiles();
+ 
+-        try (ThreadPoolExecutor threadPool = new ThreadPoolExecutor(threadCount, threadCount, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>())) {
++        ThreadPoolExecutor threadPool = new ThreadPoolExecutor(threadCount, threadCount, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
++        try {
+             List<Future<?>> tasks = new ArrayList<>();
+ 
+             for (String fileName : fileNames) {
+@@ -764,6 +765,8 @@
+             for (Future<?> task : tasks) {
+                 task.get();
+             }
++        } finally {
++            threadPool.shutdown();
+         }
+     }
+ 
