@@ -98,7 +98,7 @@ src_compile(){
     edo pushd vm
     esandbox disable_net
 
-    edo mx "${mx_args[@]}" build
+    edo mx -c ${EXJOBS:-1} "${mx_args[@]}" build
 
     esandbox enable_net
     edo popd
