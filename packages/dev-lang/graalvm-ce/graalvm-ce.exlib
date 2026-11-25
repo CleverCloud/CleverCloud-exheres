@@ -196,10 +196,20 @@ src_install(){
         )
     done
 
+    # GRAALVM_HOME points to a symlink of the java-jdk alternative, so it follows
+    # the selected JDK without an env update, like JAVA_HOME from java-env. The
+    # env.d file is slotted so removing one slot doesn't remove it from under the
+    # other ones, and it can't be an alternative itself: eclectic env skips
+    # symlinks.
+    hereenvd 45${PN}-${SLOT} <<EOF
+GRAALVM_HOME="/usr/$(exhost --target)/lib/graalvm"
+EOF
+
     # Just for clarity, tie everything together: group the above mappings
     # according to the alternatives module they belong to
     local jdk_alternatives=(
         "/usr/$(exhost --target)/lib/jdk" "${java_home}"
+        "/usr/$(exhost --target)/lib/graalvm" "${java_home}"
         "${jdk_alternatives_map_bin[@]}"
     )
 
@@ -221,8 +231,4 @@ src_install(){
         fi
     done
     popd > /dev/null
-
-    hereenvd 45graal <<EOF
-GRAALVM_HOME="${java_home}"
-EOF
 }
