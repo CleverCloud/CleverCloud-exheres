@@ -74,7 +74,7 @@ DEPENDENCIES="
         orc? ( dev-libs/orc:0.4 )
         pango? (
             x11-libs/cairo[>=1.2]
-            x11-libs/pango[>=1.32.6]
+            x11-libs/pango[>=1.38.0]
         )
         pdf? (
             app-text/poppler[>=0.16.0][cairo][glib]
